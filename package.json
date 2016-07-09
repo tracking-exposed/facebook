@@ -4,7 +4,12 @@
   "description": "Claudio's simple -Esigo Sapere Come Veniamo Informati-",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build-css": "node_modules/.bin/stylus styles/index.styl -o dist/css",
+    "watch-css": "node_modules/.bin/stylus styles/index.styl -o dist/css -w",
+    "clean": "rm -rf dist/css && mkdir -p dist/css",
+    "build": "npm run clean && npm run build-css",
+    "watch": "npm run clean && npm run watch-css & nodemon server -e js,jade",
+    "start": "node app"
   },
   "author": "Claudio Agosti <claudio@tacticaltech.org>",
   "license": "ISC",
@@ -13,9 +18,13 @@
     "body-parser": "^1.15.2",
     "debug": "^2.2.0",
     "express4": "0.0.1",
+    "geoip-native": "0.0.8",
+    "jade": "^1.11.0",
     "lodash": "^4.13.1",
     "moment": "^2.14.1",
     "mongodb": "^2.1.8",
-    "socket.io": "^1.4.8"
+    "socket.io": "^1.4.8",
+    "stylus": "^0.54.5",
+    "sweet-scroll": "^1.0.3"
   }
 }
