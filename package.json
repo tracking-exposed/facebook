@@ -8,7 +8,7 @@
     "watch-css": "node_modules/.bin/stylus styles/index.styl -o dist/css -w",
     "clean": "rm -rf dist/css && mkdir -p dist/css",
     "build": "npm run clean && npm run build-css",
-    "watch": "npm run clean && npm run watch-css & nodemon server -e js,jade",
+    "watch": "npm run clean && npm run watch-css & nodemon app -e js,jade",
     "start": "node app"
   },
   "author": "Claudio Agosti <claudio@tacticaltech.org>",
