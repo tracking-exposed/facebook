@@ -1,24 +1,17 @@
 // ==UserScript==
 // @name         facebook.tracking.exposed
 // @namespace    https://facebook.tracking.exposed
-// @version      0.9.1
-// @description  Collection data on timeline sorting, to analyze and extract evidence in (potential) user manipulation.
+// @version      0.9.2
+// @description  Collection meta-data from Facebook's timeline, in order to analyze and look for potential informative manipulation (if you've never heard about Filter Bubble, and you're still young⌁inside™, start here https://en.wikipedia.org/wiki/Filter_bubble )
 // @author       Claudio Agosti @_vecna
 // @match        https://www.facebook.com/*
 // @connect      facebook.tracking.exposed
-// @connect      localhost
 // @grant        GM_xmlhttpRequest
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js
 // @require      https://gist.github.com/raw/2625891/waitForKeyElements.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/lodash-compat/3.10.2/lodash.min.js
 // ==/UserScript==
-
-/* ----
-   references:
-   http://www.wsj.com/articles/fears-of-facebook-bias-seem-to-be-overblown-1463371261
-   https://medium.com/message/ferguson-is-also-a-net-neutrality-issue-6d2f3db51eb0
-   --- */
 
 var d = false, /* debug */
     ee = false; /* explicit in the page */
@@ -230,7 +223,7 @@ var scrollInitialWaitTime = 4000,
 
 var scrollDown = function() {
 
-      whereScroll = _.random(400, height) + (height * refreshTimes);
+      whereScroll += _.random(400, height) + (height * refreshTimes);
       if(scrollTimeout !== scrollInitialWaitTime) {
           scrollTimeout = scrollInitialWaitTime;
           console.log("Restoring timeout to " + scrollTimeout + " scrolled " + refreshTimes + " times, limit " + maxScrollTimes);
@@ -260,5 +253,5 @@ var scrollDown = function() {
     'use strict';
     waitForKeyElements ("div .userContentWrapper", newUserContent);
     setTimeout (checkToFlush, FLUSH_INTERVAL);
-    setTimeout (scrollDown, scrollInitialWaitTime);
+    // setTimeout (scrollDown, scrollInitialWaitTime);
 })();
