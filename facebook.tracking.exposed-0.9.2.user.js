@@ -202,6 +202,7 @@ var checkToFlush = function() {
     if (_.size(toBeFlush)) {
         var envelope = { from: user, content: toBeFlush };
         if (true) console.log("After " + FLUSH_INTERVAL + "ms, at: " + moment() + ", " + toBeFlush.length + " info to be sent");
+        if (d) console.log(envelope);
         GM_xmlhttpRequest({
            method: "POST",
            url: 'https://facebook.tracking.exposed/F/1',
