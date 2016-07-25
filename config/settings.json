@@ -1,0 +1,15 @@
+{
+  "dbMountPoint": "/",
+  "apiVersion": [1, 2],
+  "contacts": [
+      { "type": "twitter", "contact": "_vecna" },
+      { "type": "mail", "contact": "claudio@tracking.exposed" }
+  ],
+  "mongoColumns": { 
+      "supporters": "supporters",
+      "timeline": "facebook1",
+      "access": "access",
+      "suggestions": "suggestions"
+  },
+  "mongodb": "mongodb://localhost/facebook"
+}

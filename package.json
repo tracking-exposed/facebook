@@ -8,8 +8,8 @@
     "watch-css": "node_modules/.bin/stylus styles/index.styl -o dist/css -w",
     "clean": "rm -rf dist/css && mkdir -p dist/css",
     "build": "npm run clean && npm run build-css && cp logoresearch/*.ico dist/",
-    "watch": "npm run clean && npm run watch-css & nodemon app -e js,jade",
-    "start": "node app"
+    "watch": "npm run clean && npm run watch-css & nodemon app -e js,jade -c config/settings.json",
+    "start": "node app -c config/settings.json"
   },
   "author": "Claudio Agosti <claudio@tacticaltech.org>",
   "license": "ISC",
@@ -17,6 +17,7 @@
     "bluebird": "^3.4.1",
     "body-parser": "^1.15.2",
     "debug": "^2.2.0",
+    "diskusage": "^0.1.5",
     "express4": "0.0.1",
     "geoip-native": "0.0.8",
     "jade": "^1.11.0",
@@ -25,6 +26,7 @@
     "mongodb": "^2.1.8",
     "socket.io": "^1.4.8",
     "stylus": "^0.54.5",
-    "sweet-scroll": "^1.0.3"
+    "sweet-scroll": "^1.0.3",
+    "yargs": "^4.8.1"
   }
 }
