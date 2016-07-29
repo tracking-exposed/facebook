@@ -57,16 +57,23 @@ var dispatchPromise = function(funcName, req, res) {
                        apiV + " f " + funcName);
     }
 
+    req.randomUnicode = String.fromCharCode(_.random(0x0391, 0x085e));
+
+    debug("%s %s Dispatching request to %s", 
+        req.randomUnicode, 
+        moment().format("MM-DD hh:mm:ss"), req.url);
+
     /* in theory here we can keep track of time */
     return new Promise.resolve(func(req))
       .then(function(httpresult) {
           // res.header(httpresult.header);
           if(!_.isUndefined(httpresult.json)) {
-              debug("API %s success, returning JSON", funcName);
+              debug("%s API %s success, returning JSON",
+                  req.randomUnicode, funcName);
               res.json(httpresult.json)
           } else if(!_.isUndefined(httpresult.text)) {
-              debug("API %s success, returning text (size %d)",
-                  funcName, _.size(httpresult.text));
+              debug("%s API %s success, returning text (size %d)",
+                  req.randomUnicode, funcName, _.size(httpresult.text));
               res.send(httpresult.text)
           }
           return true;

@@ -10,14 +10,27 @@ html
       p.smile α-stage: concept 90% ⌁ infrastructure 10% ⌁ UX 10% ⌁ morale 100% ⌁ stability LOW
 
     ul.nav
-      li:   a(href='#what')      what
-      li:   a(href='#how')       use it
-      li:   a(href='#vision')    vision
-      li:   a(href='#moar')      know more
-      li:   a(href='#contact')   contact
+      li:   a(href='#what')                     what
+      li:   a(href='#how')                      use it
+      li:   a(href='#vision')                   vision
+      li:   a(href='#moar')                     know more
+      li:   a(href='/reasons' target='_blank')  why it is right
+      li:   a(href='#contact')                  contact
 
     div.propaganda
-      block current
+      h2 CSS experiment
+      some text, some happy text, and here
+        span.suggest-label something special
+      |, and here some other simple text
+      span.suggest-expansion(id="experiment1")
+
+      h2 End of the CSS experiment
+
+    div.propaganda
+      h3.note Note: This is an as yet unreleased project that is still in development. If you have received this link it is because I know you personally. Please don't share the link yet because the current website is still incomplete. I'm looking forward to hear your feedback and suggestions. I'm sure that if you have this link it is because you can provide valuable insight on this issue. ;) Thanks
+
+    div.dynamic
+      block splash
 
     div#what
       div.propaganda
