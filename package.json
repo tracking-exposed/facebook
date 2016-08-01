@@ -7,7 +7,7 @@
     "build-css": "node_modules/.bin/stylus styles/index.styl -o dist/css",
     "watch-css": "node_modules/.bin/stylus styles/index.styl -o dist/css -w",
     "clean": "rm -rf dist/css && mkdir -p dist/css",
-    "build": "npm run clean && npm run build-css && cp logoresearch/*.ico dist/",
+    "build": "npm run clean && npm run build-css && cp logoresearch/*.ico dist/ && cp -r node_modules/bootstrap/dist/css/bootstrap.css dist/css && cp -r node_modules/bootstrap/dist/js/bootstrap.js dist/js",
     "watch": "npm run clean && npm run watch-css & nodemon app -e js,jade -c config/settings.json",
     "start": "node app -c config/settings.json"
   },
@@ -16,6 +16,10 @@
   "dependencies": {
     "bluebird": "^3.4.1",
     "body-parser": "^1.15.2",
+    "bootstrap": "^3.3.7",
+    "d3": "^4.2.0",
+    "d3-line": "0.0.1",
+    "d3-shape": "^1.0.1",
     "debug": "^2.2.0",
     "diskusage": "^0.1.5",
     "express4": "0.0.1",

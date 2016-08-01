@@ -20,7 +20,6 @@ var yargs = require('yargs')
     .demand(['c']);
 
 var escviAPI = require('./lib/allversions');
-var token = require('./lib/token');
 
 /* Claudio's debug */
 var CD = function(content) {
@@ -29,7 +28,6 @@ var CD = function(content) {
 var PORT = 4444; // 8000;
 
 CD(yargs);
-setTimeout(token.periodicCheck, token.tokenLifetime * 1000);
 server.listen(PORT);
 console.log("Please proceed with your spam at port " + PORT);
 
@@ -43,8 +41,8 @@ var dispatchPromise = function(funcName, req, res) {
 
     var apiV = _.parseInt(_.get(req.params, 'versionNumber'));
 
-    /* only anomaly managed here: '/' has not an API version */
-    if(req.url == '/')
+    /* The versionless routes are here */
+    if(req.url == '/' || _.startsWith(req.url, '/realitycheck/') )
         apiV = escviAPI.lastVersion;
 
     if(_.isUndefined(apiV) || (apiV).constructor !== Number )
@@ -75,6 +73,13 @@ var dispatchPromise = function(funcName, req, res) {
               debug("%s API %s success, returning text (size %d)",
                   req.randomUnicode, funcName, _.size(httpresult.text));
               res.send(httpresult.text)
+          } else if(!_.isUndefined(httpresult.file)) {
+              debug("%s API %s success, returning file (%s)",
+                  req.randomUnicode, funcName, httpresult.file);
+              res.sendFile(__dirname + "/html/" + httpresult.file);
+              /* don't try to impelemnt your own /dist and static dir */
+          } else {
+            throw new Error("Internal developer mistake");
           }
           return true;
       }) 
@@ -83,17 +88,11 @@ var dispatchPromise = function(funcName, req, res) {
 app.get('/admin/stats/system/:versionNumber/', function(req, res) {
     return dispatchPromise('adminStats', req, res);
 });
-app.get('/admin/stats/token/:versionNumber/', function(req, res) {
-    return dispatchPromise('adminTokenCheck', req, res);
-});
 app.get('/public/stats/:versionNumber/', function(req, res) {
     return dispatchPromise('publicStats', req, res);
 });
 app.get('/user/public/:versionNumber/:profileId', function(req, res) {
-    return dispatchPromise('userPublicPage', req, res);
-});
-app.get('/user/private/:versionNumber/:secret', function(req, res) {
-    return dispatchPromise('userPrivateView', req, res);
+    return dispatchPromise('userTimeLine', req, res);
 });
 app.get('/node/export/:versionNumber/:selector', function(req, res) {
     return dispatchPromise('exportNode', req, res);
@@ -101,29 +100,37 @@ app.get('/node/export/:versionNumber/:selector', function(req, res) {
 app.post('/F/:versionNumber', function(req, res) {
     return dispatchPromise('postFeed', req, res);
 });
-app.get('/token/:versionNumber/:reason/:profileId', function(req, res) {
-    return dispatchPromise('getToken', req, res);
-});
 app.post('/contrib/:versionNumber/:which', function(req, res) {
     return dispatchPromise('writeContrib', req, res);
 });
+/* Only the last version is considered for the pages below */
 app.get('/', function(req, res) {
     return dispatchPromise('getIndex', req, res);
 });
+app.get('/realitycheck/:profileId', function(req, res) {
+    return dispatchPromise('getPersonal', req, res);
+});
+/* version independent API */
 app.get('/favicon.ico', function(req, res) {
     res.sendFile(__dirname + '/dist/favicon.ico');
 });
 app.get('/facebook.tracking.exposed.user.js', function (req, res) {
     res.sendFile(__dirname + '/scriptlastversion');
 });
-app.use('/dist', express.static(__dirname + '/dist'));
+app.use('/js', express.static(__dirname + '/dist/js'));
+app.use('/css', express.static(__dirname + '/dist/css'));
 
 /* I don't know yet if I'm gonna need this because depends on 
  * how the UX get developed during the time */
 io.on('connection', function (socket) {
+    debug("This is on 'connection' ");
     socket.emit('news', { hello: 'world' });
     socket.on('my other event', function (data) {
-        console.log(data);
+        debug("socket.io 'my other event': %j", data);
+    });
+    socket.on('AAA', function(stuff) {
+        debug("My AAA");
+        console.log(JSON.stringify(stuff, undefined, 2));
     });
 });
 
