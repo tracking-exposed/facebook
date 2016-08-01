@@ -9,27 +9,22 @@ var Promise = require('bluebird');
 var mongodb = Promise.promisifyAll(require('mongodb'));
 var debug = require('debug')('ESCVI');
 var geoip = require('geoip-native');
+var nconf = require('nconf');
 var jade = require('jade');
-var yargs = require('yargs')
-    .nargs('p', 1)
-        .alias('p', 'port')
-        .string('p')
-        .describe('local TCP port')
-    .config('c')
-    .help('h')
-    .demand(['c']);
 
 var escviAPI = require('./lib/allversions');
 
+nconf.argv()
+     .env()
+     .file({ file: 'config/settings.json' });
+
 /* Claudio's debug */
 var CD = function(content) {
-    console.log("ŊŊ " + JSON.stringify(content, undefined, 2));
+    console.log("ઉ" + JSON.stringify(content, undefined, 2), "background: #222; color: #bada55");
 };
-var PORT = 4444; // 8000;
 
-CD(yargs);
-server.listen(PORT);
-console.log("Please proceed with your spam at port " + PORT);
+server.listen(nconf.get('port'));
+console.log("Port " + nconf.get('port') + " listening");
 
 app.use(bodyParser.json()); // for parsing application/json
 
@@ -74,10 +69,10 @@ var dispatchPromise = function(funcName, req, res) {
                   req.randomUnicode, funcName, _.size(httpresult.text));
               res.send(httpresult.text)
           } else if(!_.isUndefined(httpresult.file)) {
+              /* this is used for special files, beside the css/js below */
               debug("%s API %s success, returning file (%s)",
                   req.randomUnicode, funcName, httpresult.file);
               res.sendFile(__dirname + "/html/" + httpresult.file);
-              /* don't try to impelemnt your own /dist and static dir */
           } else {
               throw new Error("Internal developer mistake");
           }
@@ -97,7 +92,7 @@ app.get('/user/public/:versionNumber/TL/:profileId', function(req, res) {
 app.get('/user/public/:versionNumber/SG/:profileId', function(req, res) {
     return dispatchPromise('userSimpleGraph', req, res);
 });
-app.get('/node/export/:versionNumber/:selector', function(req, res) {
+app.get('/node/export/:versionNumber/:table/:selector', function(req, res) {
     return dispatchPromise('exportNode', req, res);
 });
 app.post('/F/:versionNumber', function(req, res) {

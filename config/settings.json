@@ -12,5 +12,6 @@
       "refreshes": "refreshes2",
       "suggestions": "suggestions"
   },
-  "mongodb": "mongodb://localhost/facebook"
+  "mongodb": "mongodb://localhost/facebook",
+  "port": 4444
 }
