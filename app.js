@@ -79,7 +79,7 @@ var dispatchPromise = function(funcName, req, res) {
               res.sendFile(__dirname + "/html/" + httpresult.file);
               /* don't try to impelemnt your own /dist and static dir */
           } else {
-            throw new Error("Internal developer mistake");
+              throw new Error("Internal developer mistake");
           }
           return true;
       }) 
@@ -91,8 +91,11 @@ app.get('/admin/stats/system/:versionNumber/', function(req, res) {
 app.get('/public/stats/:versionNumber/', function(req, res) {
     return dispatchPromise('publicStats', req, res);
 });
-app.get('/user/public/:versionNumber/:profileId', function(req, res) {
+app.get('/user/public/:versionNumber/TL/:profileId', function(req, res) {
     return dispatchPromise('userTimeLine', req, res);
+});
+app.get('/user/public/:versionNumber/SG/:profileId', function(req, res) {
+    return dispatchPromise('userSimpleGraph', req, res);
 });
 app.get('/node/export/:versionNumber/:selector', function(req, res) {
     return dispatchPromise('exportNode', req, res);

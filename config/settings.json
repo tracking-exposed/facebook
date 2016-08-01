@@ -6,9 +6,10 @@
       { "type": "mail", "contact": "claudio@tracking.exposed" }
   ],
   "mongoColumns": { 
-      "supporters": "supporters",
-      "timeline": "facebook1",
-      "access": "access",
+      "simplysupporters": "supporters",
+      "unsortedtimeline1": "facebook1",
+      "timelines": "timeline2",
+      "refreshes": "refreshes2",
       "suggestions": "suggestions"
   },
   "mongodb": "mongodb://localhost/facebook"
