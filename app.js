@@ -14,20 +14,14 @@ var jade = require('jade');
 
 var escviAPI = require('./lib/allversions');
 
+var cfgFile = "config/settings.json";
+var redOn = "\033[31m";
+var redOff = "\033[0m";
+
 nconf.argv()
      .env()
-     .file({ file: 'config/settings.json' });
-
-/* Claudio's debug */
-var CD = function(content) {
-    console.log("ઉ" + JSON.stringify(content, undefined, 2), "background: #222; color: #bada55");
-};
-
-server.listen(nconf.get('port'));
-console.log("Port " + nconf.get('port') + " listening");
-
-app.use(bodyParser.json()); // for parsing application/json
-
+     .file({ file: cfgFile });
+console.log(redOn + "ઉ nconf loaded, using " + cfgFile + redOff);
 
 /* This function wraps all the API call, checking the verionNumber
  * managing error in 4XX/5XX messages and making all these asyncronous
@@ -37,7 +31,9 @@ var dispatchPromise = function(funcName, req, res) {
     var apiV = _.parseInt(_.get(req.params, 'versionNumber'));
 
     /* The versionless routes are here */
-    if(req.url == '/' || _.startsWith(req.url, '/realitycheck/') )
+    if( req.url == '/' || 
+        _.startsWith(req.url, '/realitycheck/') || 
+        _.startsWith(req.url, '/overseer/') )
         apiV = escviAPI.lastVersion;
 
     if(_.isUndefined(apiV) || (apiV).constructor !== Number )
@@ -80,8 +76,16 @@ var dispatchPromise = function(funcName, req, res) {
       }) 
 };
 
+/* everything begin here, welcome */
+server.listen(nconf.get('port'));
+console.log("  Port " + nconf.get('port') + " listening");
+app.use(bodyParser.json()); 
+
 app.get('/admin/stats/system/:versionNumber/', function(req, res) {
     return dispatchPromise('adminStats', req, res);
+});
+app.get('/admin/view/:versionNumber/', function(req, res) {
+    return dispatchPromise('adminDataView', req, res);
 });
 app.get('/public/stats/:versionNumber/', function(req, res) {
     return dispatchPromise('publicStats', req, res);
@@ -101,14 +105,17 @@ app.post('/F/:versionNumber', function(req, res) {
 app.post('/contrib/:versionNumber/:which', function(req, res) {
     return dispatchPromise('writeContrib', req, res);
 });
-/* Only the last version is considered for the pages below */
+/* Only the *last version* is assumed for the API below */
 app.get('/', function(req, res) {
     return dispatchPromise('getIndex', req, res);
 });
 app.get('/realitycheck/:profileId', function(req, res) {
     return dispatchPromise('getPersonal', req, res);
 });
-/* version independent API */
+app.get('/overseer', function(req, res) {
+    return dispatchPromise('getOverseer', req, res);
+});
+/* static files, independent by the API versioning */
 app.get('/favicon.ico', function(req, res) {
     res.sendFile(__dirname + '/dist/favicon.ico');
 });
@@ -118,17 +125,17 @@ app.get('/facebook.tracking.exposed.user.js', function (req, res) {
 app.use('/js', express.static(__dirname + '/dist/js'));
 app.use('/css', express.static(__dirname + '/dist/css'));
 
-/* I don't know yet if I'm gonna need this because depends on 
- * how the UX get developed during the time */
+/* websocket configuration and definition of the routes */
 io.on('connection', function (socket) {
-    debug("This is on 'connection' ");
     socket.emit('news', { hello: 'world' });
     socket.on('my other event', function (data) {
         debug("socket.io 'my other event': %j", data);
+        return { some: true };
     });
     socket.on('AAA', function(stuff) {
         debug("My AAA");
         console.log(JSON.stringify(stuff, undefined, 2));
+        return { some: false };
     });
 });
 

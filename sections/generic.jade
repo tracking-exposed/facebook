@@ -8,7 +8,7 @@ block what
 
   p Censoring content through algorithms is much easier than taking it down: If certain content gets removed, this can be seen by everybody. Yet if certain content gets heavily penalized through the logic of the bubble, then it is only "the algorithm's fault":
     b It is the perfect technocratic scapegoat.
-    | In such a case nobody is guilty. This project's aim is to act as a third party that is able to see how much and which content gets rarely seen by users.
+    | In such a case: nobody is guilty. This project's aim is to act as a third party that is able to see how much and which content gets rarely seen by users.
 
   p By joining facebook.tracking.exposed, you can extract the meta-data of your Facebook timeline, and see in your personal private page how this is influenced. A open community of researchers can
     b analyze algorithm outcomes and keep Facebook accountable.
@@ -17,8 +17,8 @@ block what
 block how
 
   p 1. Install the 
-    a(href="https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo") Tampermonkey
-    | extension for Chrome. 
+    a(href="https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo") Tampermonkey 
+    |extension for Chrome. 
   span.smaller This currently does not work on Firefox -- but soon it will, just in Greasemonkey the script is silently failing.
 
   p 2. Install the 
@@ -29,11 +29,31 @@ block how
     a(href="https://openuserjs.org/about/Userscript-Beginners-HOWTO") UserScript
     |.
   
-  p Done! If something is not working, tap here to get more support (TODO)
+  p Done! You will see the logo of Facebook change, on top of the page, and clicking in there will lead you to your tileline graph
 
-  p Now, when you open the Facebook page (only in the browser in which you have installed the above tools, not in the mobile app), you will send non-sensitive metadata to the project servers. You will have access to a personal page showing how Facebook messes with your content and how it categorizes information and posts. 
-    b. TODO: Show some icon.
+  p Done! for more technical clarification tap 
+    a(href="#" onclick="showtech();return false;") here
 
+  p.techdetails Now, when you open the Facebook page (only in the browser in which you have installed the above tools, not in the mobile app), you will send non-sensitive metadata to the project servers. 
+
+  h3
+    p.center Now what?
+ 
+  div.container-fluid
+    span.container-fluid.col-md-3.niceborder This is my 
+      a(href="TODO") personal timeline graph
+      |, I've shared willingliy with anybody, if you don't share your own link, it will remain private. 
+    span.col-md-1
+    span.container-fluid.col-md-3.niceborder Understand how much your post get visibility/outreach: because the number of "impression" that facebook claims, what does really means considering that the publication order matter? look at the a(href="/visibility" target="_blank") visibility
+      | page.
+    span.col-md-1
+    span.container-fluid.col-md-3.niceborder Researcher can study the impact of algorithm manipulation in groups. I don't know yet how let resarcher access to all the data collected, if you've some idea
+      a.sug(href="#" onclick="suggestion('research');return false;") ઉ
+      br 
+      | A neat way to do research, is having a group of controller user. Studends, bot, or just a bunch of people tring to minimize their differencies in the next weeks. following the same persons, liking the same thing. This will uniform the differencies and permit easily to understand the content discriminaton. read more to the Research Groups
+      a.sug(href="#" onclick="suggestion('groups');return false;") ઉ
+    |.
+  
 
 block vision
 
@@ -48,13 +68,17 @@ block vision
     | , and this technology is not using the Facebook API. It is only extracting metadata (what|when|where|why) of what you see in your timeline. This way researches can then look for patterns and you will receive some stats (page still in TODO)
 
   p New developers can contribute to extracting more meta-data from the Facebook page. Scraping can be more reliable, look at the: 
-    a(href="https://github.com/vecna/ESCVI") browser-side technology
+    a(href="https://github.com/vecna/ESCVI") code
+    |, or to understand the plan, at the 
+    a(href="https://github.com/vecna/ESCVI/issues") open tickets
     |.
-  p.smaller Please note, I wish to pay developers, researchers, and advocates. But this project is zero-funded right now. Maybe I'll try crowfunding in the future, if someone wants to think about it, I'll provide Open Data on how the project is doing.
-  p Advocates, journalists, and technimagicians: I want to localize these pages and leverage on local troubles to promote the tech (don't understand the start of the sentence), for example, from US you'll see this page that instead of raising the abstract problem of the Filter Bubble, raising the queston if Facebook is promoting Trump or Clinton (TODO). Every nation can be covered in the same way, tap here (TODO) to tell me about new political declinations (what do you mean by this).
+  p Advocates, journalists, and technimagicians: I want to localize these pages and leverage on local struggles to promote the tech. I don't believe the Filter Bubble analysis will sound sexy enough to get a large amount of user, and the user base is necessary (always). from US you see a different opening messages compared to what you see if you come from Pakistan.
+  p Nations can be covered in the same way, suggests yours political conflict 
+    a.sug(href="#" onclick="suggestion('declination');return false;") ઉ
+    |.
   p Algorithms have to be explained and not treated as dark magic. Which are the variables considered? what weighs more in the final outcome? Algorithm discrimination will be a huge topic, and having ways to be understood by non-technical audiences is necessary considering the impact of algorithm on each one of us.
 
-block contact
+block background
 
   p My name is 
     a(href="https://twitter.com/_vecna") Claudio Agosti
@@ -67,14 +91,18 @@ block contact
   p.smaller Despite me sharing my Twitter handle above, I don't want to endorse centralized services, but in this phase of the project I see the compromise one has to take between a huge outreach and the practical tool that has become the de facto standard. Sooner or later there will be published a personal policy in identity compartimentalisation (what does this sentence mean).
 
   h4.harsh personal rant
-  p I'm in love with technopolitics, I believe in 2016 the goal of a cypherpunk is no longer "encrypt evertything". The power dynamics online have changed since the early '00. Now transnational corporation use 
+  p I'm in love with technopolitics, I believe in 2016 the goal of a cypherpunk is no longer "encrypt everything". The power dynamics online have changed since the early '00. Now transnational corporation use 
     a(href='https://medium.com/@_vecna/whatsapp-security-santa-or-cryptography-as-cost-reduction-40a201b46708') crypto as cost reduction
     |, the challenges nowadays are others.
-  p Challenging the network monopolies, challenging massive profiling, and the business dynamics supporting this, is my primary concern now. Telco, Big Data industries, and nations are in a fight against themselves. This offers a new opening for users, in this chaos, we have to at least guarantee the preservation of human rights on the Internet and challenge abuses when they arise.
-  p It is clear that institutions are not fast enough to catch up with corporate activities in the ditigal age. This action is composed by a mix of technology, political activism and psycology of the networks. Is completelty transnational, because a SocialNetwork monopolist is a global problem.
+  p Challenging the network monopolies, challenging massive profiling, and the business dynamics supporting this, is my primary concern now. Telco, Big Data industries, and nations are in a fight against themselves. This offers a new opening for users, in this chaos, we (users) have to at least guarantee the preservation of human rights on the Internet and challenge abuses when they arise.
+  p It is clear that institutions are not fast enough to catch up with corporate activities in the ditigal age. This action is composed by a mix of technology, political activism and psycology of the networks. Is completelty transnational, and is open to any collaboration via the project-defined directions that you can see pressing over this
+    span .green ઉ
+    | recurring symbol.
 
-  h4.harsh The harsh truth ;)
-  p I do not have the capacity to look for funding. I'm (mostly) a technician, and writing funding requests is not exactly my best way to invest time. If you believe in this project, consider tipping here (TODO donation page), or do some kind of fundraising.
+  h4.harsh Funding, €, $, £, ₹
+  p Who deal with fundraising and see that this project can fit in a project, can submit with me. will receive as compensation the 30% of the funding received.
+  h4.harsh Tax deducible donations
+  p Thanks to the Center for Cultivation of Technology, this is one of the pilot project for OSS project in which you can donate 
 
 block moar
 

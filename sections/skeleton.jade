@@ -2,32 +2,47 @@ doctype html
 html
   head
     link(rel='stylesheet', href='/css/index.css')
+    link(rel='stylesheet', href='/css/bootstrap.css')
+    script(type='text/javascript', src='/js/expander.js')
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
     title facebook.tracking.exposed
   body
   
-    .header-fb-color
-      h1.head-text facebook.tracking.exposed
-      p.smile α-stage: concept 90% ⌁ infrastructure 10% ⌁ UX 10% ⌁ morale 100% ⌁ stability LOW
+    .container-fluid.center.col-md-12.header-fb-color
+      .head-text facebook.tracking.exposed
+        span.green ↺
+      p.smile α-stage: concept 85% ⌁ infrastructure 10% ⌁ UX 25% ⌁ morale 100% ⌁ stability MEDIUM
 
-    ul.nav
-      li:   a(href='#what')                     what
-      li:   a(href='#how')                      use it
-      li:   a(href='#vision')                   vision
-      li:   a(href='#moar')                     know more
-      li:   a(href='/reasons' target='_blank')  why it is right
-      li:   a(href='#contact')                  contact
+    div.container-fluid.center
+      span.col-md-1
+      span.nav.col-md-1 
+        a(href='#what') What?
+      span.nav.col-md-1
+        a(href='#how') Use it!
+      span.nav.col-md-1
+        a(href='#vision') Vision
+      span.nav.col-md-1
+        a(href='#opendata') OpenData
+      span.nav.col-md-1
+        a(href='#background') background
+      span.nav.col-md-1
+        a(href='#moar') Related
+      span.col-md-1
+        span.green.head-text ↺
+      span.nav.col-md-1
+        a(class='suggest-label' href='#' onclick="redxplain()") tap ઉ
+      span.nav.col-md-1
+        a(href='/defenseLine' target='_blank') defense
+      span.col-md-1
+
+    div(id="redexplain")
 
     div.propaganda
-      h2 CSS experiment
-      some text, some happy text, and here
-        span.suggest-label something special
-      |, and here some other simple text
-      span.suggest-expansion(id="experiment1")
-
-      h2 End of the CSS experiment
-
-    div.propaganda
-      h3.note Note: This is an as yet unreleased project that is still in development. If you have received this link it is because I know you personally. Please don't share the link yet because the current website is still incomplete. I'm looking forward to hear your feedback and suggestions. I'm sure that if you have this link it is because you can provide valuable insight on this issue. ;) Thanks
+      h3.note Note: 
+        b This is an unreleased project still in development. 
+        | If you have received this link it is because I know you personally. Please don't share the link yet because the current website is still incomplete. I'm looking forward to hear your feedback and suggestions. I'm sure that if you have this link it is because you can provide valuable insight on this issue! Thanks
 
     div.dynamic
       block splash
@@ -48,12 +63,10 @@ html
       div.propaganda 
         block moar
 
-    div#contact
+    div#background
       div.propaganda
-        block contact
+        block background
 
-    div.footer facebook.tracking.exposed is part of the tracking.exposed project 
-      span.smaller still incomplete on summer 2016
-      , is the continuation of 
+    div.footer facebook.tracking.exposed is part of the tracking.exposed project, is the continuation of 
       a(href='https://trackography.org') Trackography
-      , but unfunded and on steroid
+      |, on steroid
