@@ -1,16 +1,12 @@
 {
   "dbMountPoint": "/",
   "apiVersion": [1, 2],
-  "contacts": [
-      { "type": "twitter", "contact": "_vecna" },
-      { "type": "mail", "contact": "claudio@tracking.exposed" }
-  ],
-  "mongoColumns": { 
-      "simplysupporters": "supporters",
-      "unsortedtimeline1": "facebook1",
-      "timelines": "timeline2",
+  "secret": "ThisGetOverwrittenByTheEnvironmentVariable",
+  "schema": { 
+      "supporters": "supporters2",
+      "timeline": "timeline2",
       "refreshes": "refreshes2",
-      "suggestions": "suggestions"
+      "suggestions": "suggestions2"
   },
   "mongodb": "mongodb://localhost/facebook",
   "port": 4444

@@ -3,69 +3,84 @@ html
   head
     link(rel='stylesheet', href='/css/index.css')
     link(rel='stylesheet', href='/css/bootstrap.css')
-    script(type='text/javascript', src='/js/expander.js')
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js')
+    // script(type='text/javascript', src='/js/expander.js')
     meta(charset="utf-8")
     meta(http-equiv="X-UA-Compatible" content="IE=edge")
     meta(name="viewport" content="width=device-width, initial-scale=1")
     title facebook.tracking.exposed
   body
-  
-    .container-fluid.center.col-md-12.header-fb-color
-      .head-text facebook.tracking.exposed
-        span.green ↺
-      p.smile α-stage: concept 85% ⌁ infrastructure 10% ⌁ UX 25% ⌁ morale 100% ⌁ stability MEDIUM
+ 
+    div.jumbotron
+      div.head-text.center.fb-color
+        div.container
+          h1
+            span.grey ↺ 
+            | facebook.tracking.exposed
 
-    div.container-fluid.center
-      span.col-md-1
-      span.nav.col-md-1 
-        a(href='#what') What?
-      span.nav.col-md-1
-        a(href='#how') Use it!
-      span.nav.col-md-1
-        a(href='#vision') Vision
-      span.nav.col-md-1
-        a(href='#opendata') OpenData
-      span.nav.col-md-1
-        a(href='#background') background
-      span.nav.col-md-1
-        a(href='#moar') Related
-      span.col-md-1
-        span.green.head-text ↺
-      span.nav.col-md-1
-        a(class='suggest-label' href='#' onclick="redxplain()") tap ઉ
-      span.nav.col-md-1
-        a(href='/defenseLine' target='_blank') defense
-      span.col-md-1
 
-    div(id="redexplain")
+    nav.navbar.navbar-default.navbar-fixed-top
+      div.container
+        div.navbar-header
+          button.navbar-toggle.collapsed(type="button" data-toggle="collapse" data-target="#claudiosnavbar" aria-expanded="false")
+            span(id="sr-only") Toggle navigation
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
 
-    div.propaganda
-      h3.note Note: 
-        b This is an unreleased project still in development. 
-        | If you have received this link it is because I know you personally. Please don't share the link yet because the current website is still incomplete. I'm looking forward to hear your feedback and suggestions. I'm sure that if you have this link it is because you can provide valuable insight on this issue! Thanks
+        div.collapse.navbar-collapse(id="claudiosnavbar")
+          ul.nav.navbar-nav
+            li
+              a(href='#what') What
+            li
+              a(href='#useit') Use It
+            li
+              a(href='#vision') Vision
+            li
+              a(href='#links') Links 
+            li
+              a(href='#background') About
+            li
+              a(href='#funding') Funding
+            li
+              a(href='/defenseLine' target='_blank') Defense
+
+
+
+    p.smile.center α-stage: concept 95% ⌁ infrastructure 15% ⌁ UX 15% ⌁ morale 100% ⌁ stability MEDIUM ⌁ funding broke
 
     div.dynamic
       block splash
 
     div#what
       div.propaganda
+        h2 What
         block what 
 
-    div#how
+    div#useit
       div.propaganda
-        block how
+        h2 Use It
+        block useit
 
     div#vision
       div.propaganda
+        h2 Vision
         block vision
 
-    div#moar
+    div#links
       div.propaganda 
-        block moar
+        h2 Links
+        block links
 
-    div#background
+    div#about
       div.propaganda
-        block background
+        h2 About
+        block about
+
+    div#funding
+      div.propaganda
+        h2 Funding
+        block funding
 
     div.footer facebook.tracking.exposed is part of the tracking.exposed project, is the continuation of 
       a(href='https://trackography.org') Trackography
