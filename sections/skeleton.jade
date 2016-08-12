@@ -3,7 +3,6 @@ html
   head
     link(rel='stylesheet', href='/css/index.css')
     link(rel='stylesheet', href='/css/bootstrap.css')
-    script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js')
     // script(type='text/javascript', src='/js/expander.js')
     meta(charset="utf-8")
     meta(http-equiv="X-UA-Compatible" content="IE=edge")
@@ -13,13 +12,23 @@ html
  
     div.jumbotron
       div.head-text.center.fb-color
-        div.container
-          h1
-            span.grey ↺ 
-            | facebook.tracking.exposed
+        div.container-fluid
+          h1 facebook.tracking.exposed
+      div.container-fluid
+        p.smile.center α-stage: concept 
+          span.green 95% 
+          | ⌁ infrastructure 
+          span.red 15% 
+          | ⌁ UX 
+          span.red 15% 
+          | ⌁ morale 
+          span.green 100% 
+          | ⌁ stability 
+          span.yellow MEDIUM 
+          | ⌁ funding 
+          span.red broke
 
-
-    nav.navbar.navbar-default.navbar-fixed-top
+    nav.navbar.navbar-default
       div.container
         div.navbar-header
           button.navbar-toggle.collapsed(type="button" data-toggle="collapse" data-target="#claudiosnavbar" aria-expanded="false")
@@ -45,12 +54,6 @@ html
             li
               a(href='/defenseLine' target='_blank') Defense
 
-
-
-    p.smile.center α-stage: concept 95% ⌁ infrastructure 15% ⌁ UX 15% ⌁ morale 100% ⌁ stability MEDIUM ⌁ funding broke
-
-    div.dynamic
-      block splash
 
     div#what
       div.propaganda

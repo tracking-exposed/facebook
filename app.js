@@ -93,9 +93,6 @@ app.get('/public/stats/:versionNumber/', function(req, res) {
 app.get('/user/public/:versionNumber/TL/:profileId', function(req, res) {
     return dispatchPromise('userTimeLine', req, res);
 });
-app.get('/user/public/:versionNumber/SG/:profileId', function(req, res) {
-    return dispatchPromise('userSimpleGraph', req, res);
-});
 app.get('/node/export/:versionNumber/:table/:selector', function(req, res) {
     return dispatchPromise('exportNode', req, res);
 });
@@ -105,7 +102,7 @@ app.post('/F/:versionNumber', function(req, res) {
 app.post('/contrib/:versionNumber/:which', function(req, res) {
     return dispatchPromise('writeContrib', req, res);
 });
-/* Only the *last version* is assumed for the API below */
+/* Only the *last version* is imply in the API below */
 app.get('/', function(req, res) {
     return dispatchPromise('getIndex', req, res);
 });

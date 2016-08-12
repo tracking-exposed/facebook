@@ -7,28 +7,25 @@ html
     title facebook.tracking.exposed, ↺, personal page
 
   body(onload="fillBubble1(#{profileID});")
-  
-  .container-fluid.center.col-md-12
-    if exists === true
-      span showing the 
-    else
-      span user not found? 
 
-    span algorithm influence on  
+  .container-fluid
+    .page-header
+      h2 This is how the algorithm manipoulation looks like...
+    span algorithm influence on
       a(href="https://www.facebook.com/#{profileId}") #{profileId}
 
   .container-fluid
-    .center.col-md-8 Available moment: #{timelines}, last in #{lastUpdate}.
-    div(id="timeline")
+    .core(id="coreinfo")
 
-  .container-fluid.col-md-8.propaganda
+  .container-fluid.col-md-8
     p some notes on how to interpret the algorithm manipulation...
     .ul
       .li If facebook is 
         span.irony censoring
         | penalising a post heavily, 
-        span.logotype ↺ facebook.tracking.exposed 
+        span.logotype facebook.tracking.exposed 
         | can't know about its existance, so will not display it neither.
       .li b to be expanede
       .li if you've your guess on why, and how is if worked the facebook algorithm in your feed, I'm collecting interpretations, tap on 
-        a.sug(href="#" onclick="suggestion('interpretation');return false;") ઉ
+        a.sug(href="#" id="interpretation" onclick="suggestion('interpretation');return false;") [Feedback]
+        |.
