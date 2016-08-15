@@ -6,13 +6,14 @@ block what
 
   p The filter bubble is personal and subjective: You can't see it your own bubble because you're inside it. But, if you focus your attention on it, you can probably accumulate the knowledge to escape. By comparing your filter bubble with those of other users, you can start to understand the logic behind why Facebook penalizes or promotes certain content.
 
-  p Censoring content through algorithms is much easier than taking it down: If certain content gets removed, this can be seen by everybody. Yet if certain content gets heavily penalized through the logic of the bubble, then it is only "the algorithm's fault":
-    b It is the perfect technocratic scapegoat.
-    | In such a case: nobody is guilty. This project's aim is to act as a third party that is able to see how much and which content gets rarely seen by users.
+  p Censoring content through algorithms is much easier than taking it down: If certain content gets removed, this can be seen by everybody. Yet if certain content gets heavily penalized through the logic of the bubble, then it is only the algorithm's fault: 
+    span.text-success It is the perfect technocratic scapegoat!
 
-  p By joining facebook.tracking.exposed, you can extract the meta-data of your Facebook timeline, and see in your personal private page how this is influenced. A open community of researchers can
-    b analyze algorithm outcomes and keep Facebook accountable.
-  | It will be hard, but it is only the beginning.
+  p This project's act as a third party in your service: is able to measure how much these algoritm are not neutral.
+
+  p By joining facebook.tracking.exposed, you can extract the meta-data of your Facebook timeline, and see in your personal private page how this is influenced. A open community of researchers can then 
+    span.text-success analyze algorithm outcomes and keep Facebook accountable.
+  small It will be hard ;) but it is only the beginning.
     
 block useit
 
@@ -29,7 +30,7 @@ block useit
     a(href="https://openuserjs.org/about/Userscript-Beginners-HOWTO") UserScript
     |.
   
-  p Done! You will see the logo of Facebook change, on top of the page, and clicking in there will lead you to your tileline graph
+  p Done! You will see the logo of Facebook change replaced by this symbol ઉ  clicking in there will lead you to your timeline graph
 
   p Done! for more technical clarification tap 
     a(href="#" onclick="showtech();return false;") here
@@ -44,23 +45,18 @@ block useit
       a(href="TODO") personal timeline graph
       |, I've shared willingliy with anybody, if you don't share your own link, it will remain private. 
     span.col-md-1
-    span.container-fluid.col-md-3.niceborder Understand how much your post get visibility/outreach: because the number of "impression" that facebook claims, what does really means considering that the publication order matter? look at the a(href="/visibility" target="_blank") visibility
+    span.container-fluid.col-md-3.niceborder Understand how much your post get visibility/outreach: because the number of "impression" that facebook claims, what does really means considering that the publication order matter? look at the 
+      a(href="/visibility" target="_blank") visibility 
       | page.
     span.col-md-1
     span.container-fluid.col-md-3.niceborder Researcher can study the impact of algorithm manipulation in groups. I don't know yet how let resarcher access to all the data collected, if you've some idea
-      a.sug(href="#" onclick="suggestion('research');return false;") ઉ
-      br 
-      | A neat way to do research, is having a group of controller user. Studends, bot, or just a bunch of people tring to minimize their differencies in the next weeks. following the same persons, liking the same thing. This will uniform the differencies and permit easily to understand the content discriminaton. read more to the Research Groups
-      a.sug(href="#" onclick="suggestion('groups');return false;") ઉ
+      a.sug(href="#" id="research" onclick="suggestion('research');return false;") press the [Share with me] 
+      | link.
+      | A neat way to do research, is having a group of controller user. Studends, bot, or just a bunch of people tring to minimize their differencies in the next weeks. following the same persons, liking the same thing. This will uniform the differencies and permit easily to understand the content discriminaton. read more to the Research Groups, or provide 
+      a.sug(href="#" id="groups" onclick="suggestion('groups');return false;") [Suggestion, ideas, projects]
     |.
   
 block vision
-
-  p Researchers can use the API to do research on the Filter Bubble. 
-    b No payment to access the website will ever be demanded
-    | , but considering we are challenging one of the wealthiest concepts of the last decades, we have to try to distribute the effort through cooperation.
-
-  p Structures with money can run their own server and offload mine. I want to make a public resource of what can be considered one of the secret powers of this Internet world. If you participate in the network, you will not have any special benefit besides knowing how much Facebook has tampered with your timeline. If you want to support us with a server, you will simply have faster access for conducting your research.
 
   p No private content is collected. No harm can be done to your Facebook account by Facebook. 
     b You are not violating the Terms of Service
@@ -71,58 +67,40 @@ block vision
     |, or to understand the plan, at the 
     a(href="https://github.com/vecna/ESCVI/issues") open tickets
     |.
-  p Advocates, journalists, and technimagicians: I want to localize these pages and leverage on local struggles to promote the tech. I don't believe the Filter Bubble analysis will sound sexy enough to get a large amount of user, and the user base is necessary (always). from US you see a different opening messages compared to what you see if you come from Pakistan.
-  p Nations can be covered in the same way, suggests yours political conflict 
-    a.sug(href="#" onclick="suggestion('declination');return false;") ઉ
+  p Advocates and journalists Filter Bubble analysis sounds far from sexy, and the goal is getting as many users as is possible. I plan to localize initial splash screen and leverage on local sensitive topic. For example, if you cae from the US, you'll see for the next 3 months "do you think the algoritmh of facebook are, even slightly, manipoulate your perception between Trump and Clinton?" In this way, ideally, more user would partecipate to the experiment because realize the impact. As my personal survey, even in the digital right bubble, the concept of Filter Bubble is not clear either. 
+    a.sug(href="#" id="declination" onclick="suggestion('declination');return false;") [Suggest a declination]
     |.
-  p Algorithms have to be explained and not treated as dark magic. Which are the variables considered? what weighs more in the final outcome? Algorithm discrimination will be a huge topic, and having ways to be understood by non-technical audiences is necessary considering the impact of algorithm on each one of us.
+  p I need new data-visualisation researcher able to show how an algorithm works. In this project, means expand the personal visualisation of every user (currenty this TODO), in the long term, we want make algorithms accountable, and visualize them is the most suitable way to reach a large audience able to challenge the crazy-power of the data monopolists.
 
+  p It is clear that institutions are not fast enough to catch up with corporate activities in the ditigal age, but somehow, someone, has to keep social values alive despite the technocracy arising. This project is completelty transnational, as the influence of facebook is, is open to collaboration and can be forked. I don't want repliace the centralized structure of power in a prokect intended to monitor such influence, so following update will permit interoperability across the node. Many advancement are planned but they can contain some theoretical problem to be discusses, namely: facebook ToS, users data, researcher agenda, data integrity. [Get in touch for cooperation]
 block about
 
   p My real name is 
     a(href="https://twitter.com/_vecna") Claudio Agosti
-    |, I'm an European citizen grown up thanks to Internet bringing me outside of my small italian town. My life changed when in the 2007 I decided to see the 
-    a(href="https://en.wikipedia.org/wiki/Netwar") distributed network 
-    | as technical means to solve social problems, but this was leading me into technocracy, so I changed again in the 2011, and here we are.
-
-  p Don't email to me. Money? Interview? Blind date? The only way to get in touch with me is pressing the buttons like this: 
-    a.sug(href="#" onclick="suggestion('contact');return false;") ઉ
-    |, Every button in this page open a different questionaire, and contains the necessary information to communicate on a subject. If you can't fill up comletely the questionaire: I can't dedicate you the time you deserve.
-  
-  p The backstory you can find of me in linkedin is not serious, my background is the anonymous whistleblowing framework 
-    a(href="https://en.wikipedia.org/wiki/GlobaLeaks") GlobaLeaks
-    | and an happy intercourse with 
-    a(href="https://tacticaltech.org") TacticalTech
-    |. I'm driven by an utopistic vision in which citizens more informed would take better decisions in this collective, 2500 years old, experiment called society.
-
-  h4 Personal rant
-
+    |, I'm an European citizen; Started in the '99 dwelling into the hacking scene, I get passionate on information hiding, then in the broad meanigs of privacy, then in anonymous whistlebowing and advocacy.
+    
   p I'm in love with technopolitics, I believe in 2016 the goal of a cypherpunk is no longer "encrypt everything". The power dynamics online have changed since the early '00. Now transnational corporation use 
     a(href='https://medium.com/@_vecna/whatsapp-security-santa-or-cryptography-as-cost-reduction-40a201b46708') crypto as cost reduction
     |, the challenges nowadays are others.
-  p Challenging the network monopolies, challenging massive profiling, and the business dynamics supporting this, is my primary concern now. Telco, Big Data industries, and nations are in a fight against themselves. This offers a new opening for users, in this chaos, we (users) have to at least guarantee the preservation of human rights on the Internet and challenge abuses when they arise.
 
-  h4 Philosophy 
-
-  p It is clear that institutions are not fast enough to catch up with corporate activities in the ditigal age, but somehow, someone, has to keep social values alive despite the technocracy arising. This project is completelty transnational, as the influence of facebook is, and is open to any collaboration pressing the many 
-    span.green ઉ 
-    |  buttons you find in this page. 
-  p The only way to challenge a secretive power is being collectively open. (if you believe that privacy is somehow imply: it is not that, it is complicated, I'll publish a blogpost about it in the future, at the moment just 
-    a(href='#moar') read the articles
-    |). 
+  p Challenging the network monopolies, challenging massive profiling, and the business dynamics supporting this, is my primary concern now. Telco, Big Data industries, and nations are in a fight against themselves. This offers a new opening for users, in this chaos, we have to preserve and increase the human rights on the Internet and be reactive to deal abuses when they arise.
 
 block funding
 
-  h4.harsh Funding, €, $, £, ₹
-  p Who deal with fundraising and see that this project can fit in a project, can submit with me. will receive as compensation the 30% of the funding received.
-  h4.harsh Tax deducible donations
-  p Thanks to the Center for Cultivation of Technology, this is one of the pilot project for OSS project in which you can donate 
+  p If you deal with fundraising and you believe this project can fit in a project proposal, I can assess if it fit and if the grant get taken, you'll be eligeable with a compnsantion of the 30% of the whole grant. The accounting will be public
+
+  h4 Tax deducible donations
+  p.red Thanks to the CXXXXX XXX CXXXiXXXiXX XX TXXXXXXXXX, this is one of the pilot project for OSS project in which you can donate [maybe?]
 
 block links
 
   p The Filter Bubble is more of a social issue than a personal issue: You can spend effort to escape it, and actively keep in mind that it exists, but this is a minority questioning what they are perceiveing (what does the last sentence mean or relate to?). 
-  P Society is undefended against an entity that can influence our learning process, so
-  p What I want is: to have only chronologically unfiltered content. The decision of which algorithms, visualisations, correlations, suggestions, and meta-data will happen lies on the client's side. User choice.
+  p 
+    b What I want is chronologically unfiltered content. 
+    | The decision of which algorithms, visualisations, and meta-data weigths , should hapen on the client side. A new market of applications will raise, and we'll develop awareness and critical judgment over the information exposure.
+  P Worried Cassandras see society undefended against an central entity influencing the learning process. I'm too. Below I'm collecting links that address the issue
+    a.sug(href="#" id="links" onclick="suggestion('links');return false;") [Suggest other] 
+    |.
 
   .link.right 
     a(href="https://medium.com/message/ferguson-is-also-a-net-neutrality-issue-6d2f3db51eb0") Ferguson crisis and how Facebook penalizes content 

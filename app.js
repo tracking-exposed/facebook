@@ -28,7 +28,7 @@ console.log(redOn + "ઉ nconf loaded, using " + cfgFile + redOff);
  * I/O with DB, inside this Bluebird */
 var dispatchPromise = function(funcName, req, res) {
 
-    var apiV = _.parseInt(_.get(req.params, 'versionNumber'));
+    var apiV = _.parseInt(_.get(req.params, 'version'));
 
     /* The versionless routes are here */
     if( req.url == '/' || 
@@ -81,25 +81,31 @@ server.listen(nconf.get('port'));
 console.log("  Port " + nconf.get('port') + " listening");
 app.use(bodyParser.json()); 
 
-app.get('/admin/stats/system/:versionNumber/', function(req, res) {
+app.get('/admin/stats/system/:version/', function(req, res) {
     return dispatchPromise('adminStats', req, res);
 });
-app.get('/admin/view/:versionNumber/', function(req, res) {
+app.get('/admin/view/:version/', function(req, res) {
     return dispatchPromise('adminDataView', req, res);
 });
-app.get('/public/stats/:versionNumber/', function(req, res) {
+app.get('/public/stats/:version/', function(req, res) {
     return dispatchPromise('publicStats', req, res);
 });
-app.get('/user/public/:versionNumber/TL/:profileId', function(req, res) {
+app.get('/user/public/:version/TL/:profileId/:past', function(req, res) {
     return dispatchPromise('userTimeLine', req, res);
 });
-app.get('/node/export/:versionNumber/:table/:selector', function(req, res) {
+app.get('/user/public/:version/TLCSV/:profileId/:past', function(req, res) {
+    return dispatchPromise('userTimeLineCSV', req, res);
+});
+app.get('/user/public/:version/ST/:profileId', function(req, res) {
+    return dispatchPromise('userStats', req, res);
+});
+app.get('/node/export/:version/:table/:selector', function(req, res) {
     return dispatchPromise('exportNode', req, res);
 });
-app.post('/F/:versionNumber', function(req, res) {
+app.post('/F/:version', function(req, res) {
     return dispatchPromise('postFeed', req, res);
 });
-app.post('/contrib/:versionNumber/:which', function(req, res) {
+app.post('/contrib/:version/:which', function(req, res) {
     return dispatchPromise('writeContrib', req, res);
 });
 /* Only the *last version* is imply in the API below */

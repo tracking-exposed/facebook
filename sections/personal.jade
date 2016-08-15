@@ -3,19 +3,29 @@ html
   head
     link(rel='stylesheet', href='/css/bootstrap.css')
     link(rel='stylesheet', href='/css/index.css')
-    script(type='text/javascript', src='/js/filterbubblestyle1.js')
-    title facebook.tracking.exposed, ↺, personal page
+    script(type='text/javascript', src='/js/d3.min.js')
+    script(type='text/javascript', src='/js/filterbubblesimple.js')
+    title facebook.tracking.exposed ઉ personal page
 
-  body(onload="fillBubble1(#{profileID});")
+  body(onload="displayBubbleStyle1(#{profileId}, '#coreinfo'); displayStatsStyle1(#{profileId}, '#statsinfo');")
 
   .container-fluid
     .page-header
       h2 This is how the algorithm manipoulation looks like...
-    span algorithm influence on
+    span algorithm influence on the user "
       a(href="https://www.facebook.com/#{profileId}") #{profileId}
+      |"
 
   .container-fluid
-    .core(id="coreinfo")
+    h3 Your basic stats
+    div(id="statsinfo")
+
+  .container-fluid
+    h3 This visualisation is in development
+      small and if you are a data viz master, maybe you can figure out something better, I'll give credit immediatly, and money when some kind of funding program starts. we can discuss it in the appropriate 
+        a(href="https://github.com/vecna/ESCVI/issues/2") GitHub ticket
+        |.
+    div(id="coreinfo")
 
   .container-fluid.col-md-8
     p some notes on how to interpret the algorithm manipulation...
