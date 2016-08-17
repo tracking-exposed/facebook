@@ -8,7 +8,7 @@
     "watch-css": "node_modules/.bin/stylus styles/index.styl -o dist/css -w",
     "clean": "rm -rf dist/css && mkdir -p dist/css",
     "build": "npm run clean && npm run build-css && cp logoresearch/*.ico dist/ && cp node_modules/bootstrap/dist/css/bootstrap.css dist/css && cp node_modules/d3/build/d3.min.js dist/js && cp sections/filterbubblesimple.js dist/js",
-    "watch": "npm run watch-css & (DEBUG=api-2,ESCVI,utils nodemon app -e js,jade)",
+    "watch": "npm run clean && npm run watch-css & (DEBUG=api-2,ESCVI,utils nodemon app -e js,jade)",
     "start": "node app"
   },
   "author": "Claudio Agosti <claudio@tacticaltech.org>",
@@ -27,6 +27,7 @@
     "moment": "^2.14.1",
     "mongodb": "^2.1.8",
     "nconf": "^0.8.4",
+    "nodemon": "^1.10.0",
     "socket.io": "^1.4.8",
     "stylus": "^0.54.5",
     "sweet-scroll": "^1.0.3"
