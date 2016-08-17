@@ -7,15 +7,40 @@
 // @match        https://www.facebook.com/*
 // @connect      facebook.tracking.exposed
 // @grant        GM_xmlhttpRequest
+// @grant        GM_addStyle
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js
 // @require      https://gist.github.com/raw/2625891/waitForKeyElements.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/lodash-compat/3.10.2/lodash.min.js
 // ==/UserScript==
 
+GM_addStyle(`
+.escvi--main-button {
+  position: fixed;
+  bottom: -1px;
+  left: 25px;
+  display: block;
+  width: 50px;
+  height: 50px;
+  background-color: palegreen;
+  color: black;
+  font-size: 2em;
+  font-weight: bold;
+  line-height: 50px;
+  text-align: center;
+  border: 1px solid #888;
+  opacity: 0.6;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.escvi--main-button:hover {
+  text-decoration: none;
+  opacity: 1;
+}
+`);
+
 var d = false, /* debug */
     ee = false; /* explicit in the page */
-
 var uniqueLocation = { counter: -1, unique: -1 },
     lastLocation = null,
     toBeFlush = {'debug': [], 'timeline': [] },
@@ -25,6 +50,16 @@ var uniqueLocation = { counter: -1, unique: -1 },
     STARTING_FRACTION = 300,
     url = 'https://facebook.tracking.exposed',
     FLUSH_INTERVAL = 20000;
+
+var renderMainButton = function() {
+    var mainButton = $("<a />", {
+        html: '↺',
+        "class": "escvi--main-button",
+        href: url + "/realitycheck/" + user.id,
+        target: "_blank"
+    });
+    $('body').append(mainButton);
+};
 
 var extractInfoPromoted = function(nodehtml, postType) {
 
@@ -123,10 +158,9 @@ var basicSetup = function() {
     } else {
         init = true;
         /* paintLogo */
-        console.log("facebook.tracking.exposed initialization: Appending link near facebook logo, detected user: " + JSON.stringify(user) );
-        $("h1")[0].innerHTML = "<a id='FTE' target='_blank' href='" + url + "/realitycheck/" + user.id  + "' " +
-            "style='vertical-align:top;font-size:2em;font-weight:bold;top:5px;max-height:25px;color:palegreen'>↺</a>";
+        console.log("facebook.tracking.exposed initialization: rendering main button, detected user: " + JSON.stringify(user) );
         /* find someone able to implement properly the issue #1 */
+        renderMainButton();
     }
 };
 
