@@ -2,20 +2,36 @@ extend skeleton
 
 block what
 
-  p The filter bubble is a social problem, not a personal one. The effect is the misinformation of the masses. Only through a collective effort we can measure the problem, understand it, and resist it.
+  h2 What
 
-  p The filter bubble is personal and subjective: You can't see it your own bubble because you're inside it. But, if you focus your attention on it, you can probably accumulate the knowledge to escape. By comparing your filter bubble with those of other users, you can start to understand the logic behind why Facebook penalizes or promotes certain content.
+  p.random The filter bubble is a social problem, not a personal one. The effect is the misinformation of the masses. Only through a collective effort can we measure the problem, understand it, and resist it.
 
-  p Censoring content through algorithms is much easier than taking it down: If certain content gets removed, this can be seen by everybody. Yet if certain content gets heavily penalized through the logic of the bubble, then it is only the algorithm's fault: 
+  p.random The filter bubble is personal and subjective: You can't see your own bubble because you're inside it. But if you focus your attention on it, you can probably accumulate the knowledge to escape. By comparing your filter bubble with those of other users, you can start to understand the logic behind why Facebook penalizes or promotes certain content.
+
+  p.random Censoring content through algorithms is much easier than taking it down: If certain content gets removed, this can be seen by everybody. Yet if certain content gets heavily penalized through the logic of the bubble, then it is only the algorithm's fault: 
     span.text-success It is the perfect technocratic scapegoat!
 
-  p This project's act as a third party in your service: is able to measure how much these algoritm are not neutral.
+block background
 
-  p By joining facebook.tracking.exposed, you can extract the meta-data of your Facebook timeline, and see in your personal private page how this is influenced. A open community of researchers can then 
-    span.text-success analyze algorithm outcomes and keep Facebook accountable.
-  small It will be hard ;) but it is only the beginning.
-    
+  h2 Background
+
+  p Along with Facebook’s ascension, we have seen the development of a new kind of editorial line based on our profiles. This new editorial line exploits the vulnerabilities of every user, as each user is profiled and quantified by their experience, interests, friendships, or lack thereof. Guaranteeing the ability of the people to exert their critical judgement of the news is my goal, and for this reason, I developed facebook.tracking.exposed.
+
+  p Perhaps someone will wonder if my project violates the Terms of Service of Mark Zuckerberg’s platform. I don’t really care. From Facebook, I am extracting only metadata, the only thing that is truly necessary to begin the investigation. After all, “it’s only metadata.”
+
+  p The scope of the project is to visualize the impact of algorithms over the perception of reality. We, citizen and user, are influenced by the information to which we are subjected. It is impossible for a person alone to understand Facebook’s logic, and its effects on society. For this reason I want to enable an open community of user, citizen, researcher, and journalist, because only together can they understand if the influence of the algorithm is in our interest. I don’t believe so. I hope that the user will someday be able to develop, choose, share, or even sell the algorithm they want to use, and that the platform will simply become a means of data transit.
+
+  p Reflecting on how the internet has been revolutionary to driving news, mobilizing people, and stimulating new thoughts, it naturally follows that our right to information has to be updated for this new era. This is about our fundamental rights as an active and informed citizenry. The Terms of Service of Facebook may forbid me to crack open the algorithmic Pandora’s box, but it doesn’t matter; this right exists on a higher level, and if I have to exert civil disobedience toward a private entity, so be it.
+
+  small(ahref id="/background") see more
+
 block useit
+
+  p This project acts as a third party in your service: it is able to measure how much these algorithms are not neutral.
+
+  p By joining facebook.tracking.exposed, you can extract the meta-data of your Facebook timeline, and see in your own personal page how this is influenced. An open community of researchers can then 
+    span.text-success analyze algorithm outcomes and keep Facebook accountable.
+  small It will be hard ;) But it is only the beginning.
 
   p 1. Install the 
     a(href="https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo") Tampermonkey 
@@ -26,95 +42,79 @@ block useit
     b facebook.tracking.exposed script
     |, just click 
     a(href="https://facebook.tracking.exposed/facebook.tracking.exposed.user.js") here
-  .smaller If you want know more, you are installing an 
+  .smaller If you want to know more, you are installing an 
     a(href="https://openuserjs.org/about/Userscript-Beginners-HOWTO") UserScript
     |.
   
-  p Done! You will see the logo of Facebook change replaced by this symbol ઉ  clicking in there will lead you to your timeline graph
+  p Done! You will see the following symbol ઉ  and clicking on it will lead you to your personal page. [This feature will become available in late August]
 
   p.small
     b Details:
-    | Now, when you open the Facebook page (only in the browser in which you have installed the above tools, not in the mobile app), you will send non-sensitive metadata to the project servers. 
+    | Now, when you open the Facebook page (only in the browser in which you have installed the above tools, not in the mobile app), you will send metadata to the project servers. [I'm currently conducting a privacy risk assessment; currently, sensitive metadata may be sent to the servers, use at your own risk and 
+      a(href="https://github.com/vecna/ESCVI") check out the source code
 
   h3
     p.center Now what?
  
   div.container-fluid
     span.container-fluid.col-md-3.niceborder This is my 
-      a(href="TODO") personal timeline graph
-      |, I've shared willingliy with anybody, if you don't share your own link, it will remain private. 
+      a(href="/") personal timeline graph
+      |, I've shared willingly with anybody, if you don't share your own link, it will remain private. [This feature will become available in late August]
     span.col-md-1
-    span.container-fluid.col-md-3.niceborder Understand how much your post get visibility/outreach: because the number of "impression" that facebook claims, what does really means considering that the publication order matter? look at the 
-      a(href="/visibility" target="_blank") visibility 
-      | page.
-    span.col-md-1
-    span.container-fluid.col-md-3.niceborder Researcher can study the impact of algorithm manipulation in groups.
-      | A neat way to do research, is having a group of controller user. Studends, bot, or just a bunch of people tring to minimize their differencies in the next weeks. following the same persons, liking the same thing. This will uniform the differencies and permit easily to understand the content discriminaton. read more to the Research Groups, or provide 
-      a.sug(href="#" id="groups" onclick="suggestion('groups');return false;") [Suggestion, ideas, projects]
-    |.
-  
-block vision
+    span.container-fluid.col-md-3.niceborder By using the RealityMeter [This feature will become available in late August], you can insert a post ID (which can be found in the URL of an individual post) and you will see how much and where that post appears in other users' feed. This can enable you to understand how much a post is promoted amongst different contributing users.
+    
+block getinvolved
 
-  p No private content is collected. No harm can be done to your Facebook account by Facebook. 
-    b You are not violating the Terms of Service
-    | , and this technology is not using the Facebook API. It is only extracting metadata (what|when|where|why) of what you see in your timeline. This way researches can then look for patterns and understand how the algorithm are tampering our reality perception.
+  h2 Get involved!
 
-  p New developers can contribute to extracting more meta-data from the Facebook page. Scraping can be more reliable, look at the: 
+  p Join us! New developers can contribute to extracting more meta-data from the Facebook page. Scraping can be more reliable, look at the: 
     a(href="https://github.com/vecna/ESCVI") code
     |, or to understand the plan, at the 
     a(href="https://github.com/vecna/ESCVI/issues") open tickets
     |.
-  p Advocates and journalists Filter Bubble analysis sounds far from sexy, and the goal is getting as many users as is possible. I plan to localize initial splash screen and leverage on local sensitive topic. For example, if you cae from the US, you'll see for the next 3 months "do you think the algoritmh of facebook are, even slightly, manipoulate your perception between Trump and Clinton?" In this way, ideally, more user would partecipate to the experiment because realize the impact. As my personal survey, even in the digital right bubble, the concept of Filter Bubble is not clear either. 
-    a.sug(href="#" id="declination" onclick="suggestion('declination');return false;") [Suggest a declination]
-    |.
-  p I need new data-visualisation researcher able to show how an algorithm works. In this project, means expand the personal visualisation of every user (currenty this TODO), in the long term, we want make algorithms accountable, and visualize them is the most suitable way to reach a large audience able to challenge the crazy-power of the data monopolists.
+  p I'm looking for a data-visualisation expert or designer who is able to show how an algorithm works through visualisation. If you're interested, please contact me at \\
+  p Are you a researcher? Get in touch if you want to have a custom version of the script or the development of a specific API to support your research. 
+      a.sug(href="#" id="groups" onclick="suggestion('groups');return false;") [Share your suggestions, ideas, or projects]
 
-  p It is clear that institutions are not fast enough to catch up with corporate activities in the ditigal age, but somehow, someone, has to keep social values alive despite the technocracy arising. This project is completelty transnational, as the influence of facebook is, is open to collaboration and can be forked. I don't want repliace the centralized structure of power in a prokect intended to monitor such influence, so following update will permit interoperability across the node. Many advancement are planned but they can contain some theoretical problem to be discusses, namely: facebook ToS, users data, researcher agenda, data integrity. [Get in touch for cooperation]
+  p It is clear that institutions are not fast enough to catch up with corporate activities in the digital age, but it is essential to keep social values alive despite the arising technocracy. This project is aspirationally transnational, as the influence of Facebook is, is open to collaboration and can be forked. I don't want to replicate the centralized structure of power in a project intended to monitor such influence, so following update will permit interoperability across the nodes. 
+
+There are a number of theoretical questions to be explored, and ideas to be discussed. If you're interested in being a part of the project, please get in touch.
+
 block about
+
+  h2 About
 
   p I'm 
     a(href="https://twitter.com/_vecna") Claudio Agosti
-    |, I'm an European citizen; Started in the '99 dwelling into the hacking scene, I get passionate on information hiding, then in the broad meanigs of privacy, then in anonymous whistlebowing and advocacy.
-    
-  p I'm in love with technopolitics, I believe in 2016 the goal of a cypherpunk is no longer "encrypt everything". The power dynamics online have changed since the early '00. Now transnational corporation use 
-    a(href='https://medium.com/@_vecna/whatsapp-security-santa-or-cryptography-as-cost-reduction-40a201b46708') crypto as cost reduction
-    |, the challenges nowadays are others.
+    |, I'm a European citizen; Started in '99 dwelling into the hacking scene, I later became passionate about information hiding,then in the broad meanings of privacy, then in anonymous whistlebowing and advocacy. I am dedicated to technopolitics.
 
-  p Challenging the network monopolies, challenging massive profiling, and the business dynamics supporting this, is my primary concern now. Telco, Big Data industries, and nations are in a fight against themselves. This offers a new opening for users, in this chaos, we have to preserve and increase the human rights on the Internet and be reactive to deal abuses when they arise.
+  p I believe in 2016 the goal of a cypherpunk should longer simply be "encrypt everything". The power dynamics online have changed since the early '00s. Now transnational corporations use 
+    a(href='https://medium.com/@_vecna/whatsapp-security-santa-or-cryptography-as-cost-reduction-40a201b46708') crypto as a method of cost reduction
+    | and so many people have easy access to it, more space is freed up to focus on other goals. We must recognize the social media platform as a new infrastructure that cannot be escaped, and instead must be addressed as a technological challenge. In doing so, we can ensure that our privacy, security, and the neutrality of information are protected.
 
-block funding
+  p Challenging the network monopolies, challenging massive profiling, and the business dynamics supporting this, is my primary concern now. Telco, Big Data industries, and nations are in a fight against themselves. This offers a new opening for users; in this chaos, we have to preserve and increase the human rights on the Internet and be reactive to deal with abuses when they arise.
 
-  p If you deal with fundraising and you believe this project can fit in a project proposal, I can assess if it fit and if the grant get taken, you'll be eligeable with a compnsantion of the 30% of the whole grant. The accounting will be public
+block thanks
 
-  h4 Tax deducible donations
-  p.red Thanks to the CXXXXX XXX CXXXiXXXiXX XX TXXXXXXXXX, this is one of the pilot project for OSS project in which you can donate [maybe?]
+Thank you to Barbara Anderlich, Alberto Granzotto, Brennan Novak, Andrea Ramondi, and Jillian York for their help with various aspects of the project.
+
+This project would be impossible without the help of the network. I encourage you to get in touch, and get involved!
 
 block links
-
-  p The Filter Bubble is more of a social issue than a personal issue: You can spend effort to escape it, and actively keep in mind that it exists, but this is a minority questioning what they are perceiveing (what does the last sentence mean or relate to?). 
-  p 
-    b What I want is chronologically unfiltered content. 
-    | The decision of which algorithms, visualisations, and meta-data weigths , should hapen on the client side. A new market of applications will raise, and we'll develop awareness and critical judgment over the information exposure.
-  P Worried Cassandras see society undefended against an central entity influencing the learning process. I'm too. Below I'm collecting links that address the issue
-    a.sug(href="#" id="links" onclick="suggestion('links');return false;") [Suggest other] 
-    |.
-
+ 
   .link.right 
     a(href="https://medium.com/message/ferguson-is-also-a-net-neutrality-issue-6d2f3db51eb0") Ferguson crisis and how Facebook penalizes content 
     .smaller (6 minutes reading) by 
       a(href="https://twitter.com/zeynep") Zeynep Tufekci
-    |It is good that a person like the author poses herself the question: But what about all the things you are not an expert in? Or you are not actively looking into knowing more? All those times, you will simply not notice how the Filter Bubble manipulates you.
 
   .link.left 
-    a(href="https://theintercept.com/2016/06/09/facebook-outreach-tool-ignores-black-lives-matter/") Facebook outreach tool ignores black live matter
-    |A product intended to satisfy the users is discover to generate impartial results, if this behavior is human driven or algorithm driven is unclear.
-
+    a(href="https://theintercept.com/2016/06/09/facebook-outreach-tool-ignores-black-lives-matter/") Facebook outreach tool ignores Black Lives Matter
+    
   .link.right 
     a(href="https://www.theguardian.com/technology/2016/jun/07/its-your-duty-to-complain-thats-how-companies-improve") With big tech business making regular political and ethical blunders, it is our responsibility to complain – and let them know they must do better
 
   .link.left 
     a(href="https://hbr.org/2015/05/customer-data-designing-for-transparency-and-trust") Designing for Transparency and Trust
-    .smaller I share some points of this vision. I want to see Cloud provider do open data, weekly updates, about which kind of meta-data they have. Doing full algorithm transparency about how the data in their hands are used and analyzed. Not the algorithm itself, but which are the variables kept in account.
 
   .link.right 
     a(href="http://arxiv.org/abs/1606.08813") EU regulations on algorithmic decision-making and a right to explanation
@@ -132,11 +132,10 @@ block links
     a(href="http://www.hackerfactor.com/blog/index.php?/archives/726-Facebook-Tracking.html") Technical analysis of Facebook tracking
 
   .link.left
-    a(href="http://mobile.reuters.com/article/idUSKCN0ZB00M") Google, Facebook quietly move toward automatic blocking of extremist videos
-    .smaller but blocking is still a binary behavior, can be detected. This prject is more worried on heavy penalisation of content, causing that who looks actively for the content found it, who don't, just will never see it
+    a(href="http://mobile.reuters.com/article/idUSKCN0ZB00M") Google, Facebook quietly moves toward automatic blocking of extremist videos
 
   .link.right
-    a(href="http://www.bloomberg.com/view/articles/2016-07-05/facebook-is-bad-for-democracy") Facebook is bad for Democracy 
+    a(href="http://www.bloomberg.com/view/articles/2016-07-05/facebook-is-bad-for-democracy") Facebook is bad for democracy 
 
   .link.left
-    a(href="http://commondreams.org/views/2016/07/14/whats-good-facebook-not-so-good-democracy") What's good for facebook is not so good for Democracy
+    a(href="http://commondreams.org/views/2016/07/14/whats-good-facebook-not-so-good-democracy") What's good for facebook is not so good for democracy
