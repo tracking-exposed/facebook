@@ -3,7 +3,8 @@ html
   head
     link(rel='stylesheet', href='/css/index.css')
     link(rel='stylesheet', href='/css/bootstrap.css')
-    // script(type='text/javascript', src='/js/expander.js')
+    script(type='text/javascript', src='/js/suggest.js')
+    script(type='text/javascript', src='/js/lodash.min.js')
     meta(charset="utf-8")
     meta(http-equiv="X-UA-Compatible" content="IE=edge")
     meta(name="viewport" content="width=device-width, initial-scale=1")
@@ -15,12 +16,12 @@ html
         div.container-fluid
           h1 facebook.tracking.exposed
       div.container-fluid
-        p.smile.center α-stage: concept 
+        p.smile.center description 
           span.green 95% 
           | ⌁ infrastructure 
           span.red 15% 
-          | ⌁ UX 
-          span.red 15% 
+          | ⌁ α-roadmap 
+          span.red 1/4
           | ⌁ morale 
           span.green 100% 
           | ⌁ stability 
@@ -48,12 +49,11 @@ html
             li
               a(href='#links') Links 
             li
-              a(href='#background') About
+              a(href='#about') About
             li
               a(href='#funding') Funding
             li
-              a(href='/defenseLine' target='_blank') Defense
-
+              a(href='#defense' target='_blank') Defense
 
     div#what
       div.propaganda
@@ -82,7 +82,7 @@ html
 
     div#funding
       div.propaganda
-        h2 Funding (spoiler: zero) and fundraising
+        h2 Funding and fundraising
         block funding
 
     div.footer facebook.tracking.exposed is part of the tracking.exposed project, is the continuation of 

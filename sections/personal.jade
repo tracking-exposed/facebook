@@ -5,20 +5,22 @@ html
     link(rel='stylesheet', href='/css/index.css')
     script(type='text/javascript', src='/js/d3.min.js')
     script(type='text/javascript', src='/js/filterbubblesimple.js')
+    script(type='text/javascript', src='/js/suggest.js')
     title facebook.tracking.exposed ઉ personal page
 
   body(onload="displayBubbleStyle1(#{profileId}, '#coreinfo'); displayStatsStyle1(#{profileId}, '#statsinfo');")
 
   .container-fluid
     .page-header
-      h2 This is how the algorithm manipoulation looks like...
+      h2 ઉ This is how your timeline looks like...
     span algorithm influence on the user "
       a(href="https://www.facebook.com/#{profileId}") #{profileId}
       |"
 
   .container-fluid
-    h3 Your basic stats
-    div(id="statsinfo")
+    div.propaganda
+      h2 ઉ Statistics, based on information you send 
+      div(id="statsinfo")
 
   .container-fluid
     h3 This visualisation is in development
