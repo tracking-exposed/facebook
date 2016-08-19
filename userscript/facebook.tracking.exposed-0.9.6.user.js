@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         facebook.tracking.exposed
 // @namespace    https://facebook.tracking.exposed
-// @version      0.9.4
+// @version      0.9.6
 // @description  Collection meta-data from Facebook's timeline, in order to analyze and look for potential informative manipulation (if you've never heard about Filter Bubble, and you're still young⌁inside™, start here https://en.wikipedia.org/wiki/Filter_bubble )
 // @author       Claudio Agosti @_vecna
 // @match        https://www.facebook.com/*
@@ -53,7 +53,7 @@ var uniqueLocation = { counter: -1, unique: -1 },
 
 var renderMainButton = function() {
     var mainButton = $("<a />", {
-        html: '↺',
+        html: 'ઉ',
         "class": "escvi--main-button",
         href: url + "/realitycheck/" + user.id,
         target: "_blank"
@@ -216,7 +216,7 @@ var newUserContent = function(jNode) {
         }
     } else if ( postType === 'related') {
         postInfo = extractInfoFromFeed(node.innerHTML, postType);
-        if (!_.isNull(lastAnalyzedPost) && !_.isUndefined(_.get(lastAnalyzedPost, 'content')) ) {
+        if (!_.isNull(lastAnalyzedPost) && !_.isNull(lastAnalyzedPost.content[0]) ) {
             verboseEntry(jNode, lastAnalyzedPost, "previous", "Related");
             lastAnalyzedPost.content[0].type = 'friendlink';
             lastAnalyzedPost.content[1] = postInfo;
