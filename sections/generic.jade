@@ -2,8 +2,6 @@ extend skeleton
 
 block what
 
-  h2 What
-
   p.random The filter bubble is a social problem, not a personal one. The effect is the misinformation of the masses. Only through a collective effort can we measure the problem, understand it, and resist it.
 
   p.random The filter bubble is personal and subjective: You can't see your own bubble because you're inside it. But if you focus your attention on it, you can probably accumulate the knowledge to escape. By comparing your filter bubble with those of other users, you can start to understand the logic behind why Facebook penalizes or promotes certain content.
@@ -12,8 +10,6 @@ block what
     span.text-success It is the perfect technocratic scapegoat!
 
 block background
-
-  h2 Background
 
   p Along with Facebook’s ascension, we have seen the development of a new kind of editorial line based on our profiles. This new editorial line exploits the vulnerabilities of every user, as each user is profiled and quantified by their experience, interests, friendships, or lack thereof. Guaranteeing the ability of the people to exert their critical judgement of the news is my goal, and for this reason, I developed facebook.tracking.exposed.
 
@@ -51,7 +47,8 @@ block useit
   p.small
     b Details:
     | Now, when you open the Facebook page (only in the browser in which you have installed the above tools, not in the mobile app), you will send metadata to the project servers. [I'm currently conducting a privacy risk assessment; currently, sensitive metadata may be sent to the servers, use at your own risk and 
-      a(href="https://github.com/vecna/ESCVI") check out the source code
+    a(href="https://github.com/vecna/ESCVI") check out the source code
+    |.
 
   h3
     p.center Now what?
@@ -64,8 +61,6 @@ block useit
     span.container-fluid.col-md-3.niceborder By using the RealityMeter [This feature will become available in late August], you can insert a post ID (which can be found in the URL of an individual post) and you will see how much and where that post appears in other users' feed. This can enable you to understand how much a post is promoted amongst different contributing users.
     
 block getinvolved
-
-  h2 Get involved!
 
   p Join us! New developers can contribute to extracting more meta-data from the Facebook page. Scraping can be more reliable, look at the: 
     a(href="https://github.com/vecna/ESCVI") code
@@ -82,8 +77,6 @@ There are a number of theoretical questions to be explored, and ideas to be disc
 
 block about
 
-  h2 About
-
   p I'm 
     a(href="https://twitter.com/_vecna") Claudio Agosti
     |, I'm a European citizen; Started in '99 dwelling into the hacking scene, I later became passionate about information hiding,then in the broad meanings of privacy, then in anonymous whistlebowing and advocacy. I am dedicated to technopolitics.
@@ -96,12 +89,14 @@ block about
 
 block thanks
 
-Thank you to Barbara Anderlich, Alberto Granzotto, Brennan Novak, Andrea Ramondi, and Jillian York for their help with various aspects of the project.
+  p Thank you to Barbara Anderlich, Philip Di Salvo, Alberto Granzotto, Brennan Novak, Andrea Ramondi, and Jillian York for their help with various aspects of the project.
 
-This project would be impossible without the help of the network. I encourage you to get in touch, and get involved!
+  p This project would be impossible without the help of the network. I encourage you to get in touch, and 
+    a(href="#getinvolved") get involved
+    |!
 
 block links
- 
+
   .link.right 
     a(href="https://medium.com/message/ferguson-is-also-a-net-neutrality-issue-6d2f3db51eb0") Ferguson crisis and how Facebook penalizes content 
     .smaller (6 minutes reading) by 
