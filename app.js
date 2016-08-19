@@ -30,14 +30,8 @@ var dispatchPromise = function(funcName, req, res) {
 
     var apiV = _.parseInt(_.get(req.params, 'version'));
 
-    /* The versionless routes are here */
-    if( req.url == '/' || 
-        _.startsWith(req.url, '/realitycheck/') || 
-        _.startsWith(req.url, '/overseer/') )
+    if(_.isNaN(apiV) || (apiV).constructor !== Number )
         apiV = escviAPI.lastVersion;
-
-    if(_.isUndefined(apiV) || (apiV).constructor !== Number )
-        return res.sendStatus(400);
 
     var func = _.get(escviAPI.implementations['version' + apiV], funcName);
 
@@ -118,6 +112,9 @@ app.get('/realitycheck/:profileId', function(req, res) {
 app.get('/overseer', function(req, res) {
     return dispatchPromise('getOverseer', req, res);
 });
+app.get('/presentation-:name', function(req, res) {
+    return dispatchPromise('getPresentation', req, res);
+});
 /* static files, independent by the API versioning */
 app.get('/favicon.ico', function(req, res) {
     res.sendFile(__dirname + '/dist/favicon.ico');
@@ -126,7 +123,9 @@ app.get('/facebook.tracking.exposed.user.js', function (req, res) {
     res.sendFile(__dirname + '/scriptlastversion');
 });
 app.use('/js', express.static(__dirname + '/dist/js'));
-app.use('/css', express.static(__dirname + '/dist/css'));
+app.use('/css', 
+    express.static(__dirname + '/dist/css'));
+app.use('/lib/font/league-gothic', express.static(__dirname + '/dist/css'));
 
 /* websocket configuration and definition of the routes */
 io.on('connection', function (socket) {

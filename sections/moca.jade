@@ -1,0 +1,32 @@
+
+doctype html
+html
+  head
+    link(rel='stylesheet', href='css/bootstrap.css')
+    link(rel='stylesheet', href='css/reveal.css')
+    link(rel='stylesheet', href='css/reveal-solarized.css')
+    script(type='text/javascript', src='js/reveal.min.js')
+    script(type='text/javascript', src='js/lodash.min.js')
+
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    title Moca 2016 - facebook.tracking.exposed
+
+  body
+
+    div.reveal
+      div.slides
+
+        section 
+          include generic
+          block what
+
+        section
+          include generic
+          block background
+
+        script(src="js/reveal-head.min.js")
+        script(src="js/reveal.min.js")
+        script(type='text/javascript').
+          Reveal.initialize({});
