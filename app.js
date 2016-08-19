@@ -112,7 +112,7 @@ app.get('/realitycheck/:profileId', function(req, res) {
 app.get('/overseer', function(req, res) {
     return dispatchPromise('getOverseer', req, res);
 });
-app.get('/presentation-:name', function(req, res) {
+app.get('/slides-:name', function(req, res) {
     return dispatchPromise('getPresentation', req, res);
 });
 /* static files, independent by the API versioning */
@@ -123,8 +123,8 @@ app.get('/facebook.tracking.exposed.user.js', function (req, res) {
     res.sendFile(__dirname + '/scriptlastversion');
 });
 app.use('/js', express.static(__dirname + '/dist/js'));
-app.use('/css', 
-    express.static(__dirname + '/dist/css'));
+app.use('/css', express.static(__dirname + '/dist/css'));
+app.use('/images', express.static(__dirname + '/dist/images'));
 app.use('/lib/font/league-gothic', express.static(__dirname + '/dist/css'));
 
 /* websocket configuration and definition of the routes */
