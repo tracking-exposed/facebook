@@ -1,5 +1,5 @@
 {
-    'presets': ['react', 'es2015-no-commonjs'],
+    'presets': ['react', 'es2015'],
     'plugins': [
         'transform-object-assign',
         'transform-object-rest-spread',
@@ -9,14 +9,14 @@
             'regenerator': false
         } ]
     ],
-    'sourceMaps': true,
+    'sourceMaps': true
 
+    /*,
     'env': {
         'demo': {
             'plugins': [
                 [ 'react-transform', {
                     'transforms': [{
-                        'transform': 'react-transform-hmr',
                         'imports': ['react'],
                         'locals': ['module']
                     }]
@@ -24,4 +24,5 @@
             ]
         }
     }
+    */
 }
