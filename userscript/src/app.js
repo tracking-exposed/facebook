@@ -15,10 +15,19 @@ const JsReactorApp = () => (
 ReactDOM.render((<JsReactorApp />), document.getElementById('js-reactor-app'));
 */
 
+import Arrive from 'arrive';
+
 window.escvi = {};
 
-window.escvi.boot = function() {
-    console.log('Hello app.js');
+window.escvi.boot = function () {
+    console.log('ESCVI loading');
+    window.escvi.watch();
+};
+
+window.escvi.watch = function () {
+    document.arrive('.userContentWrapper', function () {
+        console.log('new element', this);
+    });
 };
 
 window.escvi.boot();

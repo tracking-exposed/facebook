@@ -16,12 +16,14 @@ const PORT = process.env.DEMO_PORT || 3000;
 config.entry = [path.resolve(__dirname, 'demo/app')];
 
 // Enable hot reloading if on demo mode
+/*
 if (process.env.NODE_ENV === 'demo') {
     config.entry.unshift(`webpack-dev-server/client?http://${HOST_NAME}:${PORT}/`,
                          'webpack/hot/dev-server');
     config.plugins.push(new webpack.HotModuleReplacementPlugin());
     // React hot reloading is enabled through .babelrc and babel-react-transform
 }
+*/
 
 // Specify output location for bundled files
 config.output.publicPath = '/assets/';
@@ -35,7 +37,7 @@ const server = new WebpackDevServer(compiler, {
     historyApiFallback: {
         index: '/'
     },
-    hot: true,
+    hot: false,
     noInfo: false,
     stats: { colors: true }
 });
