@@ -5,7 +5,6 @@ import 'core-js/es6';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-
 // Replace as necessary with your own root app
 const JsReactorApp = () => (
     <h1>JS Reactor App</h1>
@@ -15,10 +14,8 @@ const JsReactorApp = () => (
 ReactDOM.render((<JsReactorApp />), document.getElementById('js-reactor-app'));
 */
 
-import Arrive from 'arrive';
-
+import 'arrive';
 import { identify } from './scrape';
-
 
 window.escvi = {};
 

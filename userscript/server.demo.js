@@ -37,6 +37,7 @@ const server = new WebpackDevServer(compiler, {
     historyApiFallback: {
         index: '/'
     },
+    https: true,
     hot: false,
     noInfo: false,
     stats: { colors: true }
