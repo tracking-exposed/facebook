@@ -17,6 +17,9 @@ ReactDOM.render((<JsReactorApp />), document.getElementById('js-reactor-app'));
 
 import Arrive from 'arrive';
 
+import { identify } from './scrape';
+
+
 window.escvi = {};
 
 window.escvi.boot = function () {
@@ -26,7 +29,7 @@ window.escvi.boot = function () {
 
 window.escvi.watch = function () {
     document.arrive('.userContentWrapper', function () {
-        console.log('new element', this);
+        console.log('new element', identify(this), this);
     });
 };
 
