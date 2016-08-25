@@ -7,5 +7,6 @@
       "suggestions": "suggestions2"
   },
   "mongodb": "mongodb://localhost/facebook",
-  "port": 8000
+  "port": 8000,
+  "anomaly": 1
 }
