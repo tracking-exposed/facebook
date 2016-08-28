@@ -4,7 +4,8 @@
       "supporters": "supporters2",
       "timeline": "timeline2",
       "refreshes": "refreshes2",
-      "suggestions": "suggestions2"
+      "suggestions": "suggestions2",
+      "accesses": "accesses"
   },
   "mongodb": "mongodb://localhost/facebook",
   "port": 8000,

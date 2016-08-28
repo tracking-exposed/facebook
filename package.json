@@ -8,7 +8,7 @@
     "watch-css": "node_modules/.bin/stylus styles/index.styl -o dist/css -w",
     "clean": "rm -rf dist/css dist/js && mkdir -p dist/css && mkdir dist/js ",
     "build": "npm run clean && npm run build-css && cp logoresearch/*.ico dist/ && cp node_modules/bootstrap/dist/css/bootstrap.css dist/css && cp node_modules/d3/build/d3.min.js dist/js && cp sections/webscripts/*.js dist/js && cp node_modules/lodash/lodash.min.js dist/js && cp node_modules/reveal.js/js/reveal.js dist/js && cp node_modules/reveal.js/css/theme/solarized.css dist/css/reveal-solarized.css && cp node_modules/reveal.js/css/reveal.css dist/css/reveal.css && cp node_modules/reveal.js/lib/js/head.min.js dist/js/reveal-head.min.js && cp node_modules/reveal.js/js/reveal.js dist/js/reveal.min.js && cp node_modules/reveal.js/lib/js/classList.js dist/js/classList.js && cp node_modules/reveal.js/lib/font/league-gothic/* dist/css/ && cp sections/slide-pics/* dist/images # I know I've to use gruntfile.. feel free to PR ;)",
-    "watch": "npm run watch-css & (DEBUG=api-2,ESCVI,utils nodemon app -e js,jade)",
+    "watch": "npm run watch-css & (DEBUG=api-2,staticpages,ESCVI,utils nodemon app -e js,jade)",
     "start": "node app"
   },
   "author": "Claudio Agosti <claudio@tacticaltech.org>",

@@ -36,6 +36,7 @@ var dispatchPromise = function(funcName, req, res) {
     var func = _.get(escviAPI.implementations['version' + apiV], funcName);
 
     if(_.isUndefined(func)) {
+        debug("Developer mistake with version %d %s ", apiV, funcName);
         throw new Error("Developer mistake with version " + 
                        apiV + " f " + funcName);
     }
@@ -64,7 +65,7 @@ var dispatchPromise = function(funcName, req, res) {
                   req.randomUnicode, funcName, httpresult.file);
               res.sendFile(__dirname + "/html/" + httpresult.file);
           } else {
-              throw new Error("Internal developer mistake");
+              throw new Error("Internal developer mistake |" + funcName);
           }
           return true;
       }) 
@@ -111,6 +112,9 @@ app.get('/realitycheck/:profileId', function(req, res) {
 });
 app.get('/overseer', function(req, res) {
     return dispatchPromise('getOverseer', req, res);
+});
+app.get('/realitymeter', function(req, res) {
+    return dispatchPromise('getRealityMeter', req, res);
 });
 app.get('/slides-:name', function(req, res) {
     return dispatchPromise('getPresentation', req, res);

@@ -28,6 +28,7 @@ var files = fs
           // TODO hook the --unit and send only that 
             return files;
         } else {
+
             debug("Using the single file as configured");
             delayTime = 0;
             return [ nconf.get('file') ];
@@ -41,11 +42,21 @@ return Promise.reduce(files, function(memo, fname, i, total) {
       return fs.readFileAsync(fpath, "utf-8")
         .then(JSON.parse)
         .then(function(filecontent) {
-          debug("firing error from %s", filecontent.user.href);
+          var unitN = _.parseInt(nconf.get('unit'));
+          if(!_.isNaN(unitN)) {
+              debug("Selecting unit %d only to improve debug", unitN);
+              var reusableBody = { 
+                  timeline : [ filecontent.body.timeline[unitN] ],
+                  from: filecontent.body.from
+              };
+          } else {
+              var reusableBody = filecontent.body;
+              debug("firing error from %s", filecontent.user.href);
+          }
           return request({
             url: url + '/F/2',
             method: "POST",
-            body: filecontent.body,
+            body: reusableBody,
             json: true
           });
         })

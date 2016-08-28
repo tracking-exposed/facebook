@@ -48,6 +48,7 @@ var compileQuestion = function(questionList) {
     }, []).join("");
 };
 
+/* TODO find a nice way to manage this html injection */
 var suggestion = function(identifier) {
     var info = compileInfo(sk[identifier].info);
     var questions = compileQuestion(sk[identifier].questions);
