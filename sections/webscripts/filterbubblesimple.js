@@ -47,8 +47,40 @@ var displayOverseer = function(containerId) {
 };
 
 var displayRealityExamples = function(containerId) {
+    console.log("dRE");
     var url = '/public/posts/2/';
     d3.json(url, function(something) {
        appendHTML(containerId, something, url);
     });
 };
+
+var displayRealityGraph = function(postId, containerId) {
+    console.log("dRG");
+    if(!postId) return;
+    var url = '/public/post/2/' + postId;
+    d3.json(url, function(something) {
+       appendHTML(containerId, something, url);
+    });
+};
+
+var cleanFirst = function(containerId) {
+    console.log("CF " + containerId);
+    var wrtn = document.getElementById(containerId);
+    console.log(wrtn);
+}
+
+var getPostId = function(sourceMaybe) {
+    console.log("gPI");
+    if(sourceMaybe === null) {
+        console.log(String(document.location));
+        var postId = parseInt( (String(document.location))
+                                .replace(/.*realitymeter\//, ''));
+    } else {
+        var writtenv = document.getElementsByClassName(sourceMaybe);
+        console.log(writtenv);
+        var postId = parseInt("3323");
+    }
+    if(postId === NaN)
+        return null;
+    return postId;
+}

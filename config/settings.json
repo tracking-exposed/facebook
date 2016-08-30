@@ -5,7 +5,8 @@
       "timeline": "timeline2",
       "refreshes": "refreshes2",
       "suggestions": "suggestions2",
-      "accesses": "accesses"
+      "accesses": "accesses",
+      "debug": "debug"
   },
   "mongodb": "mongodb://localhost/facebook",
   "port": 8000,

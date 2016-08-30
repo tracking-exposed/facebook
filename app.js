@@ -88,6 +88,9 @@ app.get('/public/stats/:version/', function(req, res) {
 app.get('/public/posts/:version/', function(req, res) {
     return dispatchPromise('publicTopPosts', req, res);
 });
+app.get('/public/post/:version/:postId', function(req, res) {
+    return dispatchPromise('publicPostReality', req, res);
+});
 app.get('/user/public/:version/TL/:profileId/:past', function(req, res) {
     return dispatchPromise('userTimeLine', req, res);
 });
@@ -117,6 +120,9 @@ app.get('/overseer', function(req, res) {
     return dispatchPromise('getOverseer', req, res);
 });
 app.get('/realitymeter', function(req, res) {
+    return dispatchPromise('getRealityMeter', req, res);
+});
+app.get('/realitymeter/:postId', function(req, res) {
     return dispatchPromise('getRealityMeter', req, res);
 });
 app.get('/slides-:name', function(req, res) {
