@@ -1,44 +1,33 @@
 
+var appendHTML = function(containerId, something) {
+    var svg = d3
+        .select(containerId)
+        .append("svg")
+        .attr("width", "90%");
+
+    var theHtml = [
+        '<pre>',
+        JSON.stringify(something, undefined, 2),
+        '</pre>'
+    ].join('');
+
+    svg.append("foreignObject")
+        .attr("width", "90%")
+        .append("xhtml:body")
+        .style("font", "10px 'Helvetica Neue'")
+        .html(theHtml);
+};
+
+/* that "0" can change based on the "past" version to see ... */
 var displayBubbleStyle1= function(profileId, containerId) {
-    /* this function run in the browser and render the output
-     * of http://$HOST/user/public/2/TL/:profileId */
-
-    console.log("XXX " + profileId + " calling ");
     d3.json('/user/public/2/TL/' + profileId + '/0', function(something) {
-
-        console.log("timeLine");
-        console.log(something);
+       appendHTML(containerId, something); 
     });
 };
 
 
 var displayStatsStyle1 = function(profileId, containerId) {
-
     d3.json('/user/public/2/ST/' + profileId, function(something) {
-
-      var svg = d3
-          .select(containerId)
-          .append("svg")
-          .attr("width", 960)
-          .attr("height", 500);
-
-      var theHtml = [
-          '<span>',
-              'Refreshes: ',
-              something.refreshNumber,
-          '</span>',
-          '<span>',
-              'post seen: ',
-              something.postSeen,
-          '</span>'
-      ].join('');
-
-      svg.append("foreignObject")
-          .attr("width", 480)
-          .attr("height", 500)
-          .append("xhtml:body")
-          .style("font", "14px 'Helvetica Neue'")
-          .html(theHtml);
-
+       appendHTML(containerId, something); 
     });
 };

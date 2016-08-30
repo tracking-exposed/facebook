@@ -1,8 +1,8 @@
 doctype html
 html
   head
-    link(rel='stylesheet', href='/css/bootstrap.css')
     link(rel='stylesheet', href='/css/index.css')
+    link(rel='stylesheet', href='/css/bootstrap.css')
     script(type='text/javascript', src='/js/d3.min.js')
     script(type='text/javascript', src='/js/filterbubblesimple.js')
     script(type='text/javascript', src='/js/suggest.js')
@@ -11,33 +11,24 @@ html
   body(onload="displayBubbleStyle1(#{profileId}, '#coreinfo'); displayStatsStyle1(#{profileId}, '#statsinfo');")
 
   .container-fluid
-    .page-header
-      h2 ઉ This is how your timeline looks like...
-    span algorithm influence on the user "
-      a(href="https://www.facebook.com/#{profileId}") #{profileId}
-      |"
+    .jumbotron
+      h2 ઉ This is how a algoritm manipulation looks like
+      h3 you are seeing timeline of user "
+        a(href="https://www.facebook.com/#{profileId}") #{profileId}
+        |"
+
+  .center.smaller as you are guessing, this visualisation is still a work in progres...
 
   .container-fluid
-    div.propaganda
-      h2 ઉ Statistics, based on information you send 
-      div(id="statsinfo")
+    h3 ઉ Statistics, based on information you send 
+    div(id="statsinfo")
 
   .container-fluid
-    h3 This visualisation is in development
-      small and if you are a data viz master, maybe you can figure out something better, I'll give credit immediatly, and money when some kind of funding program starts. we can discuss it in the appropriate 
-        a(href="https://github.com/vecna/ESCVI/issues/2") GitHub ticket
-        |.
+    h3 ઉ timeline
     div(id="coreinfo")
 
-  .container-fluid.col-md-8
-    p some notes on how to interpret the algorithm manipulation...
-    .ul
-      .li If facebook is 
-        span.irony censoring
-        | penalising a post heavily, 
-        span.logotype facebook.tracking.exposed 
-        | can't know about its existance, so will not display it neither.
-      .li b to be expanede
-      .li if you've your guess on why, and how is if worked the facebook algorithm in your feed, I'm collecting interpretations, tap on 
-        a.sug(href="#" id="interpretation" onclick="suggestion('interpretation');return false;") [Feedback]
-        |.
+  .container-fluid
+    p If you feel you've guess why facebook is penalizing/promoting something to you, feel free to share your 
+      a.sug(href="#" id="interpretation" onclick="suggestion('interpretation');return false;") [Interpretation]
+      |  with us.
+
