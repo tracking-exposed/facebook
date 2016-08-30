@@ -7,23 +7,36 @@ html
     script(type='text/javascript', src='/js/filterbubblesimple.js')
     title ઉ RealityMeter
 
-  body(onload="displayRealityExamples('#listofexamplepost');")
+    body(onload="displayRealityExamples('#listofexamplepost'); displayRealityGraph(getPostId(null), '#realitygraph');")
     
     .container-fluid
       .jumbotron
         h1 RealityMeter
-        h3 Because every Social Media manager what this bucket of reality!
+        h3 every Social Media Manager want a bite of reality!
+
+    .container-fluid
+      div(id="realitygraph")
 
     .container-fluid
       .propaganda
 
         p When you publish a post in a page, Facebook tell you how many 
-          b impressions
+          b impressions 
           | your post got. But what does it means? In the user timeline, does the post appeared many time in favorable position, or just one and then get disappeared from the user feed? 
           b Now you can know it! 
 
-        .container
-          input(type=text class="center tif" value="postId" onenter="javscript: submit()")
+        .postidinfo 
+          p.monospace Write here the postId
+          p.monospace https://www.facebook.com/
+            span.red 312312323121
+            |?blah
+          p.monospace https://www.facebook.com/photo.php?
+            span.red 34324234234
+            |.322
+
+        .container-fluid
+          input(type=text class="center theinputfield" id="postinput")
+          button(class="buttonfield btn-success" click="displayRealityGraph(getPostId('#postinput'), '#realitygraph');") ઉ
 
         p Right now, #{users} users contribute to facebook.tracking.exposed, and among them the research is performed. If you are a social media manager and you want to know the true outreach of your material, spread facebook.tracking.exposed to your friend, followers, audience.
 

@@ -17,6 +17,26 @@ html
         a(href="https://www.facebook.com/#{profileId}") #{profileId}
         |"
 
+  nav.navbar.navbar-default
+    div.container
+      div.navbar-header
+        button.navbar-toggle.collapsed(type="button" data-toggle="collapse" data-target="#claudiosnavbar" aria-expanded="false")
+          span(id="sr-only") Toggle navigation
+          span.icon-bar
+          span.icon-bar
+          span.icon-bar
+
+      div.collapse.navbar-collapse(id="claudiosnavbar")
+        ul.nav.navbar-nav
+          li
+            a(href='/') Home
+          li
+            a(href='/realitymeter') RealityMeter
+          li
+            a(href='/overseer') Overseer
+          li
+            a(href='/slides-long') Slides
+
   .center.smaller as you are guessing, this visualisation is still a work in progres...
 
   .container-fluid
