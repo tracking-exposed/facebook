@@ -85,6 +85,9 @@ app.get('/admin/view/:version/', function(req, res) {
 app.get('/public/stats/:version/', function(req, res) {
     return dispatchPromise('publicStats', req, res);
 });
+app.get('/public/posts/:version/', function(req, res) {
+    return dispatchPromise('publicTopPosts', req, res);
+});
 app.get('/user/public/:version/TL/:profileId/:past', function(req, res) {
     return dispatchPromise('userTimeLine', req, res);
 });
