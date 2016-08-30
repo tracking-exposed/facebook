@@ -311,26 +311,41 @@ var scrollDown = function() {
     }
 };
 
+var resetLocation = function() {
+    uniqueLocation.unique = _.random(0x10000000, 0xffffffff);
+    uniqueLocation.when = moment();
+    uniqueLocation.counter = 0;
+    var refreshInfo = { 'what': 'refresh', 'when': uniqueLocation.when.format(), 'unique': uniqueLocation.unique };
+    appendLog(refreshInfo);
+    if(d) console.log(refreshInfo);
+};
+
 var refreshIsHappen = function() {
-    /* refresh is happened MAYBE -- this function can be called more then once
-     * due to the different hooks used inside of the facebook page. if is called
-     * in less than 1 second window, is considered a duplication */
-    if(_.isUndefined(uniqueLocation.when) || moment(moment() - uniqueLocation.when).isAfter(2, 's')) {
-        uniqueLocation.unique = _.random(0x10000000, 0xffffffff);
-        uniqueLocation.when = moment().format();
-        uniqueLocation.counter = 0;
-        var refreshInfo = { 'what': 'refresh', 'when': uniqueLocation.when, 'unique': uniqueLocation.unique };
-        appendLog(refreshInfo);
-        if(d) console.log(refreshInfo);
+    /* refresh is happened MAYBE -- this function can be called more then 
+     * once due to the different hooks used inside of the facebook page. 
+     * if is called in less than 2 seconds, is considered a duplication */
+    if(_.isUndefined(uniqueLocation.when)) {
+        if(d)console.log("Initialized now");
+        resetLocation();
     } else {
-        if(d)console.log("refresh is NOT after 2 seconds of " + uniqueLocation.when + " compared to now " + moment().format("mm:ss") );
+        if ( moment(moment() - uniqueLocation.when).isAfter(2, 's') ) {
+            if(d)console.log("two seconds passed, so, refresh. before: " +
+                uniqueLocation.when.format() +
+                " now " + moment().format() );
+            resetLocation();
+        }
+        else {
+            if(d)console.log("refresh is NOT after 2 seconds of " +
+                uniqueLocation.when.format() +
+                " compared to now " + moment().format() );
+        }
     }
 };
 
 (function() {
     'use strict';
-    waitForKeyElements ("div .userContentWrapper", newUserContent);
     waitForKeyElements ("div .composerAudienceWrapper", refreshIsHappen);
+    waitForKeyElements ("div .userContentWrapper", newUserContent);
     setTimeout (checkToFlush, FLUSH_INTERVAL);
     if(scrollTimeout)
         setTimeout (scrollDown, scrollTimeout);
