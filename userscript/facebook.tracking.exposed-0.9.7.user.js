@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         facebook.tracking.exposed
 // @namespace    https://facebook.tracking.exposed
-// @version      0.9.6
+// @version      0.9.7
 // @description  Collection meta-data from Facebook's timeline, in order to analyze and look for potential informative manipulation (if you've never heard about Filter Bubble, and you're still young⌁inside™, start here https://en.wikipedia.org/wiki/Filter_bubble )
 // @author       Claudio Agosti @_vecna
 // @match        https://www.facebook.com/*
@@ -10,7 +10,6 @@
 // @grant        GM_addStyle
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js
-// @require      https://gist.github.com/raw/2625891/waitForKeyElements.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/lodash-compat/3.10.2/lodash.min.js
 // ==/UserScript==
 
@@ -39,8 +38,10 @@ GM_addStyle(`
 }
 `);
 
-var d = false, /* debug */
-    ee = false; /* explicit in the page */
+var d = true, /* debug */
+    ee = false, /* explicit in the page */
+    simple = true; /* small debug entry on the bottom of every post */
+
 var uniqueLocation = { counter: -1, unique: -1 },
     lastLocation = null,
     toBeFlush = {'debug': [], 'timeline': [] },
@@ -49,6 +50,7 @@ var uniqueLocation = { counter: -1, unique: -1 },
     lastAnalyzedPost = null,
     STARTING_FRACTION = 300,
     url = 'https://facebook.tracking.exposed',
+    version = '0.9.7',
     FLUSH_INTERVAL = 20000;
 
 var renderMainButton = function() {
@@ -67,7 +69,6 @@ var extractInfoPromoted = function(nodehtml, postType) {
         hrefP = nodehtml.substring(startHref + 6).replace(/" .*/, '').replace(/"> .*/, '');
 
     return {
-        href_stats: [ startHref ],
         href: hrefP,
         additionalInfo: null,
         publicationTime: null,
@@ -80,6 +81,7 @@ var extractInfoFromFeed = function(nodehtml, postType) {
 
     if (_.size(nodehtml) < 300) {
         if (d) console.log("node.innerHTML (expected a) " + postType + " skipped: the size is less than 300 (" + _.size(nodehtml) + ")");
+        reportError({error: "debugging", reason: "small", content: nodehtml });
         return null;
     }
 
@@ -113,6 +115,7 @@ var extractInfoFromFeed = function(nodehtml, postType) {
             type: postType
         };
     }
+    reportError({error: "debugging", reason: "failure", content: nodehtml });
     return null;
 };
 
@@ -124,13 +127,18 @@ var extractPostType = function(nodehtml) {
         case 3:
             return('related');
     }
+    reportError({error: "debugging", reason: "child", number: childNodes, content: nodehtml });
     if(d) console.log("return promoted, spotted: " + childNodes + " childNodes");
     return('promoted');
 };
 
 var verboseEntry  = function(node, post, whichPost, fromWhere) {
+    if (simple) {
+       var smallhtml = ['<small>', 'ઉ ' + uniqueLocation.counter, '</small>' ];
+       $(node).append(smallhtml.join(" "));
+    }
     if (!ee) return;
-    html = [ '<small>', '<pre>', fromWhere, 'Now at[', whichPost, ']#', JSON.stringify(uniqueLocation, undefined, 2),
+    var html = [ '<small>', '<pre>', fromWhere, 'Now at[', whichPost, ']#', JSON.stringify(uniqueLocation, undefined, 2),
              post, 'is', JSON.stringify(post, undefined, 2), '</pre>', '</div></small>'];
     $(node).append(html.join(" "));
 };
@@ -183,8 +191,12 @@ var newUserContent = function(jNode) {
     }
     lastLocation = pathname;
 
-    if(pathname != "/")
+    if(pathname !== "/") {
+        uniqueLocation.unique = -1;
+        uniqueLocation.when = undefined;
+        uniqueLocation.counter = 0;
         return;
+    }
 
     var feedEntry = {
         'when' : moment().format(),
@@ -232,7 +244,7 @@ var newUserContent = function(jNode) {
         lastAnalyzedPost = null;
     } else {
         if (d) console.log("Parsing of this node didn't success, counter is: " + uniqueLocation.counter);
-        reportError("a node impossible to be parsed correctly");
+        reportError({error: "a node impossible to be parsed correctly", node: jNode});
         verboseEntry(jNode, lastAnayzedPost, "Previous", postType);
         appendLog(lastAnalyzedPost);
         lastAnalyzedPost = null;
@@ -245,18 +257,17 @@ var appendLog = function(entryDict) {
     }
 };
 
-var reportError = function(errorString) {
-    toBeFlush.debug.push({
-        when: moment().format(),
-        what: errorString
-    });
+var reportError = function(errorDict) {
+    toBeFlush.debug.push(_.extend(errorDict, {
+        when: moment().format()
+    }));
 };
 
 var checkToFlush = function() {
 
     if( _.size(toBeFlush.timeline) || _.size(toBeFlush.debug) ) {
 
-        var envelope = _.extend(toBeFlush, { from: user });
+        var envelope = _.extend(toBeFlush, { from: user, version: version });
         if (d) console.log(envelope);
         if (d) console.log("After " + FLUSH_INTERVAL + "ms, at: " + moment() + ", " +
                            toBeFlush.timeline.length + " info to be sent, with " +
@@ -288,16 +299,8 @@ var scrollDown = function() {
     scrollTimeout = 4000;
     whereScroll += _.random(400, height) + (height * refreshTimes);
 
-    if(_.random(1, 100) === 42) {
-        scrollTimeout = scrollTimeout * 30;
-        if (d) console.log("MASSIVE delay is happening, timeout to " + scrollTimeout + " scrolled " + refreshTimes + " times, limit " + maxScrollTimes);
-    } else if(_.random(1,6) === 4) {
-        scrollTimeout = 4000 * _.random(4, 20);
-        if (d) console.log("Random happen, timeout to " + scrollTimeout + " scrolled " + refreshTimes + " times, limit " + maxScrollTimes);
-    }
-
     if(refreshTimes >=  maxScrollTimes ) {
-        reportError("auto_scroll " + refreshTimes);
+        reportError({info: "auto_scroll " + refreshTimes });
         location.reload();
         // implicit, reinit the variables with the .reload()
     } else {
@@ -314,13 +317,13 @@ var refreshIsHappen = function() {
      * in less than 1 second window, is considered a duplication */
     if(_.isUndefined(uniqueLocation.when) || moment(moment() - uniqueLocation.when).isAfter(2, 's')) {
         uniqueLocation.unique = _.random(0x10000000, 0xffffffff);
-        uniqueLocation.when = moment();
+        uniqueLocation.when = moment().format();
         uniqueLocation.counter = 0;
-        var refreshInfo = { 'what': 'refresh', 'when': uniqueLocation.when.format(), 'unique': uniqueLocation.unique };
+        var refreshInfo = { 'what': 'refresh', 'when': uniqueLocation.when, 'unique': uniqueLocation.unique };
         appendLog(refreshInfo);
         if(d) console.log(refreshInfo);
     } else {
-        if(d)console.log("refresh is NOT after 2 seconds of " + uniqueLocation.when.format("mm:ss") + " compared to now " + moment().format("mm:ss") );
+        if(d)console.log("refresh is NOT after 2 seconds of " + uniqueLocation.when + " compared to now " + moment().format("mm:ss") );
     }
 };
 
@@ -332,3 +335,98 @@ var refreshIsHappen = function() {
     if(scrollTimeout)
         setTimeout (scrollDown, scrollTimeout);
 })();
+
+/* this code is copied from https://gist.githubusercontent.com/raw/2625891/waitForKeyElements.js found via stackoverflow */
+
+/*--- waitForKeyElements():  A utility function, for Greasemonkey scripts,
+    that detects and handles AJAXed content.
+
+    Usage example:
+
+        waitForKeyElements (
+            "div.comments"
+            , commentCallbackFunction
+        );
+
+        //--- Page-specific function to do what we want when the node is found.
+        function commentCallbackFunction (jNode) {
+            jNode.text ("This comment changed by waitForKeyElements().");
+        }
+
+    IMPORTANT: This function requires your script to have loaded jQuery.
+*/
+function waitForKeyElements (
+    selectorTxt,    /* Required: The jQuery selector string that
+                        specifies the desired element(s).
+                    */
+    actionFunction, /* Required: The code to run when elements are
+                        found. It is passed a jNode to the matched
+                        element.
+                    */
+    bWaitOnce,      /* Optional: If false, will continue to scan for
+                        new elements even after the first match is
+                        found.
+                    */
+    iframeSelector  /* Optional: If set, identifies the iframe to
+                        search.
+                    */
+) {
+    var targetNodes, btargetsFound;
+
+    if (typeof iframeSelector == "undefined")
+        targetNodes     = $(selectorTxt);
+    else
+        targetNodes     = $(iframeSelector).contents ()
+                                           .find (selectorTxt);
+
+    if (targetNodes  &&  targetNodes.length > 0) {
+        btargetsFound   = true;
+        /*--- Found target node(s).  Go through each and act if they
+            are new.
+        */
+        targetNodes.each ( function () {
+            var jThis        = $(this);
+            var alreadyFound = jThis.data ('alreadyFound')  ||  false;
+
+            if (!alreadyFound) {
+                //--- Call the payload function.
+                var cancelFound     = actionFunction (jThis);
+                if (cancelFound)
+                    btargetsFound   = false;
+                else
+                    jThis.data ('alreadyFound', true);
+            }
+        } );
+    }
+    else {
+        btargetsFound   = false;
+    }
+
+    //--- Get the timer-control variable for this selector.
+    var controlObj      = waitForKeyElements.controlObj  ||  {};
+    var controlKey      = selectorTxt.replace (/[^\w]/g, "_");
+    var timeControl     = controlObj [controlKey];
+
+    //--- Now set or clear the timer as appropriate.
+    if (btargetsFound  &&  bWaitOnce  &&  timeControl) {
+        //--- The only condition where we need to clear the timer.
+        clearInterval (timeControl);
+        delete controlObj [controlKey];
+    }
+    else {
+        //--- Set a timer, if needed.
+        if ( ! timeControl) {
+            timeControl = setInterval ( function () {
+                    waitForKeyElements (    selectorTxt,
+                                            actionFunction,
+                                            bWaitOnce,
+                                            iframeSelector
+                                        );
+                },
+                300
+            );
+            controlObj [controlKey] = timeControl;
+        }
+    }
+    waitForKeyElements.controlObj   = controlObj;
+}
