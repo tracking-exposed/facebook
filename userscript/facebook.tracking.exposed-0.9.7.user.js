@@ -8,7 +8,7 @@
 // @connect      facebook.tracking.exposed
 // @grant        GM_xmlhttpRequest
 // @grant        GM_addStyle
-// @require      https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js
+// @require      https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/lodash-compat/3.10.2/lodash.min.js
 // ==/UserScript==
@@ -38,7 +38,7 @@ GM_addStyle(`
 }
 `);
 
-var d = true, /* debug */
+var d = false, /* debug */
     ee = false, /* explicit in the page */
     simple = true; /* small debug entry on the bottom of every post */
 
