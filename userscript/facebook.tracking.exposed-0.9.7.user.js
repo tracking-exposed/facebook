@@ -194,13 +194,13 @@ var newUserContent = function(jNode) {
     if(pathname !== "/") {
         uniqueLocation.unique = -1;
         uniqueLocation.when = undefined;
-        uniqueLocation.counter = 0;
+        uniqueLocation.counter = -1;
         return;
     }
 
     var feedEntry = {
         'when' : moment().format(),
-        'refreshId': uniqueLocation.unique
+        'refreshUnique': uniqueLocation.unique
     };
 
     var postType = extractPostType(node.innerHTML);
