@@ -1,0 +1,121 @@
+
+doctype html
+html
+  head
+    link(rel='stylesheet', href='css/bootstrap.css')
+    link(rel='stylesheet', href='css/reveal.css')
+    link(rel='stylesheet', href='css/reveal-solarized.css')
+    script(type='text/javascript', src='js/reveal.min.js')
+    script(type='text/javascript', src='js/lodash.min.js')
+
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    title Moca 2016 - facebook.tracking.exposed
+
+  body
+
+    div.reveal
+      div.slides
+
+        section(data-background="images/moca-2016-splash.png")
+          div.container
+            span.row.col-sm-4
+            span.row.col-sm-8
+              h2
+                facebook.tracking.exposed
+
+            span.row.col-sm-4
+            span.row.col-sm-8
+              h3
+                a(href="https://twitter.com/_vecna") Claudio @_vecna
+              p
+                #presidentialFork <3 _.extend(["kundera","rageman"],{... })
+
+        section(data-background="images/moca-2016-common.png")
+          section
+            h2 2016
+            h3 The year we won :D
+
+          section
+            h2 Linux
+            p The most used Operating System in the world
+
+          section
+            h1 WhatsApp
+            p WhatsApp has always prioritized making your data and communication as secure as possible. And today, we're proud to announce that we've completed a technological development that makes WhatsApp a leader in protecting your private communication: full end-to-end encryption. 5/April/2016
+            p
+              a(href="https://blog.whatsapp.com/10000618/end-to-end-encryption") end-to-end WA
+
+          section
+            p a.k.a. community vs corporations vs state
+            p read some 
+              a(href="https://medium.com/@_vecna/whatsapp-security-santa-or-cryptography-as-cost-reduction-40a201b46708") side effects of mass encryption deployment...
+
+        section(data-background="images/echochamber123.jpg")
+
+        section(data-background="images/filterbubble.jpg")
+
+        section
+          section
+            h2 Facebook emotion manipuation
+            a(href="/slides-fbexperiment") snippet
+
+          section
+            a(href="http://www.recode.net/2016/6/14/11923286/facebook-emotional-contagion-controversy-data-research-review-policy-ethics") Ethics and experiments
+            img(src="images/BravaMammaMS.png")
+
+        section
+          h2 time to change!
+          ul
+            li visualize the filter bubble!
+            li make the users aware of the reality distortion
+            li eventually, make the intelligence comeback to the node and not to the center
+
+        section
+          h2 no no! don't endorse FB
+          ul
+            li endorsed by public figure :(
+            li infrastructure for services (blablacar? tindr?)
+            li social isolation
+            li presence also if you don't want 
+              a(href="https://trackography.org/rich.html") Trackography January 2015
+            li who's your target as cipherpunk? as HRD? as activist?
+
+        section(data-background="images/moca-2016-common.png")
+          a(href="/slides-background" target="_blank") Background
+
+        section
+          img(src="images/Tampermonkey.png")
+          p GreaseMonkey / TamperMonkey
+
+        section
+          p 
+            a(href="https://github.com/vecna/ESCVI/blob/master/userscript/facebook.tracking.exposed-0.9.6.user.js") userscript
+
+        section
+          section
+            h3 client side debug
+            img(src="images/timelinedebug.png")
+
+          section
+            h3 server side
+            p demo live
+
+          section
+            h3 API
+            p demo live
+
+        section
+          img(src="images/wishlist.jpg")
+
+        section(data-background="images/moca-2016-common.png")
+            a(href="https://facebook.tracking.exposed") facebook.tracking.exposed
+
+        section
+          h1 ઉ
+
+    script(src="js/reveal-head.min.js")
+    script(src="js/reveal.min.js")
+    script(type='text/javascript').
+      Reveal.initialize({});
