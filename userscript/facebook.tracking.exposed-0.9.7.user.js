@@ -283,7 +283,7 @@ var checkToFlush = function() {
         });
         toBeFlush = { 'debug': [], 'timeline': [] };
     } else {
-        if(d) console.log("There are no data to be send");
+        if(d) console.log("There is zero data to be send");
     }
     setTimeout (checkToFlush, FLUSH_INTERVAL);
 };
@@ -321,23 +321,22 @@ var resetLocation = function() {
 };
 
 var refreshIsHappen = function() {
-    /* refresh is happened MAYBE -- this function can be called more then 
-     * once due to the different hooks used inside of the facebook page. 
-     * if is called in less than 2 seconds, is considered a duplication */
+    /* this function is called more then once
+     * due to the different hooks used inside of the facebook page.
+     * if is called in less than 4 second window, is duplication */
     if(_.isUndefined(uniqueLocation.when)) {
-        if(d)console.log("Initialized now");
+        if(d)console.log("uniqueLocation.when is undefined, so, initialized now");
         resetLocation();
     } else {
-        if ( moment(moment() - uniqueLocation.when).isAfter(2, 's') ) {
-            if(d)console.log("two seconds passed, so, refresh. before: " +
-                uniqueLocation.when.format() +
-                " now " + moment().format() );
+        if ( moment(moment() - uniqueLocation.when).isAfter(4, 's') ) {
+            if(d) console.log("4 seconds passed, so, refresh. before: " +
+                  uniqueLocation.when.format() + " now " + moment().format());
             resetLocation();
         }
         else {
-            if(d)console.log("refresh is NOT after 2 seconds of " +
-                uniqueLocation.when.format() +
-                " compared to now " + moment().format() );
+            if(d) console.log("refresh is NOT after 4 seconds of " +
+                  uniqueLocation.when.format() + " compared to now " +
+                  moment().format() );
         }
     }
 };
@@ -345,6 +344,7 @@ var refreshIsHappen = function() {
 (function() {
     'use strict';
     waitForKeyElements ("div .composerAudienceWrapper", refreshIsHappen);
+    waitForKeyElements (".uiTextareaAutogrow", refreshIsHappen);
     waitForKeyElements ("div .userContentWrapper", newUserContent);
     setTimeout (checkToFlush, FLUSH_INTERVAL);
     if(scrollTimeout)
