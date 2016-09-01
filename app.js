@@ -113,6 +113,9 @@ app.post('/contrib/:version/:which', function(req, res) {
 app.get('/', function(req, res) {
     return dispatchPromise('getIndex', req, res);
 });
+app.get('/page-:name', function(req, res) {
+    return dispatchPromise('getPage', req, res);
+});
 app.get('/realitycheck/:profileId', function(req, res) {
     return dispatchPromise('getPersonal', req, res);
 });
@@ -124,9 +127,6 @@ app.get('/realitymeter', function(req, res) {
 });
 app.get('/realitymeter/:postId', function(req, res) {
     return dispatchPromise('getRealityMeter', req, res);
-});
-app.get('/slides-:name', function(req, res) {
-    return dispatchPromise('getPresentation', req, res);
 });
 /* static files, independent by the API versioning */
 app.get('/favicon.ico', function(req, res) {

@@ -16,7 +16,7 @@ then run the (not yet interactive)
 note: anomaly ENV variable permit to save the anomalies happening, if
 is set to 0 don't save. it is set in config/settings.json
 
-    DEBUG=* anomalies/resender.js
+    DEBUG=* delay=2000 anomalies/resender.js
 
 when you spot an error in the console of ESCVI, you press ^c, copy paste the last file as --file=filename.json in the argument, for example:
 
