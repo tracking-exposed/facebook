@@ -8,7 +8,6 @@ var bodyParser = require('body-parser');
 var Promise = require('bluebird');
 var mongodb = Promise.promisifyAll(require('mongodb'));
 var debug = require('debug')('ESCVI');
-var geoip = require('geoip-native');
 var nconf = require('nconf');
 var jade = require('jade');
 
