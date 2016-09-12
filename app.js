@@ -10,8 +10,8 @@ var mongodb = Promise.promisifyAll(require('mongodb'));
 var debug = require('debug')('ESCVI');
 var nconf = require('nconf');
 var jade = require('jade');
-var utils = require('utils');
 
+var utils = require('./lib/utils');
 var escviAPI = require('./lib/allversions');
 
 var cfgFile = "config/settings.json";
