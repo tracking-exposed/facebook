@@ -51,8 +51,9 @@ var dispatchPromise = function(funcName, req, res) {
       .then(function(httpresult) {
           // res.header(httpresult.header);
           if(!_.isUndefined(httpresult.json)) {
-              debug("%s API %s success, returning JSON",
-                  req.randomUnicode, funcName);
+              debug("%s API %s success, returning JSON (%d bytes)",
+                  req.randomUnicode, funcName,
+                  _.size(JSON.stringify(httpresult.json)) );
               res.json(httpresult.json)
           } else if(!_.isUndefined(httpresult.text)) {
               debug("%s API %s success, returning text (size %d)",
@@ -79,7 +80,7 @@ app.get('/admin/stats/system/:version/', function(req, res) {
     return dispatchPromise('adminStats', req, res);
 });
 app.get('/admin/view/:version/', function(req, res) {
-    return dispatchPromise('adminDataView', req, res);
+    return dispatchPromise('adminView', req, res);
 });
 app.get('/public/stats/:version/', function(req, res) {
     return dispatchPromise('publicStats', req, res);
@@ -130,11 +131,16 @@ app.get('/realitymeter', function(req, res) {
 app.get('/realitymeter/:postId', function(req, res) {
     return dispatchPromise('getRealityMeter', req, res);
 });
+app.get('/impact', function(req, res) {
+    return dispatchPromise('getImpact', req, res);
+});
 /* static files, independent by the API versioning */
 app.get('/favicon.ico', function(req, res) {
     res.sendFile(__dirname + '/dist/favicon.ico');
 });
 app.get('/facebook.tracking.exposed.user.js', function (req, res) {
+    var ipaddr = _.get(req.headers, "x-forwarded-for") || "127.0.0.1";
+    debug("ScriptLastVersion requested in %j", utils.getGeoIP(ipaddr));
     res.sendFile(__dirname + '/scriptlastversion');
 });
 app.use('/js', express.static(__dirname + '/dist/js'));
