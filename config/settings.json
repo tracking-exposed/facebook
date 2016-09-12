@@ -1,11 +1,10 @@
 {
   "schema": { 
-      "supporters": "supporters2",
-      "timeline": "timeline2",
-      "refreshes": "refreshes2",
-      "suggestions": "suggestions2",
-      "accesses": "accesses",
-      "debug": "debug2"
+      "supporters": "supporters3",
+      "timeline": "timeline3",
+      "refreshes": "refreshes3",
+      "suggestions": "suggestions",
+      "accesses": "accesses3"
   },
   "mongodb": "mongodb://localhost/facebook",
   "port": 8000,
