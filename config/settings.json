@@ -5,7 +5,7 @@
       "refreshes": "refreshes2",
       "suggestions": "suggestions2",
       "accesses": "accesses",
-      "debug": "debug"
+      "debug": "debug2"
   },
   "mongodb": "mongodb://localhost/facebook",
   "port": 8000,

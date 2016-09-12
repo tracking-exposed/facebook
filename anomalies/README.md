@@ -23,6 +23,17 @@ when you spot an error in the console of ESCVI, you press ^c, copy paste the las
     delay=1500 DEBUG=* anomalies/resender.js --file=parsingError-104444444444444-080049.json
 
 and iterated with your debug.
-To loop again with the new saved errors, this script move files from /dev/shm to ./samples
+To loop again with the new saved errors, this script move files from /dev/shm to ./errors/client and ./errors/server
 
     anomalies/looperror.sh
+
+# Reparsing
+
+This new approach uses the parsing code of the userscript (copied in 
+'userscrip/fb-parser.js') and want re-executed the section of HTML that
+generates errors
+
+this can permit to aproach the parsing issues in the userscrpt and use better
+CSS selector https://www.w3.org/TR/css3-selectors/ instead of parsing and regexp
+
+    DEBUG=* PRINT=1 anomalies/reparse.js

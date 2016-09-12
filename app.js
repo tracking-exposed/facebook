@@ -105,6 +105,9 @@ app.get('/node/export/:version/:table/:selector', function(req, res) {
 app.post('/F/:version', function(req, res) {
     return dispatchPromise('postFeed', req, res);
 });
+app.post('/D/:version', function(req, res) {
+    return dispatchPromise('postDebug', req, res);
+});
 app.post('/contrib/:version/:which', function(req, res) {
     return dispatchPromise('writeContrib', req, res);
 });
