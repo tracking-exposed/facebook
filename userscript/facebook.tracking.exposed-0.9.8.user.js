@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         facebook.tracking.exposed
 // @namespace    https://facebook.tracking.exposed
-// @version      0.9.7
+// @version      0.9.8
 // @description  Collection meta-data from Facebook's timeline, in order to analyze and look for potential informative manipulation (if you've never heard about Filter Bubble, and you're still young⌁inside™, start here https://en.wikipedia.org/wiki/Filter_bubble )
 // @author       Claudio Agosti @_vecna
 // @match        https://www.facebook.com/*
@@ -40,7 +40,8 @@ GM_addStyle(`
 
 var d = false, /* debug */
     ee = false, /* explicit in the page */
-    simple = true; /* small debug entry on the bottom of every post */
+    simple = true, /* small debug entry on the bottom of every post */
+    autoScroll = false; /* every 4 seconds scroll a little for 80 times */
 
 var uniqueLocation = { counter: -1, unique: -1 },
     lastLocation = null,
@@ -49,8 +50,8 @@ var uniqueLocation = { counter: -1, unique: -1 },
     init = false,
     lastAnalyzedPost = null,
     STARTING_FRACTION = 300,
-    url = 'https://facebook.tracking.exposed',
-    version = '0.9.7',
+    url =  'https://facebook.tracking.exposed',
+    version = '0.9.8',
     FLUSH_INTERVAL = 20000;
 
 var renderMainButton = function() {
@@ -263,40 +264,44 @@ var reportError = function(errorDict) {
     }));
 };
 
+/* this function just send the data, and is called for timeline and for parsing error report */
+var flushData = function(apiUrl, stringData) {
+    if(d) console.log("POST in " + apiUrl + " size " + _.size(stringData));
+    GM_xmlhttpRequest({
+        method: "POST",
+        url: url + apiUrl,
+        headers: { "Content-Type": "application/json" },
+        data: stringData,
+        onload: function(response) {
+            if (d) console.log("Received response of XHR: " + response.response);
+        }
+    });
+};
+
 var checkToFlush = function() {
-
-    if( _.size(toBeFlush.timeline) || _.size(toBeFlush.debug) ) {
-
-        var envelope = _.extend(toBeFlush, { from: user, version: version });
+    if (d) console.log("After " + FLUSH_INTERVAL + "ms, at: " + moment() + ", " +
+                       toBeFlush.timeline.length + " info to be sent, with " +
+                       toBeFlush.debug.length + " errors");
+    if( _.size(toBeFlush.timeline) ) {
+        var envelope = { timeline: toBeFlush.timeline, from: user, version: version };
         if (d) console.log(envelope);
-        if (d) console.log("After " + FLUSH_INTERVAL + "ms, at: " + moment() + ", " +
-                           toBeFlush.timeline.length + " info to be sent, with " +
-                           toBeFlush.debug.length + " errors");
-        GM_xmlhttpRequest({
-            method: "POST",
-            url: url + '/F/2',
-            headers: { "Content-Type": "application/json" },
-            data: JSON.stringify(envelope),
-            onload: function(response) {
-                if (d) console.log("Received response of XHR: " + response.response);
-            }
-        });
-        toBeFlush = { 'debug': [], 'timeline': [] };
-    } else {
-        if(d) console.log("There is zero data to be send");
+        flushData('/F/2', JSON.stringify(envelope));
     }
+    _.map(toBeFlush.debug, function(unparsedHTMLnode) {
+        /* I'm ignoring here the "reason" of the error, they might be even removed */ 
+        flushData('/D/2', JSON.stringify(unparsedHTMLnode) );
+    });
+    toBeFlush = { 'debug': [], 'timeline': [] };
     setTimeout (checkToFlush, FLUSH_INTERVAL);
 };
 
-var scrollTimeout = 0, // 4000,
+var scrollDelay = 4000,
     whereScroll = 0,
     refreshTimes = 1,
     height = window.innerHeight !== undefined ? window.innerHeight : document.documentElement.offsetHeight,
     maxScrollTimes = 80;
 
 var scrollDown = function() {
-    /* initialized with the stable recurring behavior */
-    scrollTimeout = 4000;
     whereScroll += _.random(400, height) + (height * refreshTimes);
 
     if(refreshTimes >=  maxScrollTimes ) {
@@ -305,9 +310,9 @@ var scrollDown = function() {
         // implicit, reinit the variables with the .reload()
     } else {
         refreshTimes += 1;
-        if (d) console.log("scroll to " + whereScroll + " next scroll at: " + scrollTimeout);
+        if (d) console.log("scroll to " + whereScroll + " next scroll in: " + scrollDelay);
         scrollTo(0, whereScroll);
-        setTimeout(scrollDown, scrollTimeout);
+        setTimeout(scrollDown, scrollDelay);
     }
 };
 
@@ -325,7 +330,7 @@ var refreshIsHappen = function() {
      * due to the different hooks used inside of the facebook page.
      * if is called in less than 4 second window, is duplication */
     if(_.isUndefined(uniqueLocation.when)) {
-        if(d)console.log("uniqueLocation.when is undefined, so, initialized now");
+        if(d) console.log("uniqueLocation.when is undefined, so, initialized now");
         resetLocation();
     } else {
         if ( moment(moment() - uniqueLocation.when).isAfter(4, 's') ) {
@@ -347,8 +352,8 @@ var refreshIsHappen = function() {
     waitForKeyElements (".uiTextareaAutogrow", refreshIsHappen);
     waitForKeyElements ("div .userContentWrapper", newUserContent);
     setTimeout (checkToFlush, FLUSH_INTERVAL);
-    if(scrollTimeout)
-        setTimeout (scrollDown, scrollTimeout);
+    if(autoScroll)
+        setTimeout (scrollDown, scrollDelay);
 })();
 
 /* this code is copied from https://gist.githubusercontent.com/raw/2625891/waitForKeyElements.js found via stackoverflow */

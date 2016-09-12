@@ -20,8 +20,9 @@ if ( _.isUndefined(nconf.get('DEBUG')) ||
 
 var delayTime = _.parseInt(nconf.get('delay'));
 
+var fileLocation = 'errors/server';
 var files = fs
-    .readdirAsync('samples')
+    .readdirAsync(fileLocation)
     .then(function(files) {
         debugger;
         if(_.isUndefined(nconf.get('file'))) {
@@ -37,14 +38,16 @@ var files = fs
 
 debug("Using url %s", url);
 return Promise.reduce(files, function(memo, fname, i, total) {
-      debug("Processing \t%d/%d\t%s", i, total, fname);
-      var fpath = 'samples/' + fname;
+      var fpath = fileLocation + '/' + fname;
       return fs.readFileAsync(fpath, "utf-8")
         .then(JSON.parse)
         .then(function(filecontent) {
+          debug("Processing \t%d/%d\t%s debug %d", 
+              i, total, fname, _.size(filecontent.debug) );
+
           var unitN = _.parseInt(nconf.get('unit'));
           if(!_.isNaN(unitN)) {
-              debug("Selecting unit %d only to improve debug", unitN);
+              debug("Using unit #%d only", unitN);
               var reusableBody = { 
                   timeline : [ filecontent.body.timeline[unitN] ],
                   from: filecontent.body.from
