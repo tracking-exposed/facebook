@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         facebook.tracking.exposed
 // @namespace    https://facebook.tracking.exposed
-// @version      0.9.8
+// @version      0.9.9
 // @description  Collection meta-data from Facebook's timeline, in order to analyze and look for potential informative manipulation (if you've never heard about Filter Bubble, and you're still young⌁inside™, start here https://en.wikipedia.org/wiki/Filter_bubble )
 // @author       Claudio Agosti @_vecna
 // @match        https://www.facebook.com/*
@@ -51,7 +51,7 @@ var uniqueLocation = { counter: -1, unique: -1 },
     lastAnalyzedPost = null,
     STARTING_FRACTION = 300,
     url =  'https://facebook.tracking.exposed',
-    version = '0.9.8',
+    version = '0.9.9',
     FLUSH_INTERVAL = 20000;
 
 var renderMainButton = function() {
@@ -112,7 +112,7 @@ var extractInfoFromFeed = function(nodehtml, postType) {
                parsedUtime: utime */
             href: href,
             additionalInfo: (profileS !== -1) ? profileHref : null,
-            publicationTime: moment(_.parseInt(utime) * 1000).format(),
+            publicationTime: moment(_.parseInt(utime) * 1000).toISOString(),
             type: postType
         };
     }
@@ -200,7 +200,7 @@ var newUserContent = function(jNode) {
     }
 
     var feedEntry = {
-        'when' : moment().format(),
+        'when' : moment().toISOString(),
         'refreshUnique': uniqueLocation.unique
     };
 
@@ -260,7 +260,8 @@ var appendLog = function(entryDict) {
 
 var reportError = function(errorDict) {
     toBeFlush.debug.push(_.extend(errorDict, {
-        when: moment().format()
+        version: version,
+        when: moment().toISOString()
     }));
 };
 
@@ -320,7 +321,9 @@ var resetLocation = function() {
     uniqueLocation.unique = _.random(0x10000000, 0xffffffff);
     uniqueLocation.when = moment();
     uniqueLocation.counter = 0;
-    var refreshInfo = { 'what': 'refresh', 'when': uniqueLocation.when.format(), 'unique': uniqueLocation.unique };
+    var refreshInfo = { 'what': 'refresh', 
+                        'when': uniqueLocation.when.toISOString(), 
+                        'unique': uniqueLocation.unique };
     appendLog(refreshInfo);
     if(d) console.log(refreshInfo);
 };
@@ -330,18 +333,19 @@ var refreshIsHappen = function() {
      * due to the different hooks used inside of the facebook page.
      * if is called in less than 4 second window, is duplication */
     if(_.isUndefined(uniqueLocation.when)) {
-        if(d) console.log("uniqueLocation.when is undefined, so, initialized now");
+        if(d) console.log("uniqueLocation.when initialized now");
         resetLocation();
     } else {
         if ( moment(moment() - uniqueLocation.when).isAfter(4, 's') ) {
             if(d) console.log("4 seconds passed, so, refresh. before: " +
-                  uniqueLocation.when.format() + " now " + moment().format());
+                  uniqueLocation.when.toISOString() + " now " +
+                  moment().toISOstring());
             resetLocation();
         }
         else {
             if(d) console.log("refresh is NOT after 4 seconds of " +
-                  uniqueLocation.when.format() + " compared to now " +
-                  moment().format() );
+                  uniqueLocation.when.toISOString() + " compared to now " +
+                  moment().toISOString() );
         }
     }
 };
