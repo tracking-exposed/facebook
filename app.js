@@ -75,7 +75,9 @@ var dispatchPromise = function(funcName, req, res) {
 /* everything begin here, welcome */
 server.listen(nconf.get('port'));
 console.log("  Port " + nconf.get('port') + " listening");
-app.use(bodyParser.json()); 
+/* configuration of express4 */
+app.use(bodyParser.json({limit: '3mb'}));
+app.use(bodyParser.urlencoded({limit: '3mb', extended: true}));
 
 app.get('/admin/stats/system/:version/', function(req, res) {
     return dispatchPromise('adminStats', req, res);
