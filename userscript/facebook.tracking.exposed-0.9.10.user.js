@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         facebook.tracking.exposed
 // @namespace    https://facebook.tracking.exposed
-// @version      0.9.9
+// @version      0.9.10
 // @description  Collection meta-data from Facebook's timeline, in order to analyze and look for potential informative manipulation (if you've never heard about Filter Bubble, and you're still young⌁inside™, start here https://en.wikipedia.org/wiki/Filter_bubble )
 // @author       Claudio Agosti @_vecna
 // @match        https://www.facebook.com/*
@@ -38,7 +38,7 @@ GM_addStyle(`
 }
 `);
 
-var d = false, /* debug */
+var d = true, /* debug */
     ee = false, /* explicit in the page */
     simple = true, /* small debug entry on the bottom of every post */
     autoScroll = false; /* every 4 seconds scroll a little for 80 times */
@@ -51,7 +51,7 @@ var uniqueLocation = { counter: -1, unique: -1 },
     lastAnalyzedPost = null,
     STARTING_FRACTION = 300,
     url =  'https://facebook.tracking.exposed',
-    version = '0.9.9',
+    version = '0.9.10',
     FLUSH_INTERVAL = 20000;
 
 var renderMainButton = function() {
@@ -133,13 +133,13 @@ var extractPostType = function(nodehtml) {
     return('promoted');
 };
 
-var verboseEntry  = function(node, post, whichPost, fromWhere) {
+var verboseEntry  = function(node, post, whichPost) {
     if (simple) {
        var smallhtml = ['<small>', 'ઉ ' + uniqueLocation.counter, '</small>' ];
        $(node).append(smallhtml.join(" "));
     }
     if (!ee) return;
-    var html = [ '<small>', '<pre>', fromWhere, 'Now at[', whichPost, ']#', JSON.stringify(uniqueLocation, undefined, 2),
+    var html = [ '<small>', '<pre> Now at[', whichPost, ']#', JSON.stringify(uniqueLocation, undefined, 2),
              post, 'is', JSON.stringify(post, undefined, 2), '</pre>', '</div></small>'];
     $(node).append(html.join(" "));
 };
@@ -180,9 +180,6 @@ var newUserContent = function(jNode) {
     if(!init)
         basicSetup();
 
-    if (_.get(node, 'attributes[2].nodeName') !== 'aria-label')
-        return;
-
     /* clean pathname if has an ?something */
     pathname = pathname.replace(/\?.*/, '');
 
@@ -198,55 +195,64 @@ var newUserContent = function(jNode) {
         uniqueLocation.counter = -1;
         return;
     }
+    /* this wrap all the analysis/parsing functions, operate with
+     * the global variables 'lastAnalyzedPost' and 'toBeFlush' */
+    userContentParsing(node);
+};
+
+var userContentParsing = function(htmlNode) {
+
+    if (_.get(htmlNode, 'attributes[2].nodeName') !== 'aria-label')
+        return;
 
     var feedEntry = {
         'when' : moment().toISOString(),
         'refreshUnique': uniqueLocation.unique
     };
 
-    var postType = extractPostType(node.innerHTML);
+    var postType = extractPostType(htmlNode.innerHTML);
 
     if ( postType === 'feed' ) {
-        feedPost = extractInfoFromFeed(node.innerHTML, postType);
-        verboseEntry(jNode, lastAnalyzedPost, "previous", "Feed", pathname);
+        feedPost = extractInfoFromFeed(htmlNode.innerHTML, postType);
+        verboseEntry(htmlNode, lastAnalyzedPost, "previous", "Feed");
         appendLog(lastAnalyzedPost);
         feedEntry.order = uniqueLocation.counter = (uniqueLocation.counter + 1);
         feedEntry.content = [ feedPost ];
         lastAnalyzedPost = feedEntry;
-        verboseEntry(jNode, lastAnalyzedPost, "recorded Feed", "Feed", pathname);
+        verboseEntry(htmlNode, lastAnalyzedPost, "recorded Feed", "Feed");
     } else if ( postType === 'promoted' ) {
-        promotedPost = extractInfoPromoted(node.innerHTML, postType);
-        verboseEntry(jNode, lastAnalyzedPost, "previous", "Promoted", pathname);
+        promotedPost = extractInfoPromoted(htmlNode.innerHTML, postType);
+        verboseEntry(htmlNode, lastAnalyzedPost, "previous", "Promoted");
         appendLog(lastAnalyzedPost);
         if(!_.isNull(promotedPost)) {
             feedEntry.order = uniqueLocation.counter = (uniqueLocation.counter + 1);
             feedEntry.content = [ promotedPost ];
             lastAnalyzedPost = feedEntry;
-            verboseEntry(jNode, lastAnalyzedPost, "recorder Promoted", "Promoted");
+            verboseEntry(htmlNode, lastAnalyzedPost, "recorder Promoted", "Promoted");
         } else {
-            verboseEntry(jNode, null, "_.isNull this!", "Promoted");
+            verboseEntry(htmlNode, null, "_.isNull this!", "Promoted");
             lastAnalyzedPost = null;
         }
     } else if ( postType === 'related') {
-        postInfo = extractInfoFromFeed(node.innerHTML, postType);
+        postInfo = extractInfoFromFeed(htmlNode.innerHTML, postType);
         if (!_.isNull(lastAnalyzedPost) && !_.isNull(lastAnalyzedPost.content[0]) ) {
-            verboseEntry(jNode, lastAnalyzedPost, "previous", "Related");
+            verboseEntry(htmlNode, lastAnalyzedPost, "previous", "Related");
             lastAnalyzedPost.content[0].type = 'friendlink';
             lastAnalyzedPost.content[1] = postInfo;
         } else {
-            verboseEntry(jNode, null, "previous isNull?", "Related/Broken");
+            verboseEntry(htmlNode, null, "previous isNull?", "Related/Broken");
             feedEntry.order = uniqueLocation.counter = (uniqueLocation.counter + 1);
             feedEntry.content = [ postInfo ];
             feedEntry.content.type = 'broken';
             lastAnalyzedPost = feedEntry;
         }
-        verboseEntry(jNode, lastAnalyzedPost, "committing this", "Related (friend)");
+        verboseEntry(htmlNode, lastAnalyzedPost, "committing this", "Related (friend)");
         appendLog(lastAnalyzedPost);
         lastAnalyzedPost = null;
     } else {
         if (d) console.log("Parsing of this node didn't success, counter is: " + uniqueLocation.counter);
-        reportError({error: "a node impossible to be parsed correctly", node: jNode});
-        verboseEntry(jNode, lastAnayzedPost, "Previous", postType);
+        reportError({error: "a node impossible to be parsed correctly", node: htmlNode.innerHTML});
+        verboseEntry(htmlNode, lastAnayzedPost, "Previous", postType);
         appendLog(lastAnalyzedPost);
         lastAnalyzedPost = null;
     }
@@ -280,7 +286,7 @@ var flushData = function(apiUrl, stringData) {
 };
 
 var checkToFlush = function() {
-    if (d) console.log("After " + FLUSH_INTERVAL + "ms, at: " + moment() + ", " +
+    if (d) console.log("After " + FLUSH_INTERVAL + "ms, at: " + moment().toISOString() + ", " +
                        toBeFlush.timeline.length + " info to be sent, with " +
                        toBeFlush.debug.length + " errors");
     if( _.size(toBeFlush.timeline) ) {
@@ -289,7 +295,6 @@ var checkToFlush = function() {
         flushData('/F/2', JSON.stringify(envelope));
     }
     _.map(toBeFlush.debug, function(unparsedHTMLnode) {
-        /* I'm ignoring here the "reason" of the error, they might be even removed */ 
         flushData('/D/2', JSON.stringify(unparsedHTMLnode) );
     });
     toBeFlush = { 'debug': [], 'timeline': [] };
@@ -321,8 +326,8 @@ var resetLocation = function() {
     uniqueLocation.unique = _.random(0x10000000, 0xffffffff);
     uniqueLocation.when = moment();
     uniqueLocation.counter = 0;
-    var refreshInfo = { 'what': 'refresh', 
-                        'when': uniqueLocation.when.toISOString(), 
+    var refreshInfo = { 'what': 'refresh',
+                        'when': uniqueLocation.when.toISOString(),
                         'unique': uniqueLocation.unique };
     appendLog(refreshInfo);
     if(d) console.log(refreshInfo);
@@ -339,7 +344,7 @@ var refreshIsHappen = function() {
         if ( moment(moment() - uniqueLocation.when).isAfter(4, 's') ) {
             if(d) console.log("4 seconds passed, so, refresh. before: " +
                   uniqueLocation.when.toISOString() + " now " +
-                  moment().toISOstring());
+                  moment().toISOString());
             resetLocation();
         }
         else {
