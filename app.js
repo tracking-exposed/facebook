@@ -42,10 +42,8 @@ var dispatchPromise = function(funcName, req, res) {
     }
 
     req.randomUnicode = String.fromCharCode(_.random(0x0391, 0x085e));
-
     debug("%s %s Dispatching request to %s", 
-        req.randomUnicode, 
-        moment().format("MM-DD hh:mm:ss"), req.url);
+        req.randomUnicode, moment().format("HH:mm:ss"), req.url);
 
     /* in theory here we can keep track of time */
     return new Promise.resolve(func(req))
@@ -79,14 +77,14 @@ console.log("  Port " + nconf.get('port') + " listening");
 app.use(bodyParser.json({limit: '3mb'}));
 app.use(bodyParser.urlencoded({limit: '3mb', extended: true}));
 
-app.get('/admin/stats/system/:version/', function(req, res) {
-    return dispatchPromise('adminStats', req, res);
+app.get('/node/info/:version/', function(req, res) {
+    return dispatchPromise('nodeInfo', req, res);
+});
+app.get('/node/export/:version/:shard', function(req, res) {
+    return dispatchPromise('nodeExport', req, res);
 });
 app.get('/admin/view/:version/', function(req, res) {
     return dispatchPromise('adminView', req, res);
-});
-app.get('/public/stats/:version/', function(req, res) {
-    return dispatchPromise('publicStats', req, res);
 });
 app.get('/public/posts/:version/', function(req, res) {
     return dispatchPromise('publicTopPosts', req, res);
@@ -97,14 +95,8 @@ app.get('/public/post/:version/:postId', function(req, res) {
 app.get('/user/public/:version/TL/:profileId/:past', function(req, res) {
     return dispatchPromise('userTimeLine', req, res);
 });
-app.get('/user/public/:version/TLCSV/:profileId/:past', function(req, res) {
-    return dispatchPromise('userTimeLineCSV', req, res);
-});
 app.get('/user/public/:version/ST/:profileId', function(req, res) {
     return dispatchPromise('userStats', req, res);
-});
-app.get('/node/export/:version/:table/:selector', function(req, res) {
-    return dispatchPromise('exportNode', req, res);
 });
 app.post('/F/:version', function(req, res) {
     return dispatchPromise('postFeed', req, res);
