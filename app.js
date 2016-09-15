@@ -77,16 +77,16 @@ console.log("  Port " + nconf.get('port') + " listening");
 app.use(bodyParser.json({limit: '3mb'}));
 app.use(bodyParser.urlencoded({limit: '3mb', extended: true}));
 
-app.get('/node/info/:version/', function(req, res) {
+app.get('/node/info/:version', function(req, res) {
     return dispatchPromise('nodeInfo', req, res);
 });
 app.get('/node/export/:version/:shard', function(req, res) {
     return dispatchPromise('nodeExport', req, res);
 });
-app.get('/admin/view/:version/', function(req, res) {
-    return dispatchPromise('adminView', req, res);
+app.get('/node/activity/:version', function(req, res) {
+    return dispatchPromise('nodeActivity', req, res);
 });
-app.get('/public/posts/:version/', function(req, res) {
+app.get('/public/posts/:version', function(req, res) {
     return dispatchPromise('publicTopPosts', req, res);
 });
 app.get('/public/post/:version/:postId', function(req, res) {

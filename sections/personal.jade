@@ -12,10 +12,16 @@ html
 
   .container-fluid
     .jumbotron
-      h2 ઉ This is how a algoritm manipulation looks like
-      h3 you are seeing timeline of user "
-        a(href="https://www.facebook.com/#{profileId}") #{profileId}
-        |"
+      if profileId !== 0
+        h2 ઉ This is how a algoritm manipulation looks like
+        h3 User: "
+          a(href="https://www.facebook.com/#{profileId}") #{displayName}
+          |"
+      else
+        h2 ઉ This 
+          b would show 
+          | how algoritm manipulation looks like...
+        h1.center Unfortunatly, the userId requested do no exists in this system.
 
   nav.navbar.navbar-default
     div.container
@@ -37,20 +43,21 @@ html
           li
             a(href='/slides-long') Slides
 
-  .center.smaller Visualisation not yet implemented
-  .center.smaller Visualisation not yet implemented
-  .center.smaller Visualisation not yet implemented
+  if profileId !== 0
+    .center.smaller Visualisation not yet implemented
+    .center.smaller Visualisation not yet implemented
+    .center.smaller Visualisation not yet implemented
 
-  .container-fluid
-    h3 ઉ Statistics, based on information you send 
-    div(id="statsinfo")
+    .container-fluid
+      h3 ઉ Statistics, based on information you send 
+      div(id="statsinfo")
 
-  .container-fluid
-    h3 ઉ timeline
-    div(id="coreinfo")
+    .container-fluid
+      h3 ઉ timeline
+      div(id="coreinfo")
 
-  .container-fluid
-    p If you feel you've guess why facebook is penalizing/promoting something to you, feel free to share your 
-      a.sug(href="#" id="interpretation" onclick="suggestion('interpretation');return false;") [Interpretation]
-      |  with us.
+    .container-fluid
+      p If you feel you've guess why facebook is penalizing/promoting something to you, feel free to share your 
+        a.sug(href="#" id="interpretation" onclick="suggestion('interpretation');return false;") [Interpretation]
+        |  with us.
 

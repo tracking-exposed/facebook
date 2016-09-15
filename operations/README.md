@@ -7,7 +7,7 @@ from ESCVI root:
 
 daily duty: (still todo a cleaner from /dev/shm)
 
-    anomalies/importerror.sh
+    operations/importerror.sh
 
 then run the (not yet interactive)
 
@@ -25,7 +25,7 @@ when you spot an error in the console of ESCVI, you press ^c, copy paste the las
 and iterated with your debug.
 To loop again with the new saved errors, this script move files from /dev/shm to ./errors/client and ./errors/server
 
-    anomalies/looperror.sh
+    operations/looperror.sh
 
 # Reparsing
 
@@ -36,4 +36,10 @@ generates errors
 this can permit to aproach the parsing issues in the userscrpt and use better
 CSS selector https://www.w3.org/TR/css3-selectors/ instead of parsing and regexp
 
-    DEBUG=* PRINT=1 anomalies/reparse.js
+    DEBUG=* PRINT=1 operations/reparse.js
+
+# Node sync/clone
+
+    DEBUG=* SOURCE='https://facebook.tracking.exposed' operations/importer.js
+
+

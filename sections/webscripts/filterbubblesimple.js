@@ -26,6 +26,8 @@ var appendHTML = function(containerId, something, url) {
 
 /* that "0" can change based on the "past" version to see ... */
 var displayBubbleStyle1= function(profileId, containerId) {
+    if(profileId === 0)
+        return;
     var url = '/user/public/2/TL/' + profileId + '/0';
     d3.json(url, function(something) {
        appendHTML(containerId, something, url);
@@ -33,6 +35,8 @@ var displayBubbleStyle1= function(profileId, containerId) {
 };
 
 var displayStatsStyle1 = function(profileId, containerId) {
+    if(profileId === 0)
+        return;
     var url = '/user/public/2/ST/' + profileId;
     d3.json(url, function(something) {
        appendHTML(containerId, something, url);
