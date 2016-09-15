@@ -95,8 +95,11 @@ app.get('/public/post/:version/:postId', function(req, res) {
 app.get('/user/public/:version/TL/:profileId/:past', function(req, res) {
     return dispatchPromise('userTimeLine', req, res);
 });
-app.get('/user/public/:version/ST/:profileId', function(req, res) {
+app.get('/user/public/:version/stats/:profileId', function(req, res) {
     return dispatchPromise('userStats', req, res);
+});
+app.get('/user/public/:version/postlife/:postId/:userId', function(req,res){
+    return dispatchPromise('publicPostLife', req, res);
 });
 app.post('/F/:version', function(req, res) {
     return dispatchPromise('postFeed', req, res);
