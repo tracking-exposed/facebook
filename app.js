@@ -83,7 +83,7 @@ app.get('/node/info/:version', function(req, res) {
 app.get('/node/export/:version/:shard', function(req, res) {
     return dispatchPromise('nodeExport', req, res);
 });
-app.get('/node/activity/:version', function(req, res) {
+app.get('/node/activity/:version/:format', function(req, res) {
     return dispatchPromise('nodeActivity', req, res);
 });
 app.get('/public/posts/:version', function(req, res) {
