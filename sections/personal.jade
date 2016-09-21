@@ -6,33 +6,35 @@ html
     script(type='text/javascript', src='/js/d3.min.js')
     script(type='text/javascript', src='/js/filterbubblesimple.js')
     script(type='text/javascript', src='/js/suggest.js')
-    title facebook.tracking.exposed ઉ personal page
+    if userId !== 0
+      title Personal page of ઉ#{userId}
+    else
+      title facebook.tracking.exposed invalid Personal page
 
-  body(onload="displayBubbleStyle1(#{profileId}, '#coreinfo'); displayStatsStyle1(#{profileId}, '#statsinfo');")
+    body(onload="displayPresence(#{userId}, '#presence'); displayFluctuation(#{userId}, '#fluctuations');")
 
   .container-fluid
     .jumbotron
-      if profileId !== 0
-        h2 ઉ This is how a algoritm manipulation looks like
-        h3 User: "
-          a(href="https://www.facebook.com/#{profileId}") #{displayName}
-          |"
+      if userId !== 0
+        h2 This is how a algoritm manipulation looks like
+        h3 User 
+          a(href="https://www.facebook.com/#{userId}") ઉ#{displayName}
       else
-        h2 ઉ This 
+        h2 This 
           b would show 
           | how algoritm manipulation looks like...
-        h1.center Unfortunatly, the userId requested do no exists in this system.
+        h1.center Unfortunatly, the user (ઉ) requested do no exists in this system.
 
   nav.navbar.navbar-default
     div.container
       div.navbar-header
-        button.navbar-toggle.collapsed(type="button" data-toggle="collapse" data-target="#claudiosnavbar" aria-expanded="false")
+        button.navbar-toggle.collapsed(type="button" data-toggle="collapse" data-target="#thenavbar" aria-expanded="false")
           span(id="sr-only") Toggle navigation
           span.icon-bar
           span.icon-bar
           span.icon-bar
 
-      div.collapse.navbar-collapse(id="claudiosnavbar")
+      div.collapse.navbar-collapse(id="thenavbar")
         ul.nav.navbar-nav
           li
             a(href='/') Home
@@ -41,23 +43,23 @@ html
           li
             a(href='/overseer') Overseer
           li
+            a(href='/impact') Impact
+          li
             a(href='/slides-long') Slides
 
-  if profileId !== 0
-    .center.smaller Visualisation not yet implemented
-    .center.smaller Visualisation not yet implemented
-    .center.smaller Visualisation not yet implemented
+  if userId !== 0
 
-    .container-fluid
-      h3 ઉ Statistics, based on information you send 
-      div(id="statsinfo")
+    .centered
+    p The user ઉ#{userId} has #{timelines}
+     
+    p Usage metric, considering slot of 10 minutes, how often are you on FB?
+    .centered(id="presence")
 
-    .container-fluid
-      h3 ઉ timeline
-      div(id="coreinfo")
+    p This is your exposure to the algorithm of facebook, which namely can ignore the chronological order. In the Y you see the position difference gained or lost. This is just to make you see how many shift of the reality happens every time you refresh the page.
+      div(id="fluctuations")
 
     .container-fluid
       p If you feel you've guess why facebook is penalizing/promoting something to you, feel free to share your 
-        a.sug(href="#" id="interpretation" onclick="suggestion('interpretation');return false;") [Interpretation]
+        a.sug(href="#" id="interpretation" onclick="suggestion('interpretation')") [Interpretation]
         |  with us.
 

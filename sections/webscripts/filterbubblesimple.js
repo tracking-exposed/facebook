@@ -25,21 +25,23 @@ var appendHTML = function(containerId, something, url) {
 };
 
 /* that "0" can change based on the "past" version to see ... */
-var displayBubbleStyle1= function(profileId, containerId) {
-    if(profileId === 0)
+var displayFluctuation = function(userId, containerId) {
+    if(userId === 0)
         return;
-    var url = '/user/public/2/TL/' + profileId + '/0';
+    var url = '/user/public/2/flactuation/' + userId + '/column';
     d3.json(url, function(something) {
-       appendHTML(containerId, something, url);
+        console.log(url);
+        console.log(something);
     });
 };
 
-var displayStatsStyle1 = function(profileId, containerId) {
-    if(profileId === 0)
+var displayPresence = function(userId, containerId) {
+    if(userId === 0)
         return;
-    var url = '/user/public/2/ST/' + profileId;
+    var url = '/user/public/2/presence/' + userId + '/column';
     d3.json(url, function(something) {
-       appendHTML(containerId, something, url);
+        console.log(url);
+        console.log(something);
     });
 };
 
