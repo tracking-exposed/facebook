@@ -84,7 +84,7 @@ app.get('/node/export/:version/:shard', function(req, res) {
     return dispatchPromise('nodeExport', req, res);
 });
 app.get('/node/activity/:version/:format', function(req, res) {
-    return dispatchPromise('nodeActivity', req, res);
+    return dispatchPromise('byDayActivity', req, res);
 });
 app.get('/public/posts/:version', function(req, res) {
     return dispatchPromise('publicTopPosts', req, res);
@@ -92,11 +92,14 @@ app.get('/public/posts/:version', function(req, res) {
 app.get('/public/post/:version/:postId', function(req, res) {
     return dispatchPromise('publicPostReality', req, res);
 });
-app.get('/user/public/:version/TL/:profileId/:past', function(req, res) {
+app.get('/user/public/:version/TL/:userId/:past', function(req, res) {
     return dispatchPromise('userTimeLine', req, res);
 });
-app.get('/user/public/:version/stats/:profileId', function(req, res) {
-    return dispatchPromise('userStats', req, res);
+app.get('/user/public/:version/stats/:userId/:format', function(req, res) {
+    return dispatchPromise('byDayActivity', req, res);
+});
+app.get('/user/public/:version/:kind/:userId/:format', function(req, res) {
+    return dispatchPromise('processedUserLog', req, res);
 });
 app.get('/user/public/:version/postlife/:postId/:userId', function(req,res){
     return dispatchPromise('publicPostLife', req, res);
@@ -117,7 +120,7 @@ app.get('/', function(req, res) {
 app.get('/page-:name', function(req, res) {
     return dispatchPromise('getPage', req, res);
 });
-app.get('/realitycheck/:profileId', function(req, res) {
+app.get('/realitycheck/:userId', function(req, res) {
     return dispatchPromise('getPersonal', req, res);
 });
 app.get('/overseer', function(req, res) {
