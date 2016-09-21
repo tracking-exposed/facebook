@@ -86,23 +86,23 @@ app.get('/node/export/:version/:shard', function(req, res) {
 app.get('/node/activity/:version/:format', function(req, res) {
     return dispatchPromise('byDayActivity', req, res);
 });
-app.get('/public/posts/:version', function(req, res) {
-    return dispatchPromise('publicTopPosts', req, res);
+app.get('/post/top/:version', function(req, res) {
+    return dispatchPromise('topPosts', req, res);
 });
-app.get('/public/post/:version/:postId', function(req, res) {
-    return dispatchPromise('publicPostReality', req, res);
+app.get('/post/reality/:version/:postId', function(req, res) {
+    return dispatchPromise('postReality', req, res);
 });
-app.get('/user/public/:version/TL/:userId/:past', function(req, res) {
+app.get('/post/perceived/:version/:postId/:userId', function(req,res){
+    return dispatchPromise('postLife', req, res);
+});
+app.get('/user/:version/timeline/:userId/:past/:R/:P', function(req, res) {
     return dispatchPromise('userTimeLine', req, res);
 });
-app.get('/user/public/:version/stats/:userId/:format', function(req, res) {
+app.get('/user/:version/daily/:userId/:format', function(req, res) {
     return dispatchPromise('byDayActivity', req, res);
 });
-app.get('/user/public/:version/:kind/:userId/:format', function(req, res) {
+app.get('/user/:version/analysis/:kind/:userId/:format', function(req, res) {
     return dispatchPromise('processedUserLog', req, res);
-});
-app.get('/user/public/:version/postlife/:postId/:userId', function(req,res){
-    return dispatchPromise('publicPostLife', req, res);
 });
 app.post('/F/:version', function(req, res) {
     return dispatchPromise('postFeed', req, res);
