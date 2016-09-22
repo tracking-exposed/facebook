@@ -19,7 +19,7 @@ var version = 2;
 var url = nconf.get('url');
 
 /* this is the utilty for all the connection */
-var apiR = function(base, api) {
+var apiR = function(base, api, print) {
     var URL = base + api;
     debug("Connecting to %s", URL);
     return request
@@ -29,6 +29,8 @@ var apiR = function(base, api) {
         })
         .tap(function(infos) {
             debug("Retrieved %s", URL);
+            if(!_.isUndefined(print))
+                console.log(JSON.stringify(infos, undefined, 2));
         })
         .catch(function(error) {
             debug("!Error with %s: %s", URL, error);
@@ -42,7 +44,7 @@ var testByUser = function(alli) {
         apiR(url, '/user/'+version+'/timeline/'+ anUser+'/0/1/1'),
         apiR(url, '/user/'+version+'/daily/'+ anUser+'/json'),
         apiR(url, '/user/'+version+'/analysis/presence/'+ anUser+'/json'),
-        apiR(url, '/user/'+version+'/analysis/fluctuation/'+ anUser+'/json')
+        apiR(url, '/user/'+version+'/analysis/distortion/'+ anUser+'/json')
     ]);
 };
 
@@ -61,11 +63,14 @@ var testByUserPost = function(alli) {
     return apiR(url, '/post/perceived/'+version+'/'+aPost+'/'+anUser);
 };
 
+var testNode = function(alli) {
+    return apiR(url, '/node/activity/'+version+'/json', true);
+};
+
 
 /* This is the beginning of everything */
 return apiR(url, '/node/info/' + version)
 .then(function(basicInfo) {
-    console.log(JSON.stringify(basicInfo, undefined, 2));
     return apiR(url, '/node/export/' + version + '/0')
     .tap(function(infos) {
         return testByUser(infos);
@@ -75,6 +80,9 @@ return apiR(url, '/node/info/' + version)
     })
     .tap(function(infos) {
         return testByUserPost(infos);
+    })
+    .tap(function(infos) {
+        return testNode(infos);
     });
 })
 .tap(function(x) {
