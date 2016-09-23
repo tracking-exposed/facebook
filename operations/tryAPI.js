@@ -50,10 +50,10 @@ var testByUser = function(alli) {
             false),
         apiR(url,
             '/user/'+version+'/analysis/presence/'+ anUser+'/column',
-            true),
+            false),
         apiR(url,
             '/user/'+version+'/analysis/distortion/'+ anUser+'/column',
-            false)
+            true)
     ]);
 };
 
