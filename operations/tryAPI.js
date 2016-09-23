@@ -53,7 +53,7 @@ var testByUser = function(alli) {
             false),
         apiR(url,
             '/user/'+version+'/analysis/distortion/'+ anUser+'/column',
-            true)
+            false)
     ]);
 };
 
@@ -72,7 +72,7 @@ var testByUserPost = function(alli) {
 };
 
 var testNode = function(alli) {
-    return apiR(url, '/node/activity/'+version+'/json', false);
+    return apiR(url, '/node/activity/'+version+'/json', true);
 };
 
 var getInfo = function(alli, kind) {
@@ -100,18 +100,14 @@ var getInfo = function(alli, kind) {
 return apiR(url, '/node/info/' + version)
 .then(function(basicInfo) {
     return apiR(url, '/node/export/' + version + '/0')
-    .tap(function(infos) {
-        return testByUser(infos);
-    })
-    .tap(function(infos) {
-        return testByPost(infos);
-    })
-    .tap(function(infos) {
-        return testByUserPost(infos);
-    })
-    .tap(function(infos) {
-        return testNode(infos);
-    });
+        .tap(function(infos) {
+            return Promise.all([
+                testByUser(infos),
+                testByPost(infos),
+                testByUserPost(infos),
+                testNode(infos) 
+            ])
+        });
 })
 .tap(function(x) {
     console.log("You reach the end!");
