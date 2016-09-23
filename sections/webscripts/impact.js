@@ -1,6 +1,7 @@
 var displayTimeAdoption = function(containerId) {
     var url = '/node/activity/2/column';
     d3.json(url, function(something) {
+
         var chart = c3.generate({
             bindto: containerId,
             data: {
@@ -9,7 +10,7 @@ var displayTimeAdoption = function(containerId) {
                 names: {
                     timeline: "Number of posts recorded",
                     refreshes: "Number of refreshes",
-                    supporters: "Users' last day of recorded activity",
+                    supporters: "Users don't coming back",
                     users: "Number of active user"
                 },
                 axes: { 
