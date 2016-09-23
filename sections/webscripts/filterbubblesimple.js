@@ -69,15 +69,18 @@ var displayPresence = function(userId, containerId, secondaryContainer) {
 };
 
 var displayDistortion = function(userId, containerId) {
-    return;
     if(userId === 0)
         return;
     console.log("dD " + userId + " contai " + containerId);
     var url = '/user/2/analysis/distortion/' + userId + '/column';
-    // var url = '/js/hardcoded.json';
     d3.json(url, function(something) {
-        console.log("something");
-        console.log(something);
+        var chart = c3.generate({
+            bindto: containerId,
+            data: {
+                x: 'x',
+                columns: something.columns
+            },
+        });
     });
 };
 

@@ -7,7 +7,6 @@ html
     script(type='text/javascript', src='/js/d3.min.js')
     script(type='text/javascript', src='/js/c3.min.js')
     script(type='text/javascript', src='/js/filterbubblesimple.js')
-    script(type='text/javascript', src='/js/suggest.js')
     if userId !== 0
       title Personal page of ઉ#{userId}
     else
@@ -67,14 +66,8 @@ html
 
       h3 Reality distortion
 
-      p This is your exposure to the algorithm of facebook, which namely can ignore the chronological order. In the Y you see the position difference gained or lost. This is just to make you see how many shift of the reality happens every time you refresh the page.
+      p This is your exposure to the algorithm of facebook, which namely can ignore the chronological order. Below, you see the place (more in top = the better) took buy certain post in your feed, compared to the expected chronological order.
 
     div(id="distortion")
-
-    div.main-content
-      .container-fluid
-        p If you feel you've guess why facebook is penalizing/promoting something to you, feel free to share your 
-          a.sug(href="#" id="interpretation" onclick="suggestion('interpretation')") [Interpretation]
-          |  with us.
 
     .footer
