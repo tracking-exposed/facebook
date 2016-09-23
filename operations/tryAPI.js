@@ -17,6 +17,9 @@ if ( _.isUndefined(nconf.get('DEBUG')) ||
 
 var version = 2;
 var url = nconf.get('url');
+var postId = nconf.get('postId');
+var userId = nconf.get('userId');
+var pickedO = null;
 
 /* this is the utilty for all the connection */
 var apiR = function(base, api, print) {
@@ -29,7 +32,7 @@ var apiR = function(base, api, print) {
         })
         .tap(function(infos) {
             debug("Retrieved %s", URL);
-            if(!_.isUndefined(print))
+            if(!_.isUndefined(print) && print === true)
                 console.log(JSON.stringify(infos, undefined, 2));
         })
         .catch(function(error) {
@@ -39,17 +42,23 @@ var apiR = function(base, api, print) {
 
 /* these three are the actual testing block */
 var testByUser = function(alli) {
-    var anUser = _.sample(alli.exported[0]).userId;
+    var anUser = getInfo(alli, 'userId');
     return Promise.all([
         apiR(url, '/user/'+version+'/timeline/'+ anUser+'/0/1/1'),
-        apiR(url, '/user/'+version+'/daily/'+ anUser+'/json'),
-        apiR(url, '/user/'+version+'/analysis/presence/'+ anUser+'/json'),
-        apiR(url, '/user/'+version+'/analysis/distortion/'+ anUser+'/json')
+        apiR(url,
+            '/user/'+version+'/daily/'+ anUser+'/column',
+            false),
+        apiR(url,
+            '/user/'+version+'/analysis/presence/'+ anUser+'/column',
+            true),
+        apiR(url,
+            '/user/'+version+'/analysis/distortion/'+ anUser+'/column',
+            false)
     ]);
 };
 
 var testByPost= function(alli) {
-    var aPost = _.sample(alli.exported[1]).postId;
+    var aPost = getInfo(alli, 'postId');
     return Promise.all([
         apiR(url, '/post/top/'+version+'/'+ aPost),
         apiR(url, '/post/reality/'+version+'/'+ aPost)
@@ -57,14 +66,33 @@ var testByPost= function(alli) {
 };
 
 var testByUserPost = function(alli) {
-    var aPostO = _.sample(alli.exported[1]);
-    var aPost = aPostO.postId;
-    var anUser = aPostO.userId;
+    var aPost = getInfo(alli, 'postId');
+    var anUser = getInfo(alli, 'userId');
     return apiR(url, '/post/perceived/'+version+'/'+aPost+'/'+anUser);
 };
 
 var testNode = function(alli) {
-    return apiR(url, '/node/activity/'+version+'/json', true);
+    return apiR(url, '/node/activity/'+version+'/json', false);
+};
+
+var getInfo = function(alli, kind) {
+
+    if(!_.isNull(pickedO))
+        return _.get(pickedO, kind);
+
+    var cleaned = _.reject(alli.exported[1], {postId: null});
+
+    if(!_.isUndefined(postId)) {
+        pickedO = _.find(cleaned, {postId: _.parseInt(postId) });
+    } else if(!_.isUndefined(userId)) {
+        pickedO = _.find(cleaned, {userId: _.parseInt(userId) });
+    } else {
+        pickedO = _.sample(cleaned);
+    }
+    if(_.isUndefined(pickedO))
+        pickedO = _.sample(cleaned);
+
+    return _.get(pickedO, kind);
 };
 
 

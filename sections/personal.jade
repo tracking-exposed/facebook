@@ -3,7 +3,9 @@ html
   head
     link(rel='stylesheet', href='/css/index.css')
     link(rel='stylesheet', href='/css/bootstrap.css')
+    link(rel='stylesheet', href='/css/c3.css')
     script(type='text/javascript', src='/js/d3.min.js')
+    script(type='text/javascript', src='/js/c3.min.js')
     script(type='text/javascript', src='/js/filterbubblesimple.js')
     script(type='text/javascript', src='/js/suggest.js')
     if userId !== 0
@@ -11,12 +13,12 @@ html
     else
       title facebook.tracking.exposed invalid Personal page
 
-    body(onload="displayPresence(#{userId}, '#presence'); displayFluctuation(#{userId}, '#fluctuations');")
+    body(onload="displayPresence(#{userId}, '#presence', '#simpleinfo'); displayDistortion(#{userId}, '#distortion');")
 
   .container-fluid
     .jumbotron
       if userId !== 0
-        h2 This is how a algoritm manipulation looks like
+        h3 Lets look what metadata means for 
         h3 User 
           a(href="https://www.facebook.com/#{userId}") ઉ#{displayName}
       else
@@ -49,17 +51,30 @@ html
 
   if userId !== 0
 
-    .centered
-    p The user ઉ#{userId} has #{timelines}
-     
-    p Usage metric, considering slot of 10 minutes, how often are you on FB?
-    .centered(id="presence")
+    div.main-content
+      p The user ઉ#{userId} has 
+        span.blue-fb #{timelines} 
+        | total posts available for analysis
+       
+      h3 Usage metric: how much is this user on Facebook?
+      div(id="simpleinfo")
 
-    p This is your exposure to the algorithm of facebook, which namely can ignore the chronological order. In the Y you see the position difference gained or lost. This is just to make you see how many shift of the reality happens every time you refresh the page.
-      div(id="fluctuations")
+    div(id="presence")
 
-    .container-fluid
-      p If you feel you've guess why facebook is penalizing/promoting something to you, feel free to share your 
-        a.sug(href="#" id="interpretation" onclick="suggestion('interpretation')") [Interpretation]
-        |  with us.
+    div.main-content
+      small I'm considering belong to the same interaction every activity with less than 5 minutes of distance.
+      p The graph above, can't go back in time 'yet'. the API and the visualisation with c3.js are not yet enhanced. Feel free to propose your visualization!
 
+      h3 Reality distortion
+
+      p This is your exposure to the algorithm of facebook, which namely can ignore the chronological order. In the Y you see the position difference gained or lost. This is just to make you see how many shift of the reality happens every time you refresh the page.
+
+    div(id="distortion")
+
+    div.main-content
+      .container-fluid
+        p If you feel you've guess why facebook is penalizing/promoting something to you, feel free to share your 
+          a.sug(href="#" id="interpretation" onclick="suggestion('interpretation')") [Interpretation]
+          |  with us.
+
+    .footer

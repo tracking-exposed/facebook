@@ -28,19 +28,55 @@ var appendHTML = function(containerId, something, url) {
 var displayFluctuation = function(userId, containerId) {
     if(userId === 0)
         return;
-    var url = '/user/public/2/flactuation/' + userId + '/column';
+    var url = '/user/public/2/distortion/' + userId + '/column';
     d3.json(url, function(something) {
         console.log(url);
         console.log(something);
     });
 };
 
-var displayPresence = function(userId, containerId) {
+var displayPresence = function(userId, containerId, secondaryContainer) {
     if(userId === 0)
         return;
-    var url = '/user/public/2/presence/' + userId + '/column';
+    var url = '/user/2/analysis/presence/' + userId + '/column';
     d3.json(url, function(something) {
-        console.log(url);
+        var info = "This user has contributed for " + something.totalTime +
+                   " over " + something.elapsed;
+        console.log(info);
+
+        var chart = c3.generate({
+            bindto: containerId,
+            data: {
+                x: 'x',
+                columns: something.columns,
+                xFormat: '%Y-%m-%d %H:%M:%S',
+                type: 'bar'
+            },
+            axis: {
+                x: {
+                    type: 'timeseries',
+                    tick: {
+                        format: '%d %H:%M'
+                    },
+                    label: {
+                        text: info,
+                        position: 'outer-center'
+                    }
+                }
+            }
+        });
+    });
+};
+
+var displayDistortion = function(userId, containerId) {
+    return;
+    if(userId === 0)
+        return;
+    console.log("dD " + userId + " contai " + containerId);
+    var url = '/user/2/analysis/distortion/' + userId + '/column';
+    // var url = '/js/hardcoded.json';
+    d3.json(url, function(something) {
+        console.log("something");
         console.log(something);
     });
 };
@@ -90,3 +126,6 @@ var getPostId = function(sourceMaybe) {
         return null;
     return postId;
 }
+
+
+
