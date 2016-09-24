@@ -20,8 +20,15 @@ import { identify } from './scrape';
 window.escvi = {};
 
 window.escvi.boot = function () {
-    console.log('ESCVI loading');
+    console.log('ESCVI loading!');
+    window.escvi.prefeed();
     window.escvi.watch();
+};
+
+window.escvi.prefeed = function () {
+    document.querySelectorAll('.userContentWrapper').forEach(function (elem) {
+        console.log('new element', identify(elem), elem);
+    });
 };
 
 window.escvi.watch = function () {
