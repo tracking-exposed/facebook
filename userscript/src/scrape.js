@@ -13,5 +13,7 @@ export function identify (post, parser) {
     var elem = parser(post);
     if (elem.find('.uiStreamSponsoredLink').length === 1) {
         return 'sponsored';
+    } else {
+        return 'post';
     }
 }
