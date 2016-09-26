@@ -8,10 +8,10 @@ var displayTimeAdoption = function(containerId) {
                 x: 'x',
                 columns: something,
                 names: {
-                    timeline: "Number of posts recorded",
-                    refreshes: "Number of refreshes",
+                    timeline: "Posts recorded",
+                    refreshes: "Feed refreshes",
                     supporters: "Users don't coming back",
-                    users: "Number of active user"
+                    users: "Users submitting data"
                 },
                 axes: { 
                     timeline: 'y',
@@ -29,7 +29,7 @@ var displayTimeAdoption = function(containerId) {
                 colors: {
                     timeline: '#afa3ae',
                     refreshes: '#8b9dc3',
-                    supporters: '#3b5998',
+                    supporters: '#ff6961',
                     users: '#3b5998'
                 }
             },
