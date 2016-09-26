@@ -47,28 +47,28 @@ var testByUser = function(alli) {
         apiR(url, '/user/'+version+'/timeline/'+ anUser+'/0/1/1'),
         apiR(url,
             '/user/'+version+'/daily/'+ anUser+'/column',
-            false),
+            true),
         apiR(url,
             '/user/'+version+'/analysis/presence/'+ anUser+'/column',
-            false),
+            true),
         apiR(url,
             '/user/'+version+'/analysis/distortion/'+ anUser+'/column',
-            false)
+            true)
     ]);
 };
 
 var testByPost= function(alli) {
     var aPost = getInfo(alli, 'postId');
     return Promise.all([
-        apiR(url, '/post/top/'+version+'/'+ aPost),
-        apiR(url, '/post/reality/'+version+'/'+ aPost)
+        apiR(url, '/post/top/'+version+'/'+ aPost, true),
+        apiR(url, '/post/reality/'+version+'/'+ aPost, true)
     ]);
 };
 
 var testByUserPost = function(alli) {
     var aPost = getInfo(alli, 'postId');
     var anUser = getInfo(alli, 'userId');
-    return apiR(url, '/post/perceived/'+version+'/'+aPost+'/'+anUser);
+    return apiR(url, '/post/perceived/'+version+'/'+aPost+'/'+anUser, true);
 };
 
 var testNode = function(alli) {
