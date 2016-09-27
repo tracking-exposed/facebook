@@ -93,7 +93,17 @@ const CSS_LOADER = combineLoaders([
             sourceMap: true
         }
     },
+
     { loader: 'postcss' },
+
+    {
+        loader: 'sass',
+        query: {
+            precision: '8', // If you use bootstrap, must be >= 8. See https://github.com/twbs/bootstrap-sass#sass-number-precision
+            outputStyle: 'expanded',
+            sourceMap: true
+        },
+    },
 
     // Add additional style / CSS loaders
 ]);
@@ -107,10 +117,10 @@ const LOADERS = [
         loader: JS_LOADER,
     },
     {
-        test: /\.css$/,
+        test: /\.s[ac]ss$/,
         exclude: [PATHS.NODE_MODULES],
         loader: PRODUCTION || EXTRACT ? ExtractTextPlugin.extract('style', CSS_LOADER)
-                                      : `style!${CSS_LOADER}`,
+                                      : `style!${CSS_LOADER}`
     },
 
     // Add additional loader specifications
