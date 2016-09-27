@@ -9,5 +9,12 @@ export function identify (elem) {
     }
 }
 
-export function scrapeBasicInfo () {
+export function scrapeBasicInfo (elem) {
+    const info = elem.find('.fbxWelcomeBoxName');
+    const parsedInfo = {
+        id: JSON.parse(info.attr('data-gt')).bmid,
+        href: info.attr('href').split('?')[0]
+    };
+
+    return parsedInfo;
 }

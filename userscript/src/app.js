@@ -3,12 +3,14 @@
 require('../styles/app.scss');
 
 import 'core-js/es6';
+
+// Seems like importing 'react-dom' is not enough, we need to import 'react' as well.
 import React from 'react';
 import ReactDOM from 'react-dom';
 
 import $ from 'jquery';
 import 'arrive';
-import { identify } from './scrape';
+import { scrapeBasicInfo, identify } from './scrape';
 
 import StartButton from './components/startButton';
 
@@ -33,11 +35,10 @@ function watch () {
 
 function render () {
     const rootElement = $('<div />', { 'id': 'escvi--root' });
+    const basicInfo = scrapeBasicInfo($('body'));
 
     $('body').append(rootElement);
-
-    // Replace as necessary with your root app and DOM element to inject into
-    ReactDOM.render((<StartButton />), document.getElementById('escvi--root'));
+    ReactDOM.render((<StartButton userId={basicInfo.id} />), document.getElementById('escvi--root'));
 };
 
 boot();
