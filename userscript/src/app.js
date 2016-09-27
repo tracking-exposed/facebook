@@ -14,6 +14,8 @@ const JsReactorApp = () => (
 ReactDOM.render((<JsReactorApp />), document.getElementById('js-reactor-app'));
 */
 
+require('../styles/app.scss');
+
 import 'arrive';
 import { identify } from './scrape';
 
