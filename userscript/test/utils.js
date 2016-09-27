@@ -1,7 +1,7 @@
 import fs from 'fs';
 import cheerio from 'cheerio';
 
-export function parser (html) {
+export function $ (html) {
     return { find: cheerio.load(html) };
 }
 
