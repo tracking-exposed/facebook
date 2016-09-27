@@ -41,16 +41,21 @@ Open Greasemonkey and add this code:
 
 ```
 // ==UserScript==
-// @name         escvi-proxy
-// @namespace    https://github.com/vecna/ESCVI
+// @name         test-local-require
+// @namespace    http://tampermonkey.net/
 // @version      0.1
 // @description  try to take over the world!
 // @author       You
 // @match        https://www.facebook.com/*
 // @require      file:///path/to/ESCVI/userscript/build/bundle.js
-// @grant        none
+// @resource     escviStyle file:///path/to/ESCVI/userscript/build/styles.css
+// @grant	 GM_addStyle
+// @grant        GM_getResourceText
 // @noframes
 // ==/UserScript==
+
+var newCSS = GM_getResourceText('escviStyle');
+GM_addStyle(newCSS);
 ```
 
 Remember to point the `@require` to the correct location of the "bundle" in
