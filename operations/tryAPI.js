@@ -19,11 +19,15 @@ var version = 2;
 var url = nconf.get('url');
 var postId = nconf.get('postId');
 var userId = nconf.get('userId');
+var kind = nconf.get('kind');
+if(_.isUndefined(kind)) kind = 'json';
+
 var pickedO = null;
 
 /* this is the utilty for all the connection */
 var apiR = function(base, api, print) {
-    var URL = base + api;
+    var urlsec = api.join('/');
+    var URL = base + '/' + urlsec;
     debug("Connecting to %s", URL);
     return request
         .getAsync({url: URL})
@@ -44,35 +48,29 @@ var apiR = function(base, api, print) {
 var testByUser = function(alli) {
     var anUser = getInfo(alli, 'userId');
     return Promise.all([
-        apiR(url, '/user/'+version+'/timeline/'+ anUser+'/0/1/1'),
-        apiR(url,
-            '/user/'+version+'/daily/'+ anUser+'/column',
-            true),
-        apiR(url,
-            '/user/'+version+'/analysis/presence/'+ anUser+'/column',
-            true),
-        apiR(url,
-            '/user/'+version+'/analysis/distortion/'+ anUser+'/column',
-            true)
+        apiR(url,['user',version,'timeline',anUser, 0, 1, 1],false),
+        apiR(url,['user',version,'analysis','presence',anUser,kind],true),
+        apiR(url,['user',version,'analysis','distortion',anUser,kind],true),
+        apiR(url,['user',version,'analysis','absolute',anUser,kind],true)
     ]);
 };
 
 var testByPost= function(alli) {
     var aPost = getInfo(alli, 'postId');
     return Promise.all([
-        apiR(url, '/post/top/'+version+'/'+ aPost, true),
-        apiR(url, '/post/reality/'+version+'/'+ aPost, true)
+        apiR(url, ['post', 'top', version, aPost], true),
+        apiR(url, ['post', 'reality', version, aPost], true)
     ]);
 };
 
 var testByUserPost = function(alli) {
     var aPost = getInfo(alli, 'postId');
     var anUser = getInfo(alli, 'userId');
-    return apiR(url, '/post/perceived/'+version+'/'+aPost+'/'+anUser, true);
+    return apiR(url, ['post', 'perceived', version, aPost, anUser], true);
 };
 
 var testNode = function(alli) {
-    return apiR(url, '/node/activity/'+version+'/json', true);
+    return apiR(url, ['node', 'activity', version, kind], true);
 };
 
 var getInfo = function(alli, kind) {
@@ -97,9 +95,9 @@ var getInfo = function(alli, kind) {
 
 
 /* This is the beginning of everything */
-return apiR(url, '/node/info/' + version)
+return apiR(url, ['node', 'info', version])
 .then(function(basicInfo) {
-    return apiR(url, '/node/export/' + version + '/0')
+    return apiR(url, ['node', 'export', version, '0'])
         .tap(function(infos) {
             return Promise.all([
                 testByUser(infos),
