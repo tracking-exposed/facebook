@@ -98,9 +98,6 @@ app.get('/post/perceived/:version/:postId/:userId', function(req,res){
 app.get('/user/:version/timeline/:userId/:past/:R/:P', function(req, res) {
     return dispatchPromise('userTimeLine', req, res);
 });
-app.get('/user/:version/daily/:userId/:format', function(req, res) {
-    return dispatchPromise('byDayActivity', req, res);
-});
 app.get('/user/:version/analysis/:kind/:userId/:format', function(req, res) {
     return dispatchPromise('processedUserLog', req, res);
 });
