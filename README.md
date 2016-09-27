@@ -2,9 +2,9 @@
 
 [https://facebook.tracking.exposed](https://facebook.tracking.exposed)
 
-## Compile and run
+## Install and run locally
 
-**Note:** you need  to have `mongodb` on your machine in order to run the full project.
+**Note:** you need  to have `mongodb` on your machine in order to run the full project. If `mongodb` isn't active, the software will quit with an error at the first usage.
 
 - Install project dependencies
 
@@ -15,11 +15,19 @@ $ npm run build
 $ npm run watch
 ```
 
-At this point you should able to find your local version on your localhost address (port 8000).
+At this point you should able to find your local version on your [localhost address (port 8000)](http://localhost:8000).
+
+## Import the node data
+
+Your server is empty, if you need mirror some data, import [the few](https://facebook.tracking.exposed/impact) collected so far:
+
+```
+$ DEBUG=* source='https://facebook.tracking.exposed' operations/importer.js
+```
 
 ## UserScript
 
-If you want debug, develop or investigate on the userScript, you've to add the line with 'localhost', because GreaseMonkey don't permit arbitrary connections, you've to declare the connected hosts. This is in the [header of the UserScrpt](https://sourceforge.net/p/greasemonkey/wiki/Metadata_Block/)
+If you want debug, develop or investigate on the userScript, you've to add the line with 'localhost', because TamperMonkey don't permit arbitrary connections, you've to declare the connected hosts. This is in the [header of the UserScrpt](https://sourceforge.net/p/greasemonkey/wiki/Metadata_Block/)
 
     // @connect      facebook.tracking.exposed
     // @connect      localhost
@@ -32,12 +40,8 @@ To:
 
     url = 'http://localhost:8000',
 
-
 ## API
 
-For example:
+The API currently are undocumented, but the best way to seem them run is with the command:
 
-    http /user/public/2/TL/100005961541729/8
-    http /user/public/2/TLCSV/100005961541729/10
-
-The last number is the amount of refresh to take in the past, use 0
+```$ DEBUG=* url='https://localhost:8000' operations/tryAPI.js```

@@ -1,4 +1,5 @@
 #!/usr/bin/env nodejs
+
 var _ = require('lodash');
 var Promise = require('bluebird');
 var util = require('util');
@@ -14,8 +15,10 @@ var cfgFile = "config/settings.json";
 nconf.argv().env().file({ file: cfgFile });
 
 if(_.isUndefined(nconf.get('source'))) {
-    console.log("lacking of 'source' server");
-    throw new Error();
+    console.log("specify in the environment a 'source' server");
+    console.log("most likey, run the command as:");
+    console.log("DEBUG=* source='https://facebook.tracking.exposed' operations/importer.js");
+    return -1;
 }
 
 var impoexporter = function(shardN) {
@@ -35,7 +38,9 @@ var impoexporter = function(shardN) {
             return e;
         });
         if(_.size(supTOK))
-            return mongo.writeMany(nconf.get('schema').supporters, supTOK);
+            return mongo
+                .writeMany(nconf.get('schema').supporters, supTOK)
+                .tap(function(x) { console.log("\tUpdated 'supporters'"); });
     })
     .tap(function(content) {
         var timTOK = _.map(content.exported[1], function(e) {
@@ -44,7 +49,9 @@ var impoexporter = function(shardN) {
             return e;
         });
         if(_.size(timTOK))
-            return mongo.writeMany(nconf.get('schema').timeline, timTOK);
+            return mongo
+                .writeMany(nconf.get('schema').timeline, timTOK)
+                .tap(function(x) { console.log("\tUpdated 'timeline'"); });
     })
     .tap(function(content) {
         var refTOK = _.map(content.exported[2], function(e) {
@@ -52,10 +59,12 @@ var impoexporter = function(shardN) {
             return e;
         });
         if(_.size(refTOK))
-            return mongo.writeMany(nconf.get('schema').refreshes, refTOK);
+            return mongo
+                .writeMany(nconf.get('schema').refreshes, refTOK)
+                .tap(function(x) { console.log("\tUpdated 'refreshes'"); });
     })
     .tap(function() {
-        debug("Completed shard %d", shardN);
+        console.log("Completed shard Number:\t" + shardN);
     });
 };
 
