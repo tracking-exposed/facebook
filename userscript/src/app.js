@@ -17,24 +17,22 @@ ReactDOM.render((<JsReactorApp />), document.getElementById('js-reactor-app'));
 import 'arrive';
 import { identify } from './scrape';
 
-window.escvi = {};
-
-window.escvi.boot = function () {
+function boot () {
     console.log('ESCVI loading!');
-    window.escvi.prefeed();
-    window.escvi.watch();
+    prefeed();
+    watch();
 };
 
-window.escvi.prefeed = function () {
+function prefeed () {
     document.querySelectorAll('.userContentWrapper').forEach(function (elem) {
         console.log('new element', identify(elem), elem);
     });
 };
 
-window.escvi.watch = function () {
+function watch () {
     document.arrive('.userContentWrapper', function () {
         console.log('new element', identify(this), this);
     });
 };
 
-window.escvi.boot();
+boot();
