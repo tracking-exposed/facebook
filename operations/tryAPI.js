@@ -70,7 +70,11 @@ var testByUserPost = function(alli) {
 };
 
 var testNode = function(alli) {
-    return apiR(url, ['node', 'activity', version, kind], true);
+    return Promise.all([
+          apiR(url, ['node', 'activity', version, kind], true),
+          apiR(url, ['node', 'countries', version, kind], true),
+          apiR(url, ['node', 'country', version, 'IT', kind], true),
+    ]);
 };
 
 var getInfo = function(alli, kind) {

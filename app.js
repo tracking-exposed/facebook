@@ -86,6 +86,12 @@ app.get('/node/export/:version/:shard', function(req, res) {
 app.get('/node/activity/:version/:format', function(req, res) {
     return dispatchPromise('byDayActivity', req, res);
 });
+app.get('/node/countries/:version/:format', function(req, res) {
+    return dispatchPromise('countriesStats', req, res);
+});
+app.get('/node/country/:version/:countryCode/:format', function(req, res) {
+    return dispatchPromise('countryStatsByDay', req, res);
+});
 app.get('/post/top/:version', function(req, res) {
     return dispatchPromise('topPosts', req, res);
 });
