@@ -1,4 +1,12 @@
-export function scrape (post) {
+export function scrapePost (elem) {
+    const postType = identify(elem);
+
+    return {
+        postType: postType,
+        fromProfile: elem.find('.profileLink').attr('href'),
+        href: elem.find('.fsm a').attr('href'),
+        ts: elem.find('.fsm abbr').attr('data-utime')
+    };
 }
 
 export function identify (elem) {
@@ -12,7 +20,8 @@ export function identify (elem) {
 export function scrapeBasicInfo (elem) {
     const info = elem.find('.fbxWelcomeBoxName');
     const parsedInfo = {
-        id: JSON.parse(info.attr('data-gt')).bmid,
+        // even if the id is a number, I feel more comfortable to cast it to a String
+        id: String(JSON.parse(info.attr('data-gt')).bmid),
         href: info.attr('href').split('?')[0]
     };
 
