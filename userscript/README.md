@@ -49,7 +49,7 @@ Open Greasemonkey and add this code:
 // @match        https://www.facebook.com/*
 // @require      file:///path/to/ESCVI/userscript/build/bundle.js
 // @resource     escviStyle file:///path/to/ESCVI/userscript/build/styles.css
-// @grant	 GM_addStyle
+// @grant        GM_addStyle
 // @grant        GM_getResourceText
 // @noframes
 // ==/UserScript==
