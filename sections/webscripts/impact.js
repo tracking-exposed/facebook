@@ -45,3 +45,19 @@ var displayTimeAdoption = function(containerId) {
         });
     });
 };
+
+var displayCountryPie = function(containerId) {
+    var url = '/node/countries/2/column';
+    d3.json(url, function(something) {
+        console.log(something);
+
+        var chart = c3.generate({
+            bindto: containerId,
+            data: {
+              type : 'pie',
+              labels: true,
+              columns: something
+            }
+        });
+    });
+};

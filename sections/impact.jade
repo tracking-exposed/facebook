@@ -9,7 +9,7 @@ html
     script(type='text/javascript', src='/js/impact.js')
     title ઉ Impact
 
-  body(onload="displayTimeAdoption('#timeAdoption');")
+  body(onload="displayTimeAdoption('#timeAdoption'); displayCountryPie('#countrypie');")
   
   .container-fluid
     .jumbotron
@@ -37,10 +37,18 @@ html
             a(href='/slides-long') Slides
 
   .container-fluid
-    .propaganda
+    .simpletext
+      h2 Adoption statistics
       p Since the end of Summer 2016 facebook.tracking.exposed is in α release, below the graph of the collected data.
 
   .container-fluid
     div(id="timeAdoption")
+
+  .container-fluid
+    .simpletext
+      h2 Number of refreshes collected by Nation
+
+  .container-fluid
+    div(id="countrypie")
 
   div.footer
