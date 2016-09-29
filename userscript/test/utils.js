@@ -6,5 +6,5 @@ export function $ (html) {
 }
 
 export function loadFixture (name) {
-    return fs.readFileSync('./test/fixtures/' + name + '.html').toString();
+    return $(fs.readFileSync('./test/fixtures/' + name + '.html').toString());
 }
