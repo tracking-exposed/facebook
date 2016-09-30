@@ -25,7 +25,7 @@ if(_.isUndefined(kind)) kind = 'json';
 var pickedO = null;
 
 /* this is the utilty for all the connection */
-var apiR = function(base, api, print) {
+var apiR = function(base, api) {
     var urlsec = api.join('/');
     var URL = base + '/' + urlsec;
     debug("Connecting to %s", URL);
@@ -36,8 +36,11 @@ var apiR = function(base, api, print) {
         })
         .tap(function(infos) {
             debug("Retrieved %s", URL);
-            if(!_.isUndefined(print) && print === true)
-                console.log(JSON.stringify(infos, undefined, 2));
+            var toPrint = nconf.get('print');
+            _.each(api, function(de) {
+                if(de === toPrint)
+                    console.log(JSON.stringify(infos, undefined, 2));
+            });
         })
         .catch(function(error) {
             debug("!Error with %s: %s", URL, error);
@@ -48,32 +51,32 @@ var apiR = function(base, api, print) {
 var testByUser = function(alli) {
     var anUser = getInfo(alli, 'userId');
     return Promise.all([
-        apiR(url,['user',version,'timeline',anUser, 0, 1, 1],false),
-        apiR(url,['user',version,'analysis','presence',anUser,kind],true),
-        apiR(url,['user',version,'analysis','distortion',anUser,kind],true),
-        apiR(url,['user',version,'analysis','absolute',anUser,kind],true)
+        apiR(url,['user',version,'timeline',anUser, 0, 1, 1]),
+        apiR(url,['user',version,'analysis','presence',anUser,kind]),
+        apiR(url,['user',version,'analysis','distortion',anUser,kind]),
+        apiR(url,['user',version,'analysis','absolute',anUser,kind])
     ]);
 };
 
 var testByPost= function(alli) {
     var aPost = getInfo(alli, 'postId');
     return Promise.all([
-        apiR(url, ['post', 'top', version, aPost], true),
-        apiR(url, ['post', 'reality', version, aPost], true)
+        apiR(url, ['post', 'top', version, aPost]),
+        apiR(url, ['post', 'reality', version, aPost])
     ]);
 };
 
 var testByUserPost = function(alli) {
     var aPost = getInfo(alli, 'postId');
     var anUser = getInfo(alli, 'userId');
-    return apiR(url, ['post', 'perceived', version, aPost, anUser], true);
+    return apiR(url, ['post', 'perceived', version, aPost, anUser]);
 };
 
 var testNode = function(alli) {
     return Promise.all([
-          apiR(url, ['node', 'activity', version, kind], true),
-          apiR(url, ['node', 'countries', version, kind], true),
-          apiR(url, ['node', 'country', version, 'IT', kind], true),
+          apiR(url, ['node', 'activity', version, kind]),
+          apiR(url, ['node', 'countries', version, kind]),
+          apiR(url, ['node', 'country', version, 'IT', kind]),
     ]);
 };
 
