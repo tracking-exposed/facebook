@@ -1,0 +1,24 @@
+{
+  "restartable": "rs",
+  "ignore": [
+    ".git/",
+    "node_modules/**/node_modules",
+    "sections/webscripts/",
+    "operations/",
+    "errors/",
+    "dist/"
+  ],
+  "verbose": true,
+  "execMap": {
+    "js": "node --harmony"
+  },
+  "watch": [
+    "lib/*.js",
+    "sections/*.jade",
+    "*.js"
+  ],
+  "env": {
+    "DEBUG": "DEBUG=api-2,analysis,sharding,staticpages,fbtrex,utils"
+  },
+  "ext": "js json jade"
+}

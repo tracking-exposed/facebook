@@ -7,7 +7,7 @@ var moment = require('moment');
 var bodyParser = require('body-parser');
 var Promise = require('bluebird');
 var mongodb = Promise.promisifyAll(require('mongodb'));
-var debug = require('debug')('ESCVI');
+var debug = require('debug')('fbtrex');
 var nconf = require('nconf');
 var jade = require('jade');
 
@@ -147,10 +147,20 @@ app.get('/facebook.tracking.exposed.user.js', function (req, res) {
     debug("ScriptLastVersion requested in %j", utils.getGeoIP(ipaddr));
     res.sendFile(__dirname + '/scriptlastversion');
 });
-app.use('/js', express.static(__dirname + '/dist/js'));
+
 app.use('/css', express.static(__dirname + '/dist/css'));
 app.use('/images', express.static(__dirname + '/dist/images'));
 app.use('/lib/font/league-gothic', express.static(__dirname + '/dist/css'));
+
+app.use('/js/vendor', express.static(__dirname + '/dist/js/vendor'));
+/* development: the local JS are pick w/out "npm run build" every time */
+if(nconf.get('development') === 'true') {
+    console.log(redOn + "ઉ DEVELOPMENT = serving JS from src" + redOff);
+    app.use('/js/local', express.static(__dirname + '/sections/webscripts'));
+} else {
+    app.use('/js/local', express.static(__dirname + '/dist/js/local'));
+}
+
 
 /* websocket configuration and definition of the routes */
 io.on('connection', function (socket) {
