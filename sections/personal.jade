@@ -4,9 +4,9 @@ html
     link(rel='stylesheet', href='/css/index.css')
     link(rel='stylesheet', href='/css/bootstrap.css')
     link(rel='stylesheet', href='/css/c3.css')
-    script(type='text/javascript', src='/js/d3.min.js')
-    script(type='text/javascript', src='/js/c3.min.js')
-    script(type='text/javascript', src='/js/filterbubblesimple.js')
+    script(type='text/javascript', src='/js/vendor/d3.min.js')
+    script(type='text/javascript', src='/js/vendor/c3.min.js')
+    script(type='text/javascript', src='/js/local/filterbubblesimple.js')
     if userId !== 0
       title Personal page of ઉ#{userId}
     else
@@ -49,6 +49,17 @@ html
             a(href='/slides-long') Slides
 
   if userId !== 0
+
+    div.simpletext
+      p Every time you refresh your facebook feed, Facebook can exert a reordering of your content. The word 
+        b reordering 
+        |is a pretty way to imply  
+        b promotion 
+        |and 
+        b censorship
+        |.
+      p Because like an gatekeeper deciding who enter and who don't, Facebook's algorithm decide what you are going to see (promoted in the top of your feed) and what you would not see. Or you just see once, and never more, so you can't even claim censorship, and they can call "optimisation of your experience". 
+      p With the following small visualisation, you'll see how much things get distorted by the algorithm.
 
     div.main-content
       p The user ઉ#{userId} has 
