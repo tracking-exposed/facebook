@@ -15,7 +15,7 @@ import { scrapeBasicInfo, identify } from './scrape';
 import StartButton from './components/startButton';
 
 function boot () {
-    console.log('ESCVI loading!');
+    console.log('FBTREX loading!');
     prefeed();
     watch();
     render();
@@ -34,11 +34,11 @@ function watch () {
 };
 
 function render () {
-    const rootElement = $('<div />', { 'id': 'escvi--root' });
+    const rootElement = $('<div />', { 'id': 'fbtrex--root' });
     const basicInfo = scrapeBasicInfo($('body'));
 
     $('body').append(rootElement);
-    ReactDOM.render((<StartButton userId={basicInfo.id} />), document.getElementById('escvi--root'));
+    ReactDOM.render((<StartButton userId={basicInfo.id} />), document.getElementById('fbtrex--root'));
 };
 
 boot();
