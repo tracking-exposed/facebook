@@ -1,4 +1,4 @@
-export function currentTimeISO8601 (date) {
+export function getTimeISO8601 (date) {
     // Thanks to http://stackoverflow.com/a/17415677/597097
     const now = date || new Date();
     const tzo = -now.getTimezoneOffset();
