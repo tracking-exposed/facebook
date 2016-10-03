@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 import { TimeWarp } from './utils';
-import { getTimeISO8601 } from '../src/utils';
+import { getTimeISO8601, normalizeUrl } from '../src/utils';
 
 describe('utils.getTimeISO8601', function () {
     const timeWarp = new TimeWarp();
@@ -19,5 +19,15 @@ describe('utils.getTimeISO8601', function () {
         date.getTimezoneOffset = () => -60;
 
         assert.equal(getTimeISO8601(date), '2000-07-01T15:00:00+01:00');
+    });
+});
+
+describe('utils.normalizeUrl', function () {
+    it('adds the root to static paths', function () {
+        assert.equal(normalizeUrl('/foo/bar'), 'https://www.facebook.com/foo/bar');
+    });
+
+    it('doesn\'t add the root if already present', function () {
+        assert.equal(normalizeUrl('https://www.facebook.com/foo/bar'), 'https://www.facebook.com/foo/bar');
     });
 });

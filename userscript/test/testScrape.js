@@ -25,7 +25,7 @@ describe('Scrape', function () {
         assert.deepEqual(scrapePost(loadFixture('post')), {
             postType: 'post',
             fromProfile: 'https://www.facebook.com/agranzot',
-            href: '/agranzot/posts/10154575795176552',
+            href: 'https://www.facebook.com/agranzot/posts/10154575795176552',
             ts: '1475183423',
             seenAt: '2016-06-06T15:00:10+02:00'
         });
@@ -35,7 +35,7 @@ describe('Scrape', function () {
         assert.deepEqual(scrapePost(loadFixture('post01')), {
             postType: 'post',
             fromProfile: 'https://www.facebook.com/mustardgasandroses/',
-            href: '/permalink.php?story_fbid=1132045500176946&id=158503560864483',
+            href: 'https://www.facebook.com/permalink.php?story_fbid=1132045500176946&id=158503560864483',
             ts: '1475087549',
             seenAt: '2016-10-15T04:20:00-01:00'
         });
