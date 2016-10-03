@@ -1,6 +1,5 @@
 import { assert } from 'chai';
-import { TimeWarp } from './utils';
-import { loadFixture } from './utils';
+import { TimeWarp, loadFixture } from './utils';
 
 import { scrapeBasicInfo, identify, scrapePost } from '../src/scrape';
 
