@@ -10,12 +10,19 @@ import ReactDOM from 'react-dom';
 
 import $ from 'jquery';
 import 'arrive';
-import { scrapeBasicInfo, identify } from './scrape';
+import { scrapeBasicInfo, scrapePost } from './scrape';
+
+import { HUB } from './hub';
+import { registerHandlers } from './handlers/index';
 
 import StartButton from './components/startButton';
 
 function boot () {
     console.log('FBTREX loading!');
+
+    // Source handlers so they can process events
+    registerHandlers(HUB);
+
     prefeed();
     watch();
     render();
@@ -23,13 +30,15 @@ function boot () {
 
 function prefeed () {
     document.querySelectorAll('.userContentWrapper').forEach(function (elem) {
-        console.log('new element', identify($(elem)), elem);
+        const $elem = $(elem);
+        HUB.event('newPost', {'element': $elem, 'data': scrapePost($elem)});
     });
 };
 
 function watch () {
     document.arrive('.userContentWrapper', function () {
-        console.log('new element', identify($(this)), this);
+        const $elem = $(this);
+        HUB.event('newPost', {'element': $elem, 'data': scrapePost($elem)});
     });
 };
 

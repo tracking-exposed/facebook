@@ -10,7 +10,7 @@ const StartButton = React.createClass({
             <a
                 href={'https://facebook.tracking.exposed/realitycheck/' + this.props.userId}
                 target='_blank'
-                className='escvi--main-button'>
+                className='fbtrex--main-button'>
                 ઉ
             </a>
         );
