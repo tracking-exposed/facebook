@@ -16,3 +16,10 @@ export function getTimeISO8601 (date) {
             pad(tzo / 60), ':',
             pad(tzo % 60)].join('');
 }
+
+export function normalizeUrl (url) {
+    if (url[0] === '/') {
+        url = 'https://www.facebook.com' + url;
+    }
+    return url;
+}

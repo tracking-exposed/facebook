@@ -1,4 +1,4 @@
-import { getTimeISO8601 } from './utils';
+import { getTimeISO8601, normalizeUrl } from './utils';
 
 export function scrapePost (elem) {
     const postType = identify(elem);
@@ -6,7 +6,7 @@ export function scrapePost (elem) {
     return {
         postType: postType,
         fromProfile: elem.find('.profileLink').attr('href'),
-        href: elem.find('.fsm a').attr('href'),
+        href: normalizeUrl(elem.find('.fsm a').attr('href')),
         ts: elem.find('.fsm abbr').attr('data-utime'),
         seenAt: getTimeISO8601()
     };
