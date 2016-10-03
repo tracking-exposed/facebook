@@ -24,9 +24,13 @@ export class TimeWarp {
             date.getTimezoneOffset = () => offset;
             return date;
         };
+
+        global.Date.now = () => new Date();
     }
 
     reset () {
-        global.Date = this._Date;
+        if (this._Date) {
+            global.Date = this._Date;
+        }
     }
 }
