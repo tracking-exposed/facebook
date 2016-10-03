@@ -3,7 +3,7 @@ export function getTimeISO8601 (date) {
     const now = date || new Date();
     const tzo = -now.getTimezoneOffset();
     const dif = tzo >= 0 ? '+' : '-';
-    const pad = function (num) {
+    const pad = (num) => {
         const norm = Math.abs(Math.floor(num));
         return (norm < 10 ? '0' : '') + norm;
     };
