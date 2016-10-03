@@ -25,6 +25,22 @@ Your server is empty, if you need mirror some data, import [the few](https://fac
 $ DEBUG=* source='https://facebook.tracking.exposed' operations/importer.js
 ```
 
+## Docker support
+
+```
+$ docker run -d --name mongo mongo
+$ docker run -d --name fbtrex -p 8000:8000 --link mongo:mongo fbtrex npm run watch
+```
+The immage support the importer script:
+```
+$ docker run -d --name fbtrex -p 8000:8000 --link mongo:mongo fbtrex /bin/bash -c '$ docker run -d --name fbtrex -p 8000:8000 --link mongo:mongo fbtrex && npm run watch'
+
+```
+
+Is possible to simply build the fbtrex docker image with:
+```
+$ docker build -t fbtrex .
+```
 ## UserScript
 
 If you want debug, develop or investigate on the userScript, you've to add the line with 'localhost', because TamperMonkey don't permit arbitrary connections, you've to declare the connected hosts. This is in the [header of the UserScrpt](https://sourceforge.net/p/greasemonkey/wiki/Metadata_Block/)
