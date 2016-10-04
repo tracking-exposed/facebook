@@ -15,7 +15,7 @@ var displayPresence = function(userId, containerId, postNumb) {
                     x: 'value',
                     value: ['posts seen'],
                 },
-                type: 'scatter'
+                type: 'area'
             },
             axis: {
                 x: {
@@ -25,8 +25,13 @@ var displayPresence = function(userId, containerId, postNumb) {
                     },
                     tick: {
                         name: 'value',
-                        culling: false,
+                        culling: true,
                         fit: true
+                    }
+                },
+                y: {
+                    label: {
+                        text: 'post visualized in timeline'
                     }
                 }
             },
@@ -77,6 +82,11 @@ var displayAbsolute = function(userId, containerId, postNumb) {
                     tick: {
                         name: 'value',
                         culling: true
+                    }
+                },
+                y: {
+                    label: {
+                        text: 'post created per hour'
                     }
                 }
             },
