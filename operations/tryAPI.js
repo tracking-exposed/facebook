@@ -20,15 +20,13 @@ var url = nconf.get('url');
 var postId = nconf.get('postId');
 var userId = nconf.get('userId');
 var kind = nconf.get('kind');
-if(_.isUndefined(kind)) kind = 'json';
-
 var pickedO = null;
 
 /* this is the utilty for all the connection */
 var apiR = function(base, api) {
     var urlsec = api.join('/');
     var URL = base + '/' + urlsec;
-    debug("Connecting to %s", URL);
+    debug("⇒ %s", URL);
     return request
         .getAsync({url: URL})
         .then(function(response) {
@@ -52,9 +50,8 @@ var testByUser = function(alli) {
     var anUser = getInfo(alli, 'userId');
     return Promise.all([
         apiR(url,['user',version,'timeline',anUser, 0, 1, 1]),
-        apiR(url,['user',version,'analysis','presence',anUser,kind]),
-        apiR(url,['user',version,'analysis','distortion',anUser,kind]),
-        apiR(url,['user',version,'analysis','absolute',anUser,kind])
+        apiR(url,['user',version,'analysis','presence',6000,anUser,kind]),
+        apiR(url,['user',version,'analysis','absolute',6000,anUser,kind])
     ]);
 };
 
@@ -97,23 +94,35 @@ var getInfo = function(alli, kind) {
     if(_.isUndefined(pickedO))
         pickedO = _.sample(cleaned);
 
+    pickedO = _.pick(pickedO, ['userId', 'postId']);
+    debug("ݷݷݷ for this test: %j", pickedO);
     return _.get(pickedO, kind);
 };
 
+/* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
+
+if(_.isUndefined(kind)) {
+    debug("kind of output: JSON");
+    kind = 'json';
+}
+else {
+    debug("kind of output: c3 visualisation library");
+    kind = 'c3';
+}
 
 /* This is the beginning of everything */
 return apiR(url, ['node', 'info', version])
-.then(function(basicInfo) {
-    return apiR(url, ['node', 'export', version, '0'])
-        .tap(function(infos) {
-            return Promise.all([
-                testByUser(infos),
-                testByPost(infos),
-                testByUserPost(infos),
-                testNode(infos) 
-            ])
-        });
-})
-.tap(function(x) {
-    console.log("You reach the end!");
-});
+    .then(function(basicInfo) {
+        return apiR(url, ['node', 'export', version, '0'])
+            .tap(function(infos) {
+                return Promise.all([
+                    testByUser(infos),
+                    testByPost(infos),
+                    testByUserPost(infos),
+                    testNode(infos) 
+                ])
+            });
+    })
+    .tap(function(x) {
+        console.log("You reach the end!");
+    });

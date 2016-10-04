@@ -18,7 +18,7 @@
     "*.js"
   ],
   "env": {
-    "DEBUG": "DEBUG=api-2,analysis,sharding,staticpages,fbtrex,utils"
+    "DEBUG": "DEBUG=c3,api-2,analysis,sharding,staticpages,fbtrex,utils"
   },
   "ext": "js json jade"
 }

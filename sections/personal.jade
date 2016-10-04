@@ -4,15 +4,16 @@ html
     link(rel='stylesheet', href='/css/index.css')
     link(rel='stylesheet', href='/css/bootstrap.css')
     link(rel='stylesheet', href='/css/c3.css')
+    script(type='text/javascript', src='/js/vendor/moment.min.js')
     script(type='text/javascript', src='/js/vendor/d3.min.js')
     script(type='text/javascript', src='/js/vendor/c3.min.js')
-    script(type='text/javascript', src='/js/local/filterbubblesimple.js')
+    script(type='text/javascript', src='/js/local/personal.js')
     if userId !== 0
       title Personal page of ઉ#{userId}
     else
       title facebook.tracking.exposed invalid Personal page
 
-    body(onload="displayPresence(#{userId}, '#presence', '#simpleinfo'); displayDistortion(#{userId}, '#distortion');")
+    body(onload="displayPresence(#{userId}, '#presence'); displayAbsolute(#{userId}, '#absolute');")
 
   .container-fluid
     .jumbotron
@@ -62,23 +63,18 @@ html
       p With the following small visualisation, you'll see how much things get distorted by the algorithm.
 
     div.main-content
-      p The user ઉ#{userId} has 
-        span.blue-fb #{timelines} 
-        | total posts available for analysis
        
-      h3 Usage metric: how much is this user on Facebook?
-      div(id="simpleinfo")
-
+      .small The user ઉ#{userId} has #{timelines} post seen, based on the last 6 thousands, you can see:
+      h3 How much is this user on Facebook?
     div(id="presence")
 
     div.main-content
-      small I'm considering belong to the same interaction every activity with less than 5 minutes of distance.
-      p The graph above, can't go back in time 'yet'. the API and the visualisation with c3.js are not yet enhanced. Feel free to propose your visualization!
+      h3 When has been posted the posts seen by the user?
+    div(id="absolute")
 
+    div.main-content
       h3 Reality distortion
 
-      p This is your exposure to the algorithm of facebook, which namely can ignore the chronological order. Below, you see the place (more in top = the better) took buy certain post in your feed, compared to the expected chronological order.
-
-    div(id="distortion")
+      b This visualisation is a work in progress, not available now
 
     .footer

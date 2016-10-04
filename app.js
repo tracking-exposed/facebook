@@ -23,6 +23,13 @@ nconf.argv()
      .file({ file: cfgFile });
 console.log(redOn + "ઉ nconf loaded, using " + cfgFile + redOff);
 
+var wrapError = function(where, v, fn, nfo) {
+    var str = redOn + " " + where + " Developer mistake v(" + 
+              v + ") " + fn + "\n" + 
+              JSON.stringify(nfo, undefined, 2) + redOff;
+    console.log(str);
+};
+
 /* This function wraps all the API call, checking the verionNumber
  * managing error in 4XX/5XX messages and making all these asyncronous
  * I/O with DB, inside this Bluebird */
@@ -37,8 +44,9 @@ var dispatchPromise = function(funcName, req, res) {
 
     if(_.isUndefined(func)) {
         debug("Developer mistake with version %d %s ", apiV, funcName);
-        throw new Error("Developer mistake with version " + 
-                       apiV + " f " + funcName);
+        wrapError("pre-exec", apiV, funcName, req.params, res);
+        res.header(500);
+        return false;
     }
 
     req.randomUnicode = String.fromCharCode(_.random(0x0391, 0x085e));
@@ -48,7 +56,6 @@ var dispatchPromise = function(funcName, req, res) {
     /* in theory here we can keep track of time */
     return new Promise.resolve(func(req))
       .then(function(httpresult) {
-          // res.header(httpresult.header);
           if(!_.isUndefined(httpresult.json)) {
               debug("%s API %s success, returning JSON (%d bytes)",
                   req.randomUnicode, funcName,
@@ -64,7 +71,9 @@ var dispatchPromise = function(funcName, req, res) {
                   req.randomUnicode, funcName, httpresult.file);
               res.sendFile(__dirname + "/html/" + httpresult.file);
           } else {
-              throw new Error("Internal developer mistake |" + funcName);
+              wrapError("post-exec", apiV, funcName, req.params);
+              res.header(500);
+              return false;
           }
           return true;
       }) 
@@ -98,14 +107,14 @@ app.get('/post/top/:version', function(req, res) {
 app.get('/post/reality/:version/:postId', function(req, res) {
     return dispatchPromise('postReality', req, res);
 });
-app.get('/post/perceived/:version/:postId/:userId', function(req,res){
+app.get('/post/perceived/:version/:postId/:userId', function(req, res){
     return dispatchPromise('postLife', req, res);
 });
 app.get('/user/:version/timeline/:userId/:past/:R/:P', function(req, res) {
     return dispatchPromise('userTimeLine', req, res);
 });
-app.get('/user/:version/analysis/:kind/:userId/:format', function(req, res) {
-    return dispatchPromise('processedUserLog', req, res);
+app.get('/user/:version/analysis/:kind/:cpn/:userId/:format', function(req, res) {
+    return dispatchPromise('userAnalysis', req, res);
 });
 app.post('/F/:version', function(req, res) {
     return dispatchPromise('postFeed', req, res);
