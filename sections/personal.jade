@@ -13,7 +13,7 @@ html
     else
       title facebook.tracking.exposed invalid Personal page
 
-    body(onload="displayPresence(#{userId}, '#presence'); displayAbsolute(#{userId}, '#absolute');")
+    body(onload=" displayPresence(#{userId}, '#presence', 5000); displayAbsolute(#{userId}, '#absolute', 5000); ")
 
   .container-fluid
     .jumbotron
@@ -64,16 +64,16 @@ html
 
     div.main-content
        
-      .small The user ઉ#{userId} has #{timelines} post seen, based on the last 6 thousands, you can see:
-      h3 How much is this user on Facebook?
+      .small The user ઉ#{userId} has #{timelines} post seen. Based on the last 5.000 posts, you can see:
+      h4 How much is this user on Facebook?
     div(id="presence")
 
     div.main-content
-      h3 When has been posted the posts seen by the user?
+      h4 When have been posted the posts ઉ#{userId} saw?
     div(id="absolute")
 
     div.main-content
-      h3 Reality distortion
+      h4 Reality distortion
 
       b This visualisation is a work in progress, not available now
 

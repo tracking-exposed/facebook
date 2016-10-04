@@ -1,5 +1,5 @@
 var displayTimeAdoption = function(containerId) {
-    var url = '/node/activity/2/column';
+    var url = '/node/activity/2/c3';
     d3.json(url, function(something) {
 
         var chart = c3.generate({
