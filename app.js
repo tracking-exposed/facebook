@@ -138,9 +138,6 @@ app.get('/realitycheck/random', function(req, res) {
 app.get('/realitycheck/:userId', function(req, res) {
     return dispatchPromise('getPersonal', req, res);
 });
-app.get('/overseer', function(req, res) {
-    return dispatchPromise('getOverseer', req, res);
-});
 app.get('/realitymeter', function(req, res) {
     return dispatchPromise('getRealityMeter', req, res);
 });
