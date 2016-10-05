@@ -35,13 +35,6 @@ var displayFluctuation = function(userId, containerId) {
     });
 };
 
-var displayOverseer = function(containerId) {
-    var url = '/admin/view/2/';
-    d3.json(url, function(something) {
-       appendHTML(containerId, something, url);
-    });
-};
-
 var displayRealityExamples = function(containerId) {
     console.log("dRE");
     var url = '/public/posts/2/';
