@@ -132,6 +132,9 @@ app.get('/', function(req, res) {
 app.get('/page-:name', function(req, res) {
     return dispatchPromise('getPage', req, res);
 });
+app.get('/realitycheck/random', function(req, res) {
+    return dispatchPromise('getRandom', req, res);
+});
 app.get('/realitycheck/:userId', function(req, res) {
     return dispatchPromise('getPersonal', req, res);
 });
