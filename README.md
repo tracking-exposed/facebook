@@ -26,21 +26,31 @@ $ DEBUG=* source='https://facebook.tracking.exposed' operations/importer.js
 ```
 
 ## Docker support
-
+First, you need to install a mongodb docker image and run it as the basic dataset of your installation:
 ```
 $ docker run -d --name mongo mongo
-$ docker run -d --name fbtrex -p 8000:8000 --link mongo:mongo fbtrex npm run watch
 ```
-The immage support the importer script:
+note: this container will maintain the dataset on your local machine, in order to restore it you have to simply start the container:
 ```
-$ docker run -d --name fbtrex -p 8000:8000 --link mongo:mongo fbtrex /bin/bash -c '$ docker run -d --name fbtrex -p 8000:8000 --link mongo:mongo fbtrex && npm run watch'
-
+$ docker start mongo
 ```
 
-Is possible to simply build the fbtrex docker image with:
+If you need to start the node with an empty dataset, run:
+```
+$ docker run -d --name fbtrex -p 8000:8000 --link mongo:mongo fbtrex/fbtrex-app npm run watch
+```
+note: if the image is not present in your local docker registry will be automatic pulled from the docker hub.
+
+Or if you need your instance filled with and synced with the main node, run:
+```
+$ docker run -d --name fbtrex -p 8000:8000 --link mongo:mongo fbtrex/fbtrex-app /bin/bash -c "DEBUG=* source='https://facebook.tracking.exposed' operations/importer.js && npm run watch"
+```
+
+If you want to build on your own the image:
 ```
 $ docker build -t fbtrex .
 ```
+
 ## UserScript
 
 If you want debug, develop or investigate on the userScript, you've to add the line with 'localhost', because TamperMonkey don't permit arbitrary connections, you've to declare the connected hosts. This is in the [header of the UserScrpt](https://sourceforge.net/p/greasemonkey/wiki/Metadata_Block/)
