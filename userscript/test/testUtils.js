@@ -30,4 +30,8 @@ describe('utils.normalizeUrl', function () {
     it('doesn\'t add the root if already present', function () {
         assert.equal(normalizeUrl('https://www.facebook.com/foo/bar'), 'https://www.facebook.com/foo/bar');
     });
+
+    it('accepts null/undefined urls and returns null', function () {
+        assert.equal(normalizeUrl(), null);
+    });
 });

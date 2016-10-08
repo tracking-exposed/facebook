@@ -2,9 +2,20 @@ import React from 'react';
 
 const VisualDebugBox = React.createClass({
     render () {
+        const data = this.props.event.data;
+
         return (
-            <div>
-                {this.props.event.data.href}
+            <div className='fbtrex--visual-debug'>
+                <dl>
+                    {Object.keys(data).map((key) => [
+                        <dt>
+                            {key}
+                        </dt>,
+                        <dd>
+                            {data[key]}
+                        </dd>
+                    ])}
+                </dl>
             </div>
         );
     }

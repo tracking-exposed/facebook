@@ -30,15 +30,21 @@ function boot () {
 
 function prefeed () {
     document.querySelectorAll('.userContentWrapper').forEach(function (elem) {
-        const $elem = $(elem);
-        HUB.event('newPost', {'element': $elem, 'data': scrapePost($elem)});
+        const $elem = $(elem).parent();
+        const data = scrapePost($elem);
+        if (data) {
+            HUB.event('newPost', {'element': $elem, 'data': data });
+        }
     });
 };
 
 function watch () {
     document.arrive('.userContentWrapper', function () {
-        const $elem = $(this);
-        HUB.event('newPost', {'element': $elem, 'data': scrapePost($elem)});
+        const $elem = $(this).parent();
+        const data = scrapePost($elem);
+        if (data) {
+            HUB.event('newPost', {'element': $elem, 'data': data });
+        }
     });
 };
 

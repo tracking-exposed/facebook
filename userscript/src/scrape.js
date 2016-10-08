@@ -3,6 +3,14 @@ import { getTimeISO8601, normalizeUrl } from './utils';
 export function scrapePost (elem) {
     const postType = identify(elem);
 
+    console.log(elem.find('.userContentWrapper').length);
+    if (elem.find('.userContentWrapper .userContentWrapper').length) {
+        console.log('return');
+        return null;
+    }
+
+    const fromProfile = elem.find('[data-hovercard^="/ajax/hovercard/user.php"]');
+
     return {
         postType: postType,
         fromProfile: elem.find('.profileLink').attr('href'),
