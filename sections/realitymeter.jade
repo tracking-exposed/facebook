@@ -4,49 +4,65 @@ html
     link(rel='stylesheet', href='/css/index.css')
     link(rel='stylesheet', href='/css/bootstrap.css')
     script(type='text/javascript', src='/js/vendor/d3.min.js')
-    script(type='text/javascript', src='/js/local/filterbubblesimple.js')
+    script(type='text/javascript', src='/js/vendor/c3.min.js')
+    script(type='text/javascript', src='/js/local/realitymeter.js')
     title ઉ RealityMeter
 
-    body(onload="displayRealityExamples('#listofexamplepost'); displayRealityGraph(getPostId(null), '#realitygraph');")
+    body(onload="displayRealityGraph(#{postId}, '#realitygraph');")
     
     .container-fluid
       .jumbotron
-        h1 RealityMeter
-        h3 every Social Media Manager want a bite of reality!
-
-    .center.smaller Visualisation not yet implemented
-    .center.smaller Visualisation not yet implemented
-    .center.smaller Visualisation not yet implemented
-    .center.smaller Visualisation not yet implemented
+        h2 ઉ RealityMeter
+        h4 ... 'cos every Social Media Manager want a bite of reality!
 
     .container-fluid
       div(id="realitygraph")
 
+      .larger-content
+        span.col-md-1
+        span.container-fluid.col-md-4.niceborder
+          p When you publish a post in a page, Facebook tell you how many 
+            b impressions  
+            | the post got. 
+            b But what does it means? 
+            | In the user timeline, does the post appeared many time in favorable position, or just one and then get disappeared from the user feed? we know these are the metrics to judge if a post might got an impact in the users eyeballs or not… and 
+            b now you can know it! 
+        span.col-md-1
+        span.container-fluid.col-md-4.niceborder
+          i
+            But Facebook is so much more than a media company. [...] Facebook plays both sides: it offers real estate (video advertising) and provides the assessments (viewership data). Not surprisingly, 
+            a(href="http://arstechnica.com/business/2016/09/facebook-apologizes-for-feeding-inflated-video-view-numbers-to-advertisers/") Facebook makes mistakes.
+            | There is no auditing, no independence; we simply take Facebook’s word for it, when and how much the errors occur. Like Poseidon, FB blows, the currents move, and content producers and advertisers are swept in new directions.
+          div.smaller
+            p.right.smaller
+              a(href="https://www.theguardian.com/technology/2016/sep/28/google-facebook-powerful-secretive-empire-transparency") The Guardian: Facebook and Google: most powerful and secretive empires we've ever known
+        span.col-md-1
+
     .container-fluid
-      .propaganda
 
-        p When you publish a post in a page, Facebook tell you how many 
-          b impressions 
-          | your post got. But what does it means? In the user timeline, does the post appeared many time in favorable position, or just one and then get disappeared from the user feed? 
-          b Now you can know it! 
-
-        .postidinfo 
-          p.monospace Write here the postId
-          p.monospace https://www.facebook.com/
-            span.red 312312323121
-            |?blah
-          p.monospace https://www.facebook.com/photo.php?
-            span.red 34324234234
-            |.322
-
-        .container-fluid
-          input(type=text class="center theinputfield" id="postinput")
+      .larger-content
+        .center
+          if postId !== 0
+            input(type=text class="center theinputfield" value="#{postId}" id="postinput")
+          else
+            input(type=text placeholder="Write here the postId" class="center theinputfield" id="postinput")
+          endif
           button(class="buttonfield btn-success" click="displayRealityGraph(getPostId('#postinput'), '#realitygraph');") ઉ
+        .container-fluid
+          span.col-md-4
+          span.col-md-4
+            .smaller psssst, this is the postId:
+              .monospace https://www.facebook.com/
+                span.red 312312323121
+                |?blah
+              .monospace https://www.facebook.com/photo.php?
+                span.red 34324234234
+                |.322…
 
-        p Right now, #{users} users contribute to facebook.tracking.exposed, and among them the research is performed. If you are a social media manager and you want to know the true outreach of your material, spread facebook.tracking.exposed to your friend, followers, audience.
+      .larger-content
+        p Right now, #{users} users contributed with #{posts}. Research is performed among these numbers. If you are a social media manager and you want to know the true outreach of your material, spread facebook.tracking.exposed to your friend, followers, audience. 
+          a(onclick="displayRealityGraph('random', '#realitygraph');") See how a posts looks like
 
-      h3 ઉ See the most detailed post from the archive
+  .footer
 
-        .container
-          div(id="listofexamplepost")
 
