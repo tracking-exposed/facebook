@@ -58,7 +58,7 @@ var testByUser = function(alli) {
 var testByPost= function(alli) {
     var aPost = getInfo(alli, 'postId');
     return Promise.all([
-        apiR(url, ['post', 'top', version, aPost]),
+        apiR(url, ['post', 'top', version ]),
         apiR(url, ['post', 'reality', version, aPost])
     ]);
 };
@@ -81,6 +81,15 @@ var getInfo = function(alli, kind) {
 
     if(!_.isNull(pickedO))
         return _.get(pickedO, kind);
+
+    if( !_.isNull(userId) && !_.isNull(postId) ) {
+        pickedO = {
+            userId: userId,
+            postId: postId
+        };
+        debug(" ♥ userId+postId set by nconf %j", pickedO);
+        return _.get(pickedO, kind);
+    }
 
     var cleaned = _.reject(alli.exported[1], {postId: null});
 

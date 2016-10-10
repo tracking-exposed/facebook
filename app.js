@@ -102,7 +102,10 @@ app.get('/node/country/:version/:countryCode/:format', function(req, res) {
     return dispatchPromise('countryStatsByDay', req, res);
 });
 app.get('/post/top/:version', function(req, res) {
-    return dispatchPromise('topPosts', req, res);
+    // return dispatchPromise('topPosts', req, res);
+    //    the return more or less same format, the second is
+    //    better but CPU intensive until the mongo query get improved
+    return dispatchPromise('topPostsEXP', req, res);
 });
 app.get('/post/reality/:version/:postId', function(req, res) {
     return dispatchPromise('postReality', req, res);
@@ -138,10 +141,10 @@ app.get('/realitycheck/random', function(req, res) {
 app.get('/realitycheck/:userId', function(req, res) {
     return dispatchPromise('getPersonal', req, res);
 });
-app.get('/realitymeter', function(req, res) {
+app.get('/realitymeter/:postId', function(req, res) {
     return dispatchPromise('getRealityMeter', req, res);
 });
-app.get('/realitymeter/:postId', function(req, res) {
+app.get('/realitymeter', function(req, res) {
     return dispatchPromise('getRealityMeter', req, res);
 });
 app.get('/impact', function(req, res) {
