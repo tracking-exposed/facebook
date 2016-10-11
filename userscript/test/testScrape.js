@@ -34,7 +34,7 @@ describe('Scrape', function () {
 
         assert.deepEqual(scrapePost(loadFixture('post01')), {
             postType: 'post',
-            fromProfile: 'https://www.facebook.com/Isis-the-band-158503560864483/?ref=nf',
+            fromProfile: 'https://www.facebook.com/Isis-the-band-158503560864483/',
             href: 'https://www.facebook.com/permalink.php?story_fbid=1132045500176946&id=158503560864483',
             ts: '1475087549',
             seenAt: '2016-10-15T04:20:00-01:00'
@@ -42,7 +42,7 @@ describe('Scrape', function () {
 
         assert.deepEqual(scrapePost(loadFixture('post02')), {
             postType: 'post',
-            fromProfile: '',
+            fromProfile: 'https://www.facebook.com/Lastknight',
             href: 'https://www.facebook.com/Lastknight/posts/10154603530677053',
             ts: '1475783325',
             seenAt: '2016-10-15T04:20:00-01:00'

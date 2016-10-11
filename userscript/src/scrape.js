@@ -3,17 +3,16 @@ import { getTimeISO8601, normalizeUrl } from './utils';
 export function scrapePost (elem) {
     const postType = identify(elem);
 
-    console.log(elem.find('.userContentWrapper').length);
     if (elem.find('.userContentWrapper .userContentWrapper').length) {
-        console.log('return');
         return null;
     }
 
-    const fromProfile = elem.find('[data-hovercard^="/ajax/hovercard/user.php"]');
-
+    const fromProfile = elem.find('[data-hovercard^="/ajax/hovercard/"]')
+                            .attr('href')
+                            .split('?')[0];
     return {
         postType: postType,
-        fromProfile: elem.find('.profileLink').attr('href'),
+        fromProfile: fromProfile,
         href: normalizeUrl(elem.find('.fsm a').attr('href')),
         ts: elem.find('.fsm abbr').attr('data-utime'),
         seenAt: getTimeISO8601()
