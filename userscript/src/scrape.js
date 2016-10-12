@@ -1,8 +1,29 @@
 import { getTimeISO8601, normalizeUrl } from './utils';
 
-export function scrapePost (elem) {
+const SCRAPERS = {
+    'post': scrapePost,
+    'sponsored': scrapePost,
+    'userdata': scrapeUserData
+};
+
+export function scrape (elem) {
     const postType = identify(elem);
 
+    return SCRAPERS[postType](postType, elem);
+}
+
+export function identify (elem) {
+    if (elem.find('.fbxWelcomeBoxName').length === 1) {
+        return 'userdata';
+    }
+    if (elem.find('.uiStreamSponsoredLink').length === 1) {
+        return 'sponsored';
+    } else {
+        return 'post';
+    }
+}
+
+export function scrapePost (postType, elem) {
     // Skip if the post is not top level
     if (elem.parents('.userContentWrapper').length) {
         return null;
@@ -20,15 +41,7 @@ export function scrapePost (elem) {
     };
 }
 
-export function identify (elem) {
-    if (elem.find('.uiStreamSponsoredLink').length === 1) {
-        return 'sponsored';
-    } else {
-        return 'post';
-    }
-}
-
-export function scrapeBasicInfo (elem) {
+export function scrapeUserData (postType, elem) {
     const info = elem.find('.fbxWelcomeBoxName');
     const parsedInfo = {
         // even if the id is a number, I feel more comfortable to cast it to a String
