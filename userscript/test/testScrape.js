@@ -1,51 +1,23 @@
 import { assert } from 'chai';
-import { TimeWarp, loadFixture } from './utils';
+import { TimeWarp, listFixtures, loadFixture, loadPayload } from './utils';
 
-import { scrapeBasicInfo, identify, scrapePost } from '../src/scrape';
+import { scrape } from '../src/scrape';
 
 describe('Scrape', function () {
+    const fixtures = listFixtures();
     const timeWarp = new TimeWarp();
 
     afterEach(() => {
         timeWarp.reset();
     });
 
-    it('gets basic info', function () {
-        const post = loadFixture('basicInfo');
+    fixtures.forEach((path) => {
+        const fixture = loadFixture(path);
+        const payload = loadPayload(path);
 
-        assert.deepEqual(scrapeBasicInfo(post), {
-            id: '123456789',
-            href: 'https://www.facebook.com/giangigino'
-        });
-    });
-
-    it('parses simple posts', function () {
-        timeWarp.set(2016, 5, 6, 15, 0, 10, -120);
-
-        assert.deepEqual(scrapePost(loadFixture('post')), {
-            postType: 'post',
-            fromProfile: 'https://www.facebook.com/agranzot',
-            href: 'https://www.facebook.com/agranzot/posts/10154575795176552',
-            ts: '1475183423',
-            seenAt: '2016-06-06T15:00:10+02:00'
-        });
-
-        timeWarp.set(2016, 9, 15, 4, 20, 0, 60);
-
-        assert.deepEqual(scrapePost(loadFixture('post01')), {
-            postType: 'post',
-            fromProfile: 'https://www.facebook.com/Isis-the-band-158503560864483/',
-            href: 'https://www.facebook.com/permalink.php?story_fbid=1132045500176946&id=158503560864483',
-            ts: '1475087549',
-            seenAt: '2016-10-15T04:20:00-01:00'
-        });
-
-        assert.deepEqual(scrapePost(loadFixture('post02')), {
-            postType: 'post',
-            fromProfile: 'https://www.facebook.com/Lastknight',
-            href: 'https://www.facebook.com/Lastknight/posts/10154603530677053',
-            ts: '1475783325',
-            seenAt: '2016-10-15T04:20:00-01:00'
+        it(`parses fixture "${path}"`, function () {
+            timeWarp.set(2016, 5, 6, 15, 0, 10, -120);
+            assert.deepEqual(scrape(fixture), payload);
         });
     });
 
@@ -55,12 +27,7 @@ describe('Scrape', function () {
         const post0 = loadFixture('postCommentedByFriend').find('.userContentWrapper');
         const post1 = loadFixture('sponsoredPostLikedByFriends').find('.userContentWrapper');
 
-        assert.equal(scrapePost(post0), null);
-        assert.equal(scrapePost(post1), null);
-    });
-
-    it('identifies sponsored posts', function () {
-        const post = loadFixture('sponsored');
-        assert.equal(identify(post), 'sponsored');
+        assert.equal(scrape(post0), null);
+        assert.equal(scrape(post1), null);
     });
 });

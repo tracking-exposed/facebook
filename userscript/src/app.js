@@ -10,7 +10,7 @@ import ReactDOM from 'react-dom';
 
 import $ from 'jquery';
 import 'arrive';
-import { scrapeBasicInfo, scrapePost } from './scrape';
+import { scrape } from './scrape';
 
 import { HUB } from './hub';
 import { registerHandlers } from './handlers/index';
@@ -31,7 +31,7 @@ function boot () {
 function prefeed () {
     document.querySelectorAll('.userContentWrapper').forEach(function (elem) {
         const $elem = $(elem).parent();
-        const data = scrapePost($elem);
+        const data = scrape($elem);
         if (data) {
             HUB.event('newPost', {'element': $elem, 'data': data });
         }
@@ -41,7 +41,7 @@ function prefeed () {
 function watch () {
     document.arrive('.userContentWrapper', function () {
         const $elem = $(this).parent();
-        const data = scrapePost($elem);
+        const data = scrape($elem);
         if (data) {
             HUB.event('newPost', {'element': $elem, 'data': data });
         }
@@ -50,7 +50,7 @@ function watch () {
 
 function render () {
     const rootElement = $('<div />', { 'id': 'fbtrex--root' });
-    const basicInfo = scrapeBasicInfo($('body'));
+    const basicInfo = scrape($('.fbxWelcomeBoxName').parent());
 
     $('body').append(rootElement);
     ReactDOM.render((<StartButton userId={basicInfo.id} />), document.getElementById('fbtrex--root'));

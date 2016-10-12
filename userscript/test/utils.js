@@ -1,8 +1,20 @@
 import fs from 'fs';
 import $ from 'cheerio';
+import glob from 'glob';
+
+const FIXTURE_DIR = './test/fixtures/';
 
 export function loadFixture (name) {
-    return $(fs.readFileSync('./test/fixtures/' + name + '.html').toString());
+    return $(fs.readFileSync(FIXTURE_DIR + name + '.html').toString());
+}
+
+export function loadPayload (name) {
+    return JSON.parse(fs.readFileSync('./test/payloads/' + name + '.json'));
+}
+
+export function listFixtures () {
+    return glob.sync(FIXTURE_DIR + '/**/*.html')
+               .map((path) => path.slice(FIXTURE_DIR.length).replace(/\.[^/.]+$/, ''));
 }
 
 export class TimeWarp {
