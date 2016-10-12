@@ -27,43 +27,52 @@ npm start
 ```
 
 The second line (`npm test`) is optional, but testing is cool and you should do
-it anyway. It's also a nice way to test if the installation succeeded.
+it anyway. It's also a nice way to check if the installation succeeded.
 
 `npm start` will build the application using `webpack` and watch for changes.
 
 
 ### Prepare your browser
 Developing the extension happens *outside* the Greasemonkey environment.
-We need to tell Greasemonkey to load the script from the filesystem,
-specifically the one built with `npm start`.
+We need to tell Greasemonkey to load the script from the local development
+server.
 
-Open Greasemonkey and add this code:
+Open Greasemonkey, create a new script, and add this code:
 
 ```
 // ==UserScript==
-// @name         test-local-require
-// @namespace    http://tampermonkey.net/
-// @version      0.1
+// @name         fbtrex-dev
+// @namespace    https://facebook.tracking.exposed/
+// @version      0.1-dev
 // @description  try to take over the world!
 // @author       You
+// @connect      localhost:3000
 // @match        https://www.facebook.com/*
-// @require      file:///path/to/ESCVI/userscript/build/bundle.js
-// @resource     escviStyle file:///path/to/ESCVI/userscript/build/styles.css
 // @grant        GM_addStyle
+// @grant        GM_xmlhttpRequest
 // @grant        GM_getResourceText
 // @noframes
 // ==/UserScript==
 
-var newCSS = GM_getResourceText('escviStyle');
-GM_addStyle(newCSS);
+GM_xmlhttpRequest({
+  method: "GET",
+  url: "http://localhost:3000/assets/bundle.js",
+  onload: function(response) {
+    eval(response.responseText);
+  }
+});
+
+GM_xmlhttpRequest({
+  method: "GET",
+  url: "http://localhost:3000/assets/styles.css",
+  onload: function(response) {
+    GM_addStyle(response.responseText);
+  }
+});
 ```
 
-Remember to point the `@require` to the correct location of the "bundle" in
-your filesystem.
-
-Now you need to enable the option **Allow access to file URLs**. Open the
-Chrome menu, go to **More tools**, then **Extensions**, search for
-**Tampermonkey** in the list of extensions, and click "**Allow access to file URLs**.
+This will load the development version of the extension directly from
+your local server.
 
 #### Ready to go!
 Visit [Facebook](https://www.facebook.com/) and open the dev tools. You should

@@ -65,14 +65,11 @@ const EXTRACT_CSS_PLUGIN = new ExtractTextPlugin(
     }
 );
 
-if (EXTRACT || PRODUCTION) {
-    PLUGINS.push(EXTRACT_CSS_PLUGIN);
-}
+PLUGINS.push(EXTRACT_CSS_PLUGIN);
 
 if (PRODUCTION) {
     PLUGINS.push(...PROD_PLUGINS);
 }
-
 
 /** LOADERS **/
 const JS_LOADER = combineLoaders([
@@ -119,8 +116,7 @@ const LOADERS = [
     {
         test: /\.s[ac]ss$/,
         exclude: [PATHS.NODE_MODULES],
-        loader: PRODUCTION || EXTRACT ? ExtractTextPlugin.extract('style', CSS_LOADER)
-                                      : `style!${CSS_LOADER}`
+        loader: ExtractTextPlugin.extract('style', CSS_LOADER)
     },
 
     // Add additional loader specifications
