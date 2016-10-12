@@ -3,17 +3,36 @@ html
   head
     link(rel='stylesheet', href='/css/index.css')
     link(rel='stylesheet', href='/css/bootstrap.css')
+    link(rel='stylesheet', href='/js/local/realitymeter.css')
     script(type='text/javascript', src='/js/vendor/d3.min.js')
     script(type='text/javascript', src='/js/vendor/c3.min.js')
     script(type='text/javascript', src='/js/local/realitymeter.js')
     title ઉ RealityMeter
 
-    body(onload="displayRealityGraph(#{postId}, '#realitygraph');")
+  body(onload="displayRealityGraph(#{postId}, '#realitygraph');")
     
     .container-fluid
       .jumbotron
         h2 ઉ RealityMeter
-        h4 ... 'cos every Social Media Manager want a bite of reality!
+        h4 ... 'cos every Facebook User needs a bite of reality!
+
+  nav.navbar.navbar-default
+    div.container
+      div.navbar-header
+        button.navbar-toggle.collapsed(type="button" data-toggle="collapse" data-target="#thenavbar" aria-expanded="false")
+          span(id="sr-only") Toggle navigation
+          span.icon-bar
+          span.icon-bar
+          span.icon-bar
+
+      div.collapse.navbar-collapse(id="thenavbar")
+        ul.nav.navbar-nav
+          li
+            a(href='/') Home
+          li
+            a(href='/impact') Impact
+          li
+            a(href='/realitycheck/random') Random User
 
     .container-fluid
       div(id="realitygraph")
@@ -21,11 +40,11 @@ html
       .larger-content
         span.col-md-1
         span.container-fluid.col-md-4.niceborder
-          p When you publish a post in a page, Facebook tell you how many 
-            b impressions  
-            | the post got. 
-            b But what does it means? 
-            | In the user timeline, does the post appeared many time in favorable position, or just one and then get disappeared from the user feed? we know these are the metrics to judge if a post might got an impact in the users eyeballs or not… and 
+          p When you publish a post in a page, Facebook tell you how many impressions the post got. 
+            b But what does it really means? 
+            | In the timelines, does the post appears many times in a favorable position, or once to disappear at the next refresh? 
+            b Positioning 
+            | is the metric to judge if a post might got an impact in the users eyeballs or not… and 
             b now you can know it! 
         span.col-md-1
         span.container-fluid.col-md-4.niceborder
@@ -34,19 +53,22 @@ html
             a(href="http://arstechnica.com/business/2016/09/facebook-apologizes-for-feeding-inflated-video-view-numbers-to-advertisers/") Facebook makes mistakes.
             | There is no auditing, no independence; we simply take Facebook’s word for it, when and how much the errors occur. Like Poseidon, FB blows, the currents move, and content producers and advertisers are swept in new directions.
           div.smaller
-            p.right.smaller
+            p.right From 
               a(href="https://www.theguardian.com/technology/2016/sep/28/google-facebook-powerful-secretive-empire-transparency") The Guardian: Facebook and Google: most powerful and secretive empires we've ever known
+              |  28 Sept '16
         span.col-md-1
 
     .container-fluid
 
       .larger-content
         .center
+
           if postId !== 0
             input(type=text class="center theinputfield" value="#{postId}" id="postinput")
           else
             input(type=text placeholder="Write here the postId" class="center theinputfield" id="postinput")
           endif
+
           button(class="buttonfield btn-success" click="displayRealityGraph(getPostId('#postinput'), '#realitygraph');") ઉ
         .container-fluid
           span.col-md-4
@@ -60,9 +82,13 @@ html
                 |.322…
 
       .larger-content
-        p Right now, #{users} users contributed with #{posts}. Research is performed among these numbers. If you are a social media manager and you want to know the true outreach of your material, spread facebook.tracking.exposed to your friend, followers, audience. 
-          a(onclick="displayRealityGraph('random', '#realitygraph');") See how a posts looks like
+        p Since the launch, #{users} users contributed with #{posts} visualized posts. If you are a social media manager and you want to know the true outreach of your material, spread facebook.tracking.exposed to your friend, followers, audience, and see how your posts outreach works in their timelines.
+
+      .examplelist
+        p.center Below some posts selected for ther interactions, click on them and see how the visualization looks like.
+        each apost in examples
+          .col-md-2 #{apost.count} users in
+            a.exampleentry(alt="#{apost.when} ago" href="/realitymeter/#{apost.postId}") #{apost.lifespan}
+
 
   .footer
-
-
