@@ -12,8 +12,8 @@ export function loadPayload (name) {
     return JSON.parse(fs.readFileSync('./test/payloads/' + name + '.json'));
 }
 
-export function listFixtures () {
-    return glob.sync(FIXTURE_DIR + '/**/*.html')
+export function listFixtures (path) {
+    return glob.sync(FIXTURE_DIR + path + '/**/*.html')
                .map((path) => path.slice(FIXTURE_DIR.length).replace(/\.[^/.]+$/, ''));
 }
 

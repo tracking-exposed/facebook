@@ -10,7 +10,7 @@ import ReactDOM from 'react-dom';
 
 import $ from 'jquery';
 import 'arrive';
-import { scrape } from './scrape';
+import { scrape, scrapeUserData } from './scrape';
 
 import { HUB } from './hub';
 import { registerHandlers } from './handlers/index';
@@ -50,7 +50,7 @@ function watch () {
 
 function render () {
     const rootElement = $('<div />', { 'id': 'fbtrex--root' });
-    const basicInfo = scrape($('.fbxWelcomeBoxName').parent());
+    const basicInfo = scrapeUserData($('body'));
 
     $('body').append(rootElement);
     ReactDOM.render((<StartButton userId={basicInfo.id} />), document.getElementById('fbtrex--root'));
