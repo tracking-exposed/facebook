@@ -52,9 +52,11 @@ describe('Scrape', function () {
     it('ignores a post that contains another post', function () {
         timeWarp.set(2016, 5, 6, 15, 0, 10, -120);
 
-        assert.equal(scrapePost(loadFixture('postCommentedByFriend')), null);
+        const post0 = loadFixture('postCommentedByFriend').find('.userContentWrapper');
+        const post1 = loadFixture('sponsoredPostLikedByFriends').find('.userContentWrapper');
 
-        assert.equal(scrapePost(loadFixture('sponsoredPostLikedByFriends')), null);
+        assert.equal(scrapePost(post0), null);
+        assert.equal(scrapePost(post1), null);
     });
 
     it('identifies sponsored posts', function () {
