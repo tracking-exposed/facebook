@@ -3,7 +3,8 @@ import { getTimeISO8601, normalizeUrl } from './utils';
 export function scrapePost (elem) {
     const postType = identify(elem);
 
-    if (elem.find('.userContentWrapper .userContentWrapper').length) {
+    // Skip if the post is not top level
+    if (elem.parents('.userContentWrapper').length) {
         return null;
     }
 
