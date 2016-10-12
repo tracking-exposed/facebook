@@ -2,8 +2,7 @@ import { getTimeISO8601, normalizeUrl } from './utils';
 
 const SCRAPERS = {
     'post': scrapePost,
-    'sponsored': scrapePost,
-    'userdata': scrapeUserData
+    'sponsored': scrapePost
 };
 
 export function scrape (elem) {
@@ -13,9 +12,6 @@ export function scrape (elem) {
 }
 
 export function identify (elem) {
-    if (elem.find('.fbxWelcomeBoxName').length === 1) {
-        return 'userdata';
-    }
     if (elem.find('.uiStreamSponsoredLink').length === 1) {
         return 'sponsored';
     } else {
@@ -41,7 +37,7 @@ export function scrapePost (postType, elem) {
     };
 }
 
-export function scrapeUserData (postType, elem) {
+export function scrapeUserData (elem) {
     const info = elem.find('.fbxWelcomeBoxName');
     const parsedInfo = {
         // even if the id is a number, I feel more comfortable to cast it to a String
