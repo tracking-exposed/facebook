@@ -13,12 +13,13 @@
   "scripts": {
     "lint": "eslint ./",
     "build": "rimraf ./build && cross-env NODE_ENV=extract webpack",
-    "build:watch": "rimraf ./build && cross-env NODE_ENV=extract webpack -w",
+    "start": "npm run build:watch",
+    "build:watch": "cross-env NODE_ENV=demo node server.demo.js",
     "build:dist": "rimraf ./dist && cross-env NODE_ENV=production webpack -p",
     "clean": "rimraf ./build ./dist",
-    "start": "rimraf ./build && cross-env NODE_ENV=extract webpack -w",
     "test": "mocha --compilers js:babel-register --reporter spec",
-    "test:watch": "mocha -w --compilers js:babel-register --reporter spec"
+    "test:watch": "mocha -w --compilers js:babel-register --reporter spec",
+    "deprecated:build:watch": "rimraf ./build && cross-env NODE_ENV=extract webpack -w"
   },
   "devDependencies": {
     "autoprefixer": "^6.4.0",
