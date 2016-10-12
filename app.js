@@ -102,10 +102,7 @@ app.get('/node/country/:version/:countryCode/:format', function(req, res) {
     return dispatchPromise('countryStatsByDay', req, res);
 });
 app.get('/post/top/:version', function(req, res) {
-    // return dispatchPromise('topPosts', req, res);
-    //    the return more or less same format, the second is
-    //    better but CPU intensive until the mongo query get improved
-    return dispatchPromise('topPostsEXP', req, res);
+    return dispatchPromise('topPosts', req, res);
 });
 app.get('/post/reality/:version/:postId', function(req, res) {
     return dispatchPromise('postReality', req, res);
