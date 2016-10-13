@@ -2,7 +2,7 @@ const INTERVAL = 1000;
 const posts = [];
 var lastCheck = null;
 
-function eventHandler (e) {
+function eventHandler (type, e) {
     posts.push(e);
 }
 

@@ -8,10 +8,12 @@ import 'core-js/es6';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import uuid from 'uuid';
 import $ from 'jquery';
 import 'arrive';
 import { scrape, scrapeUserData } from './scrape';
 
+import { getTimeISO8601 } from './utils';
 import { HUB } from './hub';
 import { registerHandlers } from './handlers/index';
 
@@ -23,29 +25,23 @@ function boot () {
     // Source handlers so they can process events
     registerHandlers(HUB);
 
+    refresh();
     prefeed();
     watch();
     render();
 };
 
+function refresh () {
+    processRefresh();
+    document.arrive('#feedx_container', processRefresh);
+}
+
 function prefeed () {
-    document.querySelectorAll('.userContentWrapper').forEach(function (elem) {
-        const $elem = $(elem).parent();
-        const data = scrape($elem);
-        if (data) {
-            HUB.event('newPost', {'element': $elem, 'data': data });
-        }
-    });
+    document.querySelectorAll('.userContentWrapper').forEach(processPost);
 };
 
 function watch () {
-    document.arrive('.userContentWrapper', function () {
-        const $elem = $(this).parent();
-        const data = scrape($elem);
-        if (data) {
-            HUB.event('newPost', {'element': $elem, 'data': data });
-        }
-    });
+    document.arrive('.userContentWrapper', function () { processPost(this); });
 };
 
 function render () {
@@ -55,5 +51,23 @@ function render () {
     $('body').append(rootElement);
     ReactDOM.render((<StartButton userId={basicInfo.id} />), document.getElementById('fbtrex--root'));
 };
+
+function processPost (elem) {
+    if (window.location.href !== 'https://www.facebook.com/') {
+        console.debug('Skip post, not in main feed');
+        return;
+    }
+
+    const $elem = $(elem).parent();
+    const data = scrape($elem);
+
+    if (data) {
+        HUB.event('newPost', { element: $elem, data: data });
+    }
+};
+
+function processRefresh () {
+    HUB.event('newRefresh', { uuid: uuid.v4(), dt: getTimeISO8601() });
+}
 
 boot();
