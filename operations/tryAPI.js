@@ -82,7 +82,7 @@ var getInfo = function(alli, kind) {
     if(!_.isNull(pickedO))
         return _.get(pickedO, kind);
 
-    if( !_.isNull(userId) && !_.isNull(postId) ) {
+    if( !_.isUndefined(userId) && !_.isUndefined(postId) ) {
         pickedO = {
             userId: userId,
             postId: postId
