@@ -3,11 +3,14 @@
 'use strict';
 
 const path = require('path');
+const exec = require('child_process').exec;
 
 const webpack = require('webpack');
 const autoPrefixer = require('autoprefixer');
 const combineLoaders = require('webpack-combine-loaders');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const WebpackOnBuildPlugin = require('on-build-webpack');
+
 
 require('dotenv').load({ silent: true });
 
@@ -34,16 +37,13 @@ const DEFINITIONS = {
         VERSION: JSON.stringify(packageJSON.version + (DEVELOPMENT ? '-dev' : '')),
         BUILD: JSON.stringify(BUILD),
         FLUSH_INTERVAL: JSON.stringify(DEVELOPMENT ? 10000 : 60000)
-    },
+    }
 };
-
 
 /** PLUGINS **/
 const PLUGINS = [
     new webpack.DefinePlugin(DEFINITIONS),
-    new webpack.NoErrorsPlugin(),
-
-    // Add additional base plugins
+    new webpack.NoErrorsPlugin()
 ];
 
 const PROD_PLUGINS = [
@@ -60,9 +60,16 @@ const PROD_PLUGINS = [
     new webpack.LoaderOptionsPlugin({
         debug: false,
         minimize: true
-    }),
+    })
 
     // Add additional production plugins
+];
+
+const DEV_PLUGINS = [
+    new WebpackOnBuildPlugin(function (stats) {
+        const command = 'chromium-browser http://reload.extensions';
+        exec(command);
+    })
 ];
 
 const EXTRACT_CSS_PLUGIN = new ExtractTextPlugin(
@@ -75,6 +82,8 @@ PLUGINS.push(EXTRACT_CSS_PLUGIN);
 
 if (PRODUCTION) {
     PLUGINS.push(...PROD_PLUGINS);
+} else if (DEVELOPMENT) {
+    PLUGINS.push(...DEV_PLUGINS);
 }
 
 /** LOADERS **/
@@ -82,9 +91,9 @@ const JS_LOADER = combineLoaders([
     {
         loader: 'babel',
         query: {
-            cacheDirectory: true,
-        },
-    },
+            cacheDirectory: true
+        }
+    }
 
     // Add additional JS loaders
 ]);

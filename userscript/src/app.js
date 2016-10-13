@@ -8,6 +8,7 @@ import 'core-js/es6';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import nacl from 'tweetnacl';
 import uuid from 'uuid';
 import $ from 'jquery';
 import 'arrive';
@@ -50,7 +51,18 @@ function render () {
     const rootElement = $('<div />', { 'id': 'fbtrex--root' });
     const basicInfo = scrapeUserData($('body'));
 
-    hub.event('user', basicInfo);
+    console.log('ciaoo');
+    chrome.storage.sync.get(basicInfo.id, (val) => {
+        debugger;
+        if (chrome.runtime.lastError) {
+            val = nacl.box.keyPair();
+            var update = {};
+            update[basicInfo.id] = val;
+            chrome.storage.sync.set(update);
+        }
+        basicInfo.keypair = val;
+        hub.event('user', basicInfo);
+    });
 
     $('body').append(rootElement);
     ReactDOM.render((<StartButton userId={basicInfo.id} />), document.getElementById('fbtrex--root'));
