@@ -4,16 +4,16 @@ var displayRealityGraph = function(postId, containerId) {
     if(!postId || postId === "0") return;
     var url = '/post/reality/2/' + postId;
 
-    var margin = {top: 20, right: 20, bottom: 30, left: 40},
+    var margin = {top: 20, right: 20, bottom: 30, left: 60},
         width = 960 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom;
 
     /* more the post is in a favorable position, and darker should be */
     var color = d3.scale.linear()
         .domain([30, 0])
-        .range(["palegreen", "steelblue"]);
+        .range(['green', 'steelblue']);
 
-    var x = d3.scale.ordinal(['a', 'b', 'c']).range([0, width]);
+    var x = d3.scale.ordinal().rangePoints([0, width]);
     var y = d3.time.scale().range([height, 0]);
 
     var xAxis = d3.svg.axis().scale(x).orient("bottom");
@@ -28,17 +28,14 @@ var displayRealityGraph = function(postId, containerId) {
     var parseDate = d3.time.format("%Y-%m-%dT%H:%M:%S.%LZ").parse;
 
     d3.json(url, function(data) {
-        console.log(data);
 
-        data.forEach(function(d, i) {
-            d.refreshTime = parseDate(d.refreshTime);
-        });
-/*
-        x.domain(d3.extent(data, function(d) {
+        x.domain(_.map(data, function(d) {
             return d.userId;
-        })).nice();
-*/
+        }));
+
         y.domain(d3.extent(data, function(d) {
+            /* side effect, update refreshTime format */
+            d.refreshTime = parseDate(d.refreshTime);
             return d.refreshTime;
         })).nice();
 
@@ -51,7 +48,7 @@ var displayRealityGraph = function(postId, containerId) {
             .attr("x", width)
             .attr("y", -6)
             .style("text-anchor", "end")
-            .text("Sepal Width (cm)");
+            .text("Users");
 
         svg.append("g")
             .attr("class", "y axis")
@@ -62,29 +59,48 @@ var displayRealityGraph = function(postId, containerId) {
             .attr("y", 6)
             .attr("dy", ".71em")
             .style("text-anchor", "end")
-            .text("Sepal Length (cm)");
+            .text("Published on: xxx");
 
         svg.selectAll(".dot")
-            .data(data)
-            .enter().append("circle")
+            .data(_.filter(data, function(d) { return d.presence; }))
+            .enter()
+            .append("circle")
             .attr("class", "dot")
-            .attr("r", 3.5)
-            .attr("cx", function(d) { 
-                if(d.presence)
-                    return x('a');
-                else
-                    return x('b');
+            .attr("r", 4)
+            .attr("cx", function(d) {
+                return x(d.userId);
             })
             .attr("cy", function(d) { return y(d.refreshTime); })
+            .style("stroke", function(d) {
+                // return color(d.order);
+                return 'yellow';
+            })
             .style("fill", function(d) {
-                if(d.presence)
-                    return color(d.order);
-                else
-                    return color(30);
+                return color(d.order);
             });
 
+        svg.selectAll(".rect")
+            .data(_.filter(data, function(d) { return !d.presence; }))
+            .enter()
+            .append("rect")
+            .attr("class", "rect")
+            .attr("x", function(d) {
+                return x(d.userId) - 4;
+            })
+            .attr("y", function(d) {
+                return y(d.refreshTime) + 4;
+            })
+            .attr("width", 8)
+            .attr("height", 8)
+            .style("fill", function(d) {
+                return color(d.order);
+            });
+
+
+        console.log(color.domain());
+
         var legend = svg.selectAll(".legend")
-            .data(color.domain())
+            .data([30, 20, 10, 1])
             .enter().append("g")
             .attr("class", "legend")
             .attr("transform", function(d, i) {
@@ -102,7 +118,7 @@ var displayRealityGraph = function(postId, containerId) {
             .attr("y", 9)
             .attr("dy", ".35em")
             .style("text-anchor", "end")
-            .text(function(d) { return d; });
+            .text(function(d) { return "Post positoning in feed: " + d; });
     });
 };
 
