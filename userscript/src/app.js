@@ -25,15 +25,16 @@ function boot () {
     // Source handlers so they can process events
     registerHandlers(HUB);
 
-    refresh();
+    timeline();
     prefeed();
     watch();
     render();
+    flush();
 };
 
-function refresh () {
-    processRefresh();
-    document.arrive('#feedx_container', processRefresh);
+function timeline () {
+    processTimeline();
+    document.arrive('#feedx_container', processTimeline);
 }
 
 function prefeed () {
@@ -52,6 +53,12 @@ function render () {
     ReactDOM.render((<StartButton userId={basicInfo.id} />), document.getElementById('fbtrex--root'));
 };
 
+function flush () {
+    window.addEventListener('beforeunload', (e) => {
+        HUB.event('windowUnload');
+    });
+}
+
 function processPost (elem) {
     if (window.location.href !== 'https://www.facebook.com/') {
         console.debug('Skip post, not in main feed');
@@ -66,8 +73,8 @@ function processPost (elem) {
     }
 };
 
-function processRefresh () {
-    HUB.event('newRefresh', { uuid: uuid.v4(), dt: getTimeISO8601() });
+function processTimeline () {
+    HUB.event('newTimeline', { uuid: uuid.v4(), dt: getTimeISO8601() });
 }
 
 boot();
