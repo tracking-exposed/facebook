@@ -23,4 +23,6 @@ class Hub {
     }
 }
 
-export const HUB = new Hub();
+const HUB = new Hub();
+
+export default HUB;
