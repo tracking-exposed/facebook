@@ -78,7 +78,18 @@ your local server.
 Visit [Facebook](https://www.facebook.com/) and open the dev tools. You should
 see some logging messages by **escvi**.
 
+### Extend fixtures
+
+ * You've to install the package `tidy` the last version in ubuntu is not working (we'll update the comment when fixed), use http://binaries.html-tidy.org/
+ * Copy the userContentWrapper Element
+ * save in file.html
+
+```
+tidy -i -m -w 0 -utf8 file.html
+```
+
 # Thanks
 [@sohkai](https://github.com/sohkai) for the amazing [js-reactor
 boilerplate](https://github.com/bigchaindb/js-reactor).
+
 
