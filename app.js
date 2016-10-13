@@ -46,7 +46,6 @@ var dispatchPromise = function(name, req, res) {
 
     var func = _.reduce(_.times(apiV + 1), function(memo, i) {
         var f = _.get(_.get(escviAPI.implementations, 'version' + i), name);
-        debugger;
         if(!_.isUndefined(f))
             memo = f;
         return memo;
@@ -76,6 +75,10 @@ var dispatchPromise = function(name, req, res) {
               debug("%s API %s success, returning file (%s)",
                   req.randomUnicode, name, httpresult.file);
               res.sendFile(__dirname + "/html/" + httpresult.file);
+          } else if(!_.isUndefined(httpresult.error)) {
+              res.json(httpresult.error)
+              res.header(500);
+              return false;
           } else {
               wrapError("post-exec", apiV, name, req.params);
               res.header(500);
@@ -124,6 +127,12 @@ app.get('/user/:version/analysis/:kind/:cpn/:userId/:format', function(req, res)
 });
 app.post('/F/:version', function(req, res) {
     return dispatchPromise('postFeed', req, res);
+});
+app.post('/v:version/timelines', function(req, res) {
+    return dispatchPromise('postFeed', req, res);
+});
+app.post('/v:version/dom', function(req, res) {
+    return dispatchPromise('postDebug', req, res);
 });
 app.post('/D/:version', function(req, res) {
     return dispatchPromise('postDebug', req, res);

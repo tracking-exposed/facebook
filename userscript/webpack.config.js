@@ -11,6 +11,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 require('dotenv').load({ silent: true });
 
+const LAST_VERSION = 3;
 const packageJSON = require('./package.json');
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const PRODUCTION = NODE_ENV === 'production';
@@ -29,7 +30,7 @@ const PATHS = {
 const DEFINITIONS = {
     'process.env': {
         NODE_ENV: JSON.stringify(NODE_ENV),
-        API_ROOT: JSON.stringify(NODE_ENV === 'development' ? 'http://localhost:8000/' : 'https://facebook.tracking.exposed/'),
+        API_ROOT: JSON.stringify((NODE_ENV === 'development' ? 'http://localhost:8000/' : 'https://facebook.tracking.exposed/')+'v'+LAST_VERSION+'/'),
         VERSION: JSON.stringify(packageJSON.version + (DEVELOPMENT ? '-dev' : '')),
         BUILD: JSON.stringify(BUILD),
         FLUSH_INTERVAL: JSON.stringify(DEVELOPMENT ? 10000 : 60000)
