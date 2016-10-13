@@ -1,4 +1,6 @@
-const INTERVAL = 50000;
+import { postTimeline } from '../api';
+
+const INTERVAL = 60000;
 
 var currentTimeline = null;
 var timelines = [];
@@ -22,7 +24,7 @@ function handleTimeline (type, e) {
 
 function sync () {
     // send timelines
-    console.debug('sync', timelines.filter((timeline) => timeline.posts.length));
+    postTimeline(timelines.filter((timeline) => timeline.posts.length));
 
     // remove all other timelines
     timelines = timelines.slice(timelines.length - 1);
