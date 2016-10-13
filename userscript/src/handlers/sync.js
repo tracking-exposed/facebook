@@ -1,9 +1,16 @@
+import config from '../config';
 import { postTimeline } from '../api';
 
-const INTERVAL = 60000;
+const INTERVAL = config.FLUSH_INTERVAL;
+var user = null;
 
 var currentTimeline = null;
 var timelines = [];
+
+function handleUser (type, e) {
+    console.log('user', e);
+    user = e;
+}
 
 function handlePost (type, e) {
     e.data.position = currentTimeline.lastPosition++;
@@ -12,6 +19,7 @@ function handlePost (type, e) {
 
 function handleTimeline (type, e) {
     currentTimeline = {
+        fromProfile: user.id,
         uuid: e.uuid,
         dt: e.dt,
         location: window.location.href,
@@ -34,6 +42,7 @@ function sync () {
 }
 
 export function register (hub) {
+    hub.register('user', handleUser);
     hub.register('newPost', handlePost);
     hub.register('newTimeline', handleTimeline);
     hub.register('windowUnload', sync);

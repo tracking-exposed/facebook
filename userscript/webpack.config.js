@@ -31,7 +31,8 @@ const DEFINITIONS = {
         NODE_ENV: JSON.stringify(NODE_ENV),
         API_ROOT: JSON.stringify(NODE_ENV === 'development' ? 'http://localhost:8000/' : 'https://facebook.tracking.exposed/'),
         VERSION: JSON.stringify(packageJSON.version + (DEVELOPMENT ? '-dev' : '')),
-        BUILD: JSON.stringify(BUILD)
+        BUILD: JSON.stringify(BUILD),
+        FLUSH_INTERVAL: JSON.stringify(DEVELOPMENT ? 10000 : 60000)
     },
 };
 
