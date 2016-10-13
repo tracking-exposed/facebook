@@ -33,9 +33,8 @@ describe('Scrape', function () {
 
     it('parses basic user info', function () {
         const userInfo = loadFixture('basicInfo');
-        assert.deepEqual(scrapeUserData(userInfo), {
-            href: 'https://www.facebook.com/giangigino',
-            id: '123456789'
-        });
+        const payload = loadPayload('basicInfo');
+
+        assert.deepEqual(scrapeUserData(userInfo), payload);
     });
 });
