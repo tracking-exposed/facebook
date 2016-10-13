@@ -1,0 +1,21 @@
+{
+  "manifest_version": 2,
+
+  "name": "Fbtrex",
+  "description": "asdff",
+  "version": "1.0",
+
+  "permissions": [
+    "tabs",
+    "storage",
+    "*://*.facebook.com/*"],
+  "content_scripts": [
+    {
+      "matches": ["*://*.facebook.com/*"],
+      "js": ["build/bundle.js"],
+      "css": ["build/styles.css"]
+    }
+  ]
+
+}
+
