@@ -1,8 +1,8 @@
 {
   "schema": { 
       "supporters": "supporters3",
-      "timeline": "timeline3",
-      "refreshes": "refreshes3",
+      "timeline": "posts",
+      "refreshes": "timelines",
       "suggestions": "suggestions",
       "accesses": "accesses3"
   },
