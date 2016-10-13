@@ -18,6 +18,7 @@ export function post (apiUrl, data) {
             HUB.event('syncReponse', { url: url, response: response });
         },
         onerror: function (error) {
+            // We are parsing the payload because `data` will be modified by the handers/sync.js::sync function.
             HUB.event('syncError', { url: url, data: JSON.parse(payload), error: error});
         }
     });
