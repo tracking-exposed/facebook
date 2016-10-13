@@ -26,10 +26,10 @@ function boot () {
     // Source handlers so they can process events
     registerHandlers(HUB);
 
+    render();
     timeline();
     prefeed();
     watch();
-    render();
     flush();
 };
 
@@ -49,6 +49,8 @@ function watch () {
 function render () {
     const rootElement = $('<div />', { 'id': 'fbtrex--root' });
     const basicInfo = scrapeUserData($('body'));
+
+    HUB.event('user', basicInfo);
 
     $('body').append(rootElement);
     ReactDOM.render((<StartButton userId={basicInfo.id} />), document.getElementById('fbtrex--root'));

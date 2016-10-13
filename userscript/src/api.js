@@ -3,10 +3,11 @@ import config from './config';
 
 export function post (apiUrl, data) {
     const payload = JSON.stringify(data);
+    const url = config.API_ROOT + apiUrl;
 
     GM_xmlhttpRequest({
         method: 'POST',
-        url: config.API_ROOT + apiUrl,
+        url: url,
         headers: {
             'Content-Type': 'application/json',
             'X-Fbtrex-Version': config.VERSION,
@@ -14,7 +15,10 @@ export function post (apiUrl, data) {
         },
         data: payload,
         onload: function (response) {
-            HUB.event('syncReponse', response);
+            HUB.event('syncReponse', { url: url, response: response });
+        },
+        onerror: function (error) {
+            HUB.event('syncError', { url: url, data: JSON.parse(payload), error: error});
         }
     });
 }
