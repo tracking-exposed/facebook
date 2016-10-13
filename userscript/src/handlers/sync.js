@@ -8,7 +8,6 @@ var currentTimeline = null;
 var timelines = [];
 
 function handleUser (type, e) {
-    console.log('user', e);
     user = e;
 }
 
