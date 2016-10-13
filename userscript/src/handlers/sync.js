@@ -32,13 +32,17 @@ function handleTimeline (type, e) {
 
 function sync () {
     // send timelines
-    postTimeline(timelines.filter((timeline) => timeline.posts.length));
+    const elements = timelines.filter((timeline) => timeline.posts.length);
 
-    // remove all other timelines
-    timelines = timelines.slice(timelines.length - 1);
+    if (elements.length) {
+        postTimeline(elements);
 
-    // empty the "posts" array in currentTimeline
-    currentTimeline.posts = [];
+        // remove all other timelines
+        timelines = timelines.slice(timelines.length - 1);
+
+        // empty the "posts" array in currentTimeline
+        currentTimeline.posts = [];
+    }
 }
 
 export function register (hub) {
