@@ -14,8 +14,8 @@ import 'arrive';
 import { scrape, scrapeUserData } from './scrape';
 
 import config from './config';
+import hub from './hub';
 import { getTimeISO8601 } from './utils';
-import { HUB } from './hub';
 import { registerHandlers } from './handlers/index';
 
 import StartButton from './components/startButton';
@@ -24,7 +24,7 @@ function boot () {
     console.log(`Fbtrex version ${config.VERSION} build ${config.BUILD} loading.`);
 
     // Source handlers so they can process events
-    registerHandlers(HUB);
+    registerHandlers(hub);
 
     render();
     timeline();
@@ -50,7 +50,7 @@ function render () {
     const rootElement = $('<div />', { 'id': 'fbtrex--root' });
     const basicInfo = scrapeUserData($('body'));
 
-    HUB.event('user', basicInfo);
+    hub.event('user', basicInfo);
 
     $('body').append(rootElement);
     ReactDOM.render((<StartButton userId={basicInfo.id} />), document.getElementById('fbtrex--root'));
@@ -58,7 +58,7 @@ function render () {
 
 function flush () {
     window.addEventListener('beforeunload', (e) => {
-        HUB.event('windowUnload');
+        hub.event('windowUnload');
     });
 }
 
@@ -72,12 +72,12 @@ function processPost (elem) {
     const data = scrape($elem);
 
     if (data) {
-        HUB.event('newPost', { element: $elem, data: data });
+        hub.event('newPost', { element: $elem, data: data });
     }
 };
 
 function processTimeline () {
-    HUB.event('newTimeline', { uuid: uuid.v4(), dt: getTimeISO8601() });
+    hub.event('newTimeline', { uuid: uuid.v4(), dt: getTimeISO8601() });
 }
 
 boot();
