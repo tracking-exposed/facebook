@@ -11,8 +11,12 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 require('dotenv').load({ silent: true });
 
-const PRODUCTION = process.env.NODE_ENV === 'production';
-const EXTRACT = process.env.NODE_ENV === 'extract';
+const packageJSON = require('./package.json');
+const NODE_ENV = process.env.NODE_ENV || 'development';
+const PRODUCTION = NODE_ENV === 'production';
+const DEVELOPMENT = NODE_ENV === 'development';
+const BUILD = require('child_process').execSync('git rev-parse HEAD').toString().trim()
+
 
 const PATHS = {
     APP: path.resolve(__dirname, 'src/app.js'),
@@ -21,13 +25,13 @@ const PATHS = {
     NODE_MODULES: path.resolve(__dirname, 'node_modules'),
 };
 
-
 /** EXTERNAL DEFINITIONS INJECTED INTO APP **/
 const DEFINITIONS = {
     'process.env': {
-        NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development'),
-
-        // Add additional environment variable definitions
+        NODE_ENV: JSON.stringify(NODE_ENV),
+        API_ROOT: JSON.stringify(NODE_ENV === 'development' ? 'http://localhost:8000/' : 'https://facebook.tracking.exposed/'),
+        VERSION: JSON.stringify(packageJSON.version + (DEVELOPMENT ? '-dev' : '')),
+        BUILD: JSON.stringify(BUILD)
     },
 };
 

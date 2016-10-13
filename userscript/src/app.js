@@ -13,6 +13,7 @@ import $ from 'jquery';
 import 'arrive';
 import { scrape, scrapeUserData } from './scrape';
 
+import config from './config';
 import { getTimeISO8601 } from './utils';
 import { HUB } from './hub';
 import { registerHandlers } from './handlers/index';
@@ -20,7 +21,7 @@ import { registerHandlers } from './handlers/index';
 import StartButton from './components/startButton';
 
 function boot () {
-    console.log('FBTREX loading!');
+    console.log(`Fbtrex version ${config.VERSION} build ${config.BUILD} loading.`);
 
     // Source handlers so they can process events
     registerHandlers(HUB);
