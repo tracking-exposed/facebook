@@ -33,45 +33,51 @@ var wrapError = function(where, v, fn, nfo) {
 /* This function wraps all the API call, checking the verionNumber
  * managing error in 4XX/5XX messages and making all these asyncronous
  * I/O with DB, inside this Bluebird */
-var dispatchPromise = function(funcName, req, res) {
+var dispatchPromise = function(name, req, res) {
 
     var apiV = _.parseInt(_.get(req.params, 'version'));
 
     if(_.isNaN(apiV) || (apiV).constructor !== Number )
         apiV = escviAPI.lastVersion;
 
-    var func = _.get(escviAPI.implementations['version' + apiV], funcName);
+    req.randomUnicode = String.fromCharCode(_.random(0x0391, 0x085e));
+    debug("%s %s API v %d name %s (%s)", req.randomUnicode,
+        moment().format("HH:mm:ss"), apiV, name, req.url);
 
-    if(_.isUndefined(func)) {
-        debug("Developer mistake with version %d %s ", apiV, funcName);
+    var func = _.reduce(_.times(apiV + 1), function(memo, i) {
+        var f = _.get(_.get(escviAPI.implementations, 'version' + i), name);
+        debugger;
+        if(!_.isUndefined(f))
+            memo = f;
+        return memo;
+    }, null);
+
+    if(_.isNull(func)) {
+        debug("%s Wrong function name used %s", name);
         wrapError("pre-exec", apiV, funcName, req.params, res);
         res.header(500);
         return false;
     }
-
-    req.randomUnicode = String.fromCharCode(_.random(0x0391, 0x085e));
-    debug("%s %s Dispatching request to %s", 
-        req.randomUnicode, moment().format("HH:mm:ss"), req.url);
 
     /* in theory here we can keep track of time */
     return new Promise.resolve(func(req))
       .then(function(httpresult) {
           if(!_.isUndefined(httpresult.json)) {
               debug("%s API %s success, returning JSON (%d bytes)",
-                  req.randomUnicode, funcName,
+                  req.randomUnicode, name,
                   _.size(JSON.stringify(httpresult.json)) );
               res.json(httpresult.json)
           } else if(!_.isUndefined(httpresult.text)) {
               debug("%s API %s success, returning text (size %d)",
-                  req.randomUnicode, funcName, _.size(httpresult.text));
+                  req.randomUnicode,nName, _.size(httpresult.text));
               res.send(httpresult.text)
           } else if(!_.isUndefined(httpresult.file)) {
               /* this is used for special files, beside the css/js below */
               debug("%s API %s success, returning file (%s)",
-                  req.randomUnicode, funcName, httpresult.file);
+                  req.randomUnicode, name, httpresult.file);
               res.sendFile(__dirname + "/html/" + httpresult.file);
           } else {
-              wrapError("post-exec", apiV, funcName, req.params);
+              wrapError("post-exec", apiV, name, req.params);
               res.header(500);
               return false;
           }
