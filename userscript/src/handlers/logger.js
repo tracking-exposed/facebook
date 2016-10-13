@@ -1,5 +1,5 @@
-function eventHandler (e) {
-    console.log('New post', e);
+function eventHandler (type, e) {
+    console.debug(type, e);
 }
 
 export function register (hub) {

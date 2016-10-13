@@ -3,22 +3,22 @@ class Hub {
         this.handlers = {};
     }
 
-    register (eventName, handler) {
-        if (!this.handlers[eventName]) {
-            this.handlers[eventName] = [];
+    register (type, handler) {
+        if (!this.handlers[type]) {
+            this.handlers[type] = [];
         }
-        this.handlers[eventName].push(handler);
+        this.handlers[type].push(handler);
     }
 
-    event (eventName, payload) {
-        const funcs = this.handlers[eventName];
+    event (type, payload) {
+        const funcs = this.handlers[type];
         const funcsStar = this.handlers['*'];
         if (funcs) {
-            funcs.forEach((func) => func(payload));
+            funcs.forEach((func) => func(type, payload));
         }
 
         if (funcsStar) {
-            funcsStar.forEach((func) => func(payload));
+            funcsStar.forEach((func) => func(type, payload));
         }
     }
 }
