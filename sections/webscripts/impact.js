@@ -10,7 +10,7 @@ var displayTimeAdoption = function(containerId) {
                 names: {
                     timeline: "Posts recorded",
                     refreshes: "Feed refreshes",
-                    supporters: "Users don't coming back",
+                    supporters: "Users not coming back",
                     users: "Users submitting data"
                 },
                 axes: { 
