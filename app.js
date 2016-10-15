@@ -71,7 +71,7 @@ var dispatchPromise = function(funcName, req, res) {
                   req.randomUnicode, funcName, httpresult.file);
               res.sendFile(__dirname + "/html/" + httpresult.file);
           } else {
-              wrapError("post-exec", apiV, funcName, req.params);
+              debug("%s Failure %j", req.randomUnicode, httpresult);
               res.header(500);
               return false;
           }
