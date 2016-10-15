@@ -30,7 +30,7 @@ const PATHS = {
 const DEFINITIONS = {
     'process.env': {
         NODE_ENV: JSON.stringify(NODE_ENV),
-        API_ROOT: JSON.stringify((NODE_ENV === 'development' ? 'http://localhost:8000/' : 'https://facebook.tracking.exposed/')+'v'+LAST_VERSION+'/'),
+        API_ROOT: JSON.stringify((DEVELOPMENT ? 'http://localhost:8000/' : 'https://facebook.tracking.exposed/')+'v'+LAST_VERSION+'/'),
         VERSION: JSON.stringify(packageJSON.version + (DEVELOPMENT ? '-dev' : '')),
         BUILD: JSON.stringify(BUILD),
         FLUSH_INTERVAL: JSON.stringify(DEVELOPMENT ? 10000 : 60000)
