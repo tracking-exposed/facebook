@@ -42,7 +42,7 @@ html
         span.container-fluid.col-md-4.niceborder
           p When you publish a post in a page, Facebook tell you how many impressions the post got. 
             b But what does it really means? 
-            | In the timelines, does the post appears many times in a favorable position, or once to disappear at the next refresh? 
+            | In the timelines, does the post appears many times in a favorable position, or once to disappear at the next feed refresh? 
             b Positioning 
             | is the metric to judge if a post might got an impact in the users eyeballs or not… and 
             b now you can know it! 
@@ -69,7 +69,7 @@ html
             input(type=text placeholder="Write here the postId" class="center theinputfield" id="postinput")
           endif
 
-          button(class="buttonfield btn-success" click="displayRealityGraph(getPostId('#postinput'), '#realitygraph');") ઉ
+          button(class="buttonfield btn-success" type="submit" onclick="return displayRealityGraph(getPostId('postinput'), '#realitygraph');") ઉ
         .container-fluid
           span.col-md-4
           span.col-md-4
@@ -82,7 +82,7 @@ html
                 |.322…
 
       .larger-content
-        p Since the launch, #{users} users contributed with #{posts} visualized posts. If you are a social media manager and you want to know the true outreach of your material, spread facebook.tracking.exposed to your friend, followers, audience, and see how your posts outreach works in their timelines.
+        p Since the launch, #{users} users contributed with #{posts} visualized posts. If you are a social media manager and you want to know the true outreach of your material, spread facebook.tracking.exposed among your friend, followers, audience, and see how your posts get seen in their timelines.
 
       .examplelist
         p.center Below some posts selected for ther interactions, click on them and see how the visualization looks like.
