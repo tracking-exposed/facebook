@@ -39,11 +39,11 @@ function timeline () {
 }
 
 function prefeed () {
-    document.querySelectorAll('.userContentWrapper').forEach(processPost);
+    document.querySelectorAll('#contentCol .userContentWrapper').forEach(processPost);
 };
 
 function watch () {
-    document.arrive('.userContentWrapper', function () { processPost(this); });
+    document.arrive('#contentCol .userContentWrapper', function () { processPost(this); });
 };
 
 function render () {
