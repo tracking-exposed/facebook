@@ -45,7 +45,8 @@ var dispatchPromise = function(funcName, req, res) {
     if(_.isUndefined(func)) {
         debug("Developer mistake with version %d %s ", apiV, funcName);
         wrapError("pre-exec", apiV, funcName, req.params, res);
-        res.header(500);
+        res.status(500);
+        res.send('error');
         return false;
     }
 
@@ -72,7 +73,8 @@ var dispatchPromise = function(funcName, req, res) {
               res.sendFile(__dirname + "/html/" + httpresult.file);
           } else {
               debug("%s Failure %j", req.randomUnicode, httpresult);
-              res.header(500);
+              res.status(500);
+              res.send('error');
               return false;
           }
           return true;
@@ -100,9 +102,6 @@ app.get('/node/countries/:version/:format', function(req, res) {
 });
 app.get('/node/country/:version/:countryCode/:format', function(req, res) {
     return dispatchPromise('countryStatsByDay', req, res);
-});
-app.get('/post/top/:version', function(req, res) {
-    return dispatchPromise('topPosts', req, res);
 });
 app.get('/post/reality/:version/:postId', function(req, res) {
     return dispatchPromise('postReality', req, res);
