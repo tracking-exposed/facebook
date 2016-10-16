@@ -1,0 +1,84 @@
+doctype html
+html
+  head
+    link(href='https://fonts.googleapis.com/css?family=EB+Garamond', rel='stylesheet')
+    link(href='/js/local/realitycheck.css', rel='stylesheet', type='text/css')
+    script(type='text/javascript', src='/js/vendor/d3.min.js')
+    script(type='text/javascript', src='/js/vendor/lodash.min.js')
+    script(type='text/javascript', src='/js/vendor/moment.min.js')
+    script(type='text/javascript', src='/js/local/realitycheck.js')
+    if userId !== 0
+      title Timelines of ઉ#{userId}
+    else
+      title facebook.tracking.exposed invalid Personal page
+
+  body(onload=" loadTimelines(#{userId}, '#visualization');")
+    .intro
+      .intro-copy
+        h1.intro-title Meta-Timeline: a timeline of timelines
+        div.container-fluid
+          span.container-fluid.col-md-4.niceborder
+            p Facebook is so present in most people&apos;s lives that we tend to forget some of the logics that run it.
+            p How does it decides what we get in our newsfeed? 
+            p We have no idea, but this is an attempt to shed a small light on it.
+          span.col-md-2
+          span.container-fluid.col-md-4.niceborder 
+            p If you have the 
+                a.intro-link(href='/#useit') facebook.tracking.exposed script
+            | installed, you can choose to see some of the past times (timelines) you have been scrolling Facebook.
+            p Each column represents a specific time you have been on Facebook scrolling, up to a maximum of 25 posts per session. Hovering or clicking on a post (a rectangle) will highlight whenever that particular post appeared in other occasions.
+      |         
+      .intro-input
+        #refreshes-field.input-container
+          input.refresh-num(type='number', value='6', min='1', max='6', onfocus="setFocus('refreshes-field')")
+    |     
+    .viz-header
+      .legend-box
+        h2.legend-title Key:
+        |             
+        .legend
+          .container
+            .timeline(style='background-color: #81e3ea')
+            |                     
+            .legend-labels
+              p feed
+          |                 
+          .container
+            .timeline(style='background-color: #eaea5e')
+            |                     
+            .legend-labels
+              p friend link
+          |                 
+          .container
+            .timeline(style='background-color: #f76f61')
+            |                     
+            .legend-labels
+              p promoted
+          |                 
+          .container
+            .timeline(style='background-color: #414141')
+            |                     
+            .legend-labels
+              p broken
+      |         
+      .toggle-box
+        .toggle-slider
+          .toggle-sort-type
+            .toggle-btn
+          |                 
+          p.toggle-label Sort by type
+        |             
+        .toggle-slider
+          .toggle-sort-time
+            .toggle-btn
+          |                 
+          p.toggle-label Sort by actual creation time
+        |             
+        .toggle-slider
+          .toggle-info
+            .toggle-btn
+          |                 
+          p.toggle-label Show all info
+    |     
+    div(id="visualization")
+
