@@ -13,15 +13,15 @@
   ],
 
   "background": {
-      "scripts": ["build/sync.js"],
+      "scripts": ["./sync.js"],
       "persistent": false
   },
 
   "content_scripts": [
     {
       "matches": ["https://*.facebook.com/*"],
-      "js": ["build/app.js"],
-      "css": ["build/styles.css"]
+      "js": ["./app.js"],
+      "css": ["./styles.css"]
     }
   ]
 

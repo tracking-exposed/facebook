@@ -74,7 +74,7 @@ const DEV_PLUGINS = [
 ];
 
 const EXTRACT_CSS_PLUGIN = new ExtractTextPlugin(
-    PRODUCTION ? 'styles.min.css' : 'styles.css', {
+    'styles.css', {
         allChunks: true
     }
 );
@@ -145,7 +145,7 @@ const config = {
 
     output: {
         path: PRODUCTION ? PATHS.DIST : PATHS.BUILD,
-        filename: PRODUCTION ? '[name].min.js' : '[name].js',
+        filename: '[name].js'
     },
 
     debug: !PRODUCTION,
