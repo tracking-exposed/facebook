@@ -1,6 +1,6 @@
 {
   "name": "ESCVI",
-  "version": "0.9.6",
+  "version": "1.0.0",
   "description": "facebook.tracking.exposed → Esigo Sapere Come Veniamo Informati",
   "homepage": "https://github.com/vecna/ESCVI/",
   "bugs": "https://github.com/vecna/ESCVI/issues",
@@ -13,7 +13,7 @@
   "scripts": {
     "lint": "eslint ./",
     "build": "rimraf ./build && cross-env NODE_ENV=development webpack",
-    "start": "npm run build:watch",
+    "start": "npm run build:watch:files",
     "build:watch": "cross-env NODE_ENV=development node dev-server.js",
     "build:watch:files": "rimraf ./build && cross-env NODE_ENV=development webpack -w",
     "build:dist": "rimraf ./dist && cross-env NODE_ENV=production webpack -p",

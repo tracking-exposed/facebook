@@ -2,16 +2,18 @@
   "manifest_version": 2,
 
   "name": "Fbtrex",
-  "description": "asdff",
-  "version": "1.0",
+  "description": "Facebook tracking exposed",
+  "version": "1.0.0",
 
   "permissions": [
     "tabs",
     "storage",
-    "*://*.facebook.com/*"],
+    "https://*.facebook.com/",
+    "http://localhost:8000/"
+  ],
   "content_scripts": [
     {
-      "matches": ["*://*.facebook.com/*"],
+      "matches": ["https://*.facebook.com/*"],
       "js": ["build/bundle.js"],
       "css": ["build/styles.css"]
     }
