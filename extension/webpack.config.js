@@ -23,7 +23,8 @@ const BUILD = require('child_process').execSync('git rev-parse HEAD').toString()
 
 
 const PATHS = {
-    APP: path.resolve(__dirname, 'src/app.js'),
+    APPS: {app: path.resolve(__dirname, 'src/app.js'),
+           sync: path.resolve(__dirname, 'src/pages/sync.js')},
     BUILD: path.resolve(__dirname, 'build'),
     DIST: path.resolve(__dirname, 'dist'),
     NODE_MODULES: path.resolve(__dirname, 'node_modules'),
@@ -140,11 +141,11 @@ const LOADERS = [
 
 /** EXPORTED WEBPACK CONFIG **/
 const config = {
-    entry: [PATHS.APP],
+    entry: PATHS.APPS,
 
     output: {
-        filename: PRODUCTION ? 'bundle.min.js' : 'bundle.js',
         path: PRODUCTION ? PATHS.DIST : PATHS.BUILD,
+        filename: PRODUCTION ? '[name].min.js' : '[name].js',
     },
 
     debug: !PRODUCTION,

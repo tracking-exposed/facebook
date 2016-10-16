@@ -1,5 +1,4 @@
 import config from '../config';
-import { postTimeline } from '../api';
 
 const INTERVAL = config.FLUSH_INTERVAL;
 var user = null;
@@ -29,12 +28,14 @@ function handleTimeline (type, e) {
     timelines.push(currentTimeline);
 }
 
-function sync () {
-    // send timelines
+function sync (hub) {
     const elements = timelines.filter((timeline) => timeline.posts.length);
 
     if (elements.length) {
-        postTimeline(elements);
+        // Send timelines to the page handling the communication with the API.
+        // This might be refactored using something compatible to the HUB architecture.
+        chrome.runtime.sendMessage({type: 'sync', payload: elements},
+                                   (response) => hub.event('syncResponse', response));
 
         // remove all other timelines
         timelines = timelines.slice(timelines.length - 1);
@@ -48,6 +49,6 @@ export function register (hub) {
     hub.register('user', handleUser);
     hub.register('newPost', handlePost);
     hub.register('newTimeline', handleTimeline);
-    hub.register('windowUnload', sync);
-    window.setInterval(sync, INTERVAL);
+    hub.register('windowUnload', sync.bind(null, hub));
+    window.setInterval(sync.bind(null, hub), INTERVAL);
 }

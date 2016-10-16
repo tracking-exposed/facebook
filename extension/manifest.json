@@ -11,10 +11,16 @@
     "https://*.facebook.com/",
     "http://localhost:8000/"
   ],
+
+  "background": {
+      "scripts": ["build/sync.js"],
+      "persistent": false
+  },
+
   "content_scripts": [
     {
       "matches": ["https://*.facebook.com/*"],
-      "js": ["build/bundle.js"],
+      "js": ["build/app.js"],
       "css": ["build/styles.css"]
     }
   ]
