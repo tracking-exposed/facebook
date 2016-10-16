@@ -51,9 +51,9 @@ function render () {
     const rootElement = $('<div />', { 'id': 'fbtrex--root' });
     const basicInfo = scrapeUserData($('body'));
 
+    /*
     console.log('ciaoo');
     chrome.storage.sync.get(basicInfo.id, (val) => {
-        debugger;
         if (chrome.runtime.lastError) {
             val = nacl.box.keyPair();
             var update = {};
@@ -63,7 +63,9 @@ function render () {
         basicInfo.keypair = val;
         hub.event('user', basicInfo);
     });
+    */
 
+    hub.event('user', basicInfo);
     $('body').append(rootElement);
     ReactDOM.render((<StartButton userId={basicInfo.id} />), document.getElementById('fbtrex--root'));
 };

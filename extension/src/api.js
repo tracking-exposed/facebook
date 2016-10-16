@@ -1,11 +1,14 @@
+import $ from 'jquery';
+
 import hub from './hub';
 import config from './config';
 
 export function post (apiUrl, data) {
+    return;
     const payload = JSON.stringify(data);
     const url = config.API_ROOT + apiUrl;
 
-    GM_xmlhttpRequest({
+    $.ajax({
         method: 'POST',
         url: url,
         headers: {
@@ -13,15 +16,10 @@ export function post (apiUrl, data) {
             'X-Fbtrex-Version': config.VERSION,
             'X-Fbtrex-Build': config.BUILD
         },
-        data: payload,
-        onload: function (response) {
-            hub.event('syncReponse', { url: url, response: response });
-        },
-        onerror: function (error) {
-            // We are parsing the payload because `data` will be modified by the handers/sync.js::sync function.
-            hub.event('syncError', { url: url, data: JSON.parse(payload), error: error});
-        }
-    });
+        data: payload
+    })
+    .done((response) => hub.event('syncReponse', { url: url, response: response }))
+    .fail((error) => hub.event('syncError', { url: url, data: JSON.parse(payload), error: error}));
 }
 
 export const postTimeline = post.bind(null, 'timelines');

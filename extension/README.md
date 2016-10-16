@@ -33,46 +33,15 @@ it anyway. It's also a nice way to check if the installation succeeded.
 
 
 ### Prepare your browser
-Developing the extension happens *outside* the Greasemonkey environment.
-We need to tell Greasemonkey to load the script from the local development
-server.
+If you wish to autoreload your extension every time a build succeeds, you need
+first to install [Extension Reloader](https://chrome.google.com/webstore/detail/extensions-reloader/fimgfedafeadlieiabdeeaodndnlbhid).
 
-Open Greasemonkey, create a new script, and add this code:
+To install the extension go to **settings**, select **extensions**, and enable
+**Developer mode**. Click on **Load unpacked extension** and select the
+`extension` directory contained in this repo.
 
-```
-// ==UserScript==
-// @name         fbtrex-dev
-// @namespace    https://facebook.tracking.exposed/
-// @version      0.1-dev
-// @description  try to take over the world!
-// @author       You
-// @connect      localhost:3000
-// @match        https://www.facebook.com/*
-// @grant        GM_addStyle
-// @grant        GM_xmlhttpRequest
-// @grant        GM_getResourceText
-// @noframes
-// ==/UserScript==
+Keep `npm start` running in the background to take advantage of the autoreload.
 
-GM_xmlhttpRequest({
-  method: "GET",
-  url: "http://localhost:3000/assets/bundle.js",
-  onload: function(response) {
-    eval(response.responseText);
-  }
-});
-
-GM_xmlhttpRequest({
-  method: "GET",
-  url: "http://localhost:3000/assets/styles.css",
-  onload: function(response) {
-    GM_addStyle(response.responseText);
-  }
-});
-```
-
-This will load the development version of the extension directly from
-your local server.
 
 #### Ready to go!
 Visit [Facebook](https://www.facebook.com/) and open the dev tools. You should
