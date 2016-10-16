@@ -8,7 +8,7 @@ import 'core-js/es6';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import nacl from 'tweetnacl';
+// import nacl from 'tweetnacl';
 import uuid from 'uuid';
 import $ from 'jquery';
 import 'arrive';

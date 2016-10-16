@@ -16,6 +16,7 @@
   },
 
   "globals": {
+    "chrome": true,
     "document": false,
     "navigator": false,
     "window": false
