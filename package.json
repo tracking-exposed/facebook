@@ -23,7 +23,6 @@
     "debug": "^2.2.0",
     "diskusage": "^0.1.5",
     "express": "^4.14.0",
-    "express4": "0.0.1",
     "geoip": "^0.6.1",
     "jade": "^1.11.0",
     "jquery": "^1.9.1",
@@ -36,7 +35,6 @@
     "request": "^2.75.0",
     "reveal.js": "^3.3.0",
     "socket.io": "^1.4.8",
-    "stylus": "^0.54.5",
-    "sweet-scroll": "^1.0.3"
+    "stylus": "^0.54.5"
   }
 }
