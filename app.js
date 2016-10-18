@@ -131,6 +131,11 @@ app.get('/', function(req, res) {
 app.get('/page-:name', function(req, res) {
     return dispatchPromise('getPage', req, res);
 });
+/* legacy because the script it is still pointing here */
+app.get('/realitycheck/:userId', function(req, res) {
+    _.set(req.params, 'page', 'timelines');
+    return dispatchPromise('getPersonal', req, res);
+});
 app.get('/realitycheck/:page/random', function(req, res) {
     return dispatchPromise('getRandom', req, res);
 });
