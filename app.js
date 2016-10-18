@@ -128,6 +128,9 @@ app.post('/contrib/:version/:which', function(req, res) {
 app.get('/', function(req, res) {
     return dispatchPromise('getIndex', req, res);
 });
+app.get('/team', function(req, res) {
+    return dispatchPromise('getTeam', req, res);
+});
 app.get('/page-:name', function(req, res) {
     return dispatchPromise('getPage', req, res);
 });
