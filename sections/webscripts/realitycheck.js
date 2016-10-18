@@ -11,14 +11,10 @@ var duration = 200,
 function loadTimelines(fbId, containerId) {
     var refNum = d3.select(".refresh-num").property("value");
 
-    var url = "/user/2/timeline/" + fbId + "/0/" + refNum + "/30";
+    var url = "/user/2/timeline/" + fbId + "/0/" + refNum + "/20";
     console.log(url);
     d3.json(url, function(error, data) {
         if (error) return console.error(error);
-
-        //assign correct post order and cut if timelines have more than 25 posts
-        // data.timelines.forEach(fixTimelines);
-        // they are cleaned server side
 
         //control click behaviour
         var clicked = false;

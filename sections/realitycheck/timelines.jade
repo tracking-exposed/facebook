@@ -39,15 +39,15 @@ html
           p If you have the 
               a.intro-link(href='/#useit') facebook.tracking.exposed script
           | installed, you can choose to see some of the past times (timelines) you have been scrolling Facebook.
-          p Each column represents a specific time you have been on Facebook scrolling, up to a maximum of 25 posts per session. Hovering or clicking on a post (a rectangle) will highlight whenever that particular post appeared in other occasions. 
+          p Each column represents a specific time you have been on Facebook scrolling, up to a maximum of 20 posts per timeline (6, by default). Hovering or clicking on a post (the rectangles) will highlight whenever that particular post appeared in other occasions. 
           p Don't forget to take a look on the 
             a(href="/realitycheck/activities/#{userId}") activities page 
             | of the user.
 
       .intro-input
         #refreshes-field.input-container
-          input.refresh-num(type='number', value='6', min='1', max='6', onfocus="setFocus('refreshes-field')")
-    |     
+          input.refresh-num(type='number', value='6', min='1', max='10', onfocus="setFocus('refreshes-field')" onkeyup="loadTimelines(#{userId}, '#visualization')")
+
     .viz-header
       .legend-box
         h2.legend-title Key:
