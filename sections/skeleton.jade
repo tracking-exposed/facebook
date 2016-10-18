@@ -47,21 +47,23 @@ html
         div.collapse.navbar-collapse(id="thenavbar")
           ul.nav.navbar-nav
             li
-              a(href='#what') What
+                a(href='/') Home
             li
-              a(href='#background') Background
+              a(href='/#what') What
             li
-              a(href='#useit') Use It
+              a(href='/#background') Background
             li
-              a(href='#getinvolved') Get involved!
+              a(href='/#useit') Use It
             li
-              a(href='#about') About
+              a(href='/#getinvolved') Get involved!
             li
-              a(href='#thanks') Thanks
+              a(href='/#thanks') Thanks
             li
-              a(href='#links') Links 
+              a(href='/#links') Links 
             li
               a(href='/page-long-presentation') Slides
+            li
+              a(href='/team') Team
 
     div#what
       div.propaganda
@@ -82,11 +84,6 @@ html
       div.propaganda
         h2 Get involved!
         block getinvolved
-
-    div#about
-      div.propaganda
-        h2 About
-        block about
 
     div#thanks
       div.propaganda
