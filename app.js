@@ -125,12 +125,6 @@ app.post('/contrib/:version/:which', function(req, res) {
     return dispatchPromise('writeContrib', req, res);
 });
 /* Only the *last version* is imply in the API below */
-app.get('/', function(req, res) {
-    return dispatchPromise('getIndex', req, res);
-});
-app.get('/page-:name', function(req, res) {
-    return dispatchPromise('getPage', req, res);
-});
 /* legacy because the script it is still pointing here */
 app.get('/realitycheck/:userId', function(req, res) {
     _.set(req.params, 'page', 'timelines');
@@ -173,6 +167,14 @@ if(nconf.get('development') === 'true') {
 } else {
     app.use('/js/local', express.static(__dirname + '/dist/js/local'));
 }
+/* last one, page name catch-all */
+app.get('/:page', function(req, res) {
+    return dispatchPromise('getPage', req, res);
+});
+/* true last */
+app.get('/', function(req, res) {
+    return dispatchPromise('getPage', req, res);
+});
 
 
 /* websocket configuration and definition of the routes */
