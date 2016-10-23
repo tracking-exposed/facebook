@@ -1,5 +1,4 @@
 {
-  "restartable": "rs",
   "ignore": [
     ".git/",
     "node_modules/**/node_modules",
@@ -7,9 +6,7 @@
     "errors/"
   ],
   "verbose": true,
-  "execMap": {
-    "js": "node --harmony"
-  },
+  "exitcrash": false,
   "watch": [
     "lib/*.js",
     "sections/**",

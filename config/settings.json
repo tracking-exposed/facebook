@@ -6,6 +6,13 @@
       "suggestions": "suggestions",
       "accesses": "accesses3"
   },
+  "members": [
+      "team/claudio",
+      "team/alberto",
+      "team/kiki",
+      "team/ost",
+      "team/bic"
+  ],
   "mongodb": "mongodb://localhost/facebook",
   "port": 8000,
   "anomaly": 1
