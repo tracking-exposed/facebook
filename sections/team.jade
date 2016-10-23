@@ -1,63 +1,30 @@
 block team
-    h2 Meet the team
-    div
-        div.propaganda
-        div.row
-            div.col-xs-4.avatar
-                img(class="img-circle" src="team-pics/claudioa.jpg")
-        
-            div.col-xs-8
-                h2 Claudio Agosti
-                h3 director, founder
-                p  "IT security analyst turned in developer and now I like to say “into technopolitics."
-                div.span
-                    a(href="https://twitter.com/_vecna" target="blank")
-                        img(class="logo" src="team-pics/twitter.png")
 
-    div
-        div.propaganda
-        div.row
-            div.col-xs-4.avatar
-                img(class="img-circle" src="team-pics/opensensorsdata.png")
-        
-            div.col-xs-8
-                h2 OSD
-                h3 advisor
-                div.span
-                    a(href="https://twitter.com/osd_it" target="blank")
-                        img(class="logo" src="team-pics/twitter.png")
-                    a(href="https://github.com/opensensorsdata" target="blank")
-                        img(class="logo" src="team-pics/github.png" target="blank")
-                                        
-    div
-        div.propaganda
-        div.row
-            div.col-xs-4.avatar
-                img(class="img-circle" src="team-pics/albertog.jpg")
-        
-            div.col-xs-8
-                h2 Alberto Granzotto
-                h3 computer programmer
-                p  "I like computers, teh internets, privacy, and cats."
-                div.span
-                    a(href="https://twitter.com/vrde" target="blank")
-                        img(class="logo" src="team-pics/twitter.png")
-                    a(href="https://github.com/vrde" target="blank")
-                        img(class="logo" src="team-pics/github.png" target="blank")
+  .container-fluid
+    .carousel.slide(id='myCarousel' data-ride='carousel')
 
-    div
-        div.propaganda
-        div.row
-            div.col-xs-4.avatar
-                img(class="img-circle" src="team-pics/gilbertoc.jpg")
-        
-            div.col-xs-8
-                h2 Gilberto Conti 
-                h3 software developer
-                p  "Student of code and unicorns"
-                div.span
-                    a(href="https://twitter.com/Gilberto_Conti" target="blank")
-                        img(class="logo" src="team-pics/twitter.png")
-                    a(href="https://github.com/gibix" target="blank")
-                        img(class="logo" src="team-pics/github.png" target="blank")
-                    
+      ol.carousel-indicators
+        li.active(data-target='#myCarousel', data-slide-to='0')
+        li(data-target='#myCarousel', data-slide-to='1')
+        li(data-target='#myCarousel', data-slide-to='2')
+        li(data-target='#myCarousel', data-slide-to='3')
+        li(data-target='#myCarousel', data-slide-to='4')
+
+      .carousel-inner(role='listbox')
+        .item.active
+          include team/claudio
+        .item
+          include team/alberto
+        .item
+          include team/ost
+        .item
+          include team/kiki
+        .item
+          include team/bic
+
+      a.left.carousel-control(href='#myCarousel', role='button', data-slide='prev')
+        span.glyphicon.glyphicon-chevron-left(aria-hidden='true')
+        span.sr-only Previous
+      a.right.carousel-control(href='#myCarousel', role='button', data-slide='next')
+        span.glyphicon.glyphicon-chevron-right(aria-hidden='true')
+        span.sr-only Next

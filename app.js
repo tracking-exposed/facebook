@@ -24,8 +24,8 @@ nconf.argv()
 console.log(redOn + "ઉ nconf loaded, using " + cfgFile + redOff);
 
 var wrapError = function(where, v, fn, nfo) {
-    var str = redOn + " " + where + " Developer mistake v(" +
-              v + ") " + fn + "\n" +
+    var str = redOn + " " + where + " Developer mistake v(" + 
+              v + ") " + fn + "\n" + 
               JSON.stringify(nfo, undefined, 2) + redOff;
     console.log(str);
 };
@@ -51,7 +51,7 @@ var dispatchPromise = function(funcName, req, res) {
     }
 
     req.randomUnicode = String.fromCharCode(_.random(0x0391, 0x085e));
-    debug("%s %s Dispatching request to %s",
+    debug("%s %s Dispatching request to %s", 
         req.randomUnicode, moment().format("HH:mm:ss"), req.url);
 
     /* in theory here we can keep track of time */
@@ -78,7 +78,7 @@ var dispatchPromise = function(funcName, req, res) {
               return false;
           }
           return true;
-      })
+      }) 
 };
 
 /* everything begin here, welcome */
@@ -157,7 +157,6 @@ app.get('/facebook.tracking.exposed.user.js', function (req, res) {
 
 app.use('/css', express.static(__dirname + '/dist/css'));
 app.use('/images', express.static(__dirname + '/dist/images'));
-app.use('/team-pics', express.static(__dirname + '/sections/team-pics'));
 app.use('/lib/font/league-gothic', express.static(__dirname + '/dist/css'));
 
 app.use('/js/vendor', express.static(__dirname + '/dist/js/vendor'));
@@ -191,3 +190,4 @@ io.on('connection', function (socket) {
         return { some: false };
     });
 });
+
