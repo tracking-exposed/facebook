@@ -28,15 +28,20 @@ var displayRealityGraph = function(postId, containerId) {
 
     var parseDate = d3.time.format("%Y-%m-%dT%H:%M:%S.%LZ").parse;
 
+    var line = d3.svg.line()
+                     .x(function(d) { return d.x; })
+                     .y(function(d) { return d.y; })
+                     .interpolate("monotone");
+
     d3.json(url, function(data) {
 
         var stats = _.countBy(data, function(d) {
-            return d.presence ? d.userId + "Y" : d.userId + "N";
+            return d.presence ? d.userPseudo + "Y" : d.userPseudo + "N";
         }, []);
         var firstViz = new Date(_.last(_.sortBy(data, 'refreshTime')).refreshTime);
 
         x.domain(_.map(data, function(d) {
-            return d.userId;
+            return d.userPseudo;
         }));
 
         y.domain(d3.extent(data, function(d) {
@@ -74,7 +79,7 @@ var displayRealityGraph = function(postId, containerId) {
             .attr("class", "dot")
             .attr("r", 4)
             .attr("cx", function(d) {
-                return x(d.userId);
+                return x(d.userPseudo);
             })
             .attr("cy", function(d) { return y(d.refreshTime); })
             .style("stroke", function(d) {
@@ -83,14 +88,14 @@ var displayRealityGraph = function(postId, containerId) {
             .style("fill", function(d) {
                 return color(d.order);
             });
-
+/*
         svg.selectAll(".rect")
             .data(_.filter(data, function(d) { return !d.presence; }))
             .enter()
             .append("rect")
             .attr("class", "rect")
             .attr("x", function(d) {
-                return x(d.userId) - 4;
+                return x(d.userPseudo) - 4;
             })
             .attr("y", function(d) {
                 return y(d.refreshTime) + 4;
@@ -100,7 +105,23 @@ var displayRealityGraph = function(postId, containerId) {
             .style("fill", function(d) {
                 return color(d.order);
             });
+*/
 
+        _.each(
+            _.filter(data, function(d) { return !d.presence; }),
+            function(d) {
+              svg.append("path")
+                  .attr("class", "line")
+                  .style("stroke", 'grey')
+                  .attr("d", line([{
+                    x: x(d.userPseudo),
+                    y: y(d.refreshTime)
+                  }, {
+                    x: x(d.userPseudo) + 6,
+                    y: y(d.refreshTime) - 2
+                  }]));
+            }
+        );
 
         var legend = svg.selectAll(".legend")
             .data([
