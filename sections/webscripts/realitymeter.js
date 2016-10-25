@@ -33,12 +33,37 @@ var displayRealityGraph = function(postId, containerId) {
                      .y(function(d) { return d.y; })
                      .interpolate("monotone");
 
+    var threshold = [
+        { 'value': 1,
+          'visibility': 'max' },
+        { 'value': 6,
+          'visibility': 'high' },
+        { 'value': 10,
+          'visibility': 'medium' },
+        { 'value': 30,
+          'visibility': 'low' }
+    ];
+
+    var getLegend = function(order) {
+      return _.reduce(threshold, function(level, chk) {
+          if(order > chk.value) level = chk.visibility;
+          return level;
+      }, threshold[0].visibility);
+    };
+
     d3.json(url, function(data) {
 
-        var stats = _.countBy(data, function(d) {
-            return d.presence ? d.userPseudo + "Y" : d.userPseudo + "N";
-        }, []);
-        var firstViz = new Date(_.last(_.sortBy(data, 'refreshTime')).refreshTime);
+        var totals = _.countBy(data, function(d) { return d.userPseudo; });
+        console.log(JSON.stringify(totals));
+
+        var stats = _.countBy(
+                        _.filter(data, function(d) { return d.presence; }), 
+                        function(d) { return d.userPseudo; });
+        console.log(JSON.stringify(stats));
+
+        var firstViz = new Date(
+            _.last(_.sortBy(data, 'refreshTime')
+        ).refreshTime);
 
         x.domain(_.map(data, function(d) {
             return d.userPseudo;
@@ -59,7 +84,7 @@ var displayRealityGraph = function(postId, containerId) {
             .attr("x", width)
             .attr("y", -6)
             .style("text-anchor", "end")
-            .text("User ID");
+            .text("User Pseudonym");
 
         svg.append("g")
             .attr("class", "y axis")
@@ -70,7 +95,55 @@ var displayRealityGraph = function(postId, containerId) {
             .attr("y", 6)
             .attr("dy", ".71em")
             .style("text-anchor", "end")
-            .text("Display after " + firstViz.toLocaleString() );
+            .text("Feed refreshes since " + firstViz.toLocaleString() + 
+                  ", " + moment.duration(moment() - firstViz).humanize() +
+                  " ago"
+            );
+
+        /* draw arcs between legend and classed dot */
+        _.each(
+            _.filter(data, function(d) { return d.presence; }),
+            function(d, i) {
+
+              var vizLevel = _.findIndex(threshold, function(t) {
+                  return (t.visibility === getLegend(d.order) );
+              }) + 1;
+
+              svg.append("path")
+                  .attr("class", "visibility-" + getLegend(d.order))
+                  .style("stroke", "lightgrey")
+                  .style("stroke-width", "1px")
+                  .style("fill", "none")
+                  .attr("d", line([{
+                    x: x(d.userPseudo),
+                    y: y(d.refreshTime)
+                  }, {
+                    x: ( x(d.userPseudo) + (width) ) / 2,
+                    y: _.random(20 * vizLevel, 70 * vizLevel)
+                  }, {
+                    x: width - 18,
+                    y: (15 * vizLevel) + (2 * (vizLevel - 1))
+                  }]));
+            }
+        );
+
+        /* draw the line of "timeline without post display" */
+        _.each(
+            _.filter(data, function(d) { return !d.presence; }),
+            function(d, i) {
+              svg.append("path")
+                  .attr("class", "light-censorship")
+                  .style("stroke", "red")
+                  .style("stroke-width", "0.5px")
+                  .attr("d", line([{
+                    x: x(d.userPseudo),
+                    y: y(d.refreshTime)
+                  }, {
+                    x: x(d.userPseudo) + 8,
+                    y: y(d.refreshTime) - 4
+                  }]));
+            }
+        );
 
         svg.selectAll(".dot")
             .data(_.filter(data, function(d) { return d.presence; }))
@@ -78,64 +151,24 @@ var displayRealityGraph = function(postId, containerId) {
             .append("circle")
             .attr("class", "dot")
             .attr("r", 4)
+            .attr("class", function(d, i) {
+                return "visibility-" + getLegend(d.order);
+            })
             .attr("cx", function(d) {
                 return x(d.userPseudo);
             })
             .attr("cy", function(d) { return y(d.refreshTime); })
-            .style("stroke", function(d) {
-                return color(d.order + 10);
-            })
             .style("fill", function(d) {
                 return color(d.order);
             });
-/*
-        svg.selectAll(".rect")
-            .data(_.filter(data, function(d) { return !d.presence; }))
-            .enter()
-            .append("rect")
-            .attr("class", "rect")
-            .attr("x", function(d) {
-                return x(d.userPseudo) - 4;
-            })
-            .attr("y", function(d) {
-                return y(d.refreshTime) + 4;
-            })
-            .attr("width", 8)
-            .attr("height", 8)
-            .style("fill", function(d) {
-                return color(d.order);
-            });
-*/
-
-        _.each(
-            _.filter(data, function(d) { return !d.presence; }),
-            function(d) {
-              svg.append("path")
-                  .attr("class", "line")
-                  .style("stroke", 'grey')
-                  .attr("d", line([{
-                    x: x(d.userPseudo),
-                    y: y(d.refreshTime)
-                  }, {
-                    x: x(d.userPseudo) + 6,
-                    y: y(d.refreshTime) - 2
-                  }]));
-            }
-        );
 
         var legend = svg.selectAll(".legend")
-            .data([
-                { 'value': 1,
-                  'visibility': 'max' },
-                { 'value': 10,
-                  'visibility': 'high' },
-                { 'value': 20,
-                  'visibility': 'medium' },
-                { 'value': 30,
-                  'visibility': 'low' }
-            ])
+            .data(threshold)
             .enter().append("g")
             .attr("class", "legend")
+            .attr("id", function(d) {
+                return "uniq-" + d.visibility;
+            })
             .attr("transform", function(d, i) {
                 return "translate(0," + i * 20 + ")";
             });
@@ -154,8 +187,11 @@ var displayRealityGraph = function(postId, containerId) {
             .text(function(d) {
                 return d.visibility;
             });
+
     });
 };
+
+
 
 /* not working at the moment the 'click' trapping of button ? */
 var getPostId = function(formId) {
