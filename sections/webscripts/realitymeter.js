@@ -3,16 +3,24 @@ var displayRealityGraph = function(postId, containerId) {
     if(!postId || postId === "0") return;
     var url = '/post/reality/2/' + postId;
 
+    var maxWidth = window.innerWidth
+      || document.documentElement.clientWidth
+      || document.body.clientWidth;
+
+    var maxHeight = window.innerHeight
+      || document.documentElement.clientHeight
+      || document.body.clientHeight;
+
     var margin = {top: 20, right: 20, bottom: 30, left: 60},
-        width = 960 - margin.left - margin.right,
-        height = 500 - margin.top - margin.bottom,
+        width = /*960*/ maxWidth - 80 - margin.left - margin.right,
+        height = /*500*/ maxHeight -80 - margin.top - margin.bottom,
         /* the space in the 'x' line before the 1st tick & after the last */
         padding = 40;
 
     /* more the post is in a favorable position, and darker should be */
     var color = d3.scale.linear()
         .domain([1, 30])
-        .range(['yellow', 'darkgreen']);
+        .range(['red', 'blue']);
 
     var x = d3.scale.ordinal().rangePoints([padding, width - (padding * 2)]);
     var y = d3.time.scale().range([height, 0]);
@@ -133,7 +141,7 @@ var displayRealityGraph = function(postId, containerId) {
             function(d, i) {
               svg.append("path")
                   .attr("class", "light-censorship")
-                  .style("stroke", "red")
+                  .style("stroke", "pink")
                   .style("stroke-width", "0.5px")
                   .attr("d", line([{
                     x: x(d.userPseudo),
