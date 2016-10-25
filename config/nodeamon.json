@@ -3,7 +3,8 @@
     ".git/",
     "node_modules/**/node_modules",
     "operations/",
-    "errors/"
+    "errors/",
+    "sections/webscripts/*.js"
   ],
   "verbose": true,
   "exitcrash": false,

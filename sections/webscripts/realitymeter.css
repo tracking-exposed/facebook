@@ -6,12 +6,8 @@
 }
 
 .dot {
+    stroke-width: 1px;
     stroke: #000;
-}
-
-.rect {
-    stroke: grey;
-    fill: #fff;
 }
 
 svg {
