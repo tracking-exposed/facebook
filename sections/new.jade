@@ -1,0 +1,35 @@
+doctype html
+html
+  head
+    link(rel='stylesheet', href='css/bootstrap.css')
+    link(rel='stylesheet', href='css/reveal.css')
+    link(rel='stylesheet', href='css/reveal-solarized.css')
+    script(type='text/javascript', src='js/vendor/reveal.min.js')
+    script(type='text/javascript', src='js/vendor/lodash.min.js')
+    script(type='text/javascript', src="js/vendor/reveal-head.min.js")
+
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    title facebook.tracking.exposed
+
+  body
+
+    .reveal
+      .slides
+
+        section
+          include mission
+
+        section
+          include background
+
+        section
+          include problemsInPA
+
+    script.
+        Reveal.initialize({
+          controls: true,
+          progress: true,
+          history: true,
+          center: true });

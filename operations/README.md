@@ -40,6 +40,6 @@ CSS selector https://www.w3.org/TR/css3-selectors/ instead of parsing and regexp
 
 # Node sync/clone
 
-    DEBUG=* SOURCE='https://facebook.tracking.exposed' operations/importer.js
+    DEBUG=* source='https://facebook.tracking.exposed' operations/importer.js
 
 

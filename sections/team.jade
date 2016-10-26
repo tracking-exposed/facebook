@@ -1,0 +1,30 @@
+block team
+
+  .container-fluid
+    .carousel.slide(id='myCarousel' data-ride='carousel')
+
+      ol.carousel-indicators
+        li.active(data-target='#myCarousel', data-slide-to='0')
+        li(data-target='#myCarousel', data-slide-to='1')
+        li(data-target='#myCarousel', data-slide-to='2')
+        li(data-target='#myCarousel', data-slide-to='3')
+        li(data-target='#myCarousel', data-slide-to='4')
+
+      .carousel-inner(role='listbox')
+        .item.active
+          include team/claudio
+        .item
+          include team/alberto
+        .item
+          include team/kiki
+        .item
+          include team/bic
+        .item
+          include team/ost
+
+      a.left.carousel-control(href='#myCarousel', role='button', data-slide='prev')
+        span.glyphicon.glyphicon-chevron-left(aria-hidden='true')
+        span.sr-only Previous
+      a.right.carousel-control(href='#myCarousel', role='button', data-slide='next')
+        span.glyphicon.glyphicon-chevron-right(aria-hidden='true')
+        span.sr-only Next
