@@ -24,30 +24,27 @@ p
   font-family 'Source Code Pro', monospace
   margin 0
 
-.postidinfo
-  margin 0
-  padding-left 20%
-  width 60%
-  background paleyellow
-  font-size 0.7em
-
-
 .head-text
   text-transform uppercase
   color #fff
 
 .propaganda
-  padding-right 10% 
+  padding-right 10%
   padding-left 10%
   padding-bottom 2%
   border-bottom #3b5999 0.7em solid
 
+.polite-propaganda
+  padding-right 10% 
+  padding-left 10%
+  padding-bottom 2%
+
   h2
-    border-left: #3b5999 0.01em solid
-    padding-left: 0.1em
+    border-left #3b5999 0.01em solid
+    padding-left 0.1em
 
 .simpletext
-  padding-right 10% 
+  padding-right 10%
   padding-left 10%
   padding-bottom 1%
 
@@ -80,6 +77,10 @@ p
   border-right 8%
   text-align right
   background #E8FFC2
+  color #3b59999
+
+  a
+    color #3b59999
 
 .left
   text-align left
@@ -89,13 +90,15 @@ p
 .facebook
   background #3b5999
 
+.larger-content
+  margin 30px auto
+
 .main-content
   margin 50px auto
   max-width 600px
 
   p
     line-height 1.6
-    margin-bottom 1.7em
 
 .footer
   margin 50px auto
@@ -108,7 +111,7 @@ p
     font-size 12px
 
 .fontana
-  font-family: museo-slab,Georgia,"Times New Roman",Times,serif  
+  font-family: museo-slab,Georgia,"Times New Roman",Times,serif
 
 .long
   font-size 0.8em
@@ -126,9 +129,9 @@ p
   color white
 
 .green
-  color green 
+  color green
 
-.grey 
+.grey
   color #d3d3d3
 
 .red
@@ -139,6 +142,26 @@ p
 
 .italic
   font-style italic
+
+.examplelist
+  margin-left 10%
+  margin-right 10%
+
+  p
+    size: 1.3em
+
+  a
+    color darkblue
+
+  a:hover
+    color red
+    font-style normal
+
+.exampleentry
+  background-color paleyellow
+  padding 5%
+  width 100%
+
 
 // modal w3c copy-pasta
 .modal
@@ -160,6 +183,13 @@ p
   border 1px solid #888;
   width 80%
 
+ .avatar img
+    max-width: 60%
+
+ .logo
+   max-width: 32px
+   margin-right: 3%
+
 .close
   color #aaa
   float right
@@ -167,7 +197,27 @@ p
   font-weight bold
 
 .close:hover
-.close:focus 
+.close:focus
   color black
   text-decoration none
   cursor pointer
+
+.team-name
+  font-size 2em
+
+.team-role
+  color grey
+
+.team-twitter
+  font-size 0.9em
+
+.team-github
+  font-size 0.9em
+
+/*.team-member
+  float: right;*/
+.img-circle {
+    border-radius: 50%;
+    margin: 0 50%;
+    transform: translate(-50%,0%);
+}

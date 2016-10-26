@@ -54,7 +54,8 @@ var dispatchPromise = function(name, req, res) {
     if(_.isNull(func)) {
         debug("%s Wrong function name used %s", name);
         wrapError("pre-exec", apiV, funcName, req.params, res);
-        res.header(500);
+        res.status(500);
+        res.send('error');
         return false;
     }
 
@@ -80,8 +81,9 @@ var dispatchPromise = function(name, req, res) {
               res.header(500);
               return false;
           } else {
-              wrapError("post-exec", apiV, name, req.params);
-              res.header(500);
+              debug("%s Failure %j", req.randomUnicode, httpresult);
+              res.status(500);
+              res.send('error');
               return false;
           }
           return true;
@@ -109,9 +111,6 @@ app.get('/node/countries/:version/:format', function(req, res) {
 });
 app.get('/node/country/:version/:countryCode/:format', function(req, res) {
     return dispatchPromise('countryStatsByDay', req, res);
-});
-app.get('/post/top/:version', function(req, res) {
-    return dispatchPromise('topPosts', req, res);
 });
 app.get('/post/reality/:version/:postId', function(req, res) {
     return dispatchPromise('postReality', req, res);
@@ -141,25 +140,21 @@ app.post('/contrib/:version/:which', function(req, res) {
     return dispatchPromise('writeContrib', req, res);
 });
 /* Only the *last version* is imply in the API below */
-app.get('/', function(req, res) {
-    return dispatchPromise('getIndex', req, res);
-});
-app.get('/page-:name', function(req, res) {
-    return dispatchPromise('getPage', req, res);
-});
-app.get('/realitycheck/random', function(req, res) {
-    return dispatchPromise('getRandom', req, res);
-});
+/* legacy because the script it is still pointing here */
 app.get('/realitycheck/:userId', function(req, res) {
+    _.set(req.params, 'page', 'timelines');
     return dispatchPromise('getPersonal', req, res);
 });
-app.get('/overseer', function(req, res) {
-    return dispatchPromise('getOverseer', req, res);
+app.get('/realitycheck/:page/random', function(req, res) {
+    return dispatchPromise('getRandom', req, res);
 });
-app.get('/realitymeter', function(req, res) {
-    return dispatchPromise('getRealityMeter', req, res);
+app.get('/realitycheck/:page/:userId', function(req, res) {
+    return dispatchPromise('getPersonal', req, res);
 });
 app.get('/realitymeter/:postId', function(req, res) {
+    return dispatchPromise('getRealityMeter', req, res);
+});
+app.get('/realitymeter', function(req, res) {
     return dispatchPromise('getRealityMeter', req, res);
 });
 app.get('/impact', function(req, res) {
@@ -187,6 +182,14 @@ if(nconf.get('development') === 'true') {
 } else {
     app.use('/js/local', express.static(__dirname + '/dist/js/local'));
 }
+/* last one, page name catch-all */
+app.get('/:page', function(req, res) {
+    return dispatchPromise('getPage', req, res);
+});
+/* true last */
+app.get('/', function(req, res) {
+    return dispatchPromise('getPage', req, res);
+});
 
 
 /* websocket configuration and definition of the routes */

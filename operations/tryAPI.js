@@ -58,7 +58,6 @@ var testByUser = function(alli) {
 var testByPost= function(alli) {
     var aPost = getInfo(alli, 'postId');
     return Promise.all([
-        apiR(url, ['post', 'top', version, aPost]),
         apiR(url, ['post', 'reality', version, aPost])
     ]);
 };
@@ -66,14 +65,16 @@ var testByPost= function(alli) {
 var testByUserPost = function(alli) {
     var aPost = getInfo(alli, 'postId');
     var anUser = getInfo(alli, 'userId');
-    return apiR(url, ['post', 'perceived', version, aPost, anUser]);
+    return Promise.all([
+        apiR(url, ['post', 'perceived', version, aPost, anUser])
+    ]);
 };
 
 var testNode = function(alli) {
     return Promise.all([
           apiR(url, ['node', 'activity', version, kind]),
           apiR(url, ['node', 'countries', version, kind]),
-          apiR(url, ['node', 'country', version, 'IT', kind]),
+          apiR(url, ['node', 'country', version, 'IT', kind])
     ]);
 };
 
@@ -81,6 +82,15 @@ var getInfo = function(alli, kind) {
 
     if(!_.isNull(pickedO))
         return _.get(pickedO, kind);
+
+    if( !_.isUndefined(userId) && !_.isUndefined(postId) ) {
+        pickedO = {
+            userId: userId,
+            postId: postId
+        };
+        debug(" ♥ userId+postId set by nconf %j", pickedO);
+        return _.get(pickedO, kind);
+    }
 
     var cleaned = _.reject(alli.exported[1], {postId: null});
 

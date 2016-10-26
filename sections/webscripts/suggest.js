@@ -53,7 +53,7 @@ var suggestion = function(identifier) {
     var info = compileInfo(sk[identifier].info);
     var questions = compileQuestion(sk[identifier].questions);
     var submit = "<button onclick=flushMeaningful();>Send!</button>"
-    var sdiv = '<div class="suggestion">' + 
+    var sdiv = '<div class="suggestion modal">' + 
               info + 
               questions + 
               submit +
