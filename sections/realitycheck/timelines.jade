@@ -33,19 +33,21 @@ html
         span.container-fluid.col-md-4.niceborder
           p Facebook is so present in most people&apos;s lives that we tend to forget some of the logics that run it.
           p How does it decides what we get in our newsfeed? 
-          p We have no idea, but this is an attempt to shed a small light on it.
+          p We don't know yet, but this is an attempt to shed a small light on it; A privacy model and a research program is in development, find more in the homepage and in our  
+            a(href="https://github.com/tracking-exposed/facebook") github repository.
         span.col-md-2
         span.container-fluid.col-md-4.niceborder 
           p If you have the 
-              a.intro-link(href='/#useit') facebook.tracking.exposed script
-          | installed, you can choose to see some of the past times (timelines) you have been scrolling Facebook.
+            a.intro-link(href='/#useit') facebook.tracking.exposed script
+            |  installed, you can choose to see some of the past times (timelines) you have been scrolling Facebook.
           p Each column represents a specific time you have been on Facebook scrolling, up to a maximum of 20 posts per timeline (6, by default). Hovering or clicking on a post (the rectangles) will highlight whenever that particular post appeared in other occasions. 
           p Don't forget to take a look on the 
-            a(href="/realitycheck/activities/#{userId}") activities page 
-            | of the user.
+            a(href="/realitycheck/activities/#{userId}") activities page
+            |  of the user and 
+            a(href="/realitymeter") RealityMeter
 
       .intro-input
-        #refreshes-field.input-container
+        #refreshes-field.input-container(style="display:none")
           input.refresh-num(type='number', value='6', min='1', max='10', onfocus="setFocus('refreshes-field')" onkeyup="loadTimelines(#{userId}, '#visualization')")
 
     .viz-header

@@ -6,14 +6,21 @@
 }
 
 .dot {
+    stroke-width: 1px;
     stroke: #000;
 }
 
-.rect {
-    stroke: grey;
-    fill: #fff;
+#infograph {
+    font-family: 'EB Garamond', serif;
+    text-size: 3em;
+    margin: 0;
+    padding-left: 10%;
+}
+#infograph b {
+    text-size: 1.3em;
 }
 
 svg {
-    background-color: LightGoldenRodYellow;
+    /* background-color: LightGoldenRodYellow; */
+    background-color: white;
 }
