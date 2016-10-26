@@ -62,12 +62,10 @@ var displayRealityGraph = function(postId, containerId) {
     d3.json(url, function(data) {
 
         var totals = _.countBy(data, function(d) { return d.userPseudo; });
-        console.log(JSON.stringify(totals));
 
         var stats = _.countBy(
                         _.filter(data, function(d) { return d.presence; }), 
                         function(d) { return d.userPseudo; });
-        console.log(JSON.stringify(stats));
 
         var firstViz = new Date(
             _.last(_.sortBy(data, 'refreshTime')
@@ -141,13 +139,17 @@ var displayRealityGraph = function(postId, containerId) {
             function(d, i) {
               svg.append("path")
                   .attr("class", "light-censorship")
+                  .style("fill", "yellow")
                   .style("stroke", "pink")
-                  .style("stroke-width", "0.5px")
+                  .style("stroke-width", "1px")
                   .attr("d", line([{
-                    x: x(d.userPseudo),
-                    y: y(d.refreshTime)
+                    x: x(d.userPseudo) - 12,
+                    y: y(d.refreshTime) + 4
                   }, {
-                    x: x(d.userPseudo) + 8,
+                    x: x(d.userPseudo),
+                    y: y(d.refreshTime) + 2
+                  }, {
+                    x: x(d.userPseudo) + 12,
                     y: y(d.refreshTime) - 4
                   }]));
             }
@@ -159,6 +161,9 @@ var displayRealityGraph = function(postId, containerId) {
             .append("circle")
             .attr("class", "dot")
             .attr("r", 4)
+            .attr("id", function(d, i) {
+                return "circle-" + i;
+            })
             .attr("class", function(d, i) {
                 return "visibility-" + getLegend(d.order);
             })
@@ -168,7 +173,26 @@ var displayRealityGraph = function(postId, containerId) {
             .attr("cy", function(d) { return y(d.refreshTime); })
             .style("fill", function(d) {
                 return color(d.order);
+            })
+            .on("mouseenter", function(d, i) {
+              d3.select("#circle-" + i).attr("stroke-width", "2px");
+              d3.select("#circle-" + i).attr("stroke", "black");
+              d3.select("#infograph").html(
+                  "Position " +
+                  d.order +
+                  ", user <b>" +
+                  d.userPseudo +
+                  "</b> with " +
+                  totals[d.userPseudo] +
+                  " timelines, got display the post " +
+                  stats[d.userPseudo] +
+                  " times"
+              );
+            })
+            .on("mouseleave", function(d, i) {
+              d3.select("#circle-" + i).attr("stroke-width", "0");
             });
+
 
         var legend = svg.selectAll(".legend")
             .data(threshold)

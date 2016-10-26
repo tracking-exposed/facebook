@@ -10,6 +10,16 @@
     stroke: #000;
 }
 
+#infograph {
+    font-family: 'EB Garamond', serif;
+    text-size: 3em;
+    margin: 0;
+    padding-left: 10%;
+}
+#infograph b {
+    text-size: 1.3em;
+}
+
 svg {
     /* background-color: LightGoldenRodYellow; */
     background-color: white;
