@@ -28,7 +28,15 @@ export function scrapePost (postType, elem) {
     const fromProfile = elem.find('[data-hovercard^="/ajax/hovercard/"]')
                             .attr('href')
                             .split('?')[0];
+
+    const isPublic = elem.find('[data-hover="tooltip"][role][aria-label][data-tooltip-content]')
+                         .attr('aria-label')
+                         .split(':')
+                         .pop()
+                         .trim() === 'Public';
+
     return {
+        visibility: isPublic ? 'public' : 'private',
         postType: postType,
         fromProfile: fromProfile,
         href: normalizeUrl(elem.find('.fsm a').attr('href')),
