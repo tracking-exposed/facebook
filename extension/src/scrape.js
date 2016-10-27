@@ -25,15 +25,21 @@ export function scrapePost (postType, elem) {
         return null;
     }
 
-    const fromProfile = elem.find('[data-hovercard^="/ajax/hovercard/"]')
-                            .attr('href')
-                            .split('?')[0];
+    // This is a bit rude... :/
+    var fromProfile, isPublic;
+    try {
+        fromProfile = elem.find('[data-hovercard^="/ajax/hovercard/"]')
+                          .attr('href')
+                          .split('?')[0];
 
-    const isPublic = elem.find('[data-hover="tooltip"][role][aria-label][data-tooltip-content]')
-                         .attr('aria-label')
-                         .split(':')
-                         .pop()
-                         .trim() === 'Public';
+        isPublic = elem.find('[data-hover="tooltip"][role][aria-label][data-tooltip-content]')
+                       .attr('aria-label')
+                       .split(':')
+                       .pop()
+                       .trim() === 'Public';
+    } catch (e) {
+        return null;
+    }
 
     return {
         visibility: isPublic ? 'public' : 'private',
