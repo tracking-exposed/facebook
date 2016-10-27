@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import { HUB } from '../src/hub';
+import hub from '../src/hub';
 
 describe('Global Hub', function () {
     it('calls handlers on registered events', function () {
@@ -7,21 +7,23 @@ describe('Global Hub', function () {
         var calledTwo = false;
         var calledThree = false;
 
-        HUB.register('newPost', (e) => {
-            assert.deepEqual(e, {'type': 'sponsored'});
+        hub.register('newPost', (type, e) => {
+            assert.deepEqual(type, 'newPost');
+            assert.deepEqual(e, {'postType': 'sponsored'});
             calledOne = true;
         });
 
-        HUB.register('newPost', (e) => {
-            assert.deepEqual(e, {'type': 'sponsored'});
+        hub.register('newPost', (type, e) => {
+            assert.deepEqual(type, 'newPost');
+            assert.deepEqual(e, {'postType': 'sponsored'});
             calledTwo = true;
         });
 
-        HUB.register('*', (e) => {
+        hub.register('*', (type, e) => {
             calledThree = true;
         });
 
-        HUB.event('newPost', {'type': 'sponsored'});
+        hub.event('newPost', {'postType': 'sponsored'});
 
         assert.equal(calledOne, true);
         assert.equal(calledTwo, true);
@@ -31,7 +33,7 @@ describe('Global Hub', function () {
         calledTwo = false;
         calledThree = false;
 
-        HUB.event('otherEvent', {'name': 'whatever'});
+        hub.event('otherEvent', {'name': 'whatever'});
 
         assert.equal(calledOne, false);
         assert.equal(calledTwo, false);
