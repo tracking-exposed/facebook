@@ -77,7 +77,7 @@ function flush () {
 }
 
 function processPost (elem) {
-    if (window.location.href !== 'https://www.facebook.com/') {
+    if (window.location.pathname !== '/') {
         console.debug('Skip post, not in main feed');
         return;
     }
@@ -87,7 +87,7 @@ function processPost (elem) {
     try {
         data = scrape($elem);
     } catch (e) {
-        console.error(e);
+        console.error(e, $elem);
     }
 
     if (data) {
