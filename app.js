@@ -69,7 +69,7 @@ var dispatchPromise = function(name, req, res) {
               res.json(httpresult.json)
           } else if(!_.isUndefined(httpresult.text)) {
               debug("%s API %s success, returning text (size %d)",
-                  req.randomUnicode,nName, _.size(httpresult.text));
+                  req.randomUnicode, name, _.size(httpresult.text));
               res.send(httpresult.text)
           } else if(!_.isUndefined(httpresult.file)) {
               /* this is used for special files, beside the css/js below */
