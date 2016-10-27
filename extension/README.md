@@ -38,9 +38,12 @@ first to install [Extension Reloader](https://chrome.google.com/webstore/detail/
 
 To install the extension go to **settings**, select **extensions**, and enable
 **Developer mode**. Click on **Load unpacked extension** and select the
-`extension` directory contained in this repo.
+`extension/build` directory contained in this repo.
 
 Keep `npm start` running in the background to take advantage of the autoreload.
+
+If you want to specify a different chrome user than the default one, set the env
+variable `USER_DATA_DIR` to an existing directory.
 
 
 #### Ready to go!
