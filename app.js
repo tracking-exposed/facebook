@@ -40,7 +40,9 @@ var dispatchPromise = function(name, req, res) {
     if(_.isNaN(apiV) || (apiV).constructor !== Number )
         apiV = escviAPI.lastVersion;
 
-    req.randomUnicode = String.fromCharCode(_.random(0x0391, 0x085e));
+    if(_.isUndefined(req.randomUnicode))
+        req.randomUnicode = String.fromCharCode(_.random(0x0391, 0x085e));
+
     debug("%s %s API v %d name %s (%s)", req.randomUnicode,
         moment().format("HH:mm:ss"), apiV, name, req.url);
 
@@ -77,13 +79,15 @@ var dispatchPromise = function(name, req, res) {
                   req.randomUnicode, name, httpresult.file);
               res.sendFile(__dirname + "/html/" + httpresult.file);
           } else if(!_.isUndefined(httpresult.error)) {
-              res.json(httpresult.error)
               res.header(500);
               return false;
+          } else if(httpresult === true) {
+              debug("%s This only in the middleware", 
+                req.randomUnicode, httpresult);
+              return true;
           } else {
-              debug("%s Failure %j", req.randomUnicode, httpresult);
-              res.status(500);
-              res.send('error');
+              debug("%s default failure", req.randomUnicode);
+              res.header(500);
               return false;
           }
           return true;
@@ -124,11 +128,23 @@ app.get('/api/v:version/user/timeline/:userId/:past/:R/:P', function(req, res) {
 app.get('/api/v:version/user/analysis/:kind/:cpn/:userId/:format', function(req, res) {
     return dispatchPromise('userAnalysis', req, res);
 });
-app.post('/api/v:version/events', function(req, res) {
-    return dispatchPromise('processEvents', req, res);
+/* both the POST use a middleware */
+app.use('/api/v:version/events', function(req, res, next) {
+    return dispatchPromise('authMiddleWare', req, res)
+      .tap(function() {
+          next();
+      })
+      .catch(function(error) {
+          debug("Signature failure!");
+          res.status(400);
+          res.send('signature fail');
+      });
 });
 app.post('/api/v:version/contrib/:which', function(req, res) {
     return dispatchPromise('writeContrib', req, res);
+});
+app.post('/api/v:version/events', function(req, res) {
+    return dispatchPromise('processEvents', req, res);
 });
 /* Only the *last version* is imply in the API below */
 /* legacy because the script it is still pointing here */
