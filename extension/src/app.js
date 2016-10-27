@@ -83,7 +83,12 @@ function processPost (elem) {
     }
 
     const $elem = $(elem).parent();
-    const data = scrape($elem);
+    var data;
+    try {
+        data = scrape($elem);
+    } catch (e) {
+        console.error(e);
+    }
 
     if (data) {
         hub.event('newPost', { element: $elem, data: data });
