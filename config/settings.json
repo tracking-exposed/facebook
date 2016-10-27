@@ -1,21 +1,11 @@
 {
   "schema": { 
-      "supporters": "supporters3",
-      "posts": "posts",
+      "supporters": "supporters4",
+      "impressions": "impressions",
       "timelines": "timelines",
-      "timeline": "timeline3",
-      "refreshes": "refreshes3",
       "suggestions": "suggestions",
-      "accesses": "accesses3"
+      "accesses": "accesses4"
   },
-  "members": [
-      "team/claudio",
-      "team/alberto",
-      "team/kiki",
-      "team/ost",
-      "team/bic"
-  ],
   "mongodb": "mongodb://localhost/facebook",
-  "port": 8000,
-  "anomaly": 1
+  "port": 8000
 }
