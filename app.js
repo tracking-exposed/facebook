@@ -97,58 +97,49 @@ console.log("  Port " + nconf.get('port') + " listening");
 app.use(bodyParser.json({limit: '3mb'}));
 app.use(bodyParser.urlencoded({limit: '3mb', extended: true}));
 
-app.get('/node/info/:version', function(req, res) {
+app.get('/api/v:version/node/info', function(req, res) {
     return dispatchPromise('nodeInfo', req, res);
 });
-app.get('/node/export/:version/:shard', function(req, res) {
+app.get('/api/v:version/node/export/:shard', function(req, res) {
     return dispatchPromise('nodeExport', req, res);
 });
-app.get('/node/activity/:version/:format', function(req, res) {
+app.get('/api/v:version/node/activity/:format', function(req, res) {
     return dispatchPromise('byDayActivity', req, res);
 });
-app.get('/node/countries/:version/:format', function(req, res) {
+app.get('/api/v:version/node/countries/:format', function(req, res) {
     return dispatchPromise('countriesStats', req, res);
 });
-app.get('/node/country/:version/:countryCode/:format', function(req, res) {
+app.get('/api/v:version/node/country/:countryCode/:format', function(req, res) {
     return dispatchPromise('countryStatsByDay', req, res);
 });
-app.get('/post/reality/:version/:postId', function(req, res) {
+app.get('/api/v:version/post/reality/:postId', function(req, res) {
     return dispatchPromise('postReality', req, res);
 });
-app.get('/post/perceived/:version/:postId/:userId', function(req, res){
+app.get('/api/v:version/post/perceived/:postId/:userId', function(req, res){
     return dispatchPromise('postLife', req, res);
 });
-app.get('/user/:version/timeline/:userId/:past/:R/:P', function(req, res) {
+app.get('/api/v:version/user/timeline/:userId/:past/:R/:P', function(req, res) {
     return dispatchPromise('userTimeLine', req, res);
 });
-app.get('/user/:version/analysis/:kind/:cpn/:userId/:format', function(req, res) {
+app.get('/api/v:version/user/analysis/:kind/:cpn/:userId/:format', function(req, res) {
     return dispatchPromise('userAnalysis', req, res);
 });
-app.post('/F/:version', function(req, res) {
-    return dispatchPromise('postFeed', req, res);
+app.post('/api/v:version/events', function(req, res) {
+    return dispatchPromise('processEvents', req, res);
 });
-app.post('/v:version/timelines', function(req, res) {
-    return dispatchPromise('postFeed', req, res);
-});
-app.post('/v:version/dom', function(req, res) {
-    return dispatchPromise('postDebug', req, res);
-});
-app.post('/D/:version', function(req, res) {
-    return dispatchPromise('postDebug', req, res);
-});
-app.post('/contrib/:version/:which', function(req, res) {
+app.post('/api/v:version/contrib/:which', function(req, res) {
     return dispatchPromise('writeContrib', req, res);
 });
 /* Only the *last version* is imply in the API below */
 /* legacy because the script it is still pointing here */
-app.get('/realitycheck/:userId', function(req, res) {
+app.get('/api/v:version/realitycheck/:userId', function(req, res) {
     _.set(req.params, 'page', 'timelines');
     return dispatchPromise('getPersonal', req, res);
 });
 app.get('/realitycheck/:page/random', function(req, res) {
     return dispatchPromise('getRandom', req, res);
 });
-app.get('/realitycheck/:page/:userId', function(req, res) {
+app.get('/api/v:version/realitycheck/:page/:userId', function(req, res) {
     return dispatchPromise('getPersonal', req, res);
 });
 app.get('/realitymeter/:postId', function(req, res) {
