@@ -68,7 +68,8 @@ const PROD_PLUGINS = [
 
 const DEV_PLUGINS = [
     new WebpackOnBuildPlugin(function (stats) {
-        const command = 'chromium-browser http://reload.extensions';
+        const target = process.env.USER_DATA_DIR ? '--user-data-dir=' + process.env.USER_DATA_DIR : '';
+        const command = 'chromium-browser ' + target + ' http://reload.extensions';
         exec(command);
     })
 ];
