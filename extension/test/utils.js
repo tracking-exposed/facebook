@@ -9,7 +9,11 @@ export function loadFixture (name) {
 }
 
 export function loadPayload (name) {
-    return JSON.parse(fs.readFileSync('./test/payloads/' + name + '.json'));
+    try {
+        return JSON.parse(fs.readFileSync('./test/payloads/' + name + '.json'));
+    } catch (e) {
+        return null;
+    }
 }
 
 export function listFixtures (path) {

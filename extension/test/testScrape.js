@@ -13,12 +13,17 @@ describe('Scrape', function () {
 
     fixtures.forEach((path) => {
         const fixture = loadFixture(path);
+        // If a payload is missing, the returned value is null.
         const payload = loadPayload(path);
 
         it(`parses fixture "${path}"`, function () {
             timeWarp.set(2016, 5, 6, 15, 0, 10, -120);
-            assert.equal(scrape(fixture).visibility, payload.visibility);
-            // assert.deepEqual(scrape(fixture), payload);
+            var data = scrape(fixture);
+            if (data) {
+                assert.equal(data.visibility, payload.visibility);
+            } else {
+                assert.equal(data, payload);
+            }
         });
     });
 
