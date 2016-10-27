@@ -29,8 +29,7 @@ function post (apiUrl, data) {
 }
 
 const api = {
-    postTimeline: post.bind(null, 'timelines'),
-    postDOM: post.bind(null, 'dom')
+    postEvents: post.bind(null, 'events')
 };
 
 export default api;

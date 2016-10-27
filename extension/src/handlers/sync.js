@@ -1,47 +1,48 @@
 import config from '../config';
 
 const INTERVAL = config.FLUSH_INTERVAL;
-var user = null;
 
-var currentTimeline = null;
-var timelines = [];
+var state = {
+    user: null,
+    timeline: null,
+    position: 1,
+    events: []
+};
 
 function handleUser (type, e) {
-    user = e;
+    state.user = e;
 }
 
 function handlePost (type, e) {
-    e.data.position = currentTimeline.lastPosition++;
-    currentTimeline.posts.push(e.data);
+    var post = Object.assign({
+        position: state.position++,
+        timelineId: state.timeline.timelineId
+    }, e.data);
+
+    state.events.push(post);
 }
 
 function handleTimeline (type, e) {
-    currentTimeline = {
-        fromProfile: user.id,
-        uuid: e.uuid,
+    state.position = 1;
+    state.timeline = {
+        id: e.id,
         dt: e.dt,
-        location: window.location.href,
-        lastPosition: 1,
-        posts: []
+        type: 'timeline',
+        fromProfile: state.user.id,
+        location: window.location.href
     };
 
-    timelines.push(currentTimeline);
+    state.events.push(state.timeline);
 }
 
 function sync (hub) {
-    const elements = timelines.filter((timeline) => timeline.posts.length);
-
-    if (elements.length) {
+    if (state.events.length) {
         // Send timelines to the page handling the communication with the API.
         // This might be refactored using something compatible to the HUB architecture.
-        chrome.runtime.sendMessage({type: 'sync', payload: elements},
+        chrome.runtime.sendMessage({type: 'sync', payload: state.events},
                                    (response) => hub.event('syncResponse', response));
 
-        // remove all other timelines
-        timelines = timelines.slice(timelines.length - 1);
-
-        // empty the "posts" array in currentTimeline
-        currentTimeline.posts = [];
+        state.events = [];
     }
 }
 

@@ -4,7 +4,10 @@ The root for the API is `/api/v1`. All the endpoints starts from there.
 
 ## Headers
 ```
-X-FBTREX-USERID: <currentUserID>
+Content-Type: application/json
+X-Fbtrex-Userid: <currentUserID>
+X-Fbtrex-Version: <currentVersion>
+X-Fbtrex-Build: <currentBuild>
 ```
 
 ### Post Events
