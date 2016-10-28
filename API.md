@@ -19,7 +19,8 @@ X-Fbtrex-Build: <currentBuild>
 {
     "type": "timeline",
     "id": "<UUID>",
-    "startTime": "<ISO8601 DateTime>"
+    "startTime": "<ISO8601 DateTime>",
+    "location": "window.location String"
 }
 ```
 

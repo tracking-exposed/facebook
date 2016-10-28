@@ -1,8 +1,9 @@
 {
   "schema": { 
       "supporters": "supporters4",
-      "impressions": "impressions",
       "timelines": "timelines",
+      "impressions": "impressions",
+      "htmls": "htmls",
       "suggestions": "suggestions",
       "accesses": "accesses4"
   },
