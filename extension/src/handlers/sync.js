@@ -16,7 +16,8 @@ function handleUser (type, e) {
 function handlePost (type, e) {
     var post = Object.assign({
         position: state.position++,
-        timelineId: state.timeline.timelineId
+        timelineId: state.timeline.timelineId,
+        html: e.element.html()
     }, e.data);
 
     state.events.push(post);
