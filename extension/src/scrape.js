@@ -43,20 +43,17 @@ export function scrapePost (postType, elem) {
     }
 
     return {
+        type: 'impression',
         visibility: isPublic ? 'public' : 'private',
         fromProfile: fromProfile,
         /* API to be expanded, this is home some client side parser can
          * get delegated and reported */
-        metadata: isPublic ? [{
-          'name': 'postType',
-          'value': postType
-        }, {
-          'name': 'timestamp',
-          'value': elem.find('.fsm abbr').attr('data-utime')
-        }, /* TODO postId, author, and everything we can have now */ {
-          'name': 'postLink',
-          'href': normalizeUrl(elem.find('.fsm a').attr('href')),
-        }] : null,
+        metadata: isPublic ? {
+          'postType': postType,
+          'timestamp': elem.find('.fsm abbr').attr('data-utime'),
+          'postLink': normalizeUrl(elem.find('.fsm a').attr('href'))
+            /* TODO author info + promoted Href */
+        } : null,
         impressionTime: getTimeISO8601()
     };
 }
@@ -65,7 +62,6 @@ export function scrapeUserData (elem) {
     const info = elem.find('.fbxWelcomeBoxName');
     const parsedInfo = {
         // even if the id is a number, I feel more comfortable to cast it to a String
-        // REMIND x vrde: why don't force in a parseInt ?
         id: String(JSON.parse(info.attr('data-gt')).bmid),
         href: info.attr('href').split('?')[0]
     };
