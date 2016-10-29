@@ -45,31 +45,26 @@ Note, server side:
 Note, metata is a list of objects, each of them corrispond to an extracted
 meta-data from the post.
 
-The four implemented, and optionally present, metadata are:
+The few implemented, and optionally present, metadata are:
 
 ```
-{ "name": "postType",
-  "value": "feed|promoted"
-},
-{ "name": "postId",
-  "value": "<int>"
-}
-{ "name": "timestamp",
-  "value": "<Int> seconds since the Epoch>"
-}
-{ "name": "postId",
-  "value": "<int>"
+{
+  "postType": "feed|promoted"
+  "postId": "<int>"
+  "timestamp": "<Int> seconds since the Epoch>"
+  "authorName": "<int>"
+  "authorHref": "<int>"
 }
 ```
 
 #### Payload for a Private Impression
 ```
 {
-    "type": "feed",
-    "visibility": "private",
-    "impressionTime": "<ISO8601 DateTime>",
-    "impressionOrder": "<int>",
-    "timelineId": "<UUID>"
+  "type": "feed",
+  "visibility": "private",
+  "impressionTime": "<ISO8601 DateTime>",
+  "impressionOrder": "<int>",
+  "timelineId": "<UUID>"
 }
 ```
 

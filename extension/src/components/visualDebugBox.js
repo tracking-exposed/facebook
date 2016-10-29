@@ -12,7 +12,7 @@ const VisualDebugBox = React.createClass({
                             {key}
                         </dt>,
                         <dd>
-                            {data[key]}
+                            {JSON.stringify(data[key])}
                         </dd>
                     ])}
                 </dl>
