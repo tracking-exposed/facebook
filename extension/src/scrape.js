@@ -25,14 +25,7 @@ export function scrapePost (postType, elem) {
         return null;
     }
 
-    var authorHref;
     var isPublic;
-
-    authorHref = elem.find('[data-hovercard^="/ajax/hovercard/"]')
-                     .attr('href')
-                     .split('?')[0];
-
-    console.log("XXX - TODO authorName");
 
     isPublic = elem.find('[data-hover="tooltip"][role][aria-label][data-tooltip-content]')
                    .attr('aria-label')
@@ -40,17 +33,8 @@ export function scrapePost (postType, elem) {
                    .pop()
                    .trim() === 'Public';
 
-    console.log(isPublic + " " + authorHref);
-
     return {
-        type: 'impression',
         visibility: isPublic ? 'public' : 'private',
-        metadata: isPublic ? {
-          'authorHref': authorHref,
-          'postType': postType,
-          'timestamp': elem.find('.fsm abbr').attr('data-utime'),
-          'postLink': normalizeUrl(elem.find('.fsm a').attr('href'))
-        } : null,
         impressionTime: getTimeISO8601()
     };
 }

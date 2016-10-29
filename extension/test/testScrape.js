@@ -18,10 +18,10 @@ describe('Scrape', function () {
 
         it(`parses fixture "${path}"`, function () {
             timeWarp.set(2016, 5, 6, 15, 0, 10, -120);
-            var data = scrape(fixture);
-            if (data) {
+            try {
+                var data = scrape(fixture);
                 assert.equal(data.visibility, payload.visibility);
-            } else {
+            } catch (e) {
                 assert.equal(data, payload);
             }
         });
