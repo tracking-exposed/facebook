@@ -20,21 +20,21 @@ X-Fbtrex-Build: <currentBuild>
     "type": "timeline",
     "id": "<UUID>",
     "startTime": "<ISO8601 DateTime>",
-    "location": "window.location String"
+    "location": "feed|other"
 }
 ```
 
 Note: server side the `id` is `sha1(currentUserId + timelineId)`.
 
-#### Payload for a Public Post
+#### Payload for a Public Impression
 ```
 {
-    "type": "post",
     "visibility": "public",
     "impressionTime": "<ISO8601 DateTime>",
     "impressionOrder": "<int>",
     "timelineId": "<UUID>",
-    "html": "<html snippet>"
+    "html": "<html snippet>",
+    "metadata": "<List>"
 }
 ```
 
@@ -42,10 +42,30 @@ Note, server side:
  - the `id` is `sha1(currentUserId + timelineId + impressionOrder)`.
  - `htmlId` is `sha1(html snippet)`
 
-#### Payload for a Private Post
+Note, metata is a list of objects, each of them corrispond to an extracted
+meta-data from the post.
+
+The four implemented, and optionally present, metadata are:
+
+```
+{ "name": "postType",
+  "value": "feed|promoted"
+},
+{ "name": "postId",
+  "value": "<int>"
+}
+{ "name": "timestamp",
+  "value": "<Int> seconds since the Epoch>"
+}
+{ "name": "postId",
+  "value": "<int>"
+}
+```
+
+#### Payload for a Private Impression
 ```
 {
-    "type": "post",
+    "type": "feed",
     "visibility": "private",
     "impressionTime": "<ISO8601 DateTime>",
     "impressionOrder": "<int>",
