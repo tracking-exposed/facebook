@@ -50,14 +50,17 @@ The few implemented, and optionally present, metadata are:
 ```
 {
   "postType": "feed|promoted"
-  "postId": "<int>"
   "timestamp": "<Int> seconds since the Epoch>"
-  "authorName": "<int>"
-  "authorHref": "<int>"
+  "postHref": "<str>"
+  "authorName": "<str>"
+  "authorHref": "<str>"
 }
 ```
 
 #### Payload for a Private Impression
+
+We mean for Private Impression, the post with a **restricted audience**, only you, friend, or custom list.
+
 ```
 {
   "type": "feed",

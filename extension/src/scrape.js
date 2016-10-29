@@ -25,34 +25,31 @@ export function scrapePost (postType, elem) {
         return null;
     }
 
-    // This is a bit rude... :/
-    var fromProfile, isPublic;
-    try {
-        fromProfile = elem.find('[data-hovercard^="/ajax/hovercard/"]')
-                          .attr('href')
-                          .split('?')[0];
+    var authorHref;
+    var isPublic;
 
-        isPublic = elem.find('[data-hover="tooltip"][role][aria-label][data-tooltip-content]')
-                       .attr('aria-label')
-                       .split(':')
-                       .pop()
-                       .trim() === 'Public';
-    } catch (e) {
-        console.log("note: Public not found");
-        return null;
-    }
+    authorHref = elem.find('[data-hovercard^="/ajax/hovercard/"]')
+                     .attr('href')
+                     .split('?')[0];
+
+    console.log("XXX - TODO authorName");
+
+    isPublic = elem.find('[data-hover="tooltip"][role][aria-label][data-tooltip-content]')
+                   .attr('aria-label')
+                   .split(':')
+                   .pop()
+                   .trim() === 'Public';
+
+    console.log(isPublic + " " + authorHref);
 
     return {
         type: 'impression',
         visibility: isPublic ? 'public' : 'private',
-        fromProfile: fromProfile,
-        /* API to be expanded, this is home some client side parser can
-         * get delegated and reported */
         metadata: isPublic ? {
+          'authorHref': authorHref,
           'postType': postType,
           'timestamp': elem.find('.fsm abbr').attr('data-utime'),
           'postLink': normalizeUrl(elem.find('.fsm a').attr('href'))
-            /* TODO author info + promoted Href */
         } : null,
         impressionTime: getTimeISO8601()
     };
