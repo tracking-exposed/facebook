@@ -9,7 +9,7 @@
     "tabs",
     "storage",
     "https://*.facebook.com/",
-    "http://localhost:8000/"
+    "http://localhost:8001/"
   ],
 
   "background": {

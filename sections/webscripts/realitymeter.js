@@ -1,7 +1,7 @@
 
 var displayRealityGraph = function(postId, containerId) {
     if(!postId || postId === "0") return;
-    var url = '/post/reality/2/' + postId;
+    var url = '/api/v1/post/reality/' + postId;
 
     var maxWidth = window.innerWidth
       || document.documentElement.clientWidth
