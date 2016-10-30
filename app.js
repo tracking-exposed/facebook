@@ -125,10 +125,10 @@ app.get('/api/v:version/post/perceived/:postId/:userId', function(req, res){
 app.get('/api/v:version/user/timeline/:userId/:past/:R/:P', function(req, res) {
     return dispatchPromise('userTimeLine', req, res);
 });
-app.get('/api/v:version/user/analysis/:kind/:cpn/:userId/:format', function(req, res) {
+app.get('/api/v:version/user/:kind/:CPN/:userId/:format', function(req, res){
     return dispatchPromise('userAnalysis', req, res);
 });
-/* both the POST use a middleware */
+/* This is import and validate the user */
 app.use('/api/v:version/events', function(req, res, next) {
     return dispatchPromise('authMiddleWare', req, res)
       .tap(function() {
@@ -140,12 +140,20 @@ app.use('/api/v:version/events', function(req, res, next) {
           res.send('signature fail');
       });
 });
-app.post('/api/v:version/contrib/:which', function(req, res) {
-    return dispatchPromise('writeContrib', req, res);
+/* This is import and validate the key */
+app.get('/api/v:version/validate/:postId', function(req, res) {
+    return dispatchPromise('validateKey', req, res);
 });
+/* This to actually post the event collection */
 app.post('/api/v:version/events', function(req, res) {
     return dispatchPromise('processEvents', req, res);
 });
+
+// app.post('/api/v:version/contrib/:which', function(req, res) {
+//     return dispatchPromise('writeContrib', req, res);
+// });
+
+
 /* Only the *last version* is imply in the API below */
 /* legacy because the script it is still pointing here */
 app.get('/api/v:version/realitycheck/:userId', function(req, res) {

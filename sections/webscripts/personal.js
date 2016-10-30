@@ -4,7 +4,7 @@
  */
 
 var displayPresence = function(userId, containerId, postNumb) {
-    var url = [ '/user/2/analysis/presence', postNumb, userId, 'c3' ];
+    var url = [ '/api/v1/user/presence', postNumb, userId, 'c3' ];
     url = url.join('/');
     d3.json(url, function(something) {
         var chart = c3.generate({
@@ -60,7 +60,7 @@ var displayPresence = function(userId, containerId, postNumb) {
 var displayAbsolute = function(userId, containerId, postNumb) {
     if(userId === 0)
         return;
-    var url = [ '/user/2/analysis/absolute', postNumb,  userId, 'c3' ];
+    var url = [ '/api/v1/user/absolute', postNumb,  userId, 'c3' ];
     url = url.join('/');
     d3.json(url, function(something) {
         var chart = c3.generate({
