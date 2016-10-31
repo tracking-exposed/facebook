@@ -1,4 +1,10 @@
 {
+  "watch": [
+    "lib/*.js",
+    "sections/**",
+    "*.js",
+    "dist/**"
+  ],
   "ignore": [
     ".git/",
     "node_modules/**/node_modules",
@@ -8,12 +14,6 @@
   ],
   "verbose": true,
   "exitcrash": false,
-  "watch": [
-    "lib/*.js",
-    "sections/**",
-    "*.js",
-    "dist/**"
-  ],
   "env": {
     "DEBUG": "DEBUG=mongo,c3,api-2,analysis,sharding,staticpages,fbtrex,utils"
   },
