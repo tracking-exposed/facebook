@@ -65,6 +65,7 @@
   },
   "dependencies": {
     "arrive": "^2.3.1",
+    "bs58": "^3.0.0",
     "cheerio": "^0.20.0",
     "core-js": "^2.4.1",
     "jquery": "^3.1.0",
