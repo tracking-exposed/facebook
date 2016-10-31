@@ -1,6 +1,6 @@
 import config from './config';
 
-function post (apiUrl, data) {
+function post (apiUrl, sign, data) {
     const xhr = new XMLHttpRequest();
     const payload = JSON.stringify(data);
     const url = config.API_ROOT + apiUrl;
@@ -10,6 +10,10 @@ function post (apiUrl, data) {
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.setRequestHeader('X-Fbtrex-Version', config.VERSION);
     xhr.setRequestHeader('X-Fbtrex-Build', config.BUILD);
+
+    if (sign) {
+        const privateKey = '';
+    }
 
     xhr.send(payload);
 
@@ -29,7 +33,8 @@ function post (apiUrl, data) {
 }
 
 const api = {
-    postEvents: post.bind(null, 'events')
+    postEvents: post.bind(null, true, 'events'),
+    register: post.bind(null, false, 'register')
 };
 
 export default api;

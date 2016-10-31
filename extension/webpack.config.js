@@ -24,7 +24,7 @@ const BUILD = require('child_process').execSync('git rev-parse HEAD').toString()
 
 const PATHS = {
     APPS: {app: path.resolve(__dirname, 'src/app.js'),
-           sync: path.resolve(__dirname, 'src/pages/sync.js')},
+           background: path.resolve(__dirname, 'src/background/app.js')},
     BUILD: path.resolve(__dirname, 'build'),
     DIST: path.resolve(__dirname, 'dist'),
     NODE_MODULES: path.resolve(__dirname, 'node_modules'),
@@ -70,6 +70,7 @@ const DEV_PLUGINS = [
     new WebpackOnBuildPlugin(function (stats) {
         const target = process.env.USER_DATA_DIR ? '--user-data-dir=' + process.env.USER_DATA_DIR : '';
         const command = 'chromium-browser ' + target + ' http://reload.extensions';
+        console.log(command);
         exec(command);
     })
 ];

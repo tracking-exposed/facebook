@@ -25,3 +25,11 @@ export function normalizeUrl (url) {
     }
     return url;
 }
+
+export function isEmpty (object) {
+    return Object.keys(object).length === 0;
+}
+
+export function isFunction (value) {
+    return value instanceof Function;
+}
