@@ -1,5 +1,5 @@
 
-var displayRealityGraph = function(postId, containerId) {
+var displayRealityGraph = function(postId, containerId, infoId) {
     if(!postId || postId === "0") return;
     var url = '/post/reality/2/' + postId;
 
@@ -68,7 +68,7 @@ var displayRealityGraph = function(postId, containerId) {
                         function(d) { return d.userPseudo; });
 
         var firstViz = new Date(
-            _.last(_.sortBy(data, 'refreshTime')
+            _.first(_.sortBy(data, 'refreshTime')
         ).refreshTime);
 
         x.domain(_.map(data, function(d) {
@@ -101,7 +101,7 @@ var displayRealityGraph = function(postId, containerId) {
             .attr("y", 6)
             .attr("dy", ".71em")
             .style("text-anchor", "end")
-            .text("Feed refreshes since " + firstViz.toLocaleString() + 
+            .text("Feed refreshes since " + firstViz.toString() + 
                   ", " + moment.duration(moment() - firstViz).humanize() +
                   " ago"
             );
@@ -177,7 +177,7 @@ var displayRealityGraph = function(postId, containerId) {
             .on("mouseenter", function(d, i) {
               d3.select("#circle-" + i).attr("stroke-width", "2px");
               d3.select("#circle-" + i).attr("stroke", "black");
-              d3.select("#infograph").html(
+              d3.select(infoId).html(
                   "Position " +
                   d.order +
                   ", user <b>" +
