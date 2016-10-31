@@ -1,5 +1,5 @@
 var displayTimeAdoption = function(containerId) {
-    var url = '/node/activity/2/c3';
+    var url = '/api/v1/node/activity/c3';
     d3.json(url, function(something) {
 
         var chart = c3.generate({
@@ -47,7 +47,7 @@ var displayTimeAdoption = function(containerId) {
 };
 
 var displayCountryPie = function(containerId) {
-    var url = '/node/countries/2/column';
+    var url = '/api/v1/node/countries/column';
     d3.json(url, function(something) {
         console.log(something);
 
