@@ -30,7 +30,7 @@ function boot () {
     registerHandlers(hub);
 
     userLookup(response => {
-        if (response.isNew) {
+        if (response.status === 'new') {
             onboarding(response.publicKey);
         } else {
             render();
@@ -46,7 +46,11 @@ function userLookup (callback) {
     const basicInfo = scrapeUserData($('body'));
     config.userId = basicInfo.id;
     hub.event('user', basicInfo);
-    chrome.runtime.sendMessage({ type: 'userLookup', payload: { userId: config.userId }}, callback);
+    chrome.runtime.sendMessage({
+        type: 'userLookup',
+        payload: {
+            userId: config.userId
+        }}, callback);
 }
 
 function timeline () {
@@ -112,8 +116,9 @@ function onboarding (publicKey) {
             console.log('permalink', permalink);
 
             chrome.runtime.sendMessage({
-                type: 'userRegistration',
+                type: 'userVerify',
                 payload: {
+                    userId: config.userId,
                     publicKey: publicKey,
                     permalink: permalink
                 }
@@ -122,10 +127,11 @@ function onboarding (publicKey) {
     });
 }
 
-function verify () {
-    console.log('verify');
-    return;
-    window.reload();
+function verify (response) {
+    console.log(response);
+    if (response === 'ok') {
+        window.location.reload();
+    }
 }
 
 boot();
