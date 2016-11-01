@@ -7,22 +7,24 @@ block howdoesitwork
       h3 How does it work?
 
       ul
-        li Facebook's users joining our project are named
-          b Supporter
-          |, it is an explicit opt-in, you need to install a browser extension (now is Tampermonkey, in 1 month shall be native)
+        li Facebook users who joined our project are named 
+          b Supporters
+          |. Tt is an explicit opt-in, you need to install a browser extension do be part of it.
 
         li.fragment the Extension, 
-          b monitor and scrape  
-          | the facebook feed, when find a public shared post, collect the HTML section, and send to a server 
+          b monitors and scrapes  
+          | the Supporter feed, when it finds a public shared post, it collects the HTML section, and sends it to a server 
           img(src="/images/public.png")
-        li.fragment Content shared with friends only, or intended for a reduced audience, are ignored 
+        li.fragment All other content, for example the one shared with friends only, are ignored 
           img(src="/images/notpublic.png")
 
-      i.fragment we don't want risk to leak activities not explicitly public and analyze public activities is a safe first step
+      i.fragment we don't want to risk to leak activities intended for a restricted audience, because we will not have control of the public dataset
 
     section
 
-      h3 Then
+      h3 key selling point
+
+      p provide information that Facebook cannot give to you, make you decide what you want, enable the user to understand what's going on.
 
       ul
         li We collect a dataset; publicly 
@@ -36,12 +38,11 @@ block howdoesitwork
             li 
               b the (post) impression 
               | content, useful to provide high level analysis:
-            ul
-              li.fragment text analysis
-              li.fragment escape the filter bubble
-              li.fragment understand your personal trends
-              li.fragment see you friends influence
-              li.fragment see what you are not seeing and so on
+            ul.fragment
+              li Escape the filter bubble
+              li Understand your personal trends
+              li Understand you friends influence
+              li To see the Human networks you belong
 
     section
 
