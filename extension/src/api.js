@@ -1,6 +1,6 @@
 import config from './config';
 
-function post (apiUrl, sign, data) {
+function post (sign, apiUrl, data) {
     const xhr = new XMLHttpRequest();
     const payload = JSON.stringify(data);
     const url = config.API_ROOT + apiUrl;
@@ -15,9 +15,8 @@ function post (apiUrl, sign, data) {
         const privateKey = '';
     }
 
-    xhr.send(payload);
-
     return new Promise((resolve, reject) => {
+        xhr.send(payload);
         xhr.onload = function () {
             if (this.status >= 200 && this.status < 300) {
                 resolve(this.response);
