@@ -14,9 +14,23 @@ html
     meta(charset="utf-8")
     meta(http-equiv="X-UA-Compatible" content="IE=edge")
     meta(name="viewport" content="width=device-width, initial-scale=1")
-    title facebook.tracking.exposed
+    title facebook.tracking.exposed - 10 minutes presentation
 
-  body
+    script.
+      function blink() {
+        $('.blink').each(function() {
+          var elem = $(this);
+          setInterval(function() {
+            if (elem.css('visibility') == 'hidden') {
+              elem.css('visibility', 'visible');
+            } else {
+              elem.css('visibility', 'hidden');
+            }
+          }, 500);
+        });
+      }
+
+  body(onload="blink();")
 
     .reveal
       .slides
