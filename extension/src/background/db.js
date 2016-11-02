@@ -9,7 +9,7 @@ export function get (key, setIfMissing) {
         backend.get(key, val => {
             if (chrome.runtime.lastError) {
                 reject(chrome.runtime.lastError);
-            } else if (isEmpty(val)) {
+            } else if (isEmpty(val) && !isEmpty(setIfMissing)) {
                 var newVal = isFunction(setIfMissing) ? setIfMissing(key) : setIfMissing;
                 backend.set(newVal, () => resolve(newVal));
             } else {

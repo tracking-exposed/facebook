@@ -27,7 +27,7 @@ export function normalizeUrl (url) {
 }
 
 export function isEmpty (object) {
-    return object === null || Object.keys(object).length === 0;
+    return object === null || object === undefined || Object.keys(object).length === 0;
 }
 
 export function isFunction (value) {
