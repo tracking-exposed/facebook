@@ -93,6 +93,8 @@ function userLookup (callback) {
         }}, callback);
 }
 
+// This function will first trigger a `newTimeline` event and then
+// listen to
 function timeline () {
     processTimeline();
     document.arrive('#feedx_container', processTimeline);
