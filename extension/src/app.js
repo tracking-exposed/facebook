@@ -173,7 +173,7 @@ function onboarding (publicKey) {
             // Since this is a cross domain request, we need to delegate the
             // call to an **action page**. If the call is successful, the action
             // page handling the event will update the status of the key in the
-            // database.
+            // database. It will call the `verify` callback function as well.
             chrome.runtime.sendMessage({
                 type: 'userVerify',
                 payload: {
@@ -186,6 +186,10 @@ function onboarding (publicKey) {
     });
 }
 
+// This function checks the response from the verification API call.
+// If the call is successful, it will reload the browser. This will restart
+// this application as well, but instead of the onboarding the app will start
+// scraping the posts.
 function verify (response) {
     console.log(response);
     if (response === 'ok') {
