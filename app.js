@@ -24,8 +24,8 @@ nconf.argv()
 console.log(redOn + "ઉ nconf loaded, using " + cfgFile + redOff);
 
 var wrapError = function(where, v, fn, nfo) {
-    var str = redOn + " " + where + " Developer mistake v(" + 
-              v + ") " + fn + "\n" + 
+    var str = redOn + " " + where + " Developer mistake v(" +
+              v + ") " + fn + "\n" +
               JSON.stringify(nfo, undefined, 2) + redOff;
     console.log(str);
 };
@@ -82,7 +82,7 @@ var dispatchPromise = function(name, req, res) {
               res.header(500);
               return false;
           } else if(httpresult === true) {
-              debug("%s This only in the middleware", 
+              debug("%s This only in the middleware",
                 req.randomUnicode, httpresult);
               return true;
           } else {
@@ -91,7 +91,7 @@ var dispatchPromise = function(name, req, res) {
               return false;
           }
           return true;
-      }) 
+      })
 };
 
 /* everything begin here, welcome */
@@ -141,7 +141,7 @@ app.use('/api/v:version/events', function(req, res, next) {
       });
 });
 /* This is import and validate the key */
-app.get('/api/v:version/validate/:postId', function(req, res) {
+app.post('/api/v:version/validate', function(req, res) {
     return dispatchPromise('validateKey', req, res);
 });
 /* This to actually post the event collection */

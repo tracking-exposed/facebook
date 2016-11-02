@@ -38,7 +38,7 @@ function userLookup ({ userId }, sendResponse) {
 };
 
 function userVerify ({ permalink, publicKey, userId }, sendResponse) {
-    api.register({ permalink, publicKey })
+    api.validate({ permalink, publicKey })
         .catch/* 'then' */(response => {
             update(userId, { status: 'verified' })
                 .then(response => sendResponse('ok'))

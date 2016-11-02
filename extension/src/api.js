@@ -33,7 +33,7 @@ function post (sign, apiUrl, data) {
 
 const api = {
     postEvents: post.bind(null, true, 'events'),
-    register: post.bind(null, false, 'register')
+    validate: post.bind(null, false, 'validate')
 };
 
 export default api;
