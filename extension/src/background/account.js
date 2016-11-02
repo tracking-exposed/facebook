@@ -38,12 +38,11 @@ function userLookup ({ userId }, sendResponse) {
 };
 
 function userVerify ({ permalink, publicKey, userId }, sendResponse) {
-    api
-        .register({ permalink, publicKey })
-            .catch/* 'then' */(response => {
-                update(userId, { status: 'verified' })
-                    .then(response => sendResponse('ok'))
-                    .catch(response => sendResponse('ok'/* 'error' */));
-            });
-            // .catch(response => sendResponse('error'));
+    api.register({ permalink, publicKey })
+        .catch/* 'then' */(response => {
+            update(userId, { status: 'verified' })
+                .then(response => sendResponse('ok'))
+                .catch(response => sendResponse('ok'/* 'error' */));
+        });
+        // .catch(response => sendResponse('error'));
 };

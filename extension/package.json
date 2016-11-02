@@ -19,7 +19,8 @@
     "build:dist": "./pack-extension.sh || true",
     "clean": "rimraf ./build ./dist",
     "test": "mocha --compilers js:babel-register --reporter spec",
-    "test:watch": "mocha -w --compilers js:babel-register --reporter spec"
+    "test:watch": "mocha -w --compilers js:babel-register --reporter spec",
+    "docs": "rimraf ./docs && ./build-docs.sh"
   },
   "devDependencies": {
     "autoprefixer": "^6.4.0",
@@ -40,6 +41,7 @@
     "chai": "^3.5.0",
     "cross-env": "^2.0.0",
     "css-loader": "^0.23.1",
+    "docco": "^0.7.0",
     "dotenv": "^2.0.0",
     "eslint": "^3.3.1",
     "eslint-config-ascribe-react": "^1.4.0",
