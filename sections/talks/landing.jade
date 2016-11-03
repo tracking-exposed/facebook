@@ -1,0 +1,65 @@
+doctype html
+html
+  head
+    link(rel='stylesheet', href='/css/index.css')
+    link(rel='stylesheet', href='/css/bootstrap.css')
+    script(type='text/javascript', src='/js/vendor/lodash.min.js')
+    script(type='text/javascript', src='/js/vendor/jquery.js')
+    script(type='text/javascript', src='/js/vendor/collapse.js')
+    script(type='text/javascript', src='/js/vendor/bootstrap.min.js')
+    script(type='text/javascript', src='/js/local/suggest.js')
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    meta(name="keywords" content="facebook tracking exposed")
+    title facebook tracking exposed, presentations conference and slided
+
+  body
+ 
+    div.jumbotron
+      div.head-text.center.fb-color
+        div.container-fluid
+          h1 facebook.tracking.exposed
+          h3 presentations, conferences and advoacacy
+
+    nav.navbar.navbar-default
+      div.container
+        div.navbar-header
+          button.navbar-toggle.collapsed(type="button" data-toggle="collapse" data-target="#thenavbar" aria-expanded="false")
+            span(id="sr-only") Toggle navigation
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+
+        div.collapse.navbar-collapse(id="thenavbar")
+          ul.nav.navbar-nav
+            li
+              a(href='/') Home
+            li
+              a(href='/impact') Stats
+
+    .container
+      h2 Presentations
+      table.table.table-striped
+        thead
+          tr
+            th When
+            th Where
+            th Event & Slides
+            th Video
+        tbody
+          tr
+            td 1st November '16
+            td c-base, Berlin
+            td 
+              a(href="/talks-netzpolitischer054/") Netzpolitischer Abend 54
+            td
+              a(href="https://vimeo.com/189842857") https://vimeo.com/189842857
+          tr
+            td ??
+            td ??
+            td ??
+            td ??
+
+
+    div.footer 
