@@ -40,7 +40,7 @@ function sync (hub) {
     if (state.events.length) {
         // Send timelines to the page handling the communication with the API.
         // This might be refactored using something compatible to the HUB architecture.
-        chrome.runtime.sendMessage({type: 'sync', payload: state.events},
+        chrome.runtime.sendMessage({ type: 'sync', payload: state.events, userId: state.user.id },
                                    (response) => hub.event('syncResponse', response));
 
         state.events = [];
