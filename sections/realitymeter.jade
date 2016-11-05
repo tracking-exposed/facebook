@@ -12,7 +12,7 @@ html
     script(type='text/javascript', src='/js/local/realitymeter.js')
     title ઉ RealityMeter
 
-  body(onload="displayRealityGraph(#{postId}, '#realitygraph');")
+  body(onload="displayRealityGraph(#{postId}, '#realitygraph', '#infograph');")
     
     .container-fluid
       .jumbotron
@@ -71,7 +71,7 @@ html
             input(type=text placeholder="Write here the postId" class="center theinputfield" id="postinput")
           endif
 
-          button(class="buttonfield btn-success" type="submit" onclick="return displayRealityGraph(getPostId('postinput'), '#realitygraph');") ઉ
+          button(class="buttonfield btn-success" type="submit" onclick="return displayRealityGraph(getPostId('postinput'), '#realitygraph', '#infograph');") ઉ
         .container-fluid
           span.col-md-4
           span.col-md-4

@@ -4,3 +4,10 @@
   font-weight: 400;
   src: local('EB Garamond'), local('EBGaramond'), url(/js/local/EB+Garamond-Font.ttf) format('truetype');
 }
+
+.garmond {
+  font-family: 'EB Garamond';
+  font-style: normal;
+  font-weight: 400;
+  src: local('EB Garamond'), local('EBGaramond'), url(/js/local/EB+Garamond-Font.ttf) format('truetype');
+}
