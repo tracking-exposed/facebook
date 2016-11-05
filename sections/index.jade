@@ -22,18 +22,16 @@ html
           h1 facebook.tracking.exposed
       div.container-fluid
         p.smile.center description 
-          span.green 90% 
+          span.green 75% 
           | ⌁ infrastructure 
-          span.red 20% 
-          | ⌁ alpha-release 
-          span.green -11 days 
-          | ⌁ morale 
-          span.green 101% 
-          | ⌁ stability 
-          span.red BAD 
+          span.red 60% 
+          | ⌁ time 
+          span.yellow endangered 
+          | ⌁ stability  
+          span.yellow ß 
           | ⌁ funding 
           span.red 
-            a(href="https://paypal.me/claudioGifts", target="_blank") broke
+            a(href="https://paypal.me/claudioGifts", target="_blank") Zero
 
     nav.navbar.navbar-default
       div.container
@@ -47,55 +45,47 @@ html
         div.collapse.navbar-collapse(id="thenavbar")
           ul.nav.navbar-nav
             li
-              a(href='#what') What
+              a(href='#vision') What
             li
-              a(href='#background') Background
+              a(href='#useit') Use It 
             li
-              a(href='#useit') Use It
+              a(href='#team') About Us
             li
-              a(href='#getinvolved') Get involved!
+              a(href='/impact') Stats
             li
-              a(href='#about') About
-            li
-              a(href='#thanks') Thanks
-            li
-              a(href='#links') Links 
-            li
-              a(href='/netzpolitick/') Slides
+              a(href='/talks/') Talks
 
-    div#what
+
+    div#vision
+      div.polite-propaganda
+        include vision
+
+    div#mission
       div.propaganda
-        h2 What
-        block what 
+        include mission
 
     div#background
       div.propaganda
-        h2 Background
-        block background
+        include background
+
+    div#problemsInPA
+      div.propaganda
+        include problemsInPA
 
     div#useit
       div.propaganda
-        h2 Use it
-        block useit
+        include useit
 
     div#getinvolved
       div.propaganda
-        h2 Get involved!
-        block getinvolved
+        include getinvolved 
 
-    div#about
-      div.propaganda
-        h2 About
-        block about
-
-    div#thanks
-      div.propaganda
-        h2 Thanks
-        block thanks
+    div#team
+        div.propaganda
+            include team
 
     div#links
       div.propaganda 
-        h2 Links
-        block links
+        include links
 
     div.footer 
