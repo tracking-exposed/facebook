@@ -5,6 +5,16 @@
   "description": "Facebook tracking exposed",
   "version": "1.0.0",
 
+  "icons": {
+      "16": "fbtrex16.png",
+      "48": "fbtrex48.png",
+      "128": "fbtrex128.png"
+  },
+
+  "browser_action": {
+      "default_icon": "fbtrex16.png"
+  },
+
   "permissions": [
     "tabs",
     "storage",

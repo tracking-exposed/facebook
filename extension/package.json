@@ -12,10 +12,10 @@
   },
   "scripts": {
     "lint": "eslint ./",
-    "build": "rimraf ./build && cross-env NODE_ENV=development webpack && cp manifest.json ./build",
+    "build": "rimraf ./build && cross-env NODE_ENV=development webpack && cp manifest.json icons/* ./build",
     "start": "npm run build:watch:files",
     "build:watch": "cross-env NODE_ENV=development node dev-server.js",
-    "build:watch:files": "rimraf ./build && mkdir build && cp manifest.json ./build && cross-env NODE_ENV=development webpack -w",
+    "build:watch:files": "rimraf ./build && mkdir build && cp manifest.json icons/* ./build && cross-env NODE_ENV=development webpack -w",
     "build:dist": "./pack-extension.sh || true",
     "clean": "rimraf ./build ./dist",
     "test": "mocha --compilers js:babel-register --reporter spec",
