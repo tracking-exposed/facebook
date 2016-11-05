@@ -74,6 +74,7 @@
     "react": "^15.3.0",
     "react-dom": "^15.3.0",
     "tweetnacl": "^0.14.3",
+    "tweetnacl-util": "^0.13.3",
     "uuid": "^2.0.3"
   }
 }

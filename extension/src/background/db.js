@@ -13,7 +13,7 @@ export function get (key, setIfMissing) {
                 var newVal = isFunction(setIfMissing) ? setIfMissing(key) : setIfMissing;
                 backend.set(newVal, () => resolve(newVal));
             } else {
-                resolve(val[key]);
+                resolve(isEmpty(val[key]) ? null : val[key]);
             }
         });
     });
