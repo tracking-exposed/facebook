@@ -10,10 +10,10 @@ const OnboardingBox = React.createClass({
                 <p>To get you started, copy paste the following message in a new <strong>public post</strong>:</p>
 
                 <p className='fbtrex--copypaste'>
-                    Personalisation Algorithms are a collective issue, and only
-                    collectively they can be addressed; today I am joining
-                    https://facebook.tracking.exposed and this technical
-                    message is necessary to link my user to this key: {publicKey}
+                  Personalisation Algorithms are a collective issue, and can
+                  only be collectively addressed; today I am joining
+                  https://facebook.tracking.exposed and this technical
+                  message is necessary to link my user to this key: {publicKey}
                 </p>
 
                 <p>This informative box will disappear after we succesfully retrieve your key.</p>

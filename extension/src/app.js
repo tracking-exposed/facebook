@@ -123,7 +123,8 @@ function flush () {
 
 function processPost (elem) {
     if (window.location.pathname !== '/') {
-        console.debug('Skip post, not in main feed');
+        console.debug('Skip post, not in main feed, logging presence to offert timing stats');
+        hub.event('notMainFeed', {});
         return;
     }
 
@@ -132,7 +133,10 @@ function processPost (elem) {
     try {
         data = scrape($elem);
     } catch (e) {
-        console.error(e, $elem);
+        /* this is not an .error because it is triggered when an
+         * .userContentWrapper has not a sharingLevel, and 'undefined'
+         * get .split() */
+        console.log(e, $elem);
     }
 
     if (data) {
