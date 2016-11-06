@@ -1,3 +1,5 @@
+import bs58 from 'bs58';
+
 export function getTimeISO8601 (date) {
     // Thanks to http://stackoverflow.com/a/17415677/597097
     const now = date || new Date();
@@ -32,4 +34,19 @@ export function isEmpty (object) {
 
 export function isFunction (value) {
     return value instanceof Function;
+}
+
+export function decodeString (s) {
+    // Credits: https://github.com/dchest/tweetnacl-util-js
+    var d = unescape(encodeURIComponent(s));
+    var b = new Uint8Array(d.length);
+
+    for (var i = 0; i < d.length; i++) {
+        b[i] = d.charCodeAt(i);
+    }
+    return b;
+}
+
+export function decodeKey (key) {
+    return new Uint8Array(bs58.decode(key));
 }

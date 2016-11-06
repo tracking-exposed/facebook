@@ -40,7 +40,7 @@ import { scrape, scrapeUserData } from './scrape';
 
 import config from './config';
 import hub from './hub';
-import { getTimeISO8601 } from './utils';
+import { getTimeISO8601, normalizeUrl } from './utils';
 import { registerHandlers } from './handlers/index';
 
 import StartButton from './components/startButton';
@@ -60,6 +60,7 @@ function boot () {
     userLookup(response => {
         // `response` contains the user's public key and its status,
         // if the key has just been created, the status is `new`.
+        console.log(response);
         if (response.status === 'new') {
             // In the case the status is `new` then we need to onboard the user.
             onboarding(response.publicKey);
@@ -165,9 +166,8 @@ function onboarding (publicKey) {
 
         // Process the post only if its html contains the user's public key.
         if ($elem.html().indexOf(publicKey) !== -1) {
-            // Extract the URL of the post.
-            var permalink = $elem.find('[href^="/permalink.php"]')
-                                 .attr('href');
+            // Extract the URL of the post and normalize it.
+            var permalink = normalizeUrl($elem.find('[href^="/permalink.php"]').attr('href'));
 
             console.log('permalink', permalink);
 

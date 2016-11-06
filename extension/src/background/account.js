@@ -22,7 +22,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 function userLookup ({ userId }, sendResponse) {
     get(userId).then(val => {
         if (isEmpty(val)) {
-            var newKeypair = nacl.box.keyPair();
+            var newKeypair = nacl.sign.keyPair();
             val = {
                 publicKey: bs58.encode(newKeypair.publicKey),
                 secretKey: bs58.encode(newKeypair.secretKey),
@@ -39,10 +39,10 @@ function userLookup ({ userId }, sendResponse) {
 
 function userVerify ({ permalink, publicKey, userId }, sendResponse) {
     api.validate({ permalink, publicKey })
-        .catch/* 'then' */(response => {
+        .then(response => {
             update(userId, { status: 'verified' })
                 .then(response => sendResponse('ok'))
-                .catch(response => sendResponse('ok'/* 'error' */));
-        });
-        // .catch(response => sendResponse('error'));
+                .catch(response => sendResponse('error'));
+        })
+        .catch(response => sendResponse('error'));
 };
