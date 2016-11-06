@@ -1,28 +1,27 @@
-import { getTimeISO8601, normalizeUrl } from './utils';
+import { getTimeISO8601 } from './utils';
 
 export function scrape (elem) {
-    const postType = (elem.find('.uiStreamSponsoredLink').length === 1) ?
-      'sponsored' : 'feed';
+    const postType = (elem.find('.uiStreamSponsoredLink').length === 1) ? 'sponsored' : 'feed';
     return scrapePost(postType, elem);
 }
 
 var publicTrigger = {
-  "english": "Public",
-  "deutsch": "Öffentlich",
-  "espanol": "Público",
-  "italiano": "Tutti",
-  "português": "Público"
-}
+    'english': 'Public',
+    'deutsch': 'Öffentlich',
+    'espanol': 'Público',
+    'italiano': 'Tutti',
+    'português': 'Público'
+};
 
 export function scrapePost (postType, elem) {
     // Skip if the post is not top level
     if (elem.parents('.userContentWrapper').length) {
-        console.log("Skipping post because nested");
+        console.log('Skipping post because nested');
         return null;
     }
 
     var isPublic = false;
-   
+
     var sharingLevel = elem
       .find('[data-hover="tooltip"][role][aria-label][data-tooltip-content]')
       .attr('aria-label')
@@ -30,9 +29,10 @@ export function scrapePost (postType, elem) {
       .pop()
       .trim();
 
-    for(var lang in publicTrigger) {
-        if(publicTrigger[lang] === sharingLevel) {
-            console.log("Language detected: ", lang);
+    for (var lang in publicTrigger) {
+        console.log('trying', lang, publicTrigger[lang]);
+        if (publicTrigger[lang] === sharingLevel) {
+            console.log('Language detected: ', lang);
             isPublic = true;
         }
     }
