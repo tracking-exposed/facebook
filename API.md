@@ -79,6 +79,18 @@ We mean for Private Impression, the post with a **restricted audience**, only yo
 Note, server side:
  - the `id` is `sha1(currentUserId + timelineId + impressionOrder)`.
 
+#### Payload for a non main feed navigation
+
+Navigation outside the main feed (pages, friends, followed users) are ignored
+but is keep track the fact that user is still active on Facebook, without
+reporting where/why.
+
+```
+{
+  "type": "notMainFeed",
+  "startTime": "<ISO8601 DateTime>",
+}
+```
 
 # API: Server to parsers
 
