@@ -1,37 +1,41 @@
 import { getTimeISO8601, normalizeUrl } from './utils';
 
-const SCRAPERS = {
-    'feed': scrapePost,
-    'sponsored': scrapePost
-};
-
 export function scrape (elem) {
-    const postType = identify(elem);
-
-    return SCRAPERS[postType](postType, elem);
+    const postType = (elem.find('.uiStreamSponsoredLink').length === 1) ?
+      'sponsored' : 'feed';
+    return scrapePost(postType, elem);
 }
 
-export function identify (elem) {
-    if (elem.find('.uiStreamSponsoredLink').length === 1) {
-        return 'sponsored';
-    } else {
-        return 'feed';
-    }
+var publicTrigger = {
+  "english": "Public",
+  "deutsch": "Öffentlich",
+  "espanol": "Público",
+  "italiano": "Tutti",
+  "português": "Público"
 }
 
 export function scrapePost (postType, elem) {
     // Skip if the post is not top level
     if (elem.parents('.userContentWrapper').length) {
+        console.log("Skipping post because nested");
         return null;
     }
 
-    var isPublic;
+    var isPublic = false;
+   
+    var sharingLevel = elem
+      .find('[data-hover="tooltip"][role][aria-label][data-tooltip-content]')
+      .attr('aria-label')
+      .split(':')
+      .pop()
+      .trim();
 
-    isPublic = elem.find('[data-hover="tooltip"][role][aria-label][data-tooltip-content]')
-                   .attr('aria-label')
-                   .split(':')
-                   .pop()
-                   .trim() === 'Public';
+    for(var lang in publicTrigger) {
+        if(publicTrigger[lang] === sharingLevel) {
+            console.log("Language detected: ", lang);
+            isPublic = true;
+        }
+    }
 
     return {
         visibility: isPublic ? 'public' : 'private',

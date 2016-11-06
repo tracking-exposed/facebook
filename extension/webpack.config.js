@@ -86,6 +86,8 @@ PLUGINS.push(EXTRACT_CSS_PLUGIN);
 if (PRODUCTION) {
     PLUGINS.push(...PROD_PLUGINS);
 } else if (DEVELOPMENT) {
+    console.log("Development, using as environment variables: " + 
+        JSON.stringify(DEFINITIONS['process.env']));
     PLUGINS.push(...DEV_PLUGINS);
 }
 

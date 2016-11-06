@@ -26,10 +26,9 @@ function handlePost (type, e) {
 function handleTimeline (type, e) {
     state.position = 1;
     state.timeline = {
-        id: e.id,
-        dt: e.dt,
         type: 'timeline',
-        fromProfile: state.user.id,
+        id: e.id,
+        startTime: e.dt,
         location: window.location.href
     };
 
