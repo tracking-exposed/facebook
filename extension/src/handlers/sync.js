@@ -15,10 +15,19 @@ function handleUser (type, e) {
 
 function handlePost (type, e) {
     var post = Object.assign({
-        position: state.position++,
-        timelineId: state.timeline.timelineId,
-        html: e.element.html()
+        impressionOrder: state.position++,
+        visibility: type,
+        type: 'impression',
+        timelineId: state.timeline.id
     }, e.data);
+
+    if(post.visibility === 'public')
+        post.html = e.element.html()
+
+    console.log("state in handlePost");
+    console.log(state);
+    console.log("handlePost");
+    console.log(post);
 
     state.events.push(post);
 }
@@ -27,11 +36,13 @@ function handleTimeline (type, e) {
     state.position = 1;
     state.timeline = {
         type: 'timeline',
-        id: e.id,
-        startTime: e.dt,
+        id: e.uuid,
         location: window.location.href
     };
 
+    /* check if we want to clean the location URL */
+    console.log("handleTimeline");
+    console.log(state.timeline);
     state.events.push(state.timeline);
 }
 
