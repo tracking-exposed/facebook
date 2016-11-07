@@ -30,12 +30,13 @@ export function scrapePost (postType, elem) {
       .trim();
 
     for (var lang in publicTrigger) {
-        console.log('trying', lang, publicTrigger[lang]);
         if (publicTrigger[lang] === sharingLevel) {
-            console.log('Language detected: ', lang);
             isPublic = true;
         }
     }
+    if (!isPublic)
+        console.log("Dilemma: is it private or in an unrecognized language?",
+            sharingLevel);
 
     return {
         visibility: isPublic ? 'public' : 'private',

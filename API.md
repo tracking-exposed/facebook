@@ -18,7 +18,6 @@ X-Fbtrex-Build: <currentBuild>
 ### Post Events
 *Endpoint*: `POST /events`
 
-
 #### Payload for a Timeline
 ```
 {
@@ -31,6 +30,9 @@ X-Fbtrex-Build: <currentBuild>
 
 Note: server side the `id` is `sha1(currentUserId + timelineId)`.
 
+Navigation outside the main feed (pages, friends, followed users) are 
+ignored, but is keep track the fact that user is still active on Facebook. 
+
 #### Payload for a Public Impression
 ```
 {
@@ -38,29 +40,13 @@ Note: server side the `id` is `sha1(currentUserId + timelineId)`.
     "impressionTime": "<ISO8601 DateTime>",
     "impressionOrder": "<int>",
     "timelineId": "<UUID>",
-    "html": "<html snippet>",
-    "metadata": "<List>"
+    "html": "<html snippet>"
 }
 ```
 
 Note, server side:
  - the `id` is `sha1(currentUserId + timelineId + impressionOrder)`.
  - `htmlId` is `sha1(html snippet)`
-
-Note, metata is a list of objects, each of them corrispond to an extracted
-meta-data from the post.
-
-The few implemented, and optionally present, metadata are:
-
-```
-{
-  "postType": "feed|promoted"
-  "timestamp": "<Int> seconds since the Epoch>"
-  "postHref": "<str>"
-  "authorName": "<str>"
-  "authorHref": "<str>"
-}
-```
 
 #### Payload for a Private Impression
 
@@ -79,18 +65,6 @@ We mean for Private Impression, the post with a **restricted audience**, only yo
 Note, server side:
  - the `id` is `sha1(currentUserId + timelineId + impressionOrder)`.
 
-#### Payload for a non main feed navigation
-
-Navigation outside the main feed (pages, friends, followed users) are ignored
-but is keep track the fact that user is still active on Facebook, without
-reporting where/why.
-
-```
-{
-  "type": "notMainFeed",
-  "startTime": "<ISO8601 DateTime>",
-}
-```
 
 # API: Server to parsers
 
@@ -150,22 +124,36 @@ data.
   "to": "<ISO8601 DateTime>",
   "parserKey": "<parserKey>",
   "repeat": "<bool>",
-  "amount": "<Int>"
+  "amount": "<Int>",
+  "requirements": "<object>"
 }
 ```
 
-The server checks the stored HTML pieces in the requested time range,
-and return the `amount` requested.
+The server checks the stored HTML pieces in the requested time range, and 
+return the `amount` requested.
+
+`requirements` can be empty, or can be an object with a parserName as key,
+and a selected value as value.
+
+*For example, if your parser is analyzing promoted posts, in requirements
+you would put:*
+```
+{
+  "requirements": { "postType" : "promoted " }
+}
+```
 
 if `repeat` is false, only HTML snippet not yet parsed by `parserKey`
-are considered, if `repeat` is true, `parserKey` is ignored. The 
-answer contains the list of snippet, identify by a snippetId:
+are considered, if `repeat` is true, `parserKey` is ignored. The answer 
+contains the list of snippet, identify by a snippetId. 
+`metadata` contains the information collected by previous parser iterations.
 
 ```
 {
   "snippets": [
     {
       "html": "<html snippet>",
+      "metadata": "<object>",
       "snippetId": "<hash of html snippet>"
     },
     { .. }
@@ -185,7 +173,13 @@ as processed)
 ```
 {
   "snippetId": "<hash of html snippet>",
+  "parserName": "<string>",
   "parserKey": "<parserKey>",
-  "result": "<Metadata">
+  "result": "<metadata">
 }
 ```
+
+Internal Note: The output provided, also if null, will be stored as part of 
+the HTML snippet metadata object, with key $parserName and value $result
+
+

@@ -123,8 +123,8 @@ function flush () {
 
 function processPost (elem) {
     if (window.location.pathname !== '/') {
-        console.debug('Skip post, not in main feed, logging presence to offert timing stats');
-        hub.event('notMainFeed', {});
+        console.log('Skip post, not in main feed', 
+            window.location.pathname);
         return;
     }
 
@@ -145,7 +145,10 @@ function processPost (elem) {
 }
 
 function processTimeline () {
-    hub.event('newTimeline', { uuid: uuid.v4(), dt: getTimeISO8601() });
+    hub.event('newTimeline', {
+        uuid: uuid.v4(),
+        startTime: getTimeISO8601()
+    });
 }
 
 // The function `onboarding` guides the user through the public key
