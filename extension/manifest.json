@@ -3,7 +3,7 @@
 
   "name": "Fbtrex",
   "description": "Facebook tracking exposed",
-  "version": "1.0.0",
+  "version": "0.1.0",
 
   "icons": {
       "16": "fbtrex16.png",

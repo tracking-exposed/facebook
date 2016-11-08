@@ -11,7 +11,6 @@ const combineLoaders = require('webpack-combine-loaders');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const WebpackOnBuildPlugin = require('on-build-webpack');
 
-
 require('dotenv').load({ silent: true });
 
 const LAST_VERSION = 3;
@@ -21,13 +20,12 @@ const PRODUCTION = NODE_ENV === 'production';
 const DEVELOPMENT = NODE_ENV === 'development';
 const BUILD = require('child_process').execSync('git rev-parse HEAD').toString().trim();
 
-
 const PATHS = {
     APPS: {app: path.resolve(__dirname, 'src/app.js'),
            background: path.resolve(__dirname, 'src/background/app.js')},
     BUILD: path.resolve(__dirname, 'build'),
     DIST: path.resolve(__dirname, 'dist'),
-    NODE_MODULES: path.resolve(__dirname, 'node_modules'),
+    NODE_MODULES: path.resolve(__dirname, 'node_modules')
 };
 
 /** EXTERNAL DEFINITIONS INJECTED INTO APP **/
@@ -86,7 +84,7 @@ PLUGINS.push(EXTRACT_CSS_PLUGIN);
 if (PRODUCTION) {
     PLUGINS.push(...PROD_PLUGINS);
 } else if (DEVELOPMENT) {
-    console.log("Development, using as environment variables: " + 
+    console.log('Development, using as environment variables: ' +
         JSON.stringify(DEFINITIONS['process.env']));
     PLUGINS.push(...DEV_PLUGINS);
 }
@@ -119,8 +117,8 @@ const CSS_LOADER = combineLoaders([
             precision: '8', // If you use bootstrap, must be >= 8. See https://github.com/twbs/bootstrap-sass#sass-number-precision
             outputStyle: 'expanded',
             sourceMap: true
-        },
-    },
+        }
+    }
 
     // Add additional style / CSS loaders
 ]);
@@ -131,17 +129,15 @@ const LOADERS = [
     {
         test: /\.jsx?$/,
         exclude: [PATHS.NODE_MODULES],
-        loader: JS_LOADER,
-    },
-    {
+        loader: JS_LOADER
+    }, {
         test: /\.s[ac]ss$/,
         exclude: [PATHS.NODE_MODULES],
         loader: ExtractTextPlugin.extract('style', CSS_LOADER)
-    },
+    }
 
     // Add additional loader specifications
 ];
-
 
 /** EXPORTED WEBPACK CONFIG **/
 const config = {
@@ -154,22 +150,23 @@ const config = {
 
     debug: !PRODUCTION,
 
-    devtool: PRODUCTION ? '#source-map' : '#inline-source-map',
+    // devtool: PRODUCTION ? '#source-map' : '#inline-source-map',
+    devtool: PRODUCTION ? null : '#inline-source-map',
 
     target: 'web',
 
     resolve: {
         extensions: ['', '.js', '.jsx'],
-        modules: ['node_modules'], // Don't use absolute path here to allow recursive matching
+        modules: ['node_modules'] // Don't use absolute path here to allow recursive matching
     },
 
     plugins: PLUGINS,
 
     module: {
-        loaders: LOADERS,
+        loaders: LOADERS
     },
 
-    postcss: [autoPrefixer()],
+    postcss: [autoPrefixer()]
 };
 
 module.exports = config;
