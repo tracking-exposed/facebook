@@ -65,14 +65,13 @@ We mean for Private Impression, the post with a **restricted audience**, only yo
 Note, server side:
  - the `id` is `sha1(currentUserId + timelineId + impressionOrder)`.
 
-
 # API: Server to parsers
 
-The following specification are implemented in the server and
-in the components executing the parsing and analysis of the posts.
+The following specification are implemented in the server and in the 
+components executing the parsing and analysis of the posts.
 
-The following API are intended to distribute the effort of HTML
-parsing, data extraction and data mining.
+The following API are intended to distribute the effort of HTML parsing,
+data extraction and data mining.
 
 ## Parser identification
 
@@ -81,9 +80,9 @@ and a name. The key is secret, and authenticate the specific parser.
 
 A parser is intended to extract a specific content from the HTML snippet.
 
-For example: a parser extracting the author info (name and facebook Id) is
+*For example: a parser extracting the author info (name and userId) is
 is different from a parser extracting the previwe image display, and they
-would have self explanatory names like 'imagePreview' and 'authorInfo'.
+would have self explanatory names like 'imagePreview' and 'authorInfo'.*
 
 The key is a string of 20 chars in base58, random bytes, and take name of
 `parserKey` in this specification.
