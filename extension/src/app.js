@@ -94,15 +94,19 @@ function userLookup (callback) {
         }}, callback);
 }
 
-// This function will first trigger a `newTimeline` event and then
-// listen to
+// This function will first trigger a `newTimeline` event and wait for a
+// new refresh.
 function timeline () {
     processTimeline();
     document.arrive('#feedx_container', processTimeline);
 }
 
 function prefeed () {
-    document.querySelectorAll('#contentCol .userContentWrapper').forEach(processPost);
+    // Although the method `forEach` should be exposed by
+    // [`NodeList`](https://developer.mozilla.org/en-US/docs/Web/API/NodeList)
+    // instances, Firefox 49.0 seems to not support it, that's why we have to
+    // wrap it in an `Array`.
+    Array(document.querySelectorAll('#contentCol .userContentWrapper')).forEach(processPost);
 }
 
 function watch () {
@@ -123,8 +127,7 @@ function flush () {
 
 function processPost (elem) {
     if (window.location.pathname !== '/') {
-        console.log('Skip post, not in main feed', 
-            window.location.pathname);
+        console.log('Skip post, not in main feed', window.location.pathname);
         return;
     }
 
@@ -199,9 +202,9 @@ function onboarding (publicKey) {
 // If the call is successful, it will reload the browser. This will restart
 // this application as well, but instead of the onboarding the app will start
 // scraping the posts.
-function verify (response) {
-    console.log(response);
-    if (response === 'ok') {
+function verify (status, response) {
+    console.log('verify response', response);
+    if (status === 'ok') {
         window.location.reload();
     }
 }
