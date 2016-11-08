@@ -76,13 +76,14 @@ parsing, data extraction and data mining.
 
 ## Parser identification
 
-every parser performing the request has a key (provided by the server).
-A key identify a specific parser.
+Every parser performing the request has a key (provided by the server).
+and a name. The key is secret, and authenticate the specific parser.
 
 A parser is intended to extract a specific content from the HTML snippet.
 
 For example: a parser extracting the author info (name and facebook Id) is
-is different from a parser extracting the previwe image display.
+is different from a parser extracting the previwe image display, and they
+would have self explanatory names like 'imagePreview' and 'authorInfo'.
 
 The key is a string of 20 chars in base58, random bytes, and take name of
 `parserKey` in this specification.
@@ -95,10 +96,21 @@ The key is a string of 20 chars in base58, random bytes, and take name of
 {
   "since": "<ISO8601 DateTime>",
   "to": "<ISO8601 DateTime>",
-  "parserKey": "<parserKey>"
+  "parserName": "<string>",
+  "requirements": "<object>"
 }
 ```
 
+`requirements` can be empty, or can be an object with a parserName as key,
+and a selected value as value.
+
+*For example, if your parser is analyzing promoted posts, in requirements
+you would put:*
+```
+{
+  "requirements": { "postType" : "promoted " }
+}
+```
 The server checks the stored HTML pieces in the requested time range and
 answers:
 
@@ -121,8 +133,8 @@ data.
 ```
 {
   "since": "<ISO8601 DateTime>",
-  "to": "<ISO8601 DateTime>",
-  "parserKey": "<parserKey>",
+  "until": "<ISO8601 DateTime>",
+  "parserName": "<string>",
   "repeat": "<bool>",
   "amount": "<Int>",
   "requirements": "<object>"
@@ -132,19 +144,8 @@ data.
 The server checks the stored HTML pieces in the requested time range, and 
 return the `amount` requested.
 
-`requirements` can be empty, or can be an object with a parserName as key,
-and a selected value as value.
-
-*For example, if your parser is analyzing promoted posts, in requirements
-you would put:*
-```
-{
-  "requirements": { "postType" : "promoted " }
-}
-```
-
-if `repeat` is false, only HTML snippet not yet parsed by `parserKey`
-are considered, if `repeat` is true, `parserKey` is ignored. The answer 
+if `repeat` is false, only HTML snippet not yet parsed by `parserName`
+are considered, if `repeat` is true, `parserName` is ignored. The answer 
 contains the list of snippet, identify by a snippetId. 
 `metadata` contains the information collected by previous parser iterations.
 

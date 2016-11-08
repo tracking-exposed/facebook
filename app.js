@@ -128,7 +128,20 @@ app.get('/api/v:version/user/timeline/:userId/:past/:R/:P', function(req, res) {
 app.get('/api/v:version/user/:kind/:CPN/:userId/:format', function(req, res){
     return dispatchPromise('userAnalysis', req, res);
 });
-/* This is import and validate the user */
+
+/* Parser API */
+app.post('/api/v:version/snippet/status', function(req, res) {
+    return dispatchPromise('snippetStatus', req, res);
+});
+app.post('/api/v:version/snippet/content', function(req, res) {
+    return dispatchPromise('snippetContent', req, res);
+});
+app.post('/api/v:version/snippet/result', function(req, res) {
+    return dispatchPromise('snippetResult', req, res);
+});
+
+
+/* This is validate the payload signature before process it */
 app.use('/api/v:version/events', function(req, res, next) {
     return dispatchPromise('authMiddleWare', req, res)
       .tap(function() {
@@ -140,6 +153,7 @@ app.use('/api/v:version/events', function(req, res, next) {
           res.send('signature fail');
       });
 });
+
 /* This is import and validate the key */
 app.post('/api/v:version/validate', function(req, res) {
     return dispatchPromise('validateKey', req, res);
