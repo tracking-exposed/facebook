@@ -2,9 +2,9 @@ import $ from 'jquery';
 
 import { isEmpty, isFunction } from '../utils';
 
-const backend = chrome.storage.sync;
+const backend = chrome.storage.local;
 
-export function get (key, setIfMissing) {
+function get (key, setIfMissing) {
     return new Promise((resolve, reject) => {
         backend.get(key, val => {
             if (chrome.runtime.lastError) {
@@ -19,7 +19,7 @@ export function get (key, setIfMissing) {
     });
 }
 
-export function set (key, value) {
+function set (key, value) {
     return new Promise((resolve, reject) => {
         var newVal = {};
         newVal[key] = isFunction(value) ? value(key) : value;
@@ -33,7 +33,7 @@ export function set (key, value) {
     });
 }
 
-export function update (key, value) {
+function update (key, value) {
     return new Promise((resolve, reject) => {
         get(key)
             .then(oldVal => {
@@ -51,10 +51,17 @@ export function update (key, value) {
     });
 };
 
-export function remove (key) {
+function remove (key) {
     return new Promise((resolve, reject) => {
         backend.remove(key)
             .then(val => resolve(val))
             .catch(error => reject(error));
     });
+};
+
+export default {
+    get: get,
+    set: set,
+    update: update,
+    remove: remove
 };
