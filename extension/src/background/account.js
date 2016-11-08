@@ -1,9 +1,9 @@
 import nacl from 'tweetnacl';
 import bs58 from 'bs58';
 
-import api from '../api';
+import api from './api';
 import { isEmpty } from '../utils';
-import { get, set, update } from './db';
+import db from './db';
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.type === 'userLookup') {
@@ -20,7 +20,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 function userLookup ({ userId }, sendResponse) {
-    get(userId).then(val => {
+    db.get(userId).then(val => {
         if (isEmpty(val)) {
             var newKeypair = nacl.sign.keyPair();
             val = {
@@ -28,7 +28,7 @@ function userLookup ({ userId }, sendResponse) {
                 secretKey: bs58.encode(newKeypair.secretKey),
                 status: 'new'
             };
-            set(userId, val).then(val => {
+            db.set(userId, val).then(val => {
                 sendResponse({ publicKey: val.publicKey, status: val.status });
             });
         } else {
@@ -40,9 +40,9 @@ function userLookup ({ userId }, sendResponse) {
 function userVerify ({ permalink, publicKey, userId }, sendResponse) {
     api.validate({ permalink, publicKey })
         .then(response => {
-            update(userId, { status: 'verified' })
-                .then(response => sendResponse('ok'))
-                .catch(response => sendResponse('error'));
+            db.update(userId, { status: 'verified' })
+                .then(response => sendResponse('ok', response))
+                .catch(response => sendResponse('error', response));
         })
-        .catch(response => sendResponse('error'));
+        .catch(response => sendResponse('error', response));
 };

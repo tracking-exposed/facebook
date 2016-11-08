@@ -1,4 +1,4 @@
-import api from '../api';
+import api from './api';
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.type === 'sync') {

@@ -1,13 +1,13 @@
 import nacl from 'tweetnacl';
 import bs58 from 'bs58';
 
-import config from './config';
-import { decodeString, decodeKey } from './utils';
-import { get } from './background/db';
+import config from '../config';
+import { decodeString, decodeKey } from '../utils';
+import db from './db';
 
 function post (apiUrl, data, userId) {
     return new Promise((resolve, reject) => {
-        get(userId).then(keypair => {
+        db.get(userId).then(keypair => {
             const xhr = new XMLHttpRequest();
             const payload = JSON.stringify(data);
             const url = config.API_ROOT + apiUrl;
@@ -44,7 +44,8 @@ function post (apiUrl, data, userId) {
             xhr.onerror = function () {
                 reject(this.statusText);
             };
-        }).catch(error => reject(error));
+        })
+        .catch(error => reject(error));
     });
 }
 
