@@ -33,12 +33,13 @@ var wrapError = function(where, v, fn, nfo) {
 /* This function wraps all the API call, checking the verionNumber
  * managing error in 4XX/5XX messages and making all these asyncronous
  * I/O with DB, inside this Bluebird */
-var dispatchPromise = function(name, req, res) {
+var dispatchPromise = function(name, req, res, next) {
 
     var apiV = _.parseInt(_.get(req.params, 'version'));
 
-    if(_.isNaN(apiV) || (apiV).constructor !== Number )
-        apiV = escviAPI.lastVersion;
+    /* force version to the only supported version */
+    if(_.isNaN(apiV) || (apiV).constructor !== Number || apiV != 1)
+        apiV = 1;
 
     if(_.isUndefined(req.randomUnicode))
         req.randomUnicode = String.fromCharCode(_.random(0x0391, 0x085e));
@@ -46,15 +47,11 @@ var dispatchPromise = function(name, req, res) {
     debug("%s %s API v %d name %s (%s)", req.randomUnicode,
         moment().format("HH:mm:ss"), apiV, name, req.url);
 
-    var func = _.reduce(_.times(apiV + 1), function(memo, i) {
-        var f = _.get(_.get(escviAPI.implementations, 'version' + i), name);
-        if(!_.isUndefined(f))
-            memo = f;
-        return memo;
-    }, null);
+    var func = _.get(escviAPI.implementations, name, null);
 
     if(_.isNull(func)) {
-        debug("%s Wrong function name used %s", name);
+        debug("%s Wrong function name requested: %s",
+            req.randomUnicode, name);
         wrapError("pre-exec", apiV, funcName, req.params, res);
         res.status(500);
         res.send('error');
@@ -64,7 +61,14 @@ var dispatchPromise = function(name, req, res) {
     /* in theory here we can keep track of time */
     return new Promise.resolve(func(req))
       .then(function(httpresult) {
-          if(!_.isUndefined(httpresult.json)) {
+          if(_.isUndefined(httpresult)) {
+              debug("undefined is not an error, it is success, skip");
+              return next();
+          } else if(!_.isUndefined(httpresult.result)) {
+              debug("%s API %s result reported: %j",
+                  req.randomUnicode, httpresult.result);
+              return false;
+          } else if(!_.isUndefined(httpresult.json)) {
               debug("%s API %s success, returning JSON (%d bytes)",
                   req.randomUnicode, name,
                   _.size(JSON.stringify(httpresult.json)) );
@@ -143,15 +147,7 @@ app.post('/api/v:version/snippet/result', function(req, res) {
 
 /* This is validate the payload signature before process it */
 app.use('/api/v:version/events', function(req, res, next) {
-    return dispatchPromise('authMiddleWare', req, res)
-      .tap(function() {
-          next();
-      })
-      .catch(function(error) {
-          debug("Signature failure!");
-          res.status(400);
-          res.send('signature fail');
-      });
+    return dispatchPromise('authMiddleWare', req, res, next);
 });
 
 /* This is import and validate the key */

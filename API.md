@@ -13,6 +13,8 @@ Content-Type: application/json
 X-Fbtrex-Userid: <currentUserID>
 X-Fbtrex-Version: <currentVersion>
 X-Fbtrex-Build: <currentBuild>
+X-Fbtrex-Publickey: <string>
+X-Fbtrex-Signature: <string>
 ```
 
 ### Post Events
