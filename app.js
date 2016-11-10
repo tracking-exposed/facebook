@@ -2,7 +2,6 @@ var express = require('express');
 var app = express();
 var server = require('http').Server(app);
 var _ = require('lodash');
-var io = require('socket.io')(server);
 var moment = require('moment');
 var bodyParser = require('body-parser');
 var Promise = require('bluebird');
@@ -61,8 +60,7 @@ var dispatchPromise = function(name, req, res, next) {
     /* in theory here we can keep track of time */
     return new Promise.resolve(func(req))
       .then(function(httpresult) {
-          if(_.isUndefined(httpresult)) {
-              debug("undefined is not an error, it is success, skip");
+          if(_.isUndefined(httpresult) && !_.isUndefined(next) ) {
               return next();
           } else if(!_.isUndefined(httpresult.result)) {
               debug("%s API %s result reported: %j",
@@ -216,18 +214,4 @@ app.get('/', function(req, res) {
     return dispatchPromise('getPage', req, res);
 });
 
-
-/* websocket configuration and definition of the routes */
-io.on('connection', function (socket) {
-    socket.emit('news', { hello: 'world' });
-    socket.on('my other event', function (data) {
-        debug("socket.io 'my other event': %j", data);
-        return { some: true };
-    });
-    socket.on('AAA', function(stuff) {
-        debug("My AAA");
-        console.log(JSON.stringify(stuff, undefined, 2));
-        return { some: false };
-    });
-});
 
