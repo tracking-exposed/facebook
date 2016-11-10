@@ -21,14 +21,9 @@ function handlePost (type, e) {
         timelineId: state.timeline.id
     }, e.data);
 
-    if(post.visibility === 'public')
-        post.html = e.element.html()
-
-    console.log("state in handlePost");
-    console.log(state);
-    console.log("handlePost");
-    console.log(post);
-
+    if (post.visibility === 'public') {
+        post.html = e.element.html();
+    }
     state.events.push(post);
 }
 
@@ -39,10 +34,6 @@ function handleTimeline (type, e) {
         id: e.uuid,
         location: window.location.href
     };
-
-    /* check if we want to clean the location URL */
-    console.log("handleTimeline");
-    console.log(state.timeline);
     state.events.push(state.timeline);
 }
 
