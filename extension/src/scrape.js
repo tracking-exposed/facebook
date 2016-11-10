@@ -34,9 +34,11 @@ export function scrapePost (postType, elem) {
             isPublic = true;
         }
     }
-    if (!isPublic)
-        console.log("Dilemma: is it private or in an unrecognized language?",
+    if (!isPublic) {
+        console.log(
+            "Dilemma: is it 'Private' or in an unrecognized language?",
             sharingLevel);
+    }
 
     return {
         visibility: isPublic ? 'public' : 'private',

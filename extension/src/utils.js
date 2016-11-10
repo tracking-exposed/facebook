@@ -9,14 +9,16 @@ export function getTimeISO8601 (date) {
         const norm = Math.abs(Math.floor(num));
         return (norm < 10 ? '0' : '') + norm;
     };
-    return [now.getFullYear(), '-',
-            pad(now.getMonth() + 1), '-',
-            pad(now.getDate()), 'T',
-            pad(now.getHours()), ':',
-            pad(now.getMinutes()), ':',
-            pad(now.getSeconds()), dif,
-            pad(tzo / 60), ':',
-            pad(tzo % 60)].join('');
+    return [
+        now.getFullYear(), '-',
+        pad(now.getMonth() + 1), '-',
+        pad(now.getDate()), 'T',
+        pad(now.getHours()), ':',
+        pad(now.getMinutes()), ':',
+        pad(now.getSeconds()), dif,
+        pad(tzo / 60), ':',
+        pad(tzo % 60)
+    ].join('');
 }
 
 export function normalizeUrl (url) {

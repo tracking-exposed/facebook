@@ -21,8 +21,10 @@ const DEVELOPMENT = NODE_ENV === 'development';
 const BUILD = require('child_process').execSync('git rev-parse HEAD').toString().trim();
 
 const PATHS = {
-    APPS: {app: path.resolve(__dirname, 'src/app.js'),
-           background: path.resolve(__dirname, 'src/background/app.js')},
+    APPS: {
+        app: path.resolve(__dirname, 'src/app.js'),
+        background: path.resolve(__dirname, 'src/background/app.js')
+    },
     BUILD: path.resolve(__dirname, 'build'),
     DIST: path.resolve(__dirname, 'dist'),
     NODE_MODULES: path.resolve(__dirname, 'node_modules')
