@@ -15,7 +15,7 @@
   "verbose": true,
   "exitcrash": false,
   "env": {
-    "DEBUG": "DEBUG=mongo,c3,api-1,validate,events,analysis,sharding,staticpages,fbtrex,utils"
+    "DEBUG": "mongo,c3,api-1,snippet,validate,events,analysis,sharding,staticpages,fbtrex,utils"
   },
   "ext": "js css json jade"
 }

@@ -96,22 +96,22 @@ The key is a string of 20 chars in base58, random bytes, and take name of
 ```
 {
   "since": "<ISO8601 DateTime>",
-  "to": "<ISO8601 DateTime>",
+  "until": "<ISO8601 DateTime>",
   "parserName": "<string>",
   "requirements": "<object>"
 }
 ```
 
-`requirements` can be empty, or can be an object with a parserName as key,
-and a selected value as value.
-
-*For example, if your parser is analyzing promoted posts, in requirements
-you would put:*
+*For example, if your parser is analyzing promoted posts, received the last 48 hours:*
 ```
 {
-  "requirements": { "postType" : "promoted " }
+  "requirements": { "postType" : "promoted " },
+  "since": "2016-11-08T21:15:13.511Z",
+  "until": "2016-11-10T21:15:13.516Z",
+  "parserName": "postType",
 }
 ```
+
 The server checks the stored HTML pieces in the requested time range and
 answers:
 
@@ -130,7 +130,6 @@ data.
 
 *Endpoint*: `POST /snippet/content`
 
-
 ```
 {
   "since": "<ISO8601 DateTime>",
@@ -148,6 +147,7 @@ return the `amount` requested.
 if `repeat` is false, only HTML snippet not yet parsed by `parserName`
 are considered, if `repeat` is true, `parserName` is ignored. The answer 
 contains the list of snippet, identify by a snippetId. 
+
 `metadata` contains the information collected by previous parser iterations.
 
 ```
@@ -159,9 +159,13 @@ contains the list of snippet, identify by a snippetId.
       "snippetId": "<hash of html snippet>"
     },
     { .. }
-  ]
+  ],
+  "remaining": "<int>"
 }
 ```
+
+`remaining` contains the amount of element, matching the search query,
+that still has to be parser
 
 ### Commit the parser results
 
