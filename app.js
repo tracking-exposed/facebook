@@ -62,9 +62,13 @@ var dispatchPromise = function(name, req, res, next) {
       .then(function(httpresult) {
           if(_.isUndefined(httpresult) && !_.isUndefined(next) ) {
               return next();
+          } else if(_.isUndefined(httpresult) && _.isUndefined(next) ) {
+              debug("%s Wrong return code in API %s",
+                  req.randomUnicode, name);
+              return false;
           } else if(!_.isUndefined(httpresult.result)) {
               debug("%s API %s result reported: %j",
-                  req.randomUnicode, httpresult.result);
+                  req.randomUnicode, name, httpresult.result);
               return false;
           } else if(!_.isUndefined(httpresult.json)) {
               debug("%s API %s success, returning JSON (%d bytes)",
