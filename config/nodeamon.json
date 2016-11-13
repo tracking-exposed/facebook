@@ -10,12 +10,13 @@
     "node_modules/**/node_modules",
     "operations/",
     "errors/",
-    "sections/webscripts/*.js"
+    "sections/webscripts/*.js",
+    "parsers/*"
   ],
   "verbose": true,
   "exitcrash": false,
   "env": {
-    "DEBUG": "mongo,c3,api-1,snippet,validate,events,analysis,sharding,staticpages,fbtrex,utils"
+    "DEBUG": "c3,api-1,snippet,validate,events,analysis,sharding,staticpages,fbtrex,utils"
   },
   "ext": "js css json jade"
 }

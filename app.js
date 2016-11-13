@@ -43,7 +43,7 @@ var dispatchPromise = function(name, req, res, next) {
     if(_.isUndefined(req.randomUnicode))
         req.randomUnicode = String.fromCharCode(_.random(0x0391, 0x085e));
 
-    debug("%s %s API v %d name %s (%s)", req.randomUnicode,
+    debug("%s %s API v%d name %s (%s)", req.randomUnicode,
         moment().format("HH:mm:ss"), apiV, name, req.url);
 
     var func = _.get(escviAPI.implementations, name, null);
@@ -63,7 +63,7 @@ var dispatchPromise = function(name, req, res, next) {
           if(_.isUndefined(httpresult) && !_.isUndefined(next) ) {
               return next();
           } else if(_.isUndefined(httpresult) && _.isUndefined(next) ) {
-              debug("%s Wrong return code in API %s",
+              debug("%s error: API %s return undefined",
                   req.randomUnicode, name);
               return false;
           } else if(!_.isUndefined(httpresult.result)) {
@@ -90,7 +90,6 @@ var dispatchPromise = function(name, req, res, next) {
           } else if(httpresult === true) {
               debug("%s This only in the middleware",
                 req.randomUnicode, httpresult);
-              return true;
           } else {
               debug("%s default failure", req.randomUnicode);
               res.header(500);
