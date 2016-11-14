@@ -27,3 +27,6 @@ some environment variables are checked by the parser library:
   * repeat: redo HTML snippets already processed by same parser, default false
   * concurrency: numbers of snipped parsed in parallel (but node VM is single thread so I don't really know what happen), default 1
   * delay: milliseconds to wait after every parsing, default 200
+  * since: the starting date by default is 2016-09-11
+  * until: the end data of the window in analysis
+
