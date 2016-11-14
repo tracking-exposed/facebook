@@ -1,8 +1,8 @@
 #!/usr/bin/env nodejs
 var _ = require('lodash');
 var cheerio = require('cheerio');
+var moment = require('moment');
 var debug = require('debug')('postType');
-
 var parse = require('./lib/parse');
 
 function getPostType(snippet) {
@@ -20,9 +20,10 @@ function getPostType(snippet) {
 
 var postType = {
     'name': 'postType',
-    'requirement': null,
-    'implementation': getPostType
+    'requirements': null,
+    'implementation': getPostType,
+    'since': "2016-11-13",
+    'until': moment().toISOString(),
 };
 
 return parse.please(postType);
-

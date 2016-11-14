@@ -4,7 +4,7 @@ var Promise = require('bluebird');
 var fs = Promise.promisifyAll(require('fs'));
 var request = Promise.promisifyAll(require('request'));
 var cheerio = require('cheerio');
-var debug = require('debug')('parse・core');
+var debug = require('debug')('parse⊹core');
 var moment = require('moment');
 var nconf = require('nconf');
 
@@ -20,16 +20,19 @@ function composeURL(what) {
 function snippetAvailable(config, what) {
     var url = composeURL(what);
     var requestpayload = {
-        "since": moment("2016-09-11").toISOString(),
-        "until": moment().toISOString(),
+        "since": nconf.get('since')
+            ? moment(nconf.get('since')) : config.since,
+        "until": nconf.get('until')
+            ? moment(nconf.get('until')) : config.until,
         "parserName": config.name,
         "repeat": config.repeat,
-        "requirement": _.isNull(config.requirement) ?{} :config.requirement
+        "requirements": config.requirements || {},
+        "amount":  config.limit
     };
-    if(what === 'content')
-        requestpayload.amount = config.limit;
 
-    debug("%s %s", url, JSON.stringify(requestpayload, undefined, 2));
+    debug("Connect to %s\n%s",
+        url, JSON.stringify(requestpayload, undefined, 2));
+
     return request
         .postAsync(url, {form: requestpayload})
         .then(function(response) {
@@ -41,11 +44,11 @@ function snippetAvailable(config, what) {
         });
 };
 
-function commitResult(config, metadata, id) {
+function commitResult(config, extract, id) {
     var update = {
         snippetId: id,
         parserKey: config.key,
-        metadata: metadata
+        metadata: extract 
     }
     var url = composeURL('result');
     return request
@@ -65,19 +68,19 @@ function importKey(config) {
 function please(config) {
     /* set default values if not specified */
     config.repeat = nconf.get('repeat') || false;
-    config.snippetConcurrency = _.parseInt(nconf.get('concurrency') || 1);
-    config.limit = _.parseInt(nconf.get('limit') || 40);
-    config.delay = _.parseInt(nconf.get('delay') || 200);
+    config.snippetConcurrency = nconf.get('concurrency') || 1;
+    config.limit = nconf.get('limit') || 40;
+    config.delay = nconf.get('delay') || 200;
 
     return importKey(config)
         .then(function(config) {
             return snippetAvailable(config, 'status')
                 .then(function(numbers) {
-                    debug("Snippets ready %d (already parsed %d)",
+                    debug("HTML available %d, already parsed %d",
                         numbers.available, numbers.parsed);
                     config.slots = _.round(numbers.available/config.limit);
-                    debug("Going to do %d iteration of %d slots",
-                        config.slots, config.limit);
+                    debug("Of %d htmls, %d defined limit = %d slots",
+                        numbers.available, config.limit, config.slots);
                     return Promise.map(
                         iterateSlots(config),
                         processSnippetSlots,
@@ -101,9 +104,9 @@ function processSnippetSlots(config) {
             return content.snippets;
         })
         .map(function(snippet) {
-            var metadata = {};
-            metadata[config.name] = config.implementation(snippet);
-            return commitResult(config, metadata, snippet.id);
+            var extract = {};
+            extract[config.name] = config.implementation(snippet);
+            return commitResult(config, extract, snippet.id);
         }, {concurrency: config.snippetConcurrency});
 };
 

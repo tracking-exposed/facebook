@@ -8,5 +8,5 @@
       "supporters": "supporters4"
   },
   "mongodb": "mongodb://localhost/facebook",
-  "port": 8002
+  "port": 8001
 }
