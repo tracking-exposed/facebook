@@ -23,8 +23,6 @@ some environment variables are checked by the parser library:
 
   * DEBUG: as usual by debug module
   * url: by default https://facebook.tracking.exposed
-  * limit: number of HTMLs processed per time, default 40
-  * repeat: redo HTML snippets already processed by same parser, default false
   * concurrency: numbers of snipped parsed in parallel (but node VM is single thread so I don't really know what happen), default 1
   * delay: milliseconds to wait after every parsing, default 200
   * since: the starting date by default is 2016-09-11

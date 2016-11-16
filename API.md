@@ -118,54 +118,45 @@ answers:
 ```
 {
   "available": "<Int>",
-  "parsed": "<Int>"
+  "limit": "<Int>"
 }
 ```
 
-The endpoint `status` is intende to get numbers and permit to the server
-a proper estimation of resources to be used to deal with the available
-data.
+The server checks the stored HTML pieces in the requested time range, and 
+return the number if `available` HTML snippets that have not yet a key named 
+`parserName`, and the maximum amount of HTML snippets that would be 
+returned when the endpoint content (below) is invoked
 
 ### Get HTML snippet
 
 *Endpoint*: `POST /snippet/content`
 
+Request:
 ```
 {
   "since": "<ISO8601 DateTime>",
   "until": "<ISO8601 DateTime>",
   "parserName": "<string>",
-  "repeat": "<bool>",
-  "amount": "<Int>",
   "requirements": "<object>"
 }
 ```
 
-The server checks the stored HTML pieces in the requested time range, and 
-return the `amount` requested.
+The request is the same as the previous
 
-if `repeat` is false, only HTML snippet not yet parsed by `parserName`
-are considered, if `repeat` is true, `parserName` is ignored. The answer 
-contains the list of snippet, identify by a snippetId. 
-
-`metadata` contains the information collected by previous parser iterations.
-
+Answer:
 ```
-{
-  "snippets": [
-    {
-      "html": "<html snippet>",
-      "metadata": "<object>",
-      "snippetId": "<hash of html snippet>"
+[
+  {
+    "html": "<html snippet>",
+    "metadata-1": "<value>",
+    "metadata-2": "<value>",
+    "snippetId": "<hash of html snippet>"
     },
-    { .. }
-  ],
-  "remaining": "<int>"
-}
+],
 ```
 
-`remaining` contains the amount of element, matching the search query,
-that still has to be parser
+is a list of object, each one containing the HTML section, the id,
+writingTime, and the previously added metadata.
 
 ### Commit the parser results
 
@@ -184,8 +175,4 @@ as processed)
   "result": "<metadata">
 }
 ```
-
-Internal Note: The output provided, also if null, will be stored as part of 
-the HTML snippet metadata object, with key $parserName and value $result
-
 
