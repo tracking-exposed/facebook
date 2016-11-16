@@ -25,9 +25,7 @@ function snippetAvailable(config, what) {
         "until": nconf.get('until')
             ? moment(nconf.get('until')) : config.until,
         "parserName": config.name,
-        "repeat": config.repeat,
-        "requirements": config.requirements || {},
-        "amount":  config.limit
+        "requirements": config.requirements || {}
     };
 
     debug("Connect to %s\n%s",
@@ -69,21 +67,18 @@ function please(config) {
     /* set default values if not specified */
     config.repeat = nconf.get('repeat') || false;
     config.snippetConcurrency = nconf.get('concurrency') || 1;
-    config.limit = nconf.get('limit') || 40;
     config.delay = nconf.get('delay') || 200;
 
     return importKey(config)
         .then(function(config) {
             return snippetAvailable(config, 'status')
                 .then(function(numbers) {
-                    debug("HTML available %d, already parsed %d",
-                        numbers.available, numbers.parsed);
-                    config.slots = _.round(numbers.available/config.limit);
-                    debug("Of %d htmls, %d defined limit = %d slots",
-                        numbers.available, config.limit, config.slots);
+                    config.slots = _.round(numbers.available/numbers.limit);
+                    debug("%d HTMLs, %d per request = %d requests",
+                        numbers.available, numbers.limit, config.slots);
                     return Promise.map(
                         iterateSlots(config),
-                        processSnippetSlots,
+                        processHTMLbulk,
                         { concurrency: 1 }
                     );
                 });
@@ -91,17 +86,16 @@ function please(config) {
 };
 
 function iterateSlots(config) {
-    return _.times(config.slots, function(i) {
+    return _.times(config.slots + 1, function(i) {
         return _.extend(config, { index: i });
     });
 };
 
-function processSnippetSlots(config) {
+function processHTMLbulk(config) {
     return snippetAvailable(config, 'content')
-        .then(function(content) {
-            debug("Processing %d entries to be parsed (%d remaining)",
-                _.size(content.snippets), content.remaining);
-            return content.snippets;
+        .then(function(htmls) {
+            debug("Processing %d entries", _.size(htmls));
+            return htmls;
         })
         .map(function(snippet) {
             var extract = {};

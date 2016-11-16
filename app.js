@@ -136,7 +136,7 @@ app.get('/api/v:version/user/:kind/:CPN/:userId/:format', function(req, res){
 
 /* Parser API */
 app.post('/api/v:version/snippet/status', function(req, res) {
-    return dispatchPromise('snippetStatus', req, res);
+    return dispatchPromise('snippetAvailable', req, res);
 });
 app.post('/api/v:version/snippet/content', function(req, res) {
     return dispatchPromise('snippetContent', req, res);
@@ -159,6 +159,7 @@ app.post('/api/v:version/validate', function(req, res) {
 app.post('/api/v:version/events', function(req, res) {
     return dispatchPromise('processEvents', req, res);
 });
+
 
 // app.post('/api/v:version/contrib/:which', function(req, res) {
 //     return dispatchPromise('writeContrib', req, res);
