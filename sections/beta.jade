@@ -2,6 +2,7 @@ doctype html
 html
   head
     link(rel='stylesheet', href='/css/index.css')
+    link(href='/js/local/EB+Garamond-Font.css', rel='stylesheet')
     link(rel='stylesheet', href='/css/bootstrap.css')
     script(type='text/javascript', src='/js/vendor/lodash.min.js')
     script(type='text/javascript', src='/js/vendor/jquery.js')
@@ -15,22 +16,7 @@ html
 
   body
  
-    div.jumbotron
-      div.head-text.center.fb-color
-        div.container-fluid
-          h1 facebook.tracking.exposed
-      div.container-fluid
-        p.smile.center description 
-          span.green 95% 
-          | ⌁ infrastructure 
-          span.red 70% 
-          | ⌁ project management 
-          span.green effective & chill
-          | ⌁ stability  
-          span.yellow ß 
-          | ⌁ money
-          span.red 
-            a(href="https://paypal.me/claudioGifts", target="_blank") Zero
+    include header
 
     nav.navbar.navbar-default
       div.container
@@ -44,40 +30,38 @@ html
         div.collapse.navbar-collapse(id="thenavbar")
           ul.nav.navbar-nav
             li
-              a(href='#privacymodel') Privay Model
+              a(href='/') The new homepage
             li
-              a(href='#datamining') Data mining
+              a(href='/impact') Open Stats
             li
-              a(href='#extension') Native extension
+              a(href='https://github.com/tracking-exposed/facebook') Code
             li
-              a(href='#researches') Researches approach
-            li
-              a(href='#fundraising') Fundraising
-            li
-              a(href='#joinus') Join Us!
+              a(href='/#team') About us
 
-    div#privacymodel
-      div.propaganda
-        include privacymodel
+  div.polite-propaganda
+    p
+      i In December 2016, we are releasing the beta version of facebook.tracking.exposed, with these shiny improvements:
 
-    div#datamining
-      div.propaganda
-        include datamining
-
-    div#extension
-      div.propaganda
-        include extension
-
-    div#researches
-      div.propaganda
-        include researches
-
-    div#fundraising
-      div.propaganda
-        include fundraising
-
-    div#joinus
-      div.propaganda
-        include joinus
+    h2 
+      b Native extension 
+      | for chrome/firefox.
+    h2
+      b Clear privacy model:
+      | only what is shared with the public [
+      img(src="/images/public.png")
+      | ] is considered by the experiment
+    h2 The whole process 
+      b extract metadata
+      |, to get insight on facebook algorithm 
+      b and data
+      |, proving to the supporters a stronger understanding.
+    h2 
+      b Parsing happen server side
+      | ; the extension deliver the HTML snippets, then small distributed tasks extract informations from the posts. 
+      a(href="https://github.com/tracking-exposed/facebook/API.md#parsers") check the specifics
+      | .
+    h2 What are we looking for ? 
+      b Visualisations to explain how personalisation algorithms works 
+      | Possibly, more users will find it appealing, and more data will flow, and more researcher will find the dataset complete, and so on and so on in a self sustaining circle ↺
 
     div.footer 

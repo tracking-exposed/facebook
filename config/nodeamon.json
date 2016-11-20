@@ -1,7 +1,7 @@
 {
   "watch": [
     "lib/*.js",
-    "sections/**",
+    "sections/*.jade",
     "*.js",
     "dist/**"
   ],
