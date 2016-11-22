@@ -76,8 +76,6 @@ var displayPostType = function(containerId) {
                 return e.date;
             }));
         }, []));
-        console.log("X");
-        console.log(x);
 
 	      var content = _.map(x, function(date) {
             var k = _.reduce(something, function(memo, info) {
@@ -88,23 +86,20 @@ var displayPostType = function(containerId) {
             k['x'] = date;
             return k;
         });
-        console.log("cnt");
-        console.log(content);
 
         var compromise = _.values(_.reduce(content, function(memo, io) {
             memo['feed'].push(io.feed);
-            memo['promoted'].push(io.promoted);
+            memo['promoted'].push(io.promoted + 300);
             memo['friendlink'].push(io.friendlink);
+            memo['ratio'].push(_.round((io.feed+io.promoted)/io.promoted,2));
             memo['x'].push(io.x);
             return memo;
         }, { 'feed': [ 'feed' ],
               'promoted': [ 'promoted' ],
               'friendlink': [ 'friendlink' ],
+              'ratio': [ 'ratio' ],
               'x': [ 'x' ]
         } ));
-
-        console.log("comp");
-        console.log(compromise);
 
         var chart = c3.generate({
             bindto: containerId,
@@ -114,23 +109,26 @@ var displayPostType = function(containerId) {
                 names: {
                     feed: "Feed posts",
                     promoted: "Promoted posts",
-                    friendlink: "Posts display due to friends activities"
+                    friendlink: "Posts display due to friends activities",
+                    ratio: "(feed+promoted) / promoted"
                 },
                 axes: {
                     feed: 'y',
                     promoted: 'y',
-                    friendlink: 'y'
+                    friendlink: 'y',
+                    ratio: 'y2'
                 },
                 types: {
-                    feed: 'line',
-                    promoted: 'line',
-                    friendlink: 'line'
+                    feed: 'bar',
+                    promoted: 'bar',
+                    friendlink: 'bar',
+                    ratio: 'area-spline'
                 },
-                labels: true,
                 colors: {
                     feed: '#81e3e1',
                     friendlink: '#eaea5e',
-                    promoted: '#f76f61'
+                    promoted: '#f76f61',
+                    ratio: '#dfd3de'
                 }
             },
             axis: {
@@ -139,7 +137,8 @@ var displayPostType = function(containerId) {
                     tick: {
                         format: '%Y-%m-%d'
                     }
-                }
+                },
+                y2: { show: true }
             }
         });
     });
