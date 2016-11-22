@@ -82,7 +82,7 @@ var displayPostType = function(containerId) {
 	      var content = _.map(x, function(date) {
             var k = _.reduce(something, function(memo, info) {
                 var lf = _.find(info.stats, {date: date});
-                memo[info.name] = _.isInteger(lf.count) ? lf.count : 0;
+                memo[info.name] = _.isUndefined(lf) ? 0 : lf.count;
                 return memo;
             }, {});
             k['x'] = date;
