@@ -97,6 +97,9 @@ app.get('/node/export/:version/:shard', function(req, res) {
 app.get('/node/activity/:version/:format', function(req, res) {
     return dispatchPromise('byDayActivity', req, res);
 });
+app.get('/node/posttype/:version/:format', function(req, res) {
+    return dispatchPromise('byDayPostType', req, res);
+});
 app.get('/node/countries/:version/:format', function(req, res) {
     return dispatchPromise('countriesStats', req, res);
 });
