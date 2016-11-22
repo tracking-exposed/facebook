@@ -119,9 +119,9 @@ var displayPostType = function(containerId) {
                     ratio: 'y2'
                 },
                 types: {
-                    feed: 'bar',
-                    promoted: 'bar',
-                    friendlink: 'bar',
+                    feed: 'line',
+                    promoted: 'line',
+                    friendlink: 'line',
                     ratio: 'area-spline'
                 },
                 colors: {
