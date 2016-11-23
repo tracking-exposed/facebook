@@ -32,6 +32,7 @@ var wrapError = function(where, v, fn, nfo) {
 /* This function wraps all the API call, checking the verionNumber
  * managing error in 4XX/5XX messages and making all these asyncronous
  * I/O with DB, inside this Bluebird */
+var inc = 0;
 var dispatchPromise = function(name, req, res, next) {
 
     var apiV = _.parseInt(_.get(req.params, 'version'));
@@ -40,8 +41,11 @@ var dispatchPromise = function(name, req, res, next) {
     if(_.isNaN(apiV) || (apiV).constructor !== Number || apiV != 1)
         apiV = 1;
 
-    if(_.isUndefined(req.randomUnicode))
+    if(_.isUndefined(req.randomUnicode)) {
         req.randomUnicode = String.fromCharCode(_.random(0x0391, 0x085e));
+        req.randomUnicode = inc;
+        inc += 1;
+    }
 
     debug("%s %s API v%d name %s (%s)", req.randomUnicode,
         moment().format("HH:mm:ss"), apiV, name, req.url);
