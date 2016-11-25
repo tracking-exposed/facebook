@@ -14,6 +14,8 @@ to generate the files, comment the 'return' in lib/events.js:26
 
 ```
 
+**REMIND**: change DB before do the stress, HTMLs content duplication can still cause inconsistencies  
+
 # Other files
 
 not maintained with the ß

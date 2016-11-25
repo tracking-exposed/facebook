@@ -13,11 +13,11 @@ function getPostHref(snippet) {
     if(_.isUndefined(href)) {
         /* this might happen in "event" */
         debug("%s ∅", snippet.id);
-        return null;
+        return { 'feedPostHref': false };
     }
 
     debug("%s\n  ≻  %s", snippet.id, href);
-    return href;
+    return { 'feedPostHref': href };
 };
 
 var postHref = {
