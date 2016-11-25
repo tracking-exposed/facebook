@@ -42,11 +42,16 @@ function snippetAvailable(config, what) {
         });
 };
 
-function commitResult(config, extract, id) {
+function commitResult(config, newmeta, snippet) {
+    /* debug("metadata has %s keys newmeta %s",
+        _.keys(snippet.metadata), _.keys(newmeta)); */
+
     var update = {
-        snippetId: id,
+        snippetId: snippet.id,
         parserKey: config.key,
-        metadata: extract 
+        metadata: newmeta,
+        fields: _.keys(newmeta),
+        parserName: config.name
     }
     var url = composeURL('result');
     return request
@@ -55,29 +60,55 @@ function commitResult(config, extract, id) {
 };
 
 function importKey(config) {
+    var keyfname = "parsers/parsers-keys.json";
     return fs
-        .readFileAsync('parsers/' + config.name+ "-key.json")
+        .readFileAsync(keyfname)
         .then(JSON.parse)
         .then(function(fcontent) {
-            return _.extend(config, fcontent);
+            return _.find(fcontent, {name: config.name});
+        })
+        .then(function(parserKey) {
+            return _.extend(config, parserKey);
+        })
+        .then(function(config) {
+            if(_.isNull(config.repeat))
+                ;
+            else if(config.repeat === 'false')
+                _.set(config.requirements, config.name, false);
+            else if(config.repeat === 'true')
+                _.set(config.requirements, config.name, true);
+            else
+                throw new Error("config.repeat has an unexpected value");
+
+            return config;
+        })
+        .catch(function(error) {
+            debug("⚠ Failure %s", error);
+            debug("⚠  Note run from the root, look for %s\n", keyfname);
+            throw new Error(error);
         });
 };
 
 function please(config) {
     /* set default values if not specified */
-    config.repeat = nconf.get('repeat') || false;
-    config.snippetConcurrency = nconf.get('concurrency') || 1;
+    config.repeat = nconf.get('repeat') || null;
+    config.snippetConcurrency = _.parseInt(nconf.get('concurrency')) || 5;
     config.delay = nconf.get('delay') || 200;
 
+    if(!_.isObject(config.requirements)) {
+        throw new Error(
+            "Developer, requirements has to be {} and pls check `repeat`");
+    }
+
     return importKey(config)
-        .then(function(config) {
-            return snippetAvailable(config, 'status')
+        .then(function(xtConfig) {
+            return snippetAvailable(xtConfig, 'status')
                 .then(function(numbers) {
-                    config.slots = _.round(numbers.available/numbers.limit);
+                    xtConfig.slots=_.round(numbers.available/numbers.limit);
                     debug("%d HTMLs, %d per request = %d requests",
-                        numbers.available, numbers.limit, config.slots);
+                        numbers.available, numbers.limit, xtConfig.slots);
                     return Promise.map(
-                        iterateSlots(config),
+                        iterateSlots(xtConfig),
                         processHTMLbulk,
                         { concurrency: 1 }
                     );
@@ -93,14 +124,9 @@ function iterateSlots(config) {
 
 function processHTMLbulk(config) {
     return snippetAvailable(config, 'content')
-        .then(function(htmls) {
-            debug("Processing %d entries", _.size(htmls));
-            return htmls;
-        })
         .map(function(snippet) {
-            var extract = {};
-            extract[config.name] = config.implementation(snippet);
-            return commitResult(config, extract, snippet.id);
+            var newmeta = config.implementation(snippet);
+            return commitResult(config, newmeta, snippet);
         }, {concurrency: config.snippetConcurrency});
 };
 

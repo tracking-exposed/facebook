@@ -14,13 +14,15 @@ function getPostType(snippet) {
     else
         var retVal = "feed";
 
+    // TODO, don't use exclusion condition, but find a selector
+    // for 'feed' too, and associate 'null' if nothing it is spot
     debug("・%s ∩ %s", snippet.id, retVal);
-    return retVal;
+    return { 'postType': retVal };
 };
 
 var postType = {
     'name': 'postType',
-    'requirements': null,
+    'requirements': {},
     'implementation': getPostType,
     'since': "2016-11-13",
     'until': moment().toISOString(),
