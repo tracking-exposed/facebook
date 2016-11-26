@@ -1,9 +1,9 @@
 {
   "manifest_version": 2,
 
-  "name": "Fbtrex",
-  "description": "Facebook tracking exposed",
-  "version": "0.1.0",
+  "name": "facebook.tracking.exposed",
+  "description": "Collaborative tool to supports investigation in personalisation algrithms",
+  "version": "1.0.0",
 
   "icons": {
       "16": "fbtrex16.png",

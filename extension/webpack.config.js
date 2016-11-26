@@ -13,7 +13,7 @@ const WebpackOnBuildPlugin = require('on-build-webpack');
 
 require('dotenv').load({ silent: true });
 
-const LAST_VERSION = 3;
+const LAST_VERSION = 1;
 const packageJSON = require('./package.json');
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const PRODUCTION = NODE_ENV === 'production';
@@ -34,10 +34,10 @@ const PATHS = {
 const DEFINITIONS = {
     'process.env': {
         NODE_ENV: JSON.stringify(NODE_ENV),
-        API_ROOT: JSON.stringify((DEVELOPMENT ? 'http://localhost:8001/' : 'https://facebook.tracking.exposed/') + 'api/v' + LAST_VERSION + '/'),
+        API_ROOT: JSON.stringify((DEVELOPMENT ? 'http://localhost:8000/' : 'https://collector.facebook.tracking.exposed/') + 'api/v' + LAST_VERSION + '/'),
         VERSION: JSON.stringify(packageJSON.version + (DEVELOPMENT ? '-dev' : '')),
         BUILD: JSON.stringify(BUILD),
-        FLUSH_INTERVAL: JSON.stringify(DEVELOPMENT ? 10000 : 60000)
+        FLUSH_INTERVAL: JSON.stringify(DEVELOPMENT ? 10000 : 20000)
     }
 };
 
