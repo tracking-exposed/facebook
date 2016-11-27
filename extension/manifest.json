@@ -2,7 +2,7 @@
   "manifest_version": 2,
 
   "name": "facebook.tracking.exposed",
-  "description": "Collaborative tool to supports investigation in personalisation algrithms",
+  "description": "Collaborative tool to support investigation of personalisation algorithms.",
   "version": "1.0.0",
 
   "icons": {
@@ -19,7 +19,7 @@
     "tabs",
     "storage",
     "https://*.facebook.com/",
-    "http://localhost:8001/"
+    "http://localhost:8000/"
   ],
 
   "background": {
