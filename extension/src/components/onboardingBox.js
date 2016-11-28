@@ -15,7 +15,7 @@ const OnboardingBox = React.createClass({
                   message is necessary to link my user to this key: {publicKey}
                 </p>
                 <p>
-                  This box will disappear after we succesfully retrieve your key. If you want know more on the extension behavior, read the <a href="https://facebook.tracking.exposed/beta" target="_blank">ß announcement</a>.
+                  This box will disappear after we succesfully retrieve your key. If you want to know more on the extension behavior, read the <a href="https://facebook.tracking.exposed/beta" target="_blank">ß announcement</a>.
                   <small>
                     <i><strong>Technical note</strong>: You can delete the post later. If you want modify the text, feel free to do it, just do not change the text "<strong>{publicKey}</strong>". That and the paired private key, would be saved in your local storage.</i>
                   </small>
