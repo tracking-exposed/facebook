@@ -42,7 +42,6 @@ var dispatchPromise = function(name, req, res, next) {
         apiV = 1;
 
     if(_.isUndefined(req.randomUnicode)) {
-        req.randomUnicode = String.fromCharCode(_.random(0x0391, 0x085e));
         req.randomUnicode = inc;
         inc += 1;
     }
@@ -112,9 +111,6 @@ app.use(bodyParser.urlencoded({limit: '3mb', extended: true}));
 
 app.get('/api/v:version/node/info', function(req, res) {
     return dispatchPromise('nodeInfo', req, res);
-});
-app.get('/api/v:version/node/export/:shard', function(req, res) {
-    return dispatchPromise('nodeExport', req, res);
 });
 app.get('/api/v:version/node/activity/:format', function(req, res) {
     return dispatchPromise('byDayActivity', req, res);
