@@ -47,12 +47,14 @@ export function scrapePost (postType, elem) {
 }
 
 export function scrapeUserData (elem) {
-    const href = elem.find('#pagelet_bluebar a[href^="https://www.facebook.com/profile.php"]')
-                     .attr('href');
+    const id = elem.find('#pagelet_bluebar [title="Profile"] img')
+                   .attr('id')
+                   .split('_')
+                   .pop();
 
     const parsedInfo = {
-        id: getParam('id', href),
-        href: href
+        id: id,
+        href: `https://www.facebook.com/profile.php?id=${id}`
     };
 
     return parsedInfo;
