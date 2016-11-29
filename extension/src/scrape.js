@@ -1,4 +1,4 @@
-import { getTimeISO8601 } from './utils';
+import { getTimeISO8601, getParam } from './utils';
 
 export function scrape (elem) {
     const postType = (elem.find('.uiStreamSponsoredLink').length === 1) ? 'sponsored' : 'feed';
@@ -47,11 +47,12 @@ export function scrapePost (postType, elem) {
 }
 
 export function scrapeUserData (elem) {
-    const info = elem.find('.fbxWelcomeBoxName');
+    const href = elem.find('#pagelet_bluebar a[href^="https://www.facebook.com/profile.php"]')
+                     .attr('href');
+
     const parsedInfo = {
-        // even if the id is a number, I feel more comfortable to cast it to a String
-        id: String(JSON.parse(info.attr('data-gt')).bmid),
-        href: info.attr('href').split('?')[0]
+        id: getParam('id', href),
+        href: href
     };
 
     return parsedInfo;
