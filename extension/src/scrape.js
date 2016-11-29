@@ -1,3 +1,5 @@
+import cookie from 'cookie';
+
 import { getTimeISO8601, getParam } from './utils';
 
 export function scrape (elem) {
@@ -46,11 +48,8 @@ export function scrapePost (postType, elem) {
     };
 }
 
-export function scrapeUserData (elem) {
-    const id = elem.find('#pagelet_bluebar [title="Profile"] img')
-                   .attr('id')
-                   .split('_')
-                   .pop();
+export function scrapeUserData () {
+    const id = cookie.parse(document.cookie).c_user;
 
     const parsedInfo = {
         id: id,

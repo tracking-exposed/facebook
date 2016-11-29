@@ -79,8 +79,15 @@ function boot () {
 // to get information about the current user from the browser storage
 // (the browser storage is unreachable from a **content script**).
 function userLookup (callback) {
-    // Extract the data from the DOM.
-    const basicInfo = scrapeUserData($('body'));
+    // Extract the data from the document.
+    const basicInfo = scrapeUserData();
+
+    // If the user is not logged in, return.
+    if (!basicInfo.id) {
+        console.log('User not logged in, bye for now');
+        return;
+    }
+
     // Set the `userId` in the global configuration object.
     config.userId = basicInfo.id;
     // Propagate the data to all the handlers interested in that event.
@@ -91,7 +98,8 @@ function userLookup (callback) {
         type: 'userLookup',
         payload: {
             userId: config.userId
-        }}, callback);
+        }
+    }, callback);
 }
 
 // This function will first trigger a `newTimeline` event and wait for a
