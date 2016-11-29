@@ -52,22 +52,3 @@ export function decodeString (s) {
 export function decodeKey (key) {
     return new Uint8Array(bs58.decode(key));
 }
-
-// from: http://stackoverflow.com/a/901144
-export function getParam (key, url) {
-    const regex = new RegExp('[?&]' + key + '(=([^&#]*)|&|#|$)');
-    const results = regex.exec(url);
-
-    key = key.replace(/[\[\]]/g, '\\$&');
-
-    if (!results) {
-        return null;
-    }
-
-    if (!results[2]) {
-        return '';
-    }
-
-    return decodeURIComponent(results[2].replace(/\+/g, ' '));
-}
-

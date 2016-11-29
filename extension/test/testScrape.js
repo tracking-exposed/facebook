@@ -38,9 +38,12 @@ describe('Scrape', function () {
     });
 
     it('parses basic user info', function () {
-        const userInfo = loadFixture('basicInfo');
-        const payload = loadPayload('basicInfo');
+        assert.deepEqual(
+            scrapeUserData(loadFixture('basicInfo')),
+            loadPayload('basicInfo'));
 
-        assert.deepEqual(scrapeUserData(userInfo), payload);
+        assert.deepEqual(
+            scrapeUserData(loadFixture('basicInfoWithUsername')),
+            loadPayload('basicInfoWithUsername'));
     });
 });
