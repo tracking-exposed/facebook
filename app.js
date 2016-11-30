@@ -33,7 +33,7 @@ var wrapError = function(where, v, fn, nfo) {
  * managing error in 4XX/5XX messages and making all these asyncronous
  * I/O with DB, inside this Bluebird */
 var inc = 0;
-var dispatchPromise = function(name, req, res, next) {
+var dispatchPromise = function(name, req, res) {
 
     var apiV = _.parseInt(_.get(req.params, 'version'));
 
@@ -63,17 +63,14 @@ var dispatchPromise = function(name, req, res, next) {
     /* in theory here we can keep track of time */
     return new Promise.resolve(func(req))
       .then(function(httpresult) {
-          if(_.isUndefined(httpresult) && !_.isUndefined(next) ) {
-              return next();
-          } else if(_.isUndefined(httpresult) && _.isUndefined(next) ) {
-              debug("%s error: API %s return undefined",
-                  req.randomUnicode, name);
-              return false;
-          } else if(!_.isUndefined(httpresult.result)) {
-              debug("%s API %s result reported: %j",
-                  req.randomUnicode, name, httpresult.result);
-              return false;
-          } else if(!_.isUndefined(httpresult.json)) {
+
+          if(_.isObject(httpresult.headers))
+              _.each(httpresult.headers, function(value, key) {
+                  debug("Setting header %s: %s", key, value);
+                  res.setHeader(key, value);
+              });
+
+          if(!_.isUndefined(httpresult.json)) {
               debug("%s API %s success, returning JSON (%d bytes)",
                   req.randomUnicode, name,
                   _.size(JSON.stringify(httpresult.json)) );
@@ -87,12 +84,6 @@ var dispatchPromise = function(name, req, res, next) {
               debug("%s API %s success, returning file (%s)",
                   req.randomUnicode, name, httpresult.file);
               res.sendFile(__dirname + "/html/" + httpresult.file);
-          } else if(!_.isUndefined(httpresult.error)) {
-              res.header(500);
-              return false;
-          } else if(httpresult === true) {
-              debug("%s This only in the middleware",
-                req.randomUnicode, httpresult);
           } else {
               debug("%s default failure", req.randomUnicode);
               res.header(500);
@@ -100,10 +91,16 @@ var dispatchPromise = function(name, req, res, next) {
           }
           return true;
       })
+      .catch(function(error) {
+          debug("%s Trigger an Exception %s: %s",
+              req.randomUnicode, name, _.size(httpresult.text));
+          res.header(500);
+          return false;
+      });
 };
 
 /* everything begin here, welcome */
-server.listen(nconf.get('port'));
+server.listen(nconf.get('port'), '127.0.0.1');
 console.log("  Port " + nconf.get('port') + " listening");
 /* configuration of express4 */
 app.use(bodyParser.json({limit: '3mb'}));
@@ -145,11 +142,6 @@ app.post('/api/v:version/snippet/result', function(req, res) {
     return dispatchPromise('snippetResult', req, res);
 });
 
-
-/* This is validate the payload signature before process it */
-app.use('/api/v:version/events', function(req, res, next) {
-    return dispatchPromise('authMiddleWare', req, res, next);
-});
 
 /* This is import and validate the key */
 app.post('/api/v:version/validate', function(req, res) {
