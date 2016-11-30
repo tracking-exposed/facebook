@@ -22,11 +22,10 @@ nconf.argv()
      .file({ file: cfgFile });
 console.log(redOn + "ઉ nconf loaded, using " + cfgFile + redOff);
 
-var wrapError = function(where, v, fn, nfo) {
-    var str = redOn + " " + where + " Developer mistake v(" +
-              v + ") " + fn + "\n" +
-              JSON.stringify(nfo, undefined, 2) + redOff;
-    console.log(str);
+var returnHTTPError = function(req, res, funcName, where) {
+    debug("%s HTTP error 500 %s [%s]", req.randomUnicode, funcName, where);
+    res.status(500);
+    return false;
 };
 
 /* This function wraps all the API call, checking the verionNumber
@@ -51,14 +50,8 @@ var dispatchPromise = function(name, req, res) {
 
     var func = _.get(escviAPI.implementations, name, null);
 
-    if(_.isNull(func)) {
-        debug("%s Wrong function name requested: %s",
-            req.randomUnicode, name);
-        wrapError("pre-exec", apiV, funcName, req.params, res);
-        res.status(500);
-        res.send('error');
-        return false;
-    }
+    if(_.isNull(func))
+        return returnHTTPError(req, res, funcName, "Not a function request");
 
     /* in theory here we can keep track of time */
     return new Promise.resolve(func(req))
@@ -85,17 +78,15 @@ var dispatchPromise = function(name, req, res) {
                   req.randomUnicode, name, httpresult.file);
               res.sendFile(__dirname + "/html/" + httpresult.file);
           } else {
-              debug("%s default failure", req.randomUnicode);
-              res.header(500);
-              return false;
+              return returnHTTPError(req, res, funcName,
+                  "Undetermined failure");
           }
           return true;
       })
       .catch(function(error) {
           debug("%s Trigger an Exception %s: %s",
-              req.randomUnicode, name, _.size(httpresult.text));
-          res.header(500);
-          return false;
+              req.randomUnicode, name, error);
+          return returnHTTPError(req, res, funcName, "Exception");
       });
 };
 

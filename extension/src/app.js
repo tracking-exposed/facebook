@@ -185,6 +185,8 @@ function onboarding (publicKey) {
         // Process the post only if its html contains the user's public key.
         if ($elem.html().indexOf(publicKey) !== -1) {
             // Extract the URL of the post and normalize it.
+            console.log($elem);
+            // TODO investigate on using a selector to the a stabler content
             var permalink = normalizeUrl($elem.find('[href^="/permalink.php"]').attr('href'));
 
             console.log('permalink', permalink);
@@ -197,6 +199,7 @@ function onboarding (publicKey) {
             chrome.runtime.sendMessage({
                 type: 'userVerify',
                 payload: {
+                    html: $elem.html(),
                     userId: config.userId,
                     publicKey: publicKey,
                     permalink: permalink
