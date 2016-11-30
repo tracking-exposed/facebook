@@ -1,11 +1,11 @@
 {
-  "name": "ESCVI",
+  "name": "tracking-exposed-extension",
   "version": "1.0.0",
   "description": "facebook.tracking.exposed → collaborative tool to investigate personalization algorithms",
   "homepage": "https://github.com/tracking-exposed/facebook/",
   "bugs": "https://github.com/tracking-exposed/facebook/issues",
   "license": "",
-  "author": "",
+  "author": "Alberto Granzotto, Claudio Agosti",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tracking-exposed/facebook.git"
