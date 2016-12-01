@@ -185,11 +185,14 @@ function onboarding (publicKey) {
         // Process the post only if its html contains the user's public key.
         if ($elem.html().indexOf(publicKey) !== -1) {
             // Extract the URL of the post and normalize it.
-            console.log($elem);
-            // TODO investigate on using a selector to the a stabler content
             var permalink = normalizeUrl($elem.find('[href^="/permalink.php"]').attr('href'));
 
-            console.log('permalink', permalink);
+            // sometimes, permalink don't happen. at the moment we are
+            // sending the HTML snippet to permit server side parsing.
+            // we can be sure, the post is intended to be scraped, because
+            // contains the key.
+            console.log('permalink', permalink, 'userId', config.userId,
+                'html size', $elem.html().length );
 
             // Kindly ask to verify the user's public key against the API.
             // Since this is a cross domain request, we need to delegate the
@@ -214,7 +217,7 @@ function onboarding (publicKey) {
 // this application as well, but instead of the onboarding the app will start
 // scraping the posts.
 function verify (status, response) {
-    console.log('verify response', response);
+    console.log('verify response:', response);
     if (status === 'ok') {
         window.location.reload();
     }

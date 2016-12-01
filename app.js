@@ -51,7 +51,7 @@ var dispatchPromise = function(name, req, res) {
     var func = _.get(escviAPI.implementations, name, null);
 
     if(_.isNull(func))
-        return returnHTTPError(req, res, funcName, "Not a function request");
+        return returnHTTPError(req, res, name, "Not a function request");
 
     /* in theory here we can keep track of time */
     return new Promise.resolve(func(req))
@@ -78,15 +78,14 @@ var dispatchPromise = function(name, req, res) {
                   req.randomUnicode, name, httpresult.file);
               res.sendFile(__dirname + "/html/" + httpresult.file);
           } else {
-              return returnHTTPError(req, res, funcName,
-                  "Undetermined failure");
+              return returnHTTPError(req, res, name, "Undetermined failure");
           }
           return true;
       })
       .catch(function(error) {
           debug("%s Trigger an Exception %s: %s",
               req.randomUnicode, name, error);
-          return returnHTTPError(req, res, funcName, "Exception");
+          return returnHTTPError(req, res, name, "Exception");
       });
 };
 

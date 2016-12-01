@@ -1,7 +1,7 @@
 {
-  "name": "fbtrex",
-  "version": "0.9.4",
-  "description": "facebook.tracking.exposed → Esigo Sapere Come Veniamo Informati",
+  "name": "facebook-tracking-exposed",
+  "version": "1.0.0",
+  "description": "facebook.tracking.exposed → collaborative tool to investigate personalization algorithms",
   "main": "app.js",
   "scripts": {
     "build-css": "mkdir -p dist/css && node_modules/.bin/stylus styles/index.styl -o dist/css",
@@ -11,8 +11,8 @@
     "watch": "npm run watch-css & (nodemon --config config/nodeamon.json app)",
     "start": "node app"
   },
-  "author": "Claudio Agosti <claudio@tacticaltech.org>",
-  "license": "ISC",
+  "author": "Claudio Agosti <claudio@tracking.exposed>, https://github.com/tracking-exposed/facebook/graphs/contributors",
+  "license": "GLP-2.0",
   "dependencies": {
     "bluebird": "^3.4.1",
     "body-parser": "^1.15.2",
