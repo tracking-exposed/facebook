@@ -18,7 +18,7 @@ const packageJSON = require('./package.json');
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const PRODUCTION = NODE_ENV === 'production';
 const DEVELOPMENT = NODE_ENV === 'development';
-console.log("NODE_ENV [" + process.env.NODE_ENV + "] ", PRODUCTION, DEVELOPMENT);
+console.log("NODE_ENV [" + process.env.NODE_ENV + "] Prod:", PRODUCTION, "Devel: ", DEVELOPMENT);
 const BUILD = require('child_process').execSync('git rev-parse HEAD').toString().trim();
 
 const PATHS = {
