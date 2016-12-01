@@ -19,6 +19,7 @@
     "tabs",
     "storage",
     "https://*.facebook.com/",
+    "https://collector.facebook.tracking.exposed/",
     "http://localhost:8000/"
   ],
 
