@@ -1,21 +1,21 @@
 {
-  "name": "ESCVI",
+  "name": "tracking-exposed-extension",
   "version": "1.0.0",
-  "description": "facebook.tracking.exposed → Esigo Sapere Come Veniamo Informati",
-  "homepage": "https://github.com/vecna/ESCVI/",
-  "bugs": "https://github.com/vecna/ESCVI/issues",
+  "description": "facebook.tracking.exposed → collaborative tool to investigate personalization algorithms",
+  "homepage": "https://github.com/tracking-exposed/facebook/",
+  "bugs": "https://github.com/tracking-exposed/facebook/issues",
   "license": "",
-  "author": "",
+  "author": "Alberto Granzotto, Claudio Agosti",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vecna/ESCVI.git"
+    "url": "git+https://github.com/tracking-exposed/facebook.git"
   },
   "scripts": {
     "lint": "eslint ./",
-    "build": "rimraf ./build && cross-env NODE_ENV=development webpack && cp manifest.json icons/* ./build",
+    "build": "rimraf ./build && cross-env webpack && cp manifest.json icons/* ./build",
     "start": "npm run build:watch:files",
-    "build:watch": "cross-env NODE_ENV=development node dev-server.js",
-    "build:watch:files": "rimraf ./build && mkdir build && cp manifest.json icons/* ./build && cross-env NODE_ENV=development webpack -w",
+    "build:watch": "cross-env node dev-server.js",
+    "build:watch:files": "rimraf ./build && mkdir build && cp manifest.json icons/* ./build && cross-env webpack -w",
     "build:dist": "./pack-extension.sh || true",
     "clean": "rimraf ./build ./dist",
     "test": "mocha --compilers js:babel-register --reporter spec",

@@ -3,16 +3,8 @@
 
     DEBUG=* times=250 delay=1 source=/dev/shm/stressTest-122705.json,/dev/shm/stressTest-122645.json url='http://localhost:8001' operations/stressTest.js 
 
-to generate the files, comment the 'return' in lib/events.js:26
+to generate the files, look for the string stressTest in lib/events.js
 
-```
-25   /* return undefined means no error */
-26   return undefined;
-27     
-28   /* special: to use operations/stressTest.js with valid 
-31   ...
-
-```
 
 **REMIND**: change DB before do the stress, HTMLs content duplication can still cause inconsistencies  
 
