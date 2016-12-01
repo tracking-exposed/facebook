@@ -1,0 +1,60 @@
+doctype html
+html
+  head
+    link(rel='stylesheet', href='/css/bootstrap.css')
+    link(rel='stylesheet', href='/css/reveal.css')
+    link(rel='stylesheet', href='/js/local/slides.css')
+    link(rel='stylesheet', href='/css/reveal-solarized.css')
+    link(href='/js/local/EB+Garamond-Font.css', rel='stylesheet')
+    script(type='text/javascript', src='/js/vendor/reveal.min.js')
+    script(type='text/javascript', src="/js/vendor/reveal-head.min.js")
+    script(type='text/javascript', src='/js/vendor/jquery.js')
+    script(type='text/javascript', src='/js/vendor/bootstrap.min.js')
+
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    title facebook.tracking.exposed - Cantiere
+
+    script.
+      function blink() {
+        $('.blink').each(function() {
+          var elem = $(this);
+          setInterval(function() {
+            if (elem.css('visibility') == 'hidden') {
+              elem.css('visibility', 'visible');
+            } else {
+              elem.css('visibility', 'hidden');
+            }
+          }, 500);
+        });
+      }
+
+  body(onload="blink();")
+
+    .reveal
+      .slides
+
+        section
+          h3 
+            a(href="https://facebook.tracking.exposed") https://facebook.tracking.exposed
+          p.right cantiere, Cyber*Resistance, 2nd December 2016
+          p.right Cristina Carnevali
+            a(href="http://www.digitigrafo.it/ignifugo.asc") 448B 0062 ECF6 360D
+
+        include ../slides/pitch
+        include ../slides/personalisation
+        include ../slides/socialpolicy
+        include ../slides/problemswithpa
+        include ../slides/project
+        include ../slides/howdoesitwork
+        include ../slides/interfaces
+        include ../slides/roadmap
+        include ../slides/team
+
+    script.
+      Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true });
