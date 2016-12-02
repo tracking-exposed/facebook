@@ -1,23 +1,27 @@
 block useit
-  h2 (not) Use It now :(
+  h2 Status & Experimental ß version
 
-  b(class="blue-fb") updates 15 of November: the software implementation is temporarly broken!
-  p Installing the extension will not provide you any insight. A new release will be available soon, by the end of November 2016.
+  p The project is in transition phase. The entire system used in the α release result broken, this is how the collection is going now:
 
-  p(class="blue-fb") Improvements: we will clarify
-    b  which data are collected, how the data are analized and how the open data works. The extension will not be based on TamperMoney, rather would be a native Chrome/Firefox add-ons.
+  .container-fluid
+    img(src="/images/posttype-alpha.png")
 
-  p 1. Still, if you want join the supporters: Install 
-    a(href="https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo") Tampermonkey for Chrome 
-  p 2. Then, install the 
-    b facebook.tracking.exposed script
-    |, This has to be done when the point 1 is completed. Simply click 
-    a(href="https://facebook.tracking.exposed/facebook.tracking.exposed.user.js") here
-  .smaller If you want to know more, you are installing an 
-    a(href="https://openuserjs.org/about/Userscript-Beginners-HOWTO") UserScript
+  p when Facebook updated their HTML code structure, the client side extension for interpret the **post kind**, (if is promoted or feed) broken, making results everything as a promoted feed! Whatever, this is OK for the project in such experimental stage. The months in alpha release had reach enough successes:
+  ul
+    li A team has been created, and is what matter more.
+    li Privacy problems has been discussed, creating a privacy model for the ß release.
+    li A new technical approach, to collect facebook's impressions, has been developed, 
+      b try the 
+      a(href="https://chrome.google.com/webstore/detail/facebooktrackingexposed/kbeabbonbnjinbemmjgpdccmfnifokgc") experimental chrome extension
+      |.
+    li A new approach to develop distributed **parsers**
+
+  p A new release will be available soon, by the beginning of December 2016, check the code progress in the  
+    a(href="https://github.com/tracking-exposed/facebook/tree/refactor-code") chrome extension development branch
+    |.
 
   h3
-    p.center Now what?
+    p.center And what's going to happen?
   div.container-fluid
     span.container-fluid.col-md-4.niceborder This is my 
       b

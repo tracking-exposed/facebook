@@ -4,11 +4,7 @@
 
 # Important Note
 
-  we're in transition phases, as you can see, this is the graph of the post received by **type**:
-
-  ![alt tag](https://facebook.tracking.exposed/images/posttype-alpha.png)
-
-so, the entire system used in the α release result broken, but this is OK in the project point of view:
+  we're in transition phases. the entire system used in the α release result broken, but this is OK in the project point of view:
 
   * a team has been created
   * privacy problems arise and has been discussed, creating a privacy model for the ß release
