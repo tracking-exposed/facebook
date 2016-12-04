@@ -27,7 +27,6 @@
     "diskusage": "^0.1.5",
     "express": "^4.14.0",
     "food-words": "^1.1.0",
-    "geoip": "^0.6.1",
     "jade": "^1.11.0",
     "jquery": "^1.9.1",
     "lodash": "^4.13.1",
