@@ -15,7 +15,7 @@ const OnboardingBox = React.createClass({
                   message is necessary to link my user to this key: {publicKey}
                 </p>
                 <p className='fbtrex--note'>
-                  This box will disappear after we succesfully retrieve your key, <b>if do not disappear</b>, or you want talk about the project, join the <a href="https://www.facebook.com/personalizationalgorithm">facebook page</a> and check the <a href="https://facebook.tracking.exposed/beta" target="_blank">ß announcement</a>.
+                  This box will disappear after we succesfully retrieve your key, <b>if do not disappear</b>, or if you would like do some algorithm experiment with us, join the <a href="https://www.facebook.com/personalizationalgorithm">facebook page</a> and check the <a href="https://facebook.tracking.exposed/beta" target="_blank">ß announcement</a>.
                 </p>
             </div>
         );
