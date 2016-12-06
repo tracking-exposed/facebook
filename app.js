@@ -169,6 +169,10 @@ app.get('/realitymeter', function(req, res) {
 app.get('/impact', function(req, res) {
     return dispatchPromise('getImpact', req, res);
 });
+/* special, admin, to become auth ? */
+app.post('/api/v1/manualboarding', function(req, res) {
+    return dispatchPromise('manualBoarding', req, res);
+});
 /* static files, independent by the API versioning */
 app.get('/favicon.ico', function(req, res) {
     res.sendFile(__dirname + '/dist/favicon.ico');
