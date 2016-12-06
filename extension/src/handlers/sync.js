@@ -17,6 +17,7 @@ function handlePost (type, e) {
     var post = Object.assign({
         impressionOrder: state.position++,
         visibility: type,
+        visibilityInfo: e.visibilityInfo,
         type: 'impression',
         timelineId: state.timeline.id
     }, e.data);
