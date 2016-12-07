@@ -2,6 +2,17 @@
 
 [https://facebook.tracking.exposed](https://facebook.tracking.exposed)
 
+# Important Note
+
+  we're in transition phases. the entire system used in the α release result broken, but this is OK in the project point of view:
+
+  * a team has been created
+  * privacy problems arise and has been discussed, creating a privacy model for the ß release
+  * a new technical approach to collect facebook's impressions has been developed [experimental chrome extension](https://chrome.google.com/webstore/detail/facebooktrackingexposed/kbeabbonbnjinbemmjgpdccmfnifokgc)
+  * a new approach to develop distributed **parsers** 
+
+We can just say: stay tuned!
+
 ## Install and run locally
 
 **Note:** you need  to have `mongodb` on your machine in order to run the full project. If `mongodb` isn't active, the software will quit with an error at the first usage.
@@ -51,23 +62,3 @@ If you want to build on your own the image:
 $ docker build -t fbtrex .
 ```
 
-## UserScript
-
-If you want debug, develop or investigate on the userScript, you've to add the line with 'localhost', because TamperMonkey don't permit arbitrary connections, you've to declare the connected hosts. This is in the [header of the UserScrpt](https://sourceforge.net/p/greasemonkey/wiki/Metadata_Block/)
-
-    // @connect      facebook.tracking.exposed
-    // @connect      localhost
-
-Below in the code, change the line:
-
-    url = 'https://facebook.tracking.exposed',
-
-To:
-
-    url = 'http://localhost:8000',
-
-## API
-
-The API currently are undocumented, but the best way to seem them run is with the command:
-
-```$ DEBUG=* url='https://localhost:8000' operations/tryAPI.js```
