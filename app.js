@@ -102,6 +102,9 @@ app.get('/api/v:version/node/info', function(req, res) {
 app.get('/api/v:version/node/activity/:format', function(req, res) {
     return dispatchPromise('byDayActivity', req, res);
 });
+app.get('/node/posttype/:version/:format', function(req, res) {
+    return dispatchPromise('byDayPostType', req, res);
+});
 app.get('/api/v:version/node/countries/:format', function(req, res) {
     return dispatchPromise('countriesStats', req, res);
 });

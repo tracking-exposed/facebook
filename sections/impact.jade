@@ -8,10 +8,11 @@ html
     script(type='text/javascript', src='/js/vendor/collapse.js')
     script(type='text/javascript', src='/js/vendor/d3.min.js')
     script(type='text/javascript', src='/js/vendor/c3.min.js')
+    script(type='text/javascript', src='/js/vendor/lodash.min.js')
     script(type='text/javascript', src='/js/local/impact.js')
     title ઉ Impact
 
-  body(onload="displayTimeAdoption('#timeAdoption'); displayCountryPie('#countrypie');")
+  body(onload="displayTimeAdoption('#timeAdoption'); displayCountryPie('#countrypie'); displayPostType('#postType');")
   
   .container-fluid
     .jumbotron
@@ -44,6 +45,13 @@ html
 
   .container-fluid
     div(id="timeAdoption")
+
+  .container-fluid
+    .simpletext
+      h2 Number of posts, by type
+
+  .container-fluid
+    div(id="postType")
 
   .container-fluid
     .simpletext
