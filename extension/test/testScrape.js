@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import { TimeWarp, listFixtures, loadFixture, loadPayload } from './utils';
 
-import { scrape, scrapeUserData } from '../src/scrape';
+import { scrape, scrapeUserData, scrapePermalink } from '../src/scrape';
 
 describe('Scrape', function () {
     const fixtures = listFixtures('posts/');
@@ -37,13 +37,15 @@ describe('Scrape', function () {
         assert.equal(scrape(post1), null);
     });
 
-    it('parses basic user info', function () {
-        assert.deepEqual(
-            scrapeUserData(loadFixture('basicInfo')),
-            loadPayload('basicInfo'));
-
-        assert.deepEqual(
-            scrapeUserData(loadFixture('basicInfoWithUsername')),
-            loadPayload('basicInfoWithUsername'));
+    it('extracts the permalink from the verification post', function () {
+        assert.equal(
+            scrapePermalink(loadFixture('verification/postVerificationWithUsername')),
+            'https://www.facebook.com/agranzot/posts/10154799187231552'
+        );
+        assert.equal(
+            scrapePermalink(loadFixture('verification/postVerificationWithoutUsername')),
+            'https://www.facebook.com/permalink.php?story_fbid=169293440210539&id=100013896528265'
+        );
     });
 });
+
