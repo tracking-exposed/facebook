@@ -4,10 +4,10 @@ html
     link(rel='stylesheet', href='/css/index.css')
     link(href='/js/local/EB+Garamond-Font.css', rel='stylesheet')
     link(rel='stylesheet', href='/css/bootstrap.css')
-    script(type='text/javascript', src='/js/vendor/lodash.min.js')
-    script(type='text/javascript', src='/js/vendor/jquery.js')
-    script(type='text/javascript', src='/js/vendor/collapse.js')
-    script(type='text/javascript', src='/js/vendor/bootstrap.min.js')
+    script(type='text/javascript', src='/js/lodash.min.js')
+    script(type='text/javascript', src='/js/jquery.js')
+    script(type='text/javascript', src='/js/collapse.js')
+    script(type='text/javascript', src='/js/bootstrap.min.js')
 
     meta(charset="utf-8")
     meta(http-equiv="X-UA-Compatible" content="IE=edge")
@@ -30,7 +30,7 @@ html
         div.collapse.navbar-collapse(id="thenavbar")
           ul.nav.navbar-nav
             li
-              a(href='/') The new homepage
+              a(href='/') home
             li
               a(href='/impact') Open Stats
             li
@@ -42,26 +42,31 @@ html
     p
       i In December 2016, we are releasing the beta version of facebook.tracking.exposed, with these shiny improvements:
 
-    h2 
-      b Native extension 
-      | for chrome/firefox.
-    h2
-      b Clear privacy model:
-      | only what is shared with the public [
+    h2 Native extension for chrome
+    p you can 
+      a(href="https://chrome.google.com/webstore/detail/facebooktrackingexposed/fnknflppefckhjhecbfigfhlcbmcnmmi") install clicking here
+      |, a FireFox extension will be available soon.
+
+    smaller the extension will extract metadata (to get us insight on facebook algorithm) and data ( to enable user to understand the effect, and enable researcher in analyzing how information spread online). 
+
+    h2 Clear privacy model
+    p only what is shared with the public [
       img(src="/images/public.png")
-      | ] is considered by the experiment
-    h2 The whole process 
-      b extract metadata
-      |, to get insight on facebook algorithm 
-      b and data
-      |, proving to the supporters a stronger understanding.
-    h2 
-      b Parsing happen server side
-      | ; the extension deliver the HTML snippets, then small distributed tasks extract informations from the posts. 
+      | ] is considered by the experiment, see the 
+      a(href="/privacy-model") complete, completely readable simple terms
+
+    h2 Parsing happen server side
+    p once the HTML snippet is collected, multiple small tasks extract the meaning from it If you want, for example, implement an image analysis on public posts, you can do it. If you follow some rules, you can extend the public database with your results, so others can operate on top of it and extend visualisation. 
       a(href="https://github.com/tracking-exposed/facebook/API.md#parsers") check the specifics
       | .
-    h2 What are we looking for ? 
-      b Visualisations to explain how personalisation algorithms works 
-      | Possibly, more users will find it appealing, and more data will flow, and more researcher will find the dataset complete, and so on and so on in a self sustaining circle ↺
+
+    h2 If you used the Alpha version
+    p feel free to remove TamperMonkey and the previous extension. Thank You for your support. The insight we get has been necessary to reach this stage of maturity.
+    p Note: the database of the alpha has been deleted from tracking.exposed server and there are no backup: decsion has been took because was pointless preserve data with an uncertain privacy model.
+
+    h2 Interested? 
+    p The problem addressed here is huge and cross sector. There are things to be done if you are a social analyst, software developer, community manager, graphic designer, fundraiser. The time is tight: self-management and shared vision has to be enough in this phase. Unlucky we can't offer any money yet. The project is alive since 6 months, another 3 month roadmap is defined between the beta in  December and first stable release in March 2017. Only this promise can be make: if you get onboard and we share a goal, your effort will not be wasted and you'll be credited as best as can be done. Feel free to contact 
+      i claudio ﹫tracking・exposed 
+      | for that, [replacing ﹫ and ・]
 
     div.footer 

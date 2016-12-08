@@ -3,11 +3,10 @@ html
   head
     link(rel='stylesheet', href='/css/index.css')
     link(rel='stylesheet', href='/css/bootstrap.css')
-    script(type='text/javascript', src='/js/vendor/lodash.min.js')
-    script(type='text/javascript', src='/js/vendor/jquery.js')
-    script(type='text/javascript', src='/js/vendor/collapse.js')
-    script(type='text/javascript', src='/js/vendor/bootstrap.min.js')
-    script(type='text/javascript', src='/js/local/suggest.js')
+    script(type='text/javascript', src='/js/lodash.min.js')
+    script(type='text/javascript', src='/js/jquery.js')
+    script(type='text/javascript', src='/js/collapse.js')
+    script(type='text/javascript', src='/js/bootstrap.min.js')
     meta(charset="utf-8")
     meta(http-equiv="X-UA-Compatible" content="IE=edge")
     meta(name="viewport" content="width=device-width, initial-scale=1")
@@ -15,21 +14,8 @@ html
     title facebook tracking exposed
 
   body
- 
-    div.jumbotron
-      div.head-text.center.fb-color
-        div.container-fluid
-          h1 facebook.tracking.exposed
-      div.container-fluid
-        p.smile.center description 
-          span.green 75% 
-          | ⌁ infrastructure 
-          span.red 20% 
-          | ⌁ stability  
-          span.red BROKEN ALPHA 
-          | ⌁ funding 
-          span.red 
-            a(href="https://paypal.me/claudioGifts", target="_blank") Zero
+
+    include header
 
     nav.navbar.navbar-default
       div.container
@@ -46,6 +32,8 @@ html
               a(href='#vision') What
             li
               a(href='#useit') Use It 
+            li
+              a(href='#alpha') The Experience done
             li
               a(href='#team') About Us
             li
@@ -73,6 +61,10 @@ html
     div#useit
       div.propaganda
         include useit
+
+    div#alpha
+      div.propaganda
+        include alpha
 
     div#getinvolved
       div.propaganda
