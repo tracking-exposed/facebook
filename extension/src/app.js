@@ -36,11 +36,11 @@ import ReactDOMServer from 'react-dom/server';
 import uuid from 'uuid';
 import $ from 'jquery';
 import 'arrive';
-import { scrape, scrapeUserData } from './scrape';
+import { scrape, scrapeUserData, scrapePermalink } from './scrape';
 
 import config from './config';
 import hub from './hub';
-import { getTimeISO8601, normalizeUrl } from './utils';
+import { getTimeISO8601 } from './utils';
 import { registerHandlers } from './handlers/index';
 
 import StartButton from './components/startButton';
@@ -50,6 +50,7 @@ import OnboardingBox from './components/onboardingBox';
 // Everything starts from here.
 function boot () {
     console.log(`Fbtrex version ${config.VERSION} build ${config.BUILD} loading.`);
+    console.log('Config:', config);
 
     // Register all the event handlers.
     // An event handler is a piece of code responsible for a specific task.
@@ -184,15 +185,10 @@ function onboarding (publicKey) {
 
         // Process the post only if its html contains the user's public key.
         if ($elem.html().indexOf(publicKey) !== -1) {
-            // Extract the URL of the post and normalize it.
-            var permalink = normalizeUrl($elem.find('[href^="/permalink.php"]').attr('href'));
+            // Extract the URL from the post
+            var permalink = scrapePermalink($elem);
 
-            // sometimes, permalink don't happen. at the moment we are
-            // sending the HTML snippet to permit server side parsing.
-            // we can be sure, the post is intended to be scraped, because
-            // contains the key.
-            console.log('permalink', permalink, 'userId', config.userId,
-                'html size', $elem.html().length );
+            console.log('Permalink for verification', permalink);
 
             // Kindly ask to verify the user's public key against the API.
             // Since this is a cross domain request, we need to delegate the
