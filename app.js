@@ -186,18 +186,22 @@ app.get('/facebook.tracking.exposed.user.js', function (req, res) {
     res.sendFile(__dirname + '/scriptlastversion');
 });
 
-app.use('/css', express.static(__dirname + '/dist/css'));
-app.use('/images', express.static(__dirname + '/dist/images'));
-app.use('/lib/font/league-gothic', express.static(__dirname + '/dist/css'));
 
-app.use('/js/vendor', express.static(__dirname + '/dist/js/vendor'));
-/* development: the local JS are pick w/out "npm run build" every time */
+/* development: the local JS are pick w/out "npm run build" every time, and 
+ * our locally developed scripts stay in /js/local */
 if(nconf.get('development') === 'true') {
     console.log(redOn + "ઉ DEVELOPMENT = serving JS from src" + redOff);
     app.use('/js/local', express.static(__dirname + '/sections/webscripts'));
 } else {
     app.use('/js/local', express.static(__dirname + '/dist/js/local'));
 }
+
+/* catch the other 'vendor' script in /js */
+app.use('/js', express.static(__dirname + '/dist/js'));
+app.use('/css', express.static(__dirname + '/dist/css'));
+app.use('/images', express.static(__dirname + '/dist/images'));
+app.use('/fonts', express.static(__dirname + '/dist/fonts'));
+
 /* last one, page name catch-all */
 app.get('/:page', function(req, res) {
     return dispatchPromise('getPage', req, res);

@@ -4,8 +4,8 @@
       "impressions": "impressions",
       "htmls": "htmls",
       "suggestions": "suggestions",
-      "accesses": "accesses4",
-      "supporters": "supporters4"
+      "accesses": "accesses",
+      "supporters": "supporters"
   },
   "mongodb": "mongodb://localhost/facebook",
   "port": 8000
