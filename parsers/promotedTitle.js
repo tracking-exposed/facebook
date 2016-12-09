@@ -2,7 +2,7 @@
 var _ = require('lodash');
 var cheerio = require('cheerio');
 var moment = require('moment');
-var debug = require('debug')('promotedInfo');
+var debug = require('debug')('promotedTitle');
 var parse = require('./lib/parse');
 var entities = require('entities');
 
