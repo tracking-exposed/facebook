@@ -8,10 +8,8 @@ var debug = require('debug')('parse⊹core');
 var moment = require('moment');
 var nconf = require('nconf'); 
 
-nconf.argv().env().file({file: 'config/settings_parser.json'});
+nconf.argv().env();
 
-function composeURL(what) {
-	debug(nconf.get('url'));
     return [
         (nconf.get('url') || 'https://facebook.tracking.exposed' ),
         'api', 'v1', 'snippet', what
