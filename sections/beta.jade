@@ -72,3 +72,45 @@ html
       | for that, [replacing ﹫ and ・]
 
     div.footer 
+
+    // 9 December 2016, the day to kill alpha
+    // 
+    //root@tracko:~# mongo
+    //MongoDB shell version: 2.6.10
+    //connecting to: test
+    //> use facebook
+    //switched to db facebook
+    //> db.supporters
+    //db.supporters   db.supporters2  db.supporters3
+    //> db.supporters2.count()
+    //28
+    //> db.supporters2.drop()
+    //true
+    //> db.supporters.count()
+    //2237
+    //> db.supporters.drop()
+    //true
+    //> db.supporters3.count()
+    //95
+    //> db.supporters3.drop()
+    //true
+    //> db.timeline
+    //db.timeline2  db.timeline3
+    //> db.timeline2.count()
+    //27828
+    //> db.timeline2.drop()
+    //true
+    //> db.timeline3.count()
+    //315941
+    //> db.timeline3.drop()
+    //true
+    //> db.refreshes
+    //db.refreshes2  db.refreshes3
+    //> db.refreshes2.count()
+    //1996
+    //> db.refreshes2.drop()
+    //true
+    //> db.refreshes3.count()
+    //21262
+    //> db.refreshes3.drop()
+    //true

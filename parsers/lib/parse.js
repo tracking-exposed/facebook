@@ -28,7 +28,7 @@ function snippetAvailable(config, what) {
         "requirements": config.requirements || {}
     };
 
-    debug("Connect to %s\n%s",
+    debug("Connecting to %s\n%s",
         url, JSON.stringify(requestpayload, undefined, 2));
 
     return request
