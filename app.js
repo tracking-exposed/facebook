@@ -151,17 +151,9 @@ app.post('/api/v:version/events', function(req, res) {
 // });
 
 
-/* Only the *last version* is imply in the API below */
-/* legacy because the script it is still pointing here */
-app.get('/api/v:version/realitycheck/:userId', function(req, res) {
-    _.set(req.params, 'page', 'timelines');
-    return dispatchPromise('getPersonal', req, res);
-});
-app.get('/realitycheck/:page/random', function(req, res) {
-    return dispatchPromise('getRandom', req, res);
-});
-app.get('/api/v:version/realitycheck/:page/:userId', function(req, res) {
-    return dispatchPromise('getPersonal', req, res);
+app.get('/realitycheck/:userId', function(req, res) {
+    req.params.page = 'realitycheck';
+    return dispatchPromise('getPage', req, res);
 });
 app.get('/realitymeter/:postId', function(req, res) {
     return dispatchPromise('getRealityMeter', req, res);
