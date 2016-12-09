@@ -1,6 +1,6 @@
 import cookie from 'cookie';
 
-import { getTimeISO8601, getParam } from './utils';
+import { getTimeISO8601, getParam, normalizeUrl } from './utils';
 
 export function scrape (elem) {
     const postType = (elem.find('.uiStreamSponsoredLink').length === 1) ? 'sponsored' : 'feed';
@@ -53,4 +53,13 @@ export function scrapeUserData () {
     };
 
     return parsedInfo;
+}
+
+export function scrapePermalink (elem) {
+    // If the user doesn't have a vanity URL, then the link to the post will
+    // start with `permalink.php...`. If the user **has** a vanity URL, then the
+    // link will be `<username>/posts/...`.
+    var permalink = elem.find('[href^="/permalink.php"]').attr('href') ||
+                    elem.find('[href*="/posts/"]').attr('href');
+    return normalizeUrl(permalink);
 }

@@ -9,7 +9,7 @@
     "start": "node app"
   },
   "author": "Claudio Agosti <claudio@tracking.exposed>, https://github.com/tracking-exposed/facebook/graphs/contributors",
-  "license": "GLP-2.0",
+  "license" : "(ISC OR GPL-3.0)",
   "dependencies": {
     "bluebird": "^3.4.1",
     "body-parser": "^1.15.2",
