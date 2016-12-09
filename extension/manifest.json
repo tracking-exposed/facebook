@@ -19,9 +19,7 @@
     "tabs",
     "storage",
     "https://*.facebook.com/",
-    "http://localhost:8000/",
-    "https://facebook.tracking.exposed/",
-    "https://collector.facebook.tracking.exposed/"
+    "https://*.tracking.exposed/"
   ],
 
   "background": {
