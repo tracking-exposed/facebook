@@ -1,6 +1,6 @@
 {
   "name": "tracking-exposed-extension",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "facebook.tracking.exposed → browser extension to investigate personalization algorithms",
   "homepage": "https://github.com/tracking-exposed/facebook/",
   "bugs": "https://github.com/tracking-exposed/facebook/issues",

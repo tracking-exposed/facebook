@@ -36,6 +36,8 @@ html
             li
               a(href='https://github.com/tracking-exposed/facebook') Code
             li
+              a(href='/privacy-statement') Privacy Statement
+            li
               a(href='/#team') About us
 
   div.polite-propaganda
@@ -53,7 +55,7 @@ html
     p only what is shared with the public [
       img(src="/images/public.png")
       | ] is considered by the experiment, see the 
-      a(href="/privacy-model") complete, completely readable simple terms
+      a(href="/privacy-statement") Privacy Statement.
 
     h2 Parsing happen server side
     p once the HTML snippet is collected, multiple small tasks extract the meaning from it If you want, for example, implement an image analysis on public posts, you can do it. If you follow some rules, you can extend the public database with your results, so others can operate on top of it and extend visualisation. 
@@ -70,3 +72,45 @@ html
       | for that, [replacing ﹫ and ・]
 
     div.footer 
+
+    //  9 December 2016, the day to kill alpha
+    //  
+    // root@tracko:~# mongo
+    // MongoDB shell version: 2.6.10
+    // connecting to: test
+    // ≻ use facebook
+    // switched to db facebook
+    // ≻ db.supporters
+    // db.supporters   db.supporters2  db.supporters3
+    // ≻ db.supporters2.count()
+    // 28
+    // ≻ db.supporters2.drop()
+    // true
+    // ≻ db.supporters.count()
+    // 2237
+    // ≻ db.supporters.drop()
+    // true
+    // ≻ db.supporters3.count()
+    // 95
+    // ≻ db.supporters3.drop()
+    // true
+    // ≻ db.timeline
+    // db.timeline2  db.timeline3
+    // ≻ db.timeline2.count()
+    // 27828
+    // ≻ db.timeline2.drop()
+    // true
+    // ≻ db.timeline3.count()
+    // 315941
+    // ≻ db.timeline3.drop()
+    // true
+    // ≻ db.refreshes
+    // db.refreshes2  db.refreshes3
+    // ≻ db.refreshes2.count()
+    // 1996
+    // ≻ db.refreshes2.drop()
+    // true
+    // ≻ db.refreshes3.count()
+    // 21262
+    // ≻ db.refreshes3.drop()
+    // true
