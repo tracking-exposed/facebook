@@ -33,6 +33,7 @@ function handleTimeline (type, e) {
     state.timeline = {
         type: 'timeline',
         id: e.uuid,
+        startTime: e.startTime,
         location: window.location.href
     };
     state.events.push(state.timeline);
