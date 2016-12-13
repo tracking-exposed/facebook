@@ -9,6 +9,7 @@ var mongodb = Promise.promisifyAll(require('mongodb'));
 var debug = require('debug')('fbtrex');
 var nconf = require('nconf');
 var jade = require('jade');
+var cors = require('cors');
 
 var utils = require('./lib/utils');
 var escviAPI = require('./lib/allversions');
@@ -93,6 +94,7 @@ var dispatchPromise = function(name, req, res) {
 server.listen(nconf.get('port'), '127.0.0.1');
 console.log("  Port " + nconf.get('port') + " listening");
 /* configuration of express4 */
+app.use(cors());
 app.use(bodyParser.json({limit: '3mb'}));
 app.use(bodyParser.urlencoded({limit: '3mb', extended: true}));
 
@@ -179,7 +181,7 @@ app.get('/facebook.tracking.exposed.user.js', function (req, res) {
 });
 
 
-/* development: the local JS are pick w/out "npm run build" every time, and 
+/* development: the local JS are pick w/out "npm run build" every time, and
  * our locally developed scripts stay in /js/local */
 if(nconf.get('development') === 'true') {
     console.log(redOn + "ઉ DEVELOPMENT = serving JS from src" + redOff);
