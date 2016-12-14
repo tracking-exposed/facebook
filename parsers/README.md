@@ -45,3 +45,8 @@ some environment variables are checked by the parser library:
 ## The API and the parser...
 
 are documented in the website via docco! (**TODO**)
+
+## easy reminder
+
+p=`/bin/ls parsers/*.js`
+for i in $p; do DEBUG=* url='http://localhost:8000' node $i; done
