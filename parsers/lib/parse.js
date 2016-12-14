@@ -10,6 +10,7 @@ var nconf = require('nconf');
 
 nconf.argv().env();
 
+function composeURL(what) {
     return [
         (nconf.get('url') || 'https://facebook.tracking.exposed' ),
         'api', 'v1', 'snippet', what
