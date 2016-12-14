@@ -8,7 +8,6 @@ var entities = require('entities');
 var nconf = require('nconf'); 
 
 var postcount = 0;
-var errorcount = 0;
 
 nconf.set("PARSER_PROMOTEDLINK_VERSION", "201612.01");
 
@@ -32,9 +31,6 @@ function getPromotedTitle(snippet) {
 	var e_ptr;
 	
 	var re;
-	
-	if (errorcount > 0)
-		return;
 	
 	postcount ++;
 	
@@ -86,7 +82,6 @@ function getPromotedTitle(snippet) {
 	if (!found) {
 		debug("#" + postcount + ": link [" + snippet._id + "] NOT FOUND");
 		error = 1;
-		errorcount++;
 	} else {
 		debug("#" + postcount + ": link [" + snippet._id + "] : " + link);
 	}
