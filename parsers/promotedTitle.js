@@ -5,8 +5,11 @@ var moment = require('moment');
 var debug = require('debug')('promotedTitle');
 var parse = require('./lib/parse');
 var entities = require('entities');
+var nconf = require('nconf'); 
 
 var postcount = 0;
+
+nconf.set("PARSER_PROMOTEDTITLE_VERSION", "201612.02");
 
 function tryPage(elem) {
     try {
@@ -21,6 +24,7 @@ function getPromotedTitle(snippet) {
 	var title;
 	var title_type;
 	var error = 0;
+	var found = false;
 	
 	var e_threshold;
 	var e_ptr;
@@ -35,8 +39,9 @@ function getPromotedTitle(snippet) {
 	e_ptr = $(e_threshold).find("p").first();
 	if (e_ptr.text() !== "") {
 		title = e_ptr.text();
+		found = true;
 	} else {
-		e_ptr = ($(e_threshold).next().find(".clearfix"));
+		e_ptr = $(e_threshold).next().find(".clearfix");
 		$(e_ptr).find("*").each(function(e) {
 			if (title == undefined) {
 				var re = /(div|a|span)/g;
@@ -44,6 +49,7 @@ function getPromotedTitle(snippet) {
 					if ($(this).text() === entities.decodeHTML($(this).first().html()) && $(this).text() !== "") {
 						if ($(this).text() !== "Click for more") {
 							title = $(this).text();
+							found = true;
 						}
 					}
 				}
@@ -51,14 +57,15 @@ function getPromotedTitle(snippet) {
 		});
 	}
 
-	if (title === "" || title == undefined) {
+	if (!found) {
 		debug("#" + postcount + ": title [" + snippet._id + "] NOT FOUND");
 		error = 1;
 	} else {
 		debug("#" + postcount + ": title [" + snippet._id + "] : " + title);
 	}
 	
-	return {"postTitle": title};
+	if (error == 0)
+		return {"postTitle": title};
 
 };
 
