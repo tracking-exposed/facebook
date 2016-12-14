@@ -1,3 +1,12 @@
+# Dependencies
+
+Note that these parsers depend on each others' work in sequence.
+
+For example, no parsers working on "promoted" posttype can match anything before the parser _postType.js_ is run to analyze and mark the postTypes.
+
+On adding new parsers, the dependency hierarchy should be recorded here for future reference. 
+
+Automatic resolving of dependencies should in the end be implemented.
 
 # Keys
 
