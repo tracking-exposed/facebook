@@ -1,6 +1,6 @@
 #!/bin/sh
 
-rimraf ./dist
+rm -rf ./dist
 
 V=dist/js/ 
 mkdir -p dist/css && 
