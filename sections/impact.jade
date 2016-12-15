@@ -10,47 +10,43 @@ html
     script(type='text/javascript', src='/js/c3.min.js')
     script(type='text/javascript', src='/js/lodash.min.js')
     script(type='text/javascript', src='/js/local/impact.js')
-    title ઉ Impact
+    title Impact, adoption and open stats
 
-  body(onload="displayTimeAdoption('#timeAdoption'); displayCountryPie('#countrypie');")
+  body(onload="byDay('impressions', '#goldmine'); byDay('metadata', '#metadata'); byDay('users', '#users'); displayCountryPie('#countrypie');")
   
   .container-fluid
     .jumbotron
-      h1 ઉ Impact
-      h3 The meta-data owned by this node, are public and part of the process
+      h1 Impact, adoption and open stats
 
-  nav.navbar.navbar-default
-    div.container
-      div.navbar-header
-        button.navbar-toggle.collapsed(type="button" data-toggle="collapse" data-target="#thenavbar" aria-expanded="false")
-          span(id="sr-only") Toggle navigation
-          span.icon-bar
-          span.icon-bar
-          span.icon-bar
-
-      div.collapse.navbar-collapse(id="thenavbar")
-        ul.nav.navbar-nav
-          li
-            a(href='/') Home
-          li
-            a(href='/realitymeter') RealityMeter
-          li
-            a(href='/netzpolitick/') Slides
+  include navbar
 
   .container-fluid
     .simpletext
       h2 Adoption statistics
-      p Since the end of Summer 2016 facebook.tracking.exposed is in α release, below the graph of the collected data.
+      p Since the mid of December 2016, facebook.tracking.exposed is in ß release. below some graph of the data collected. As part of the stable delivery, we'll define how third party can download the dataset and how we might integrate third party analysis in our APIs.
+      p We know to be in a slippery terrain: in one side, enabling users to assess Personalisation Algorithm is our goal, in the other, we value Privacy and Identiy rights much more than the corporations we criticize, therefore, 
+        a(href="https://responsibledata.io/social-media-intelligence-the-wayward-child-of-open-source-intelligence/") aware of the risks posed by social media intelligence
+        |, we aim to enable users awareness, but prevent abuses.
       p Simple breakdown: #{users} unique users provided #{posts} posts in #{timelines} timelines.
 
   .container-fluid
-    div(id="timeAdoption")
+    .simpletext
+      h2 Impressions collected
+    div(id="goldmine")
 
   .container-fluid
     .simpletext
-      h2 Number of refreshes collected by Nation
+      h2 Users interaction: active, not coming back and visitors
+    div(id="users")
 
   .container-fluid
+    .simpletext
+      h2 Parsed medadata statistics
+    div(id="metadata")
+
+  .container-fluid
+    .simpletext
+      h2 Number of timelines collected by Nation
     div(id="countrypie")
 
   div.footer
