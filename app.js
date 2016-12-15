@@ -101,18 +101,17 @@ app.use(bodyParser.urlencoded({limit: '3mb', extended: true}));
 app.get('/api/v:version/node/info', function(req, res) {
     return dispatchPromise('nodeInfo', req, res);
 });
-app.get('/api/v:version/node/activity/:format', function(req, res) {
-    return dispatchPromise('byDayActivity', req, res);
+
+/* byDay (impressions, users, metadata ) */
+app.get('/api/v:version/daily/:what', function(req, res) {
+    return dispatchPromise('byDayStats', req, res);
 });
-app.get('/node/posttype/:version/:format', function(req, res) {
-    return dispatchPromise('byDayPostType', req, res);
-});
-app.get('/api/v:version/node/countries/:format', function(req, res) {
+
+/* column only - c3 */
+app.get('/api/v:version/node/countries/c3', function(req, res) {
     return dispatchPromise('countriesStats', req, res);
 });
-app.get('/api/v:version/node/country/:countryCode/:format', function(req, res) {
-    return dispatchPromise('countryStatsByDay', req, res);
-});
+
 app.get('/api/v:version/post/reality/:postId', function(req, res) {
     return dispatchPromise('postReality', req, res);
 });
