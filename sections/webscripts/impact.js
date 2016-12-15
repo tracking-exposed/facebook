@@ -1,8 +1,6 @@
+/*
 var displayTimeAdoption = function(containerId) {
-    var url = '/api/v1/node/activity/c3';
     d3.json(url, function(something) {
-        console.log("displayTimeAdoption");
-        console.log(something);
 
         var chart = c3.generate({
             bindto: containerId,
@@ -51,9 +49,58 @@ var displayTimeAdoption = function(containerId) {
         });
     });
 };
+*/
+
+function renderImpression(something, containerId) {
+    return c3.generate({
+        bindto: containerId,
+        data: {
+            json: something,
+            keys: {
+                x: 'date',
+                value: [ 'htmls', 'impressions', 'timelines' ]
+            },
+        },
+        axis: {
+            x: {
+                type: 'timeseries',
+                tick: {
+                    format: '%Y-%m-%d'
+                }
+            },
+            y2: { show: true }
+        }
+    });
+};
+
+
+var kindMap = {
+    'impressions': 'daily/impressions',
+    'users': null, // 'daily/users',
+    'metadata': null
+};
+
+function byDay(kind, containerId) {
+
+    if(_.isNull(kindMap[kind])) {
+        console.log("not yet supported", kind);
+        return;
+    }
+
+    var url = '/api/v1/' + kindMap[kind];
+    console.log("Fetching for", kind, url);
+    d3.json(url, function(something) {
+        console.log("Got it!", url);
+        console.log(something);
+
+        var chart = renderImpression(something, containerId);
+    });
+
+}
+
 
 var displayCountryPie = function(containerId) {
-    var url = '/api/v1/node/countries/column';
+    var url = '/api/v1/node/countries/c3';
     d3.json(url, function(something) {
         console.log(something);
 
