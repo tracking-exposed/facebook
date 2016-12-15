@@ -10,6 +10,7 @@ var nconf = require('nconf');
 
 nconf.argv().env();
 
+function composeURL(what) {
     return [
         (nconf.get('url') || 'https://facebook.tracking.exposed' ),
         'api', 'v1', 'snippet', what
@@ -46,7 +47,7 @@ function commitResult(config, newmeta, snippet) {
         _.keys(snippet.metadata), _.keys(newmeta)); */
 
     var update = {
-        snippetId: snippet.id,
+        htmlId: snippet.id,
         parserKey: config.key,
         metadata: newmeta,
         fields: _.keys(newmeta),

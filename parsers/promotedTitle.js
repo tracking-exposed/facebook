@@ -7,19 +7,12 @@ var parse = require('./lib/parse');
 var entities = require('entities');
 
 var postcount = 0;
+var error = 0;
 
-function tryPage(elem) {
-    try {
-        return elem.attr().onmouseover.replace(/.*\"http/, 'http').replace(/\".*/, '').replace(/\\/g, '');
-    } catch(error) {
-        return null;
-    };
-}
 function getPromotedTitle(snippet) {
 
 	var title;
 	var title_type;
-	var error = 0;
 	
 	var e_threshold;
 	var e_ptr;
@@ -45,15 +38,14 @@ function getPromotedTitle(snippet) {
 	});
 
 
-	if (title === "" || title == undefined) {
-		debug("#" + postcount + ": title [" + snippet._id + "] NOT FOUND");
-		error = 1;
+	if ( _.size(title) === 0 || !title ) {
+		error ++;
+		debug("Err %d post %d [%s] Title NOT FOUND", error, postcount, snippet.id);
+	    return {"promotedTitle": false};
 	} else {
-		debug("#" + postcount + ": title [" + snippet._id + "] : " + title);
+		debug("Err %d post %d [%s] Title: %s", error, postcount, snippet.id, title);
+	    return {"promotedTitle": title};
 	}
-	
-	return {"postTitle": title};
-
 };
 
 return parse.please({
