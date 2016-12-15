@@ -8,29 +8,22 @@ var entities = require('entities');
 var nconf = require('nconf'); 
 
 var postcount = 0;
-
+var errorcount = 0;
+	
 nconf.set("PARSER_PROMOTEDLINK_VERSION", "201612.01");
-
-function tryPage(elem) {
-    try {
-        return elem.attr().onmouseover.replace(/.*\"http/, 'http').replace(/\".*/, '').replace(/\\/g, '');
-    } catch(error) {
-        return null;
-    }
-}
 
 function getPromotedTitle(snippet) {
 
 	var link;
 	var link_type;
-	var error = 0;
+
 	var found = false;
+	
+	var error = 0;
 	
 	var e_threshold;
 	var e_linkcontainer;
 	var e_ptr;
-	
-	var re;
 	
 	postcount ++;
 	
@@ -82,6 +75,7 @@ function getPromotedTitle(snippet) {
 	if (!found) {
 		debug("#" + postcount + ": link [" + snippet._id + "] NOT FOUND");
 		error = 1;
+		errorcount++;
 	} else {
 		debug("#" + postcount + ": link [" + snippet._id + "] : " + link);
 	}
