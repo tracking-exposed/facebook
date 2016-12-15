@@ -8,16 +8,9 @@ var entities = require('entities');
 var nconf = require('nconf'); 
 
 var postcount = 0;
+var errorcount = 0;
 
-nconf.set("PARSER_PROMOTEDTITLE_VERSION", "201612.02");
-
-function tryPage(elem) {
-    try {
-        return elem.attr().onmouseover.replace(/.*\"http/, 'http').replace(/\".*/, '').replace(/\\/g, '');
-    } catch(error) {
-        return null;
-    }
-}
+nconf.set("PARSER_PROMOTEDTITLE_VERSION", "201612.03");
 
 function getPromotedTitle(snippet) {
 
@@ -41,17 +34,12 @@ function getPromotedTitle(snippet) {
 		title = e_ptr.text();
 		found = true;
 	} else {
-		e_ptr = $(e_threshold).next().find(".clearfix");
-		$(e_ptr).find("*").each(function(e) {
-			if (title == undefined) {
-				var re = /(div|a|span)/g;
-				if (re.exec($(this)[0].name) != null) {
-					if ($(this).text() === entities.decodeHTML($(this).first().html()) && $(this).text() !== "") {
-						if ($(this).text() !== "Click for more") {
-							title = $(this).text();
-							found = true;
-						}
-					}
+		e_ptr = $(e_threshold).next().find(".clearfix").first();
+		e_ptr.children("div").each(function() {
+			if (!$(this).find("button")[0]) {
+				if ($(this).children().first().text() === entities.decodeHTML($(this).children().first().html()) && $(this).children().first().text() !== "") {
+					title = $(this).children().first().text();
+					found = true;
 				}
 			}
 		});
@@ -60,6 +48,7 @@ function getPromotedTitle(snippet) {
 	if (!found) {
 		debug("#" + postcount + ": title [" + snippet._id + "] NOT FOUND");
 		error = 1;
+		errorcount++;
 	} else {
 		debug("#" + postcount + ": title [" + snippet._id + "] : " + title);
 	}
