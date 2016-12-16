@@ -31,7 +31,9 @@ function howMany(lst) {
 
 function saveTheGood(good) {
     return mongo
-        .writeOne('supporters2', good);
+        .upsertOne('supporters2', {
+            userId: good.userId
+        }, good);
 };
 
 function conversion() {
