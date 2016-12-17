@@ -38,7 +38,7 @@ note: if the image is not present in your local docker registry will be automati
 
 Or if you need your instance filled with and synced with the main node, run:
 ```
-$ docker run -d --name fbtrex -p 8000:8000 --link mongo:mongo fbtrex/fbtrex-app /bin/bash -c "DEBUG=* source='https://facebook.tracking.exposed' echo "SORRY, STILL TODO THE MIRROR OF THE DB -- && npm run watch"
+$ docker run -d --name fbtrex -p 8000:8000 --link mongo:mongo fbtrex/fbtrex-app /bin/bash -c "DEBUG=* source='https://facebook.tracking.exposed' echo 'DB MIRRORING NOT IMPLEMENTED YET' && npm run watch"
 ```
 
 If you want to build on your own the image:
