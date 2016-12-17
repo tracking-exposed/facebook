@@ -17,8 +17,8 @@ function takeTheGood(memo, user) {
 
     var good = {
         publicKey:  user.publicKey,
-        keyTime: new Date(user.keyTime),
-        lastInfo: new Date(user.lastInfo),
+        keyTime: new Date(moment(user.keyTime).toISOString()),
+        lastActivity: new Date(moment(user.lastInfo).toISOString()),
         userId: _.parseInt(user.userId)
     };
     memo.push(good);
@@ -37,14 +37,12 @@ function saveTheGood(good) {
 };
 
 function conversion() {
-  return mongo
-      .read('supporters', {}, {})
-      .tap(howMany)
-      .reduce(takeTheGood, [])
-      .tap(howMany)
-      .map(saveTheGood);
+    return mongo
+        .read('supporters', {}, {})
+        .tap(howMany)
+        .reduce(takeTheGood, [])
+        .tap(howMany)
+        .map(saveTheGood);
 };
-
-
 
 return conversion();
