@@ -79,6 +79,7 @@ var dispatchPromise = function(name, req, res) {
                   req.randomUnicode, name, httpresult.file);
               res.sendFile(__dirname + "/html/" + httpresult.file);
           } else {
+              console.trace();
               return returnHTTPError(req, res, name, "Undetermined failure");
           }
           return true;
@@ -153,8 +154,7 @@ app.post('/api/v:version/events', function(req, res) {
 
 
 app.get('/realitycheck/:userId', function(req, res) {
-    req.params.page = 'realitycheck';
-    return dispatchPromise('getPage', req, res);
+    return dispatchPromise('getRealityCheck', req, res);
 });
 app.get('/realitymeter/:postId', function(req, res) {
     return dispatchPromise('getRealityMeter', req, res);
