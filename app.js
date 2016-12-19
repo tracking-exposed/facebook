@@ -126,6 +126,11 @@ app.get('/api/v:version/user/:kind/:CPN/:userId/:format', function(req, res){
     return dispatchPromise('userAnalysis', req, res);
 });
 
+/* Querying API */
+app.post('/api/v:version/query', function(req, res) {
+    return dispatchPromise('queryContent', req, res);
+});
+
 /* Parser API */
 app.post('/api/v:version/snippet/status', function(req, res) {
     return dispatchPromise('snippetAvailable', req, res);
