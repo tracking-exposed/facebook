@@ -8,5 +8,6 @@
       "supporters": "supporters2"
   },
   "mongodb": "mongodb://localhost/facebook",
+  "password": "overwrittenbyENV",
   "port": 8000
 }
