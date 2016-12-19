@@ -31,7 +31,7 @@ function howMany(lst) {
 
 function saveTheGood(good) {
     return mongo
-        .upsertOne('supporters2', {
+        .updateOne('supporters2', {
             userId: good.userId
         }, good);
 };
