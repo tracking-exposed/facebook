@@ -157,6 +157,15 @@ app.post('/api/v:version/events', function(req, res) {
 //     return dispatchPromise('writeContrib', req, res);
 // });
 
+/* new personal page development  -- this will be protected */
+app.get('/api/v:version/timelines/:userId', function(req, res) {
+    return dispatchPromise('getTimelines', req, res);
+});
+app.get('/api/v:version/metadata/:timelineId', function(req, res) {
+    return dispatchPromise('getMetadata', req, res);
+});
+
+
 
 app.get('/realitycheck/:userId', function(req, res) {
     return dispatchPromise('getRealityCheck', req, res);

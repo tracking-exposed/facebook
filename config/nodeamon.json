@@ -18,7 +18,7 @@
   "verbose": true,
   "exitcrash": false,
   "env": {
-    "DEBUG": "mongo,daily,api-1,parser,onboarding,fbtrex,events,staticpages,utils"
+    "DEBUG": "mongo,daily,api-1,parser,onboarding,fbtrex,events,staticpages,utils,opendata,personal"
   },
   "ext": "js css json jade"
 }
