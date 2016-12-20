@@ -1,16 +1,42 @@
 doctype html
 html
-  head
-    link(href='/js/local/EB+Garamond-Font.css', rel='stylesheet')
-    link(href='/js/local/realitycheck.css', rel='stylesheet')
+    head
+        link(href='/js/local/EB+Garamond-Font.css', rel='stylesheet')
+        link(href='/js/local/realitycheck.css', rel='stylesheet')
+        link(rel='stylesheet', type='text/css', href='/css/datatables.min.css')
+        script(type='text/javascript', src='/js/jquery.js')
+        script(type='text/javascript', charset='utf8', src='/js/datatables.min.js')
+        script(type='text/javascript', charset='utf8', src='/js/local/impressionTable.js')
+        script(type='text/javascript', src='/js/lodash.min.js')
+        script(type='text/javascript', src='/js/moment.min.js')
 
-    title facebook.tracking.exposed Personal page - RealityCheck
+        title facebook.tracking.exposed Personal page - RealityCheck
 
-  body
-    div(style="margin: 6%")
-      h1 Visualisation temporarly unavailable
-      p Sorry for that, as part of the transition between 
-        a(href="/beta") alpha and beta
-        |, your data are collected and would be display to you soon, because the old visualsiation are still to be updated accordingly the new data format.
+    body(onload=" loadTimelines(#{userId}, '#listTable', '#details', '#description');")
 
-      img(src="/images/fbtrex_logo.svg")
+        div#realitycontainer
+            h1 RealityCheck
+            h3 small visualisations of yourtimeline, one step back
+
+            div#vizavail This system is based on open API, you can create new visualisation and integrate your analysis here. You'll be credited on this page, look for some ideas and to the current API set.
+
+            table#listTable.display(cellspacing='0', width='100%')
+                thead
+                    tr
+                        th When
+                        th Precisely was...
+                        th Last for
+                        th Analyzed posts
+                        th Total impressions
+                tfoot
+                    tr
+                        th When
+                        th Precisely was...
+                        th Last for
+                        th Analyzed posts
+                        th Total impressions
+
+            div#description
+            div#details
+
+        img(src="/images/fbtrex_logo.svg")

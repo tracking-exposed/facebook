@@ -370,3 +370,16 @@ body {
 .showed {
     opacity: 1;
 }
+
+/* added in the refactor for the ß */
+#realitycontainer {
+    margin: 6%;
+}
+
+#vizavail {
+    background-color: lightyellow;
+    font-size: 1.3em;
+    padding-left: 4%;
+    padding-right: 4%;
+    margin-bottom: 20px;
+}

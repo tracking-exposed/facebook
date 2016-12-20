@@ -35,3 +35,4 @@ cp node_modules/reveal.js/lib/font/league-gothic/* dist/css/
 cp vendor/datatables.min.js $V
 cp vendor/datatables.min.css dist/css/
 
+cp -r vendor/DataTables-1.10.13/ dist/css/
