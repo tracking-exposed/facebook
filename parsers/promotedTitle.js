@@ -4,6 +4,7 @@ var cheerio = require('cheerio');
 var moment = require('moment');
 var debug = require('debug')('promotedTitle');
 var parse = require('./lib/parse');
+var utils = require('./lib/utils');
 var entities = require('entities');
 
 var postcount = 0;
@@ -41,16 +42,20 @@ function getPromotedTitle(snippet) {
 	if ( _.size(title) === 0 || !title ) {
 		error ++;
 		debug("Err %d post %d [%s] Title NOT FOUND", error, postcount, snippet.id);
-	    return {"promotedTitle": false};
+	    return { "promotedTitle": false };
 	} else {
 		debug("Err %d post %d [%s] Title: %s", error, postcount, snippet.id, title);
-	    return {"promotedTitle": title};
+	    return { 
+            "promotedTitle": true,
+            "title": tile,
+            "titleId": utils.hash({'title': title}) 
+        };
 	}
 };
 
 return parse.please({
     'name': 'promotedTitle', /* this name is the same in parsers-key */
-    'requirements': {'postType': 'promoted'},
+    'requirements': {'type': 'promoted'},
     'implementation': getPromotedTitle,
     'since': "2016-09-13",
     'until': moment().toISOString(),

@@ -372,14 +372,26 @@ body {
 }
 
 /* added in the refactor for the ß */
-#realitycontainer {
+.realitycontainer {
     margin: 6%;
 }
 
-#vizavail {
+.vizavail {
+    font-family: 'Arial';
     background-color: lightyellow;
     font-size: 1.3em;
     padding-left: 4%;
     padding-right: 4%;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
+    margin-top: 10px;
 }
+
+/*
+body {
+    height: 100%;
+    background-image: url('/images/fbtrex_logo.svg');
+    background-size:100% 100%;
+    -o-background-size: 100% 100%;
+    -webkit-background-size: 100% 100%;
+    background-size :cover;
+} */

@@ -32,9 +32,15 @@ function howMany(lst) {
 
 function saveTheGood(good) {
     return mongo
-        .updateOne('supporters2', {
-            userId: good.userId
-        }, good);
+        .read('supporters2', {userId: good.userId})
+        .then(function(empty) {
+            if(empty && empty[0] && empty[0].userId) 
+                return false;
+            else
+                return mongo
+                    .writeOne('supporters2', good)
+                    .return(true);
+        });
 };
 
 function conversion() {
@@ -43,7 +49,10 @@ function conversion() {
         .tap(howMany)
         .reduce(takeTheGood, [])
         .tap(howMany)
-        .map(saveTheGood);
+        .map(saveTheGood)
+        .then(function(results) {
+            debug("Written %j", _.countBy(results, function(e) { return e; }) );
+        });
 };
 
 return conversion();

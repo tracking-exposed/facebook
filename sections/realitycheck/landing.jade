@@ -4,7 +4,10 @@ html
         link(href='/js/local/EB+Garamond-Font.css', rel='stylesheet')
         link(href='/js/local/realitycheck.css', rel='stylesheet')
         link(rel='stylesheet', type='text/css', href='/css/datatables.min.css')
+        link(rel='stylesheet', href='/css/bootstrap.css')
         script(type='text/javascript', src='/js/jquery.js')
+        script(type='text/javascript', src='/js/collapse.js')
+        script(type='text/javascript', src='/js/bootstrap.min.js')
         script(type='text/javascript', charset='utf8', src='/js/datatables.min.js')
         script(type='text/javascript', charset='utf8', src='/js/local/impressionTable.js')
         script(type='text/javascript', src='/js/lodash.min.js')
@@ -12,14 +15,21 @@ html
 
         title facebook.tracking.exposed Personal page - RealityCheck
 
-    body(onload=" loadTimelines(#{userId}, '#listTable', '#details', '#description');")
+    body(onload="loadTimelines(#{userId}, '#listTable', '#details', '#description');")
 
-        div#realitycontainer
+        include ../navbar
+
+        div.realitycontainer
             h1 RealityCheck
-            h3 small visualisations of yourtimeline, one step back
+            div.vizavail This system is based on open API, you can create new visualisation and integrate your analysis here. 
+            div.vizavail Our previously 
+                a(href="https://twitter.com/pciuccarelli/status/799362580125024256") Cool visualization
+                |  shall be soon operative again. 
+            div.vizavail Soon, this page should be 
+                b accessible only by the supporter
+                |, access can be shared upon owner decisions.
 
-            div#vizavail This system is based on open API, you can create new visualisation and integrate your analysis here. You'll be credited on this page, look for some ideas and to the current API set.
-
+        div.realitycontainer
             table#listTable.display(cellspacing='0', width='100%')
                 thead
                     tr
@@ -39,4 +49,3 @@ html
             div#description
             div#details
 
-        img(src="/images/fbtrex_logo.svg")
