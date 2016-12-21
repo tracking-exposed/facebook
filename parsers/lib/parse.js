@@ -1,4 +1,3 @@
-#!/usr/bin/env nodejs
 var _ = require('lodash');
 var Promise = require('bluebird');
 var fs = Promise.promisifyAll(require('fs'));

@@ -58,8 +58,21 @@ function renderImpression(something, containerId) {
             json: something,
             keys: {
                 x: 'date',
-                value: [ 'htmls', 'impressions', 'timelines' ]
+                value: ['htmls','impressions','timelines']
             },
+            axes: {
+                htmls: 'y',
+                impressions: 'y',
+                timelines: 'y2'
+            },
+            types: {
+                htmls: 'line',
+                impressions: 'line',
+                timelines: 'area'
+            },
+            colors: {
+                timelines: '#f0e971'
+            }
         },
         axis: {
             x: {
@@ -73,27 +86,118 @@ function renderImpression(something, containerId) {
     });
 };
 
+function renderUsers(something, containerId) {
+    return c3.generate({
+        bindto: containerId,
+        data: {
+            json: something,
+            keys: {
+                x: 'date',
+                value: [ "activeusers", "newusers", "notcomingback", "pageviews" ]
+            },
+            names: {
+                activeusers: "Active Users",
+                newusers: "new Supporters",
+                notcomingback: "Supporters not coming back",
+                pageviews: "Page views"
+            },
+            axes: {
+                activeusers: 'y',
+                newusers: 'y',
+                notcomingback: 'y',
+                pageviews: 'y'
+            },
+            types: {
+                activeusers: 'line',
+                newusers: 'line',
+                notcomingback: 'line',
+                pageviews: 'line'
+            },
+            colors: {
+                activeusers: '#424242',
+                newusers: '#727272',
+                notcomingback: '#a200a2',
+                pageviews:'#f47700' 
+            }
+        },
+        axis: {
+            x: {
+                type: 'timeseries',
+                tick: {
+                    format: '%Y-%m-%d'
+                }
+            },
+        }
+    });
+};
+
+function renderMetadata(something, containerId) {
+    return c3.generate({
+        bindto: containerId,
+        data: {
+            json: something,
+            keys: {
+                x: 'date',
+                value: [ 'ws' ]
+            },
+            names: {
+                activeusers: "Active Users",
+                newusers: "new Supporters",
+                notcomingback: "Supporters not coming back",
+                pageviews: "Page views"
+            },
+            axes: {
+                activeusers: 'y',
+                newusers: 'y2',
+                notcomingback: 'y2',
+                pageviews: 'y'
+            },
+            types: {
+                activeusers: line,
+                newusers: line,
+                notcomingback: line,
+                pageviews: line
+            },
+            colors: {
+                activeusers: black,
+                newusers: steelblue,
+                notcomingback: green,
+                pageviews: yellow
+            }
+        },
+        axis: {
+            x: {
+                type: 'timeseries',
+                tick: {
+                    format: '%Y-%m-%d'
+                }
+            },
+            y2: { show: true }
+        }
+    });
+}
+
 
 var kindMap = {
-    'impressions': 'daily/impressions',
-    'users': null, // 'daily/users',
-    'metadata': null
+    'impressions': [ 'daily/impressions', renderImpression ],
+    'users': [ 'daily/users', renderUsers ],
+    'metadata': [ false, 'daily/metadata', renderMetadata ]
 };
 
 function byDay(kind, containerId) {
 
-    if(_.isNull(kindMap[kind])) {
+    if( _.size(kindMap[kind]) !== 2 ) {
         console.log("not yet supported", kind);
         return;
     }
 
-    var url = '/api/v1/' + kindMap[kind];
-    console.log("Fetching for", kind, url);
-    d3.json(url, function(something) {
-        console.log("Got it!", url);
-        console.log(something);
+    var url = '/api/v1/' + _.nth(kindMap[kind], 0);
+    var renderF = _.nth(kindMap[kind], 1);
 
-        var chart = renderImpression(something, containerId);
+    console.log("Fetching for", kind, "in", url);
+    d3.json(url, function(something) {
+        var chart = renderF(something, containerId);
+        /* eventually, we can manage updates of this chart */
     });
 
 }

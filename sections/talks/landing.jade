@@ -12,31 +12,27 @@ html
     meta(http-equiv="X-UA-Compatible" content="IE=edge")
     meta(name="viewport" content="width=device-width, initial-scale=1")
     meta(name="keywords" content="facebook tracking exposed")
-    title facebook tracking exposed, presentations conference and slided
+    title facebook tracking exposed: presentations, initiatives
 
   body
- 
-    div.jumbotron
-      div.head-text.center.fb-color
-        div.container-fluid
-          h1 facebook.tracking.exposed
-          h3 presentations, conferences and advoacacy
 
-    nav.navbar.navbar-default
-      div.container
-        div.navbar-header
-          button.navbar-toggle.collapsed(type="button" data-toggle="collapse" data-target="#thenavbar" aria-expanded="false")
-            span(id="sr-only") Toggle navigation
-            span.icon-bar
-            span.icon-bar
-            span.icon-bar
+    include ../header
+    include ../navbar 
 
-        div.collapse.navbar-collapse(id="thenavbar")
-          ul.nav.navbar-nav
-            li
-              a(href='/') Home
-            li
-              a(href='/impact') Stats
+    .container
+      h2 Initiatives
+      ul.fb--icon-list
+        li
+            a(href="https://events.ccc.de/congress/2016/wiki/Main_Page") CCC
+            |  ⚡ lightining ⚡ talk is coming!
+        li Developer? 
+            b #extension #javascript
+            |, a 
+            a(href="https://github.com/tracking-exposed/web-extension/issues/15") simple issue
+            |  waits for you
+        li We've a (no irony, really) 
+            a(href="https://www.facebook.com/personalizationalgorithm") Facebook page
+            |  for coordination and updates. If you want to do some experiments on personalisation algorithm, join us.
 
     .container
       h2 Presentations
