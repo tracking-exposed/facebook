@@ -9,7 +9,9 @@ function getPostType(snippet) {
 
     var $ = cheerio.load(snippet.html);
 
-    if ($('.uiStreamSponsoredLink').length > 0)
+    if ($('.uiStreamSponsoredLink').length > 0) 
+        var retVal = "promoted";
+    else if ($('.uiStreamAdditionalLogging').length > 0)
         var retVal = "promoted";
     else
         var retVal = "feed";
@@ -17,7 +19,8 @@ function getPostType(snippet) {
     // TODO, don't use exclusion condition, but find a selector
     // for 'feed' too, and associate 'null' if nothing it is spot
     debug("・%s ∩ %s", snippet.id, retVal);
-    return { 'postType': retVal };
+    return { 'postType': true, 
+             'type': retVal };
 };
 
 var postType = {

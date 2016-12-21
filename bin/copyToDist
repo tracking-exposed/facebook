@@ -1,6 +1,6 @@
 #!/bin/sh
 
-rimraf ./dist
+rm -rf ./dist
 
 V=dist/js/ 
 mkdir -p dist/css && 
@@ -31,3 +31,8 @@ cp node_modules/reveal.js/lib/js/head.min.js $V/reveal-head.min.js
 cp node_modules/reveal.js/js/reveal.js $V/reveal.min.js 
 cp node_modules/reveal.js/lib/js/classList.js $V/classList.js 
 cp node_modules/reveal.js/lib/font/league-gothic/* dist/css/ 
+
+cp vendor/datatables.min.js $V
+cp vendor/datatables.min.css dist/css/
+
+cp -r vendor/DataTables-1.10.13/ dist/css/
