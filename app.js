@@ -79,6 +79,7 @@ var dispatchPromise = function(name, req, res) {
                   req.randomUnicode, name, httpresult.file);
               res.sendFile(__dirname + "/html/" + httpresult.file);
           } else {
+              console.trace();
               return returnHTTPError(req, res, name, "Undetermined failure");
           }
           return true;
@@ -101,18 +102,17 @@ app.use(bodyParser.urlencoded({limit: '3mb', extended: true}));
 app.get('/api/v:version/node/info', function(req, res) {
     return dispatchPromise('nodeInfo', req, res);
 });
-app.get('/api/v:version/node/activity/:format', function(req, res) {
-    return dispatchPromise('byDayActivity', req, res);
+
+/* byDay (impressions, users, metadata ) */
+app.get('/api/v:version/daily/:what', function(req, res) {
+    return dispatchPromise('byDayStats', req, res);
 });
-app.get('/node/posttype/:version/:format', function(req, res) {
-    return dispatchPromise('byDayPostType', req, res);
-});
-app.get('/api/v:version/node/countries/:format', function(req, res) {
+
+/* column only - c3 */
+app.get('/api/v:version/node/countries/c3', function(req, res) {
     return dispatchPromise('countriesStats', req, res);
 });
-app.get('/api/v:version/node/country/:countryCode/:format', function(req, res) {
-    return dispatchPromise('countryStatsByDay', req, res);
-});
+
 app.get('/api/v:version/post/reality/:postId', function(req, res) {
     return dispatchPromise('postReality', req, res);
 });
@@ -124,6 +124,11 @@ app.get('/api/v:version/user/timeline/:userId/:past/:R/:P', function(req, res) {
 });
 app.get('/api/v:version/user/:kind/:CPN/:userId/:format', function(req, res){
     return dispatchPromise('userAnalysis', req, res);
+});
+
+/* Querying API */
+app.post('/api/v:version/query', function(req, res) {
+    return dispatchPromise('queryContent', req, res);
 });
 
 /* Parser API */
@@ -152,10 +157,18 @@ app.post('/api/v:version/events', function(req, res) {
 //     return dispatchPromise('writeContrib', req, res);
 // });
 
+/* new personal page development  -- this will be protected */
+app.get('/api/v:version/timelines/:userId', function(req, res) {
+    return dispatchPromise('getTimelines', req, res);
+});
+app.get('/api/v:version/metadata/:timelineId', function(req, res) {
+    return dispatchPromise('getMetadata', req, res);
+});
+
+
 
 app.get('/realitycheck/:userId', function(req, res) {
-    req.params.page = 'realitycheck';
-    return dispatchPromise('getPage', req, res);
+    return dispatchPromise('getRealityCheck', req, res);
 });
 app.get('/realitymeter/:postId', function(req, res) {
     return dispatchPromise('getRealityMeter', req, res);

@@ -1,4 +1,3 @@
-#!/usr/bin/env nodejs
 var _ = require('lodash');
 var Promise = require('bluebird');
 var fs = Promise.promisifyAll(require('fs'));
@@ -6,7 +5,7 @@ var request = Promise.promisifyAll(require('request'));
 var cheerio = require('cheerio');
 var debug = require('debug')('parse⊹core');
 var moment = require('moment');
-var nconf = require('nconf');
+var nconf = require('nconf'); 
 
 nconf.argv().env();
 
@@ -47,7 +46,7 @@ function commitResult(config, newmeta, snippet) {
         _.keys(snippet.metadata), _.keys(newmeta)); */
 
     var update = {
-        snippetId: snippet.id,
+        htmlId: snippet.id,
         parserKey: config.key,
         metadata: newmeta,
         fields: _.keys(newmeta),
