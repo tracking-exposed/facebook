@@ -14,7 +14,7 @@ nconf.set("PARSER_FEEDREACTIONS_VERSION", "201612.01");
 
 function getFeedReactions(snippet) {
 
-	var reactions = {"_total": 0};
+	var reactions = {"_total": 0, "_total_simple": 0};
 	
 	var error = 0;
 	
@@ -26,11 +26,25 @@ function getFeedReactions(snippet) {
 	
     var $ = cheerio.load(snippet.html);
     
+    // comment
+    e_threshold = $('div[data-reactroot] div._ipo');
+    e_threshold.find("a[aria-live]").each(function() {
+		if ($(this).attr("aria-live") === "polite") {
+			if (/comment/.exec($(this).attr("data-tooltip-uri"))) {
+				var data = $(this).text().split(" ");
+				reactions.comments = data[0];
+				reactions._total += parseInt(data[0]);
+			}
+		}
+	});
+    
+    // likes etc
     e_threshold = $('div[data-reactroot] div._ipp');
     e_threshold.find("a[aria-label]").each(function() {
 		var data = $(this).attr("aria-label").split(" ");
 		reactions[data[1].toLowerCase()] = data[0];
 		reactions._total += parseInt(data[0]);
+		reactions._total_simple += parseInt(data[0]);
 		found = true;
 	});
 	
