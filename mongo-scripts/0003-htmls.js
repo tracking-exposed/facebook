@@ -13,11 +13,11 @@ nconf.argv().env().file({ file: cfgFile });
 
 function redoHtml56(slotN) {
 
+    debug("Iterating over slot %d", slotN);
     var first = slotN * 10000;
-    var second = (slotN + 1) * 10000;
 
     return mongo
-        .readLimit('htmls', {}, {}, second, first)
+        .readLimit('htmls', {}, {}, 10000, first)
         .tap(function(x) {
             debug("the html list is %d", _.size(x));
         })
@@ -33,15 +33,23 @@ function redoHtml56(slotN) {
                 .read('impressions2', { htmlId: html.id })
                 .then(_.first)
                 .then(function(imp) {
+
+                    if(!imp) {
+                        debug("Inconsistency? %s missing", html.id);
+                        return;
+                    }
+
                     html.userId = imp.userId;
                     html.timelineId = imp.timelineId;
                     html.impressionId = imp.id;
                     return html;
                 });
         }, {concurrency: 4})
+        .then(_.compact)
         .then(function(block) {
-            debug("saving %d-%d slot %d", first, second, _.size(block));
-            return mongo.writeMany('htmls2', block);
+            debug("saving %d-%d size %d", first, first + 10000, _.size(block));
+            if(_.size(block))
+                return mongo.writeMany('htmls2', block);
         });
 };
 
@@ -53,4 +61,4 @@ function redoHtml56(slotN) {
  *   6 html metadata has to be removed and recomputed
  */
  
-return Promise.map(_.times(1, 16), redoHtml56);
+return Promise.each(_.times(7), redoHtml56);
