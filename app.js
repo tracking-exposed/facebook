@@ -9,6 +9,7 @@ var mongodb = Promise.promisifyAll(require('mongodb'));
 var debug = require('debug')('fbtrex');
 var nconf = require('nconf');
 var jade = require('jade');
+var cors = require('cors');
 
 var utils = require('./lib/utils');
 var escviAPI = require('./lib/allversions');
@@ -78,6 +79,7 @@ var dispatchPromise = function(name, req, res) {
                   req.randomUnicode, name, httpresult.file);
               res.sendFile(__dirname + "/html/" + httpresult.file);
           } else {
+              console.trace();
               return returnHTTPError(req, res, name, "Undetermined failure");
           }
           return true;
@@ -93,24 +95,24 @@ var dispatchPromise = function(name, req, res) {
 server.listen(nconf.get('port'), '127.0.0.1');
 console.log("  Port " + nconf.get('port') + " listening");
 /* configuration of express4 */
+app.use(cors());
 app.use(bodyParser.json({limit: '3mb'}));
 app.use(bodyParser.urlencoded({limit: '3mb', extended: true}));
 
 app.get('/api/v:version/node/info', function(req, res) {
     return dispatchPromise('nodeInfo', req, res);
 });
-app.get('/api/v:version/node/activity/:format', function(req, res) {
-    return dispatchPromise('byDayActivity', req, res);
+
+/* byDay (impressions, users, metadata ) */
+app.get('/api/v:version/daily/:what', function(req, res) {
+    return dispatchPromise('byDayStats', req, res);
 });
-app.get('/node/posttype/:version/:format', function(req, res) {
-    return dispatchPromise('byDayPostType', req, res);
-});
-app.get('/api/v:version/node/countries/:format', function(req, res) {
+
+/* column only - c3 */
+app.get('/api/v:version/node/countries/c3', function(req, res) {
     return dispatchPromise('countriesStats', req, res);
 });
-app.get('/api/v:version/node/country/:countryCode/:format', function(req, res) {
-    return dispatchPromise('countryStatsByDay', req, res);
-});
+
 app.get('/api/v:version/post/reality/:postId', function(req, res) {
     return dispatchPromise('postReality', req, res);
 });
@@ -122,6 +124,11 @@ app.get('/api/v:version/user/timeline/:userId/:past/:R/:P', function(req, res) {
 });
 app.get('/api/v:version/user/:kind/:CPN/:userId/:format', function(req, res){
     return dispatchPromise('userAnalysis', req, res);
+});
+
+/* Querying API */
+app.post('/api/v:version/query', function(req, res) {
+    return dispatchPromise('queryContent', req, res);
 });
 
 /* Parser API */
@@ -150,18 +157,18 @@ app.post('/api/v:version/events', function(req, res) {
 //     return dispatchPromise('writeContrib', req, res);
 // });
 
+/* new personal page development  -- this will be protected */
+app.get('/api/v:version/timelines/:userId', function(req, res) {
+    return dispatchPromise('getTimelines', req, res);
+});
+app.get('/api/v:version/metadata/:timelineId', function(req, res) {
+    return dispatchPromise('getMetadata', req, res);
+});
 
-/* Only the *last version* is imply in the API below */
-/* legacy because the script it is still pointing here */
-app.get('/api/v:version/realitycheck/:userId', function(req, res) {
-    _.set(req.params, 'page', 'timelines');
-    return dispatchPromise('getPersonal', req, res);
-});
-app.get('/realitycheck/:page/random', function(req, res) {
-    return dispatchPromise('getRandom', req, res);
-});
-app.get('/api/v:version/realitycheck/:page/:userId', function(req, res) {
-    return dispatchPromise('getPersonal', req, res);
+
+
+app.get('/realitycheck/:userId', function(req, res) {
+    return dispatchPromise('getRealityCheck', req, res);
 });
 app.get('/realitymeter/:postId', function(req, res) {
     return dispatchPromise('getRealityMeter', req, res);
@@ -187,7 +194,7 @@ app.get('/facebook.tracking.exposed.user.js', function (req, res) {
 });
 
 
-/* development: the local JS are pick w/out "npm run build" every time, and 
+/* development: the local JS are pick w/out "npm run build" every time, and
  * our locally developed scripts stay in /js/local */
 if(nconf.get('development') === 'true') {
     console.log(redOn + "ઉ DEVELOPMENT = serving JS from src" + redOff);
