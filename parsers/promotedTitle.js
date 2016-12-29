@@ -1,10 +1,9 @@
-#!/usr/bin/env nodejs
 var _ = require('lodash');
 var cheerio = require('cheerio');
 var moment = require('moment');
-var debug = require('debug')('promotedTitle');
+var debug = require('debug')('parser:promotedTitle');
 var parse = require('./lib/parse');
-var utils = require('./lib/utils');
+var utils = require('../lib/utils');
 var entities = require('entities');
 
 var postcount = 0;
@@ -47,7 +46,7 @@ function getPromotedTitle(snippet) {
 		debug("Err %d post %d [%s] Title: %s", error, postcount, snippet.id, title);
 	    return { 
             "promotedTitle": true,
-            "title": tile,
+            "title": title,
             "titleId": utils.hash({'title': title}) 
         };
 	}
