@@ -1,4 +1,3 @@
-#!/usr/bin/env nodejs
 var _ = require('lodash');
 var Promise = require('bluebird');
 var fs = Promise.promisifyAll(require('fs'));
@@ -28,7 +27,7 @@ function snippetAvailable(config, what) {
         "requirements": config.requirements || {}
     };
 
-    debug("Connect to %s\n%s",
+    debug("Connecting to %s\n%s",
         url, JSON.stringify(requestpayload, undefined, 2));
 
     return request
@@ -47,7 +46,7 @@ function commitResult(config, newmeta, snippet) {
         _.keys(snippet.metadata), _.keys(newmeta)); */
 
     var update = {
-        snippetId: snippet.id,
+        htmlId: snippet.id,
         parserKey: config.key,
         metadata: newmeta,
         fields: _.keys(newmeta),

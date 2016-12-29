@@ -57,7 +57,7 @@ function getPromotedInfo(snippet) {
 
 return parse.please({
     'name': 'promotedInfo', /* this name is the same in parsers-key */
-    'requirements': {'postType': 'promoted'},
+    'requirements': {'type': 'promoted'},
     'implementation': getPromotedInfo,
     'since': "2016-09-13",
     'until': moment().toISOString(),

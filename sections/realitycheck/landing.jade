@@ -1,0 +1,53 @@
+doctype html
+html
+    head
+        link(href='/js/local/EB+Garamond-Font.css', rel='stylesheet')
+        link(href='/js/local/realitycheck.css', rel='stylesheet')
+        link(rel='stylesheet', type='text/css', href='/css/datatables.min.css')
+        link(rel='stylesheet', href='/css/bootstrap.css')
+        script(type='text/javascript', src='/js/jquery.js')
+        script(type='text/javascript', src='/js/collapse.js')
+        script(type='text/javascript', src='/js/bootstrap.min.js')
+        script(type='text/javascript', charset='utf8', src='/js/datatables.min.js')
+        script(type='text/javascript', charset='utf8', src='/js/local/impressionTable.js')
+        script(type='text/javascript', src='/js/lodash.min.js')
+        script(type='text/javascript', src='/js/moment.min.js')
+
+        title facebook.tracking.exposed Personal page - RealityCheck
+
+    body(onload="loadTimelines(#{userId}, '#listTable', '#details', '#description');")
+
+        include ../navbar
+
+        div.realitycontainer
+            h1 RealityCheck
+            div.vizavail This system is based on open API, you can create new visualisation and integrate your analysis here. 
+            div.vizavail Our previously 
+                a(href="https://twitter.com/pciuccarelli/status/799362580125024256") Cool visualization
+                |  shall be soon operative again. 
+            div.vizavail Soon, this page should be 
+                b accessible only by the supporter
+                |, access can be shared upon owner decisions.
+
+        // debug: #{timelines} #{distance} #{lastActivity} #{userId}
+
+        div.realitycontainer
+            table#listTable.display(cellspacing='0', width='100%')
+                thead
+                    tr
+                        th When
+                        th Precisely was...
+                        th Last for
+                        th Analyzed posts
+                        th Total impressions
+                tfoot
+                    tr
+                        th When
+                        th Precisely was...
+                        th Last for
+                        th Analyzed posts
+                        th Total impressions
+
+            div#description
+            div#details
+

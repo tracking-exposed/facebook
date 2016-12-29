@@ -17,30 +17,11 @@ html
   body
  
     include header
-
-    nav.navbar.navbar-default
-      div.container
-        div.navbar-header
-          button.navbar-toggle.collapsed(type="button" data-toggle="collapse" data-target="#thenavbar" aria-expanded="false")
-            span(id="sr-only") Toggle navigation
-            span.icon-bar
-            span.icon-bar
-            span.icon-bar
-
-        div.collapse.navbar-collapse(id="thenavbar")
-          ul.nav.navbar-nav
-            li
-              a(href='/') home
-            li
-              a(href='/impact') Open Stats
-            li
-              a(href='https://github.com/tracking-exposed/facebook') Code
-            li
-              a(href='/#team') About us
+    include navbar
 
   div.polite-propaganda
     p
-      i In December 2016, we are releasing the beta version of facebook.tracking.exposed, with these shiny improvements:
+      i In December 2016, we have entered the beta phase of facebook.tracking.exposed, these the shiny improvements:
 
     h2 Native extension for chrome
     p you can 
@@ -53,16 +34,16 @@ html
     p only what is shared with the public [
       img(src="/images/public.png")
       | ] is considered by the experiment, see the 
-      a(href="/privacy-model") complete, completely readable simple terms
+      a(href="/privacy-statement") Privacy Statement.
 
     h2 Parsing happen server side
     p once the HTML snippet is collected, multiple small tasks extract the meaning from it If you want, for example, implement an image analysis on public posts, you can do it. If you follow some rules, you can extend the public database with your results, so others can operate on top of it and extend visualisation. 
-      a(href="https://github.com/tracking-exposed/facebook/API.md#parsers") check the specifics
+      a(href="https://github.com/tracking-exposed/facebook/tree/master/parsers") check the specifics
       | .
 
     h2 If you used the Alpha version
     p feel free to remove TamperMonkey and the previous extension. Thank You for your support. The insight we get has been necessary to reach this stage of maturity.
-    p Note: the database of the alpha has been deleted from tracking.exposed server and there are no backup: decsion has been took because was pointless preserve data with an uncertain privacy model.
+    p Note: the database of the alpha has been deleted from tracking.exposed server and there are no backup: decision has been took because was pointless preserve data with an uncertain privacy model.
 
     h2 Interested? 
     p The problem addressed here is huge and cross sector. There are things to be done if you are a social analyst, software developer, community manager, graphic designer, fundraiser. The time is tight: self-management and shared vision has to be enough in this phase. Unlucky we can't offer any money yet. The project is alive since 6 months, another 3 month roadmap is defined between the beta in  December and first stable release in March 2017. Only this promise can be make: if you get onboard and we share a goal, your effort will not be wasted and you'll be credited as best as can be done. Feel free to contact 
@@ -70,3 +51,45 @@ html
       | for that, [replacing ﹫ and ・]
 
     div.footer 
+
+    //  9 December 2016, the day alpha got kill'd
+    //  
+    // root@tracko:~# mongo
+    // MongoDB shell version: 2.6.10
+    // connecting to: test
+    // ≻ use facebook
+    // switched to db facebook
+    // ≻ db.supporters
+    // db.supporters   db.supporters2  db.supporters3
+    // ≻ db.supporters2.count()
+    // 28
+    // ≻ db.supporters2.drop()
+    // true
+    // ≻ db.supporters.count()
+    // 2237
+    // ≻ db.supporters.drop()
+    // true
+    // ≻ db.supporters3.count()
+    // 95
+    // ≻ db.supporters3.drop()
+    // true
+    // ≻ db.timeline
+    // db.timeline2  db.timeline3
+    // ≻ db.timeline2.count()
+    // 27828
+    // ≻ db.timeline2.drop()
+    // true
+    // ≻ db.timeline3.count()
+    // 315941
+    // ≻ db.timeline3.drop()
+    // true
+    // ≻ db.refreshes
+    // db.refreshes2  db.refreshes3
+    // ≻ db.refreshes2.count()
+    // 1996
+    // ≻ db.refreshes2.drop()
+    // true
+    // ≻ db.refreshes3.count()
+    // 21262
+    // ≻ db.refreshes3.drop()
+    // true
