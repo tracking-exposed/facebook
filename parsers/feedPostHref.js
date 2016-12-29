@@ -2,7 +2,7 @@
 var _ = require('lodash');
 var cheerio = require('cheerio');
 var moment = require('moment');
-var debug = require('debug')('feedPostHref');
+var debug = require('debug')('parser:feedPostHref');
 var parse = require('./lib/parse');
 
 function getPostHref(snippet) {
