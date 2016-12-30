@@ -15,8 +15,7 @@ nconf.set("PARSER_FEEDREACTIONS_VERSION", "201612.01");
 function getFeedReactions(snippet) {
 
 	var reactions = {"_total": 0, "_total_simple": 0};
-	
-	var error = 0;
+    var found = false;
 	
 	var e_threshold;
 	var e_container;
@@ -32,8 +31,10 @@ function getFeedReactions(snippet) {
 		if ($(this).attr("aria-live") === "polite") {
 			if (/comment/.exec($(this).attr("data-tooltip-uri"))) {
 				var data = $(this).text().split(" ");
+                debugger;
 				reactions.comments = data[0];
 				reactions._total += parseInt(data[0]);
+                found = true;
 			}
 		}
 	});
@@ -42,6 +43,7 @@ function getFeedReactions(snippet) {
     e_threshold = $('div[data-reactroot] div._ipp');
     e_threshold.find("a[aria-label]").each(function() {
 		var data = $(this).attr("aria-label").split(" ");
+                debugger;
 		reactions[data[1].toLowerCase()] = data[0];
 		reactions._total += parseInt(data[0]);
 		reactions._total_simple += parseInt(data[0]);
@@ -52,18 +54,19 @@ function getFeedReactions(snippet) {
 		debug("#" + postcount + ": reactions [" + snippet._id + "] NOT FOUND");
 		error = 1;
 		errorcount++;
+        return { 'feedReactions': false };
 	} else {
-		debug("#" + postcount + ": reactions [" + snippet._id + "] : " + JSON.stringify(reactions));
+		debug("#" + postcount + ": reactions [" + snippet._id + "] : " + JSON.stringify(reactions, undefined, 2));
+        return { 'reactions': reactions,
+                 'feedReactions': true };
+        }
 	}
 	
-	if (error == 0)
-		return {"postReactions": JSON.stringify(reactions)};
-
 };
 
 return parse.please({
     'name': 'feedReactions', /* this name is the same in parsers-key */
-    'requirements': {'postType': 'feed'},
+    'requirements': {'type': 'feed'},
     'implementation': getFeedReactions,
     'since': "2016-09-13",
     'until': moment().toISOString(),

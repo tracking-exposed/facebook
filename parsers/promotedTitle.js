@@ -1,9 +1,9 @@
-#!/usr/bin/env nodejs
 var _ = require('lodash');
 var cheerio = require('cheerio');
 var moment = require('moment');
-var debug = require('debug')('promotedTitle');
+var debug = require('debug')('parser:promotedTitle');
 var parse = require('./lib/parse');
+var utils = require('../lib/utils');
 var entities = require('entities');
 var nconf = require('nconf'); 
 
@@ -16,7 +16,6 @@ function getPromotedTitle(snippet) {
 
 	var title;
 	var title_type;
-	var error = 0;
 	var found = false;
 	
 	var e_threshold;
@@ -46,21 +45,22 @@ function getPromotedTitle(snippet) {
 	}
 
 	if (!found) {
-		debug("#" + postcount + ": title [" + snippet._id + "] NOT FOUND");
-		error = 1;
 		errorcount++;
+        debug("Err %d post %d [%s] Title NOT FOUND", error, postcount, snippet.id);
+        return { "promotedTitle": false };
 	} else {
-		debug("#" + postcount + ": title [" + snippet._id + "] : " + title);
+		debug("Err %d post %d [%s] Title: %s", error, postcount, snippet.id, title);
+	    return { 
+            "promotedTitle": true,
+            "title": title,
+            "titleId": utils.hash({'title': title}) 
+        };
 	}
-	
-	if (error == 0)
-		return {"postTitle": title};
-
 };
 
 return parse.please({
     'name': 'promotedTitle', /* this name is the same in parsers-key */
-    'requirements': {'postType': 'promoted'},
+    'requirements': {'type': 'promoted'},
     'implementation': getPromotedTitle,
     'since': "2016-09-13",
     'until': moment().toISOString(),
