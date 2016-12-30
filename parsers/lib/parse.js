@@ -3,7 +3,7 @@ var Promise = require('bluebird');
 var fs = Promise.promisifyAll(require('fs'));
 var request = Promise.promisifyAll(require('request'));
 var cheerio = require('cheerio');
-var debug = require('debug')('parse⊹core');
+var debug = require('debug')('parser:⊹core');
 var moment = require('moment');
 var nconf = require('nconf'); 
 

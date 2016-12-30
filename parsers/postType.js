@@ -1,8 +1,7 @@
-#!/usr/bin/env nodejs
 var _ = require('lodash');
 var cheerio = require('cheerio');
 var moment = require('moment');
-var debug = require('debug')('postType');
+var debug = require('debug')('parser:postType');
 var parse = require('./lib/parse');
 
 function getPostType(snippet) {
