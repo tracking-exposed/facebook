@@ -48,7 +48,7 @@ function renderUsers(something, containerId) {
                 newusers: "new Supporters",
                 // At this momnet I'm not successfully saving this data,
                 // has to be fixed ASAP 
-                /* notcomingback: "Supporters not coming back", */
+                notcomingback: "Supporters not coming back",
                 pageviews: "Page views"
             },
             axes: {
@@ -59,14 +59,14 @@ function renderUsers(something, containerId) {
             },
             types: {
                 activeusers: 'line',
-                newusers: 'line',
+                newusers: 'area',
                 notcomingback: 'bar',
                 pageviews: 'line'
             },
             colors: {
-                activeusers: '#424242',
-                newusers: '#727272',
-                notcomingback: '#a200a2',
+                activeusers: 'rgb(227, 119, 194)',
+                newusers: 'rgb(188, 189, 34)',
+                notcomingback: 'rgb(214, 39, 40)',
                 pageviews:'#f47700' 
             }
         },
