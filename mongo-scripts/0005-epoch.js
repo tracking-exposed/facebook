@@ -29,14 +29,20 @@ function updateWithMeans(timeline, i) {
                 return mongo.remove('timelines2', { id: timeline.id });
             }
 
+            /* you can't update, apparently, if _id is kept */
+            timeline = _.omit(timeline, ['_id']);
             timeline.startTime = new Date(impression.impressionTime);
+
             return mongo
-                .updateOne('timelines2', { id: timeline.id}, timeline);
+                .updateOne('timelines2', { id: timeline.id}, timeline)
+                .catch(function(error) {
+                    debug("updateOne error: %s", error);
+                });
         });
 }
 
 return getEpochTimelines()
-    .map(updateWithMeans, { concurrency: 2 })
+    .map(updateWithMeans, { concurrency: 1 })
     .then(function(stuffs) {
         debug("Done %d updates", _.size(stuffs));
     });
