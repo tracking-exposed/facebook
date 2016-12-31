@@ -1,7 +1,7 @@
 #!/usr/bin/env nodejs
 var _ = require('lodash');
 var Promise = require('bluebird');
-var debug = require('debug')('0004-accesses');
+var debug = require('debug')('0005-epoch');
 var moment = require('moment');
 var nconf = require('nconf');
 
@@ -36,7 +36,7 @@ function updateWithMeans(timeline, i) {
 }
 
 return getEpochTimelines()
-    .map(updateWithMeans)
+    .map(updateWithMeans, { concurrency: 2 })
     .then(function(stuffs) {
         debug("Done %d updates", _.size(stuffs));
     });
