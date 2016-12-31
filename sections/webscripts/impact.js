@@ -1,55 +1,3 @@
-/*
-var displayTimeAdoption = function(containerId) {
-    d3.json(url, function(something) {
-
-        var chart = c3.generate({
-            bindto: containerId,
-            data: {
-                x: 'x',
-                json: something,
-                names: {
-                    'supporters': 'Users during time',
-                    'timelines': 'Timelines',
-                    'impressions': 'Number of posts seen',
-                    'htmls': 'Public post along HTML snippet',
-                    'accesses': 'access to the static pages'
-                },
-                axes: {
-                    supporters: 'y',
-                    timelines: 'y',
-                    impressions: 'y2',
-                    htmls: 'y2',
-                    accesses: 'y'
-                },
-                types: {
-                    supporters: 'line',
-                    timelines: 'line',
-                    impressions: 'line',
-                    htmls: 'line',
-                    accesses: 'line'
-                },
-                labels: true,
-                colors: {
-                    impressions: '#afa3ae',
-                    timelines: '#f06961',
-                    supporters: '#0f6961',
-                    accesses: '#344944',
-                    htmls: '#a459e8'
-                }
-            },
-            axis: {
-                x: {
-                    type: 'timeseries',
-                    tick: {
-                        format: '%Y-%m-%d'
-                    }
-                },
-                y2: { show: true }
-            }
-        });
-    });
-};
-*/
 
 function renderImpression(something, containerId) {
     return c3.generate({
@@ -98,19 +46,21 @@ function renderUsers(something, containerId) {
             names: {
                 activeusers: "Active Users",
                 newusers: "new Supporters",
-                notcomingback: "Supporters not coming back",
+                // At this momnet I'm not successfully saving this data,
+                // has to be fixed ASAP 
+                /* notcomingback: "Supporters not coming back", */
                 pageviews: "Page views"
             },
             axes: {
                 activeusers: 'y',
                 newusers: 'y',
                 notcomingback: 'y',
-                pageviews: 'y'
+                pageviews: 'y2'
             },
             types: {
                 activeusers: 'line',
                 newusers: 'line',
-                notcomingback: 'line',
+                notcomingback: 'bar',
                 pageviews: 'line'
             },
             colors: {
@@ -127,6 +77,7 @@ function renderUsers(something, containerId) {
                     format: '%Y-%m-%d'
                 }
             },
+            y2: { 'show': true }
         }
     });
 };
@@ -138,31 +89,19 @@ function renderMetadata(something, containerId) {
             json: something,
             keys: {
                 x: 'date',
-                value: [ 'ws' ]
+                value: [ 'promoted', 'feed', 'public', 'private' ]
             },
             names: {
-                activeusers: "Active Users",
-                newusers: "new Supporters",
-                notcomingback: "Supporters not coming back",
-                pageviews: "Page views"
-            },
-            axes: {
-                activeusers: 'y',
-                newusers: 'y2',
-                notcomingback: 'y2',
-                pageviews: 'y'
-            },
-            types: {
-                activeusers: line,
-                newusers: line,
-                notcomingback: line,
-                pageviews: line
+                promoted: "Promoted content",
+                feed: "Friend's Feed",
+                public: "Shared to the public",
+                private: "Not visible for us"
             },
             colors: {
-                activeusers: black,
-                newusers: steelblue,
-                notcomingback: green,
-                pageviews: yellow
+                promoted: '#000000',
+                feed: '#4440FF',
+                public: '#ff0444',
+                private: '#bbaa00'
             }
         },
         axis: {
@@ -171,8 +110,7 @@ function renderMetadata(something, containerId) {
                 tick: {
                     format: '%Y-%m-%d'
                 }
-            },
-            y2: { show: true }
+            }
         }
     });
 }
