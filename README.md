@@ -32,17 +32,5 @@ $ docker start mongo
 
 If you need to start the node with an empty dataset, run:
 ```
-$ docker run -d --name fbtrex -p 8000:8000 --link mongo:mongo fbtrex/fbtrex-app npm run watch
+$ docker run -d --name fbtrex -p 8000:8000 --link mongo:mongo fbtrex/fbtrex-app
 ```
-note: if the image is not present in your local docker registry will be automatic pulled from the docker hub.
-
-Or if you need your instance filled with and synced with the main node, run:
-```
-$ docker run -d --name fbtrex -p 8000:8000 --link mongo:mongo fbtrex/fbtrex-app /bin/bash -c "DEBUG=* source='https://facebook.tracking.exposed' echo 'DB MIRRORING NOT IMPLEMENTED YET' && npm run watch"
-```
-
-If you want to build on your own the image:
-```
-$ docker build -t fbtrex .
-```
-

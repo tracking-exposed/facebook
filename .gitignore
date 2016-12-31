@@ -4,3 +4,4 @@ samples/*
 parsers/*.json
 dump/*
 vendor/*
+npm-debug.log
