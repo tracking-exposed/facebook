@@ -26,14 +26,26 @@ function redoTimelines1(good) {
             };
         })
         .then(function(rez) {
+            /* error --- this is copying a string, but in fase 0004 get fixed */
             var tbs = _.map(rez, function(o) {
                 return o.entry;
             });
             var inher = _.map(rez, function(o) {
                 return o.memo;
             });
-            return mongo
-                .writeMany('timelines2', tbs)
+            return Promise
+                .map(tbs, function(toBeSaved) {
+                    return mongo
+                        .read('timelines2', {id: toBeSaved.id})
+                        .then(_.first)
+                        .then(function(e) {
+                            if(e.id !== toBeSaved.id) {
+                                return mongo.writeOne('timeline2', toBeSaved);
+                            } else {
+                                debug("Skipping duplicate");
+                            }
+                        });
+                }, {concurrency : 1} )
                 .return(inher);
         });
 };
