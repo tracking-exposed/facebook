@@ -46,10 +46,10 @@ function getPromotedTitle(snippet) {
 
 	if (!found) {
 		errorcount++;
-        debug("Err %d post %d [%s] Title NOT FOUND", error, postcount, snippet.id);
+        debug("Err %d post %d [%s] Title NOT FOUND", errorcount, postcount, snippet.id);
         return { "promotedTitle": false };
 	} else {
-		debug("Err %d post %d [%s] Title: %s", error, postcount, snippet.id, title);
+		debug("Err %d post %d [%s] Title: %s", errorcount, postcount, snippet.id, title);
 	    return { 
             "promotedTitle": true,
             "title": title,

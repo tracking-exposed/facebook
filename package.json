@@ -6,7 +6,7 @@
   "scripts": {
     "build": "bin/copyToDist",
     "watch": "nodemon --config config/nodeamon.json app",
-    "start": "node app"
+    "start": "DEBUG=lib:* node app"
   },
   "author": "Claudio Agosti <claudio@tracking.exposed>, https://github.com/tracking-exposed/facebook/graphs/contributors",
   "license": "(ISC OR GPL-3.0)",
