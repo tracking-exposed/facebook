@@ -1,48 +1,50 @@
 doctype html
 html
-  head
-    link(rel='stylesheet', href='/css/index.css')
-    link(rel='stylesheet', href='/css/bootstrap.css')
-    link(rel='stylesheet', href='/css/c3.css')
-    script(type='text/javascript', src='/js/jquery.js')
-    script(type='text/javascript', src='/js/collapse.js')
-    script(type='text/javascript', src='/js/d3.min.js')
-    script(type='text/javascript', src='/js/c3.min.js')
-    script(type='text/javascript', src='/js/lodash.min.js')
-    script(type='text/javascript', src='/js/local/impact.js')
-    title Impact, adoption and open stats
+    head
+        link(rel='stylesheet', href='/css/index.css')
+        link(rel='stylesheet', href='/css/bootstrap.css')
+        link(rel='stylesheet', href='/css/c3.css')
+        script(type='text/javascript', src='/js/jquery.js')
+        script(type='text/javascript', src='/js/collapse.js')
+        script(type='text/javascript', src='/js/d3.min.js')
+        script(type='text/javascript', src='/js/c3.min.js')
+        script(type='text/javascript', src='/js/lodash.min.js')
+        script(type='text/javascript', src='/js/local/impact.js')
+        title Impact, adoption and open stats
 
-  body(onload="byDay('impressions', '#goldmine'); byDay('metadata', '#metadata'); byDay('users', '#users'); displayCountryPie('#countrypie');")
-  
-  include header
-  include navbar
+    body(onload="byDay('impressions', '#goldmine'); byDay('metadata', '#metadata'); byDay('users', '#users'); displayCountryPie('#countrypie');")
+    
+    include header
+    include navbar
 
-  .container-fluid
-    .simpletext
-      h2 Adoption statistics
-      p Since the mid of December 2016, facebook.tracking.exposed is in ß release. below some graph of the data collected. As part of the stable delivery, we'll define how third party can download the dataset and how we might integrate third party analysis in our APIs.
-      p We know to be in a slippery terrain: in one side, enabling users to assess Personalisation Algorithm is our goal, in the other, we value Privacy and Identiy rights much more than the corporations we criticize. 
-        a(href="https://responsibledata.io/social-media-intelligence-the-wayward-child-of-open-source-intelligence/") Aware of the risks posed by social media intelligence
-        |, we aim to enable users awareness, but prevent abuses.
+    .container-fluid
+        .simpletext
+            h2 Adoption statistics
+            p Since the mid of December 2016, facebook.tracking.exposed is in ß release. below some graph of the data collected. As part of the stable delivery, we'll define how third party can download the dataset and how we might integrate third party analysis in our APIs.
+            p We know to be in a slippery terrain: in one side, enabling users to assess Personalisation Algorithm is our goal, in the other, we value Privacy and Identiy rights much more than the corporations we criticize. 
+                a(href="https://responsibledata.io/social-media-intelligence-the-wayward-child-of-open-source-intelligence/") Aware of the risks posed by social media intelligence
+                |, we aim to enable users awareness, but prevent abuses.
 
-  .container-fluid
-    .simpletext
-      h2 Impressions collected
-    div(id="goldmine")
+    .container-fluid
+        .simpletext
+            h2 Impressions collected
+        div(id="goldmine")
 
-  .container-fluid
-    .simpletext
-      h2 Users and Supporters
-    div(id="users")
+    .container-fluid
+        .simpletext
+            h2 Supporters, Page views
+        div(id="users")
 
-  // .container-fluid
-  //   .simpletext
-  //     h2 Medadata available
-  //   div(id="metadata")
+    .container-fluid
+        .simpletext
+            h2 Medadata available
+            p The analysis is made by the parser,
+                a(href="https://github.com/tracking-exposed/facebook/issues/44") try to see how they works
+        div(id="metadata")
 
-  .container-fluid
-    .simpletext
-      h2 Number of timelines collected by Nation
-    div(id="countrypie")
+    .container-fluid
+        .simpletext
+            h2 Number of timelines collected by Nation
+        div(id="countrypie")
 
-  div.footer
+    div.footer

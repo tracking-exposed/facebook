@@ -89,19 +89,14 @@ function renderMetadata(something, containerId) {
             json: something,
             keys: {
                 x: 'date',
-                value: [ 'promoted', 'feed', 'public', 'private' ]
+                value: [ 'promoted', 'feed', 'scanned', 'promotedpages', 'promotedowners' ]
             },
             names: {
-                promoted: "Promoted content",
-                feed: "Friend's Feed",
-                public: "Shared to the public",
-                private: "Not visible for us"
-            },
-            colors: {
-                promoted: '#000000',
-                feed: '#4440FF',
-                public: '#ff0444',
-                private: '#bbaa00'
+                'promoted': "Promoted content",
+                'feed': "Friend's Feed",
+                'scanned': "Analyzed so far",
+                'promotedpages': "Pages detected",
+                'promotedowners': "Owners detected"
             }
         },
         axis: {
@@ -119,7 +114,7 @@ function renderMetadata(something, containerId) {
 var kindMap = {
     'impressions': [ 'daily/impressions', renderImpression ],
     'users': [ 'daily/users', renderUsers ],
-    'metadata': [ false, 'daily/metadata', renderMetadata ]
+    'metadata': [ 'daily/metadata', renderMetadata ]
 };
 
 function byDay(kind, containerId) {
