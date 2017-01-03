@@ -1,0 +1,38 @@
+.infoblock {
+    border: 2px;
+    border-color: #fd5308; /* orange */
+    border-radius: 25px;
+    border-style: solid;
+}
+
+.infoblock h3 {
+    text-align: center;
+    font-style: uppercase;
+    font-color: '#3c5a99';
+};
+
+.forms {
+    margin: 1em;
+}
+
+.forms input {
+    width: 100%;
+}
+
+.metadata {
+    padding: 1em;
+}
+
+
+.blue {
+    color '#3c5a99';
+}
+
+.orange {
+    color '#fd5308';
+}
+
+.green {
+    color '#66b032;'
+}
+
