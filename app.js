@@ -79,6 +79,7 @@ var dispatchPromise = function(name, req, res) {
                   req.randomUnicode, name, httpresult.file);
               res.sendFile(__dirname + "/html/" + httpresult.file);
           } else {
+              debug("Undetermined failure in API call, result →  %j", httpresult);
               console.trace();
               return returnHTTPError(req, res, name, "Undetermined failure");
           }
@@ -165,8 +166,34 @@ app.get('/api/v:version/metadata/:timelineId', function(req, res) {
     return dispatchPromise('getMetadata', req, res);
 });
 
+/* HTML single snippet */
+app.get('/api/v:version/html/coordinates/:userId/:timelineUUID/:order', function(req, res) {
+    return dispatchPromise('unitByCoordinates', req, res);
+});
+app.get('/api/v:version/html/ago/:days/:increment', function(req, res) {
+    return dispatchPromise('unitByDays', req, res);
+});
+app.get('/api/v:version/html/:htmlId', function(req, res) {
+    return dispatchPromise('unitById', req, res);
+});
 
+// is actually better commented all
+/* --- for the user 
+app.get('/realitycheck/review/:userId', function(req, res) {
+    req.param.page = 'personalReview';
+    return dispatchPromise('getPage', req, res);
+});
+ for the parser debugger 
+app.get('/revision/:htmlId', function(req, res) {
+    req.param.page = 'selectiveRevision';
+    return dispatchPromise('getPage', req, res);
+});
+ and used this:  */
+app.get('/revision/:htmlId', function(req, res) {
+    return dispatchPromise('unitById', req, res);
+});
 
+/* TO BE RESTORED */
 app.get('/realitycheck/:userId', function(req, res) {
     return dispatchPromise('getRealityCheck', req, res);
 });
