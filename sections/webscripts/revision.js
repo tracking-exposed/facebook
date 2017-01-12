@@ -61,7 +61,7 @@ function loadsnippet(metadataContainer, renderContainer) {
 
         $(renderContainer).html(something.html);
         $(metadataContainer).html(
-            '<ul class="fb--icon-list">' + 
+            '<ul class="fb--icon-list">' +
             doHTMLentries(something.metadata) +
             '</ul>'
         );
@@ -69,3 +69,11 @@ function loadsnippet(metadataContainer, renderContainer) {
         $('#bysnippet').attr('href', '/revision/' + something.metadata.id);
     });
 };
+
+function cleanstyle(){
+
+  $('img').attr('width','');
+  $('img').attr('height','');
+  $('*').attr('style','');
+
+}
