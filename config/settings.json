@@ -5,7 +5,10 @@
       "htmls": "htmls2",
       "suggestions": "suggestions2",
       "accesses": "accesses2",
-      "supporters": "supporters2"
+      "supporters": "supporters2",
+
+      "hourlyTI": "hourlyTI",
+      "hourlyPC": "hourlyPC"
   },
   "mongodb": "mongodb://localhost/facebook",
   "password": "overwrittenbyENV",
