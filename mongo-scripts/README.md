@@ -10,8 +10,9 @@ guess what? they operate about the previous hour
 # Common elements
 
 `DAYSAGO` is an environment variable that might used to execute the script $var * 24 hours back in time. default is 1 (the day before)
-
 `HOURSAGO` is an environment variable that might used to execute the script $hvar hours back in time, default is 1 (the hour before)
+
+`HOURSAFTER` is an environment variable mutually exclusive with the two earlier, takes a number of hours after the fbtrex moment 0 ("2016-12-09")
 
 # Numbered scripts
 

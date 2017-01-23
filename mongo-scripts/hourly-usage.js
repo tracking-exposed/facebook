@@ -13,13 +13,17 @@ nconf.argv().env().file({ file: cfgFile });
 
 /*
  * when: `ISO date`
+ * htmls: `Int`      | number of htmls
+ * impressions: `Int`| guess what..
  * accesses: `Int`   | accesses, page views
- * active: `Int`     | timelines, count users
+ * active: `Int`     | timelines, count users + countries
  * new: `Int`        | supporters, `keyTime`
  */
 
 var timeFilter = timutils.doFilter(
-        nconf.get('DAYSAGO'), nconf.get('HOURSAGO'), 1, 'h'
+        nconf.get('HOURSAFTER'), 
+        nconf.get('DAYSAGO'), 
+        nconf.get('HOURSAGO'), 1, 'h'
     );
 debug("Executing timewindow: %s", timutils.prettify(timeFilter));
 
@@ -35,6 +39,8 @@ function getFromAccesses() {
       .reduce(function(memo, c) {
           memo.visits += c.amount;
           var ccode = c["_id"]["ccode"];
+          if(ccode && _.size(ccode ) !== 2)
+              debug("unexpected `ccode` %s", ccode);
           if(!ccode) ccode = "redacted";
           memo[ccode] = c.amount;
           return memo;
@@ -53,10 +59,30 @@ function getNewTimelines() {
       .reduce(function(memo, c) {
           memo.timelines += c.amount;
           var geoip = c["_id"]["geoip"];
+          if(geoip && _.size(geoip) !== 2)
+              debug("unexpected `geoip` %s", geoip);
           if(!geoip) geoip = "redacted";
           memo[geoip] = c.amount;
           return memo;
       }, { timelines: 0});
+}
+
+function getHTMLs() {
+    var filter = { savingTime: {
+        "$gt": new Date(timeFilter.start),
+        "$lt": new Date(timeFilter.end)
+    } };
+    return mongo
+      .countByMatch(nconf.get('schema').htmls, filter);
+}
+
+function getImpressions() {
+    var filter = { impressionTime: {
+        "$gt": new Date(timeFilter.start),
+        "$lt": new Date(timeFilter.end)
+    } };
+    return mongo
+      .countByMatch(nconf.get('schema').impressions, filter);
 }
 
 function getNewSupporters() {
@@ -68,6 +94,7 @@ function getNewSupporters() {
       .countByMatch(nconf.get('schema').supporters, filter);
 }
 
+
 function mergeAndSave(mixed) {
 
     var results = _.extend(timeFilter, {
@@ -75,17 +102,33 @@ function mergeAndSave(mixed) {
         visitcc: _.omit(mixed[0], ['visits']),
         timelines: mixed[1].timelines,
         timelinecc: _.omit(mixed[1], ['timelines']),
-        newsupp: mixed[2]
+        newsupp: mixed[2],
+        htmls: mixed[3],
+        impressions: mixed[4]
     });
 
-    debug("Writing stats starting at %s", results.start);
     return mongo
-      .writeOne(nconf.get('schema').hourlyTI, results);
+      .read(nconf.get('schema').hourlyTI, {id: results.id })
+      .then(function(exists) {
+          if(_.size(exists)) {
+            debug("Updting previous stats, starting at %s", results.start);
+            debug("%s", JSON.stringify(results, undefined, 2));
+            return mongo
+              .updateOne(nconf.get('schema').hourlyTI, {id: results.id}, results);
+          } else {
+            debug("Writing stats, starting at %s", results.start);
+            debug("%s", JSON.stringify(results, undefined, 2));
+            return mongo
+              .writeOne(nconf.get('schema').hourlyTI, results);
+          }
+      });
 };
 
 
 return Promise
   .all([ getFromAccesses(),
          getNewTimelines(),
-         getNewSupporters() ])
+         getNewSupporters(),
+         getHTMLs(),
+         getImpressions() ])
   .then(mergeAndSave);
