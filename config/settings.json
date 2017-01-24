@@ -6,7 +6,9 @@
       "accesses": "accesses2",
       "htmls": "htmls2",
 
-      "performa": "performa"
+      "performa": "performa",
+      "hourlyTI": "hourlyTI",
+      "hourlyPC": "hourlyPC"
   },
   "mongodb": "mongodb://localhost/facebook",
   "password": "overwrittenbyENV",
