@@ -74,7 +74,7 @@ function loadsnippet(metadataContainer, renderContainer) {
         
         $(renderContainer).html(content);
         $(metadataContainer).html(
-            '<ul class="fb--icon-list">' + 
+            '<ul class="fb--icon-list">' +
             doHTMLentries(something.metadata) +
             '</ul>'
         );
