@@ -48,6 +48,12 @@ function doHTMLentries(dictionary) {
     })).join('');
 };
 
+function cleanstyle(){
+    $('img').attr('width','');
+    $('img').attr('height','');
+    $('*').attr('style','');
+}
+
 function loadsnippet(metadataContainer, renderContainer) {
 
     var days = _.parseInt($('#days').val());
@@ -58,8 +64,15 @@ function loadsnippet(metadataContainer, renderContainer) {
 
     $.getJSON(url, function(something) {
         console.log("Metadata[s] " + JSON.stringify(something.metadata));
-
-        $(renderContainer).html(something.html);
+         
+       // 
+        var content= something.html;
+        
+         //qui lo fa giusto ma mi manca una regexp per finire
+        
+       // content = content.replace('width="'+ +'"', '');
+        
+        $(renderContainer).html(content);
         $(metadataContainer).html(
             '<ul class="fb--icon-list">' + 
             doHTMLentries(something.metadata) +
@@ -67,5 +80,11 @@ function loadsnippet(metadataContainer, renderContainer) {
         );
         $('#bymeta').attr('href', '/revision/' + something.metadata.id);
         $('#bysnippet').attr('href', '/revision/' + something.metadata.id);
+    
+        //qui lo fa però su tutta la pagina :(
+        cleanstyle();
+    
     });
 };
+
+
