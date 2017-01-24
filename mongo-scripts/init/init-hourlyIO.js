@@ -16,12 +16,12 @@ if(!skipdays) {
         skipdays, skipdays * 24);
 }
 
-_.times( (skipdays * 24) + 40000, function(hoursAfter) {
-    hoursAfter += 1;
+_.times(40000, function(hoursAfter) {
+    hoursAfter += 1 + (skipdays * 24);
     debug("hoursAfter now is %d", hoursAfter);
     child_process.execSync('mongo-scripts/hourly-usage.js', {
         'env': {
-            'DEBUG': '*',
+            'DEBUG': '*,-lib:performa,-lib:mongo',
             'HOURSAFTER': hoursAfter
         }
     });
