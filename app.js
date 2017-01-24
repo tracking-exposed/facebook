@@ -13,6 +13,8 @@ var cors = require('cors');
 
 var utils = require('./lib/utils');
 var escviAPI = require('./lib/allversions');
+var performa = require('./lib/performa');
+var mongo = require('./lib/mongo');
 
 var cfgFile = "config/settings.json";
 var redOn = "\033[31m";
@@ -29,11 +31,19 @@ var returnHTTPError = function(req, res, funcName, where) {
     return false;
 };
 
+function minuteFlush() {
+    if(_.size(performa.queue)) {
+        debug("60seconds check found queue [for performances monitor] with %d objects",
+            _.size(performa.queue));
+        return mongo.cacheFlush(performa.queue, "performa");
+    }
+};
+
 /* This function wraps all the API call, checking the verionNumber
  * managing error in 4XX/5XX messages and making all these asyncronous
  * I/O with DB, inside this Bluebird */
 var inc = 0;
-var dispatchPromise = function(name, req, res) {
+function dispatchPromise(name, req, res) {
 
     var apiV = _.parseInt(_.get(req.params, 'version'));
 
@@ -245,4 +255,4 @@ app.get('/', function(req, res) {
     return dispatchPromise('getPage', req, res);
 });
 
-
+setInterval(minuteFlush, 60 * 1000);
