@@ -108,18 +108,18 @@ function mergeAndSave(mixed) {
     });
 
     return mongo
-      .read(nconf.get('schema').hourlyTI, {id: results.id })
+      .read(nconf.get('schema').hourlyIO, {id: results.id })
       .then(function(exists) {
           if(_.size(exists)) {
             debug("Updting previous stats, starting at %s", results.start);
             debug("%s", JSON.stringify(results, undefined, 2));
             return mongo
-              .updateOne(nconf.get('schema').hourlyTI, {id: results.id}, results);
+              .updateOne(nconf.get('schema').hourlyIO, {id: results.id}, results);
           } else {
             debug("Writing stats, starting at %s", results.start);
             debug("%s", JSON.stringify(results, undefined, 2));
             return mongo
-              .writeOne(nconf.get('schema').hourlyTI, results);
+              .writeOne(nconf.get('schema').hourlyIO, results);
           }
       });
 };
