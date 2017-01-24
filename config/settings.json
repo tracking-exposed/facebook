@@ -7,8 +7,7 @@
       "htmls": "htmls2",
 
       "performa": "performa",
-      "hourlyTI": "hourlyTI",
-      "hourlyPC": "hourlyPC"
+      "hourlyIO": "hourlyIO"
   },
   "mongodb": "mongodb://localhost/facebook",
   "password": "overwrittenbyENV",
