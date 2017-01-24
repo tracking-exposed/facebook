@@ -39,9 +39,10 @@ function getFromAccesses() {
       .reduce(function(memo, c) {
           memo.visits += c.amount;
           var ccode = c["_id"]["ccode"];
-          if(ccode && _.size(ccode ) !== 2)
+          if(!ccode)
+              ccode = "redacted";
+          else if(ccode && _.size(ccode ) !== 2 && ccode !== "redacted")
               debug("unexpected `ccode` %s", ccode);
-          if(!ccode) ccode = "redacted";
           memo[ccode] = c.amount;
           return memo;
       }, { visits: 0 });
@@ -59,9 +60,10 @@ function getNewTimelines() {
       .reduce(function(memo, c) {
           memo.timelines += c.amount;
           var geoip = c["_id"]["geoip"];
-          if(geoip && _.size(geoip) !== 2)
+          if(!geoip)
+              geoip = "redacted";
+          else if(geoip && _.size(geoip) !== 2 && geoip !== "redacted")
               debug("unexpected `geoip` %s", geoip);
-          if(!geoip) geoip = "redacted";
           memo[geoip] = c.amount;
           return memo;
       }, { timelines: 0});
