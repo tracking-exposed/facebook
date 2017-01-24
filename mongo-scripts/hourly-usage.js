@@ -97,7 +97,8 @@ function getNewSupporters() {
 
 function mergeAndSave(mixed) {
 
-    var results = _.extend(timeFilter, {
+    var results = {
+        start: new Date(timeFilter.start),
         visits: mixed[0].visits,
         visitcc: _.omit(mixed[0], ['visits']),
         timelines: mixed[1].timelines,
@@ -105,7 +106,7 @@ function mergeAndSave(mixed) {
         newsupp: mixed[2],
         htmls: mixed[3],
         impressions: mixed[4]
-    });
+    };
 
     return mongo
       .read(nconf.get('schema').hourlyIO, {id: results.id })
