@@ -31,13 +31,6 @@ var returnHTTPError = function(req, res, funcName, where) {
     return false;
 };
 
-function minuteFlush() {
-    if(_.size(performa.queue)) {
-        debug("60seconds check found queue [for performances monitor] with %d objects",
-            _.size(performa.queue));
-        return mongo.cacheFlush(performa.queue, "performa");
-    }
-};
 
 /* This function wraps all the API call, checking the verionNumber
  * managing error in 4XX/5XX messages and making all these asyncronous
@@ -255,4 +248,18 @@ app.get('/', function(req, res) {
     return dispatchPromise('getPage', req, res);
 });
 
-setInterval(minuteFlush, 60 * 1000);
+
+function minuteFlush() {
+
+    return Promise
+        .resolve()
+        .delay(60 * 1000)
+        .then(function() {
+            if(_.size(performa.queue))
+                return mongo
+                    .cacheFlush(performa.queue, "performa")
+        })
+        .then(minuteFlush);
+};
+
+return minuteFlush();
