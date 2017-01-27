@@ -373,7 +373,8 @@ body {
 
 /* added in the refactor for the ß */
 .realitycontainer {
-    margin: 6%;
+    margin-left: 6%;
+    margin-right: 6%;
 }
 
 .vizavail {
@@ -395,3 +396,4 @@ body {
     -webkit-background-size: 100% 100%;
     background-size :cover;
 } */
+

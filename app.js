@@ -28,6 +28,7 @@ console.log(redOn + "ઉ nconf loaded, using " + cfgFile + redOff);
 var returnHTTPError = function(req, res, funcName, where) {
     debug("%s HTTP error 500 %s [%s]", req.randomUnicode, funcName, where);
     res.status(500);
+    res.send();
     return false;
 };
 
@@ -196,6 +197,18 @@ app.get('/revision/:htmlId', function(req, res) {
     return dispatchPromise('unitById', req, res);
 });
 
+/* NEW realitycheck page, using `personal` as block */
+app.get('/api/v1/personal/contribution/:userId', function(req, res) {
+    return dispatchPromise('personalContribution', req, res);
+});
+app.get('/api/v1/personal/promoted/:userId', function(req, res) {
+    return dispatchPromise('personalPromoted', req, res);
+});
+app.get('/api/v1/personal/heatmap/:userId/:skip/:amount', function(req, res) {
+    return dispatchPromise('personalHeatmap', req, res);
+});
+/* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
+
 /* TO BE RESTORED */
 app.get('/realitycheck/:userId', function(req, res) {
     return dispatchPromise('getRealityCheck', req, res);
@@ -249,8 +262,8 @@ app.get('/', function(req, res) {
 });
 
 
-function minuteFlush() {
-
+function infiniteLoop() {
+    /* this will launch other scheduled tasks too */
     return Promise
         .resolve()
         .delay(60 * 1000)
@@ -259,7 +272,7 @@ function minuteFlush() {
                 return mongo
                     .cacheFlush(performa.queue, "performa")
         })
-        .then(minuteFlush);
+        .then(infiniteLoop);
 };
 
-return minuteFlush();
+return infiniteLoop();

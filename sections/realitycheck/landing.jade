@@ -1,50 +1,81 @@
 doctype html
 html
     head
-        link(href='/js/local/EB+Garamond-Font.css', rel='stylesheet')
-        link(href='/js/local/realitycheck.css', rel='stylesheet')
+        link(rel='stylesheet', type='text/css', href='/js/local/EB+Garamond-Font.css')
+        link(rel='stylesheet', type='text/css', href='/js/local/realitycheck.css')
         link(rel='stylesheet', type='text/css', href='/css/datatables.min.css')
-        link(rel='stylesheet', href='/css/bootstrap.css')
+        link(rel='stylesheet', type='text/css', href='/css/bootstrap.css')
+        link(rel='stylesheet', type='text/css', href='/css/cal-heatmap.css')
+
         script(type='text/javascript', src='/js/jquery.js')
+        script(type='text/javascript', src='/js/d3.min.js')
+        script(type='text/javascript', src='/js/cal-heatmap.min.js')
         script(type='text/javascript', src='/js/collapse.js')
         script(type='text/javascript', src='/js/bootstrap.min.js')
-        script(type='text/javascript', charset='utf8', src='/js/datatables.min.js')
-        script(type='text/javascript', charset='utf8', src='/js/local/impressionTable.js')
+        script(type='text/javascript', src='/js/datatables.min.js')
         script(type='text/javascript', src='/js/lodash.min.js')
         script(type='text/javascript', src='/js/moment.min.js')
 
-        title facebook.tracking.exposed Personal page - RealityCheck
+        script(type='text/javascript', charset='utf8', src='/js/local/impressionTable.js')
 
-    body(onload="loadTimelines(#{userId}, '#listTable', '#details', '#description');")
+        title facebook.tracking.exposed Your RealityCheck
+
+    body(onload="loadHeatmap(#{userId}, '#recentheatmap', '#olderheatmap'); loadContribution(#{userId}, '#contributionTable'); loadPromoted(#{userId}, '#promotedTable');")
 
         include ../navbar
 
-        div.realitycontainer
-            h1 RealityCheck
-            p.text This page is intended to offer you a step back from your social media immersion. See your informations exposure more clearly and
-                b let you
-                | judge if is it OK, or, if your informative diet might be different. 
-            p.text Is a work in progress and if you are good with data visualisation, we can extend our APIs
+        span.col-md-1.bordered
+            div.container-fluid.realitycontainer
+                div#recentheatmap
+                br
+                small.smaller Heatmap based on 
+                    a(href="http://cal-heatmap.com/") cal-heatmap
+                    |, improvement in progress.
 
-        // debug: #{timelines} #{distance} #{lastActivity} #{userId}
+        span.col-md-11.bordered
 
-        div.realitycontainer
-            table#listTable.display(cellspacing='0', width='100%')
-                thead
-                    tr
-                        th When
-                        th Precisely was...
-                        th Last for
-                        th Analyzed posts
-                        th Total impressions
-                tfoot
-                    tr
-                        th When
-                        th Precisely was...
-                        th Last for
-                        th Analyzed posts
-                        th Total impressions
+            div.container-fluid.realitycontainer
+                h2 RealityCheck
+                p.text.text-info This page is intended to offer you a step back from your social media immersion. See your informations exposure more clearly and 
+                    b let you
+                    |  judge if is it OK, or, if your informative diet might be different. 
+                p.text.text-info As you might guess, 
+                    b this is a work in progress
+                    |  and if you are good with data visualisation, we can extend our APIs (
+                    a(href="https://github.com/tracking-exposed/facebook") and visualizations
+                    |)
 
-            div#description
-            div#details
+            div.container-fluid.realitycontainer
+                h2 Promoted posts
+                p.text We started to process your data from the promoted posts, this is the list of the promotional content you received. This is capped on the last 30 days, no possibility to go back in time.
 
+            div.container-fluid.realitycontainer
+                table#promotedTable.display(cellspacing='0', width='100%')
+                    thead
+                        tr
+                            th When
+                            th Owner
+                            th Media type
+                            th Promoted link
+                    tfoot
+                        tr
+                            th When
+                            th Owner
+                            th Media type
+                            th Promoted link
+
+            div.container-fluid.realitycontainer
+                h3 Some stats about you
+                p Your contributions
+                table#contributionTable(cellspacing='0', width='100%')
+                    thead
+                        tr 
+                            th.col-sm-1 Days ago
+                            th.col-sm-1 timelines
+                            th.col-sm-1 impressions
+                            th.col-sm-1 htmls
+
+
+        div.container-fluid.realitycontainer
+            h3 These are activities of the past days
+            div#olderheatmap
