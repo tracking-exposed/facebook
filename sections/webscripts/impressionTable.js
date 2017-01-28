@@ -48,34 +48,47 @@ function renderTimeline(containerId, detailDesc, timelineId) {
 /* ----------------------- */
 
 function loadContribution(userId, containerId) {
-    console.log("loadContribution");
-    /* DaysAgo timelione impressions htmls */
-    console.log(userId);
-    console.log(containerId);
-    var url = "/api/v1/personal/contribution/" + userId;
+    var url = "/api/v1/personal/contribution/" + userId + '/0/10';
     console.log(url);
+    /* DaysAgo timeline impressions htmls */
+    $.getJSON(url, function(collections) {
+        /* convert collections with basic shape explained here 
+         * https://datatables.net/manual/data/ */
+        var converted = _.map(collections, function(infob) {
+            return _.values(infob)
+        });
+        console.log(converted[0]);
+        $(containerId).DataTable( {
+            data: converted
+        });
+    });
 };
 
 function loadPromoted(userId, containerId) {
-    console.log("loadPromoted");
-    /* When Owner MediaType PromotedLink */
-    console.log(userId);
-    console.log(containerId);
-    var url = "/api/v1/personal/promoted/" + userId;
+    var url = "/api/v1/personal/promoted/" + userId + '/0/10';
     console.log(url);
+
+    /* When Owner MediaType PromotedLink */
+    $.getJSON(url, function(collections) {
+        /* convert collections with basic shape explained here 
+         * https://datatables.net/manual/data/ */
+        console.log(collections);
+        var converted = _.map(collections, function(o) {
+            return [ o.daysago, o.ownerName, o.promotedMedia, o.promotedPage ];
+        });
+        console.log(converted[0]);
+        $(containerId).DataTable( {
+            data: converted
+        });
+    });
 };
 
 function loadHeatmap(userId, recentC, olderC) {
-    console.log("loadHeatmap -- recent and older");
-    console.log(userId);
     var url = "/api/v1/personal/heatmap/" + userId;
 
     /* you can ask for a time window from the API */
-
     var recentUrl = "/api/v1/personal/heatmap/" + userId + "/0/1";
     var olderUrl = "/api/v1/personal/heatmap/" + userId + "/2/20";
-
-    console.log(recentUrl, olderUrl);
 
     var recent = new CalHeatMap();
     recent.init({
@@ -102,7 +115,7 @@ function loadHeatmap(userId, recentC, olderC) {
         itemSelector: olderC,
         data: olderUrl,
         start: new Date(moment().subtract(20, 'd')),
-        end: new Date(moment().subtract(2, 'd')),
+        range: 20,
         domain: "day",
         subDomain: "hour"
     });

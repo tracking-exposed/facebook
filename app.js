@@ -198,10 +198,10 @@ app.get('/revision/:htmlId', function(req, res) {
 });
 
 /* NEW realitycheck page, using `personal` as block */
-app.get('/api/v1/personal/contribution/:userId', function(req, res) {
+app.get('/api/v1/personal/contribution/:userId/:skip/:amount', function(req, res) {
     return dispatchPromise('personalContribution', req, res);
 });
-app.get('/api/v1/personal/promoted/:userId', function(req, res) {
+app.get('/api/v1/personal/promoted/:userId/:skip/:amount', function(req, res) {
     return dispatchPromise('personalPromoted', req, res);
 });
 app.get('/api/v1/personal/heatmap/:userId/:skip/:amount', function(req, res) {

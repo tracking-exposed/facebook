@@ -46,8 +46,10 @@ html
                     |)
 
             div.container-fluid.realitycontainer
-                h2 Promoted posts
-                p.text We started to process your data from the promoted posts, this is the list of the promotional content you received. This is capped on the last 30 days, no possibility to go back in time.
+                h3 Promoted posts
+                p.text We started to process your data from the promoted posts, this is the list of the promotional content you received. This is capped on the last 20 days, no possibility (yet) to go back in time or perform stronger visualisation, but the
+                    a(href="/api/v1/personal/promoted/#{userId}/0/20") raw API provide a good set of info
+                    |.
 
             div.container-fluid.realitycontainer
                 table#promotedTable.display(cellspacing='0', width='100%')
@@ -66,16 +68,17 @@ html
 
             div.container-fluid.realitycontainer
                 h3 Some stats about you
-                p Your contributions
+                p Your contributions: every entry is a refresh you've made on your facebook feed. The number of public/private impressions depends on the privacy settings of the post.
+                p.text-warning If you have listed only private impressions, it means your language is not supported; please notify us on our 
+                    a(href="https://www.facebook.com/personalizationalgorithm") Personalisation Algorithms
+                    |  page.
                 table#contributionTable(cellspacing='0', width='100%')
                     thead
                         tr 
-                            th.col-sm-1 Days ago
-                            th.col-sm-1 timelines
+                            th.col-sm-1 When
+                            th.col-sm-1 visibility
                             th.col-sm-1 impressions
-                            th.col-sm-1 htmls
 
-
-        div.container-fluid.realitycontainer
-            h3 These are activities of the past days
-            div#olderheatmap
+            div.container-fluid.realitycontainer
+                h3 Activities of the past 20 days
+                div#olderheatmap
