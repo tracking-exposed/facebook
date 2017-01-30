@@ -275,4 +275,4 @@ function infiniteLoop() {
         .then(infiniteLoop);
 };
 
-return infiniteLoop();
+infiniteLoop();
