@@ -89,14 +89,15 @@ function renderMetadata(something, containerId) {
             json: something,
             keys: {
                 x: 'date',
-                value: [ 'promoted', 'feed', 'scanned', 'promotedpages', 'promotedowners' ]
+                value: [ 'promoted', 'unexpected', 'feed', 'scanned', 'promotedpages', 'promotedowners' ]
             },
             names: {
                 'promoted': "Promoted content",
                 'feed': "Friend's Feed",
                 'scanned': "Analyzed so far",
                 'promotedpages': "Pages detected",
-                'promotedowners': "Owners detected"
+                'promotedowners': "Owners detected",
+                'unexpected': "unrecognized HTML"
             }
         },
         axis: {
