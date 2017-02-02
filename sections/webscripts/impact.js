@@ -29,7 +29,13 @@ function renderImpression(something, containerId) {
                     format: '%Y-%m-%d'
                 }
             },
-            y2: { show: true }
+            y2: {
+                show: true,
+                label: 'Timelines'
+            },
+            y: {
+                label: 'Posts'
+            }
         }
     });
 };
