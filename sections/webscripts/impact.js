@@ -59,15 +59,15 @@ function renderUsers(something, containerId) {
             },
             types: {
                 activeusers: 'line',
-                newusers: 'area',
+                newusers: 'bar',
                 notcomingback: 'bar',
-                pageviews: 'line'
+                pageviews: 'area'
             },
             colors: {
                 activeusers: 'rgb(227, 119, 194)',
                 newusers: 'rgb(188, 189, 34)',
                 notcomingback: 'rgb(214, 39, 40)',
-                pageviews:'#f47700' 
+                pageviews:'#d4d7d0'
             }
         },
         axis: {
