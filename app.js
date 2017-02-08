@@ -13,6 +13,8 @@ var cors = require('cors');
 
 var utils = require('./lib/utils');
 var escviAPI = require('./lib/allversions');
+var performa = require('./lib/performa');
+var mongo = require('./lib/mongo');
 
 var cfgFile = "config/settings.json";
 var redOn = "\033[31m";
@@ -26,14 +28,16 @@ console.log(redOn + "ઉ nconf loaded, using " + cfgFile + redOff);
 var returnHTTPError = function(req, res, funcName, where) {
     debug("%s HTTP error 500 %s [%s]", req.randomUnicode, funcName, where);
     res.status(500);
+    res.send();
     return false;
 };
+
 
 /* This function wraps all the API call, checking the verionNumber
  * managing error in 4XX/5XX messages and making all these asyncronous
  * I/O with DB, inside this Bluebird */
 var inc = 0;
-var dispatchPromise = function(name, req, res) {
+function dispatchPromise(name, req, res) {
 
     var apiV = _.parseInt(_.get(req.params, 'version'));
 
@@ -193,6 +197,18 @@ app.get('/revision/:htmlId', function(req, res) {
     return dispatchPromise('unitById', req, res);
 });
 
+/* NEW realitycheck page, using `personal` as block */
+app.get('/api/v1/personal/contribution/:userId/:skip/:amount', function(req, res) {
+    return dispatchPromise('personalContribution', req, res);
+});
+app.get('/api/v1/personal/promoted/:userId/:skip/:amount', function(req, res) {
+    return dispatchPromise('personalPromoted', req, res);
+});
+app.get('/api/v1/personal/heatmap/:userId/:skip/:amount', function(req, res) {
+    return dispatchPromise('personalHeatmap', req, res);
+});
+/* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
+
 /* TO BE RESTORED */
 app.get('/realitycheck/:userId', function(req, res) {
     return dispatchPromise('getRealityCheck', req, res);
@@ -246,3 +262,17 @@ app.get('/', function(req, res) {
 });
 
 
+function infiniteLoop() {
+    /* this will launch other scheduled tasks too */
+    return Promise
+        .resolve()
+        .delay(60 * 1000)
+        .then(function() {
+            if(_.size(performa.queue))
+                return mongo
+                    .cacheFlush(performa.queue, "performa")
+        })
+        .then(infiniteLoop);
+};
+
+infiniteLoop();

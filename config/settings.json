@@ -1,11 +1,13 @@
 {
   "schema": { 
-      "timelines": "timelines2",
       "impressions": "impressions2",
-      "htmls": "htmls2",
-      "suggestions": "suggestions2",
+      "supporters": "supporters2",
+      "timelines": "timelines2",
       "accesses": "accesses2",
-      "supporters": "supporters2"
+      "htmls": "htmls2",
+
+      "performa": "performa",
+      "hourlyIO": "hourlyIO"
   },
   "mongodb": "mongodb://localhost/facebook",
   "password": "overwrittenbyENV",
