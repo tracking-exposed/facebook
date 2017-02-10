@@ -181,18 +181,6 @@ app.get('/api/v:version/html/:htmlId', function(req, res) {
     return dispatchPromise('unitById', req, res);
 });
 
-// is actually better commented all
-/* --- for the user 
-app.get('/realitycheck/review/:userId', function(req, res) {
-    req.param.page = 'personalReview';
-    return dispatchPromise('getPage', req, res);
-});
- for the parser debugger 
-app.get('/revision/:htmlId', function(req, res) {
-    req.param.page = 'selectiveRevision';
-    return dispatchPromise('getPage', req, res);
-});
- and used this:  */
 app.get('/revision/:htmlId', function(req, res) {
     return dispatchPromise('unitById', req, res);
 });
