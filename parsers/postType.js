@@ -4,22 +4,42 @@ var moment = require('moment');
 var debug = require('debug')('parser:postType');
 var parse = require('./lib/parse');
 
+function hasLike($) {
+    var mayLike = $(".UFILikeLink");
+    /* a number of entry for each like button present */
+    // debug("Likes spot %d", mayLike.length);
+    return (mayLike.length > 0 )
+};
+
 function getPostType(snippet) {
 
+    debug("→ %j", _.omit(snippet, ['html']));
+
     var $ = cheerio.load(snippet.html);
+    var retO = {
+        'postType': false
+    }
 
-    if ($('.uiStreamSponsoredLink').length > 0) 
-        var retVal = "promoted";
-    else if ($('.uiStreamAdditionalLogging').length > 0)
-        var retVal = "promoted";
-    else
-        var retVal = "feed";
+    /* new theory: is missing the timeStampContent and the <abbr>, so
+     * the binary decision can start from that */
 
-    // TODO, don't use exclusion condition, but find a selector
-    // for 'feed' too, and associate 'null' if nothing it is spot
-    debug("・%s ∩ %s", snippet.id, retVal);
-    return { 'postType': true, 
-             'type': retVal };
+    if(!hasLike($)) {
+        debug("Nope ・%s ", snippet.id);
+        debugger;
+        return retO;
+    }
+
+    // debug("<abbr>: %d", $("abbr").length);
+    if($(".timestampContent").length === 0) {
+        debug("Promoted ・%s ", snippet.id);
+        retO.type = 'promoted';
+        retO.postType = true;
+    } else {
+        debug("Feed ・%s ", snippet.id);
+        retO.type = 'feed';
+        retO.postType = true;
+    }
+    return retO;
 };
 
 var postType = {

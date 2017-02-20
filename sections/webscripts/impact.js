@@ -29,7 +29,13 @@ function renderImpression(something, containerId) {
                     format: '%Y-%m-%d'
                 }
             },
-            y2: { show: true }
+            y2: {
+                show: true,
+                label: 'Timelines'
+            },
+            y: {
+                label: 'Posts'
+            }
         }
     });
 };
@@ -59,15 +65,15 @@ function renderUsers(something, containerId) {
             },
             types: {
                 activeusers: 'line',
-                newusers: 'area',
+                newusers: 'bar',
                 notcomingback: 'bar',
-                pageviews: 'line'
+                pageviews: 'area'
             },
             colors: {
                 activeusers: 'rgb(227, 119, 194)',
                 newusers: 'rgb(188, 189, 34)',
                 notcomingback: 'rgb(214, 39, 40)',
-                pageviews:'#f47700' 
+                pageviews:'#d4d7d0'
             }
         },
         axis: {
@@ -89,14 +95,15 @@ function renderMetadata(something, containerId) {
             json: something,
             keys: {
                 x: 'date',
-                value: [ 'promoted', 'feed', 'scanned', 'promotedpages', 'promotedowners' ]
+                value: [ 'promoted', 'unexpected', 'feed', 'scanned', 'promotedpages', 'promotedowners' ]
             },
             names: {
                 'promoted': "Promoted content",
                 'feed': "Friend's Feed",
                 'scanned': "Analyzed so far",
                 'promotedpages': "Pages detected",
-                'promotedowners': "Owners detected"
+                'promotedowners': "Owners detected",
+                'unexpected': "unrecognized HTML"
             }
         },
         axis: {
