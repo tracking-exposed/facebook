@@ -42,7 +42,7 @@ function snippetAvailable(config, what) {
 };
 
 function commitResult(config, newmeta, snippet) {
-    debug("metadata was [%s] now [%s]",
+    debug("metadata was [%s] +[%s]",
         _.keys(
             _.omit(snippet, [
                 '_id', 'savingTime', 'id', 'userId',
