@@ -5,6 +5,7 @@
       "timelines": "timelines2",
       "accesses": "accesses2",
       "htmls": "htmls2",
+      "alarms": "alarms",
 
       "performa": "performa",
       "hourlyIO": "hourlyIO"
