@@ -55,7 +55,7 @@ function commitResult(config, newmeta, snippet) {
     var url = composeURL('result');
     return request
         .postAsync(url, {form: update})
-        .delay(config.delay);
+        .delay(0); // Ignored config.delay
 };
 
 function importKey(config) {
@@ -91,43 +91,26 @@ function importKey(config) {
 function please(config) {
     /* set default values if not specified */
     config.repeat = nconf.get('repeat') || null;
+    /* this is parsing concurrency, but the amount retrieved if server side fixed of 5 */
     config.snippetConcurrency = _.parseInt(nconf.get('concurrency')) || 5;
     config.delay = nconf.get('delay') || 200;
 
     if(!_.isObject(config.requirements)) {
         throw new Error(
-            "Developer, requirements has to be {} and pls check `repeat`");
+            "Developer, requirements has to be an object and check `repeat`");
     }
 
     return importKey(config)
         .then(function(xtConfig) {
-            return snippetAvailable(xtConfig, 'status')
-                .then(function(numbers) {
-                    xtConfig.slots=_.round(numbers.available/numbers.limit);
-                    debug("%d HTMLs, %d per request = %d requests",
-                        numbers.available, numbers.limit, xtConfig.slots);
-                    return Promise.map(
-                        iterateSlots(xtConfig),
-                        processHTMLbulk,
-                        { concurrency: 1 }
-                    );
-                });
+			return snippetAvailable(config, 'content')
+				.map(function(snippet) {
+					var newmeta = config.implementation(snippet);
+					return commitResult(config, newmeta, snippet);
+				}, {concurrency: config.snippetConcurrency});
         });
+
 };
 
-function iterateSlots(config) {
-    return _.times(config.slots + 1, function(i) {
-        return _.extend(config, { index: i });
-    });
-};
-
-function processHTMLbulk(config) {
-    return snippetAvailable(config, 'content')
-        .map(function(snippet) {
-            var newmeta = config.implementation(snippet);
-            return commitResult(config, newmeta, snippet);
-        }, {concurrency: config.snippetConcurrency});
-};
 
 
 module.exports = {

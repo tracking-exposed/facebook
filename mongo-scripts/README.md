@@ -17,3 +17,7 @@ guess what? they operate about the previous hour
 # Numbered scripts
 
 the script starting with a number, are incremental ad executed only during data migrations.
+
+# Remind
+
+    DEBUG=* KEYS=postType-postType,type START=2017-01-17  mongo-scripts/parser-error-mngmnt.js
