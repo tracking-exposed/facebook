@@ -43,7 +43,12 @@ function snippetAvailable(config, what) {
 
 function commitResult(config, newmeta, snippet) {
     debug("metadata was [%s] now [%s]",
-        _.keys(snippet.metadata), _.keys(newmeta));
+        _.keys(
+            _.omit(snippet, [
+                '_id', 'savingTime', 'id', 'userId',
+                'impressionId', 'timelineId', 'html' ])),
+        _.keys(newmeta)
+    );
 
     var update = {
         htmlId: snippet.id,
@@ -104,16 +109,14 @@ function please(config) {
 
     return importKey(config)
         .then(function(xtConfig) {
-            debug("-- %j", xtConfig);
-			return snippetAvailable(xtConfig, 'content')
-				.map(function(snippet) {
-					var newmeta = config.implementation(snippet);
-					return commitResult(config, newmeta, snippet);
-				}, {concurrency: config.snippetConcurrency});
+            return snippetAvailable(xtConfig, 'content')
+                .map(function(snippet) {
+                    var newmeta = config.implementation(snippet);
+                    return commitResult(config, newmeta, snippet);
+                }, {concurrency: config.snippetConcurrency});
         });
 
 };
-
 
 
 module.exports = {
