@@ -197,6 +197,11 @@ app.get('/api/v1/personal/heatmap/:userId/:skip/:amount', function(req, res) {
 });
 /* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
 
+/* Alarm */
+app.get('/api/v1/alarms/:dayback', function(req, res) {
+    return dispatchPromise('getAlarms', req, res);
+});
+
 /* TO BE RESTORED */
 app.get('/realitycheck/:userId', function(req, res) {
     return dispatchPromise('getRealityCheck', req, res);
