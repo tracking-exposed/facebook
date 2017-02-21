@@ -42,8 +42,8 @@ function snippetAvailable(config, what) {
 };
 
 function commitResult(config, newmeta, snippet) {
-    /* debug("metadata has %s keys newmeta %s",
-        _.keys(snippet.metadata), _.keys(newmeta)); */
+    debug("metadata was [%s] now [%s]",
+        _.keys(snippet.metadata), _.keys(newmeta));
 
     var update = {
         htmlId: snippet.id,
@@ -70,14 +70,16 @@ function importKey(config) {
             return _.extend(config, parserKey);
         })
         .then(function(config) {
-            if(_.isNull(config.repeat))
-                ;
-            else if(config.repeat === 'false')
+            /* explicit, if is true, repeat the failure, otherwise
+             * only the new. if is required to reset a broken parser,
+             * mongo-scripts will permit extraordinaty intervention */
+            if(config.repeat === 'true') {
+                debug("Repeating analysis on previously failure { %s : false }",
+                    config.name);
                 _.set(config.requirements, config.name, false);
-            else if(config.repeat === 'true')
-                _.set(config.requirements, config.name, true);
+            }
             else
-                throw new Error("config.repeat has an unexpected value");
+                _.set(config.requirements, config.name, { "$exists" : false });
 
             return config;
         })
@@ -102,7 +104,8 @@ function please(config) {
 
     return importKey(config)
         .then(function(xtConfig) {
-			return snippetAvailable(config, 'content')
+            debug("-- %j", xtConfig);
+			return snippetAvailable(xtConfig, 'content')
 				.map(function(snippet) {
 					var newmeta = config.implementation(snippet);
 					return commitResult(config, newmeta, snippet);
