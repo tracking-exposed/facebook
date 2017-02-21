@@ -21,7 +21,7 @@ function tryPhoto(href) {
     try {
         return _.parseInt(href.match(/\/photos\/.\.\d+.\.\d+\.\d+\/\d+\//)[0].split('/')[3]);
     } catch (err){
-		// debug("Error", err);
+        // debug("Error", err);
         return null;
     }
 }
@@ -30,8 +30,8 @@ function tryPost(href) {
     try {
         return _.parseInt(href.match(/posts\/\d+/)[0].split('/')[1]);
     } catch (err) {
-		// debug("Error", err);
-		return null;
+        // debug("Error", err);
+        return null;
     }
 }
 
@@ -46,15 +46,15 @@ function getPostCore(href) {
      //   invite: tryEvent
     };
 
-	debug("testing", href);
+    debug("testing", href);
     _.each(postTypes, function(extractor, postTypef) {
-		debug("try %s", postTypef);
+        debug("try %s", postTypef);
         var check = extractor(href);
         if(check) {
-			if(retVal)
-				debug("retVal assigned? %j", retVal);
+            if(retVal)
+                debug("retVal assigned? %j", retVal);
             retVal = { postId: check, type: postTypef };
-		}
+        }
     });
     return retVal;
 
@@ -92,12 +92,14 @@ function getPostBI(snippet) {
     }
 
     debug("%s\n  ≻  %s", snippet.id, href);
-    return { 'feedBasicInfo': true, 
+    var rv = { 'feedBasicInfo': true, 
              'publicationUTime': postCore.utime,
              'postId': postCore.postId,
              'permaLink': href,
              'hrefType': postCore.type // ['photo','post']
     };
+    debug("%s", JSON.stringify(rv, undefined, 3));
+    return rv;
 };
 
 var postHref = {

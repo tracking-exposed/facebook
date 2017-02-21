@@ -18,7 +18,7 @@
   "verbose": true,
   "exitcrash": false,
   "env": {
-    "DEBUG": "-fbtrex,lib:*,-lib:parser"
+    "DEBUG": "-fbtrex,lib:*,-lib:parser,-lib:performa"
   },
   "ext": "js css json jade"
 }
