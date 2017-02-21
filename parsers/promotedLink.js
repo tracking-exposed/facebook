@@ -17,25 +17,25 @@ function getPromotedTitle(snippet) {
 	var link;
 	var link_type;
 
-	var found = false;
-
 	var e_threshold;
 	var e_linkcontainer;
 	var e_ptr;
+
+    var found = false;
 
 	postcount ++;
 
     var $ = cheerio.load(snippet.html);
 
     // posted links
-    if (!found) {
-		e_threshold = $('div.userContentWrapper');
-		e_linkcontainer = e_threshold.find("div.clearfix");
-		e_ptr = e_linkcontainer.find("a.profileLink").parent().next();
+    e_threshold = $('div.userContentWrapper');
+    e_linkcontainer = e_threshold.find("div.clearfix");
+    e_ptr = e_linkcontainer.find("a.profileLink").parent().next();
 
-		if (e_ptr.attr("href") != undefined)
-			found = true;
-	}
+    if (e_ptr.attr("href") != undefined) {
+        found = true;
+        link_type = "link";
+    }
 
 	// videos, posts		
 	if (!found) {	
@@ -44,6 +44,7 @@ function getPromotedTitle(snippet) {
 		if (e_linkcontainer.find("a")[0] !== undefined) {
 			e_ptr = e_linkcontainer.find("a").first();
 			found = true;
+            link_type = "video";
 		}
 	}
 
@@ -55,25 +56,25 @@ function getPromotedTitle(snippet) {
 		if (e_linkcontainer.find(":first-child").is("a")) {
 			e_ptr = e_linkcontainer.find(":first-child");
 			found = true;
+            link_type = "page";
 		}
 	}
 
 	// if we have a href element with content in e_ptr then we have a link
-
-	if (e_ptr.attr("href") !== "" && e_ptr.attr("href") !== "#") {
+	if (found && e_ptr.attr("href") !== "#") {
 		link = e_ptr.attr("href");
-		found = true;
 	} 
 
-	if (!found) {
+	if (!link) {
 		debug(" -- Error %d posts %d | %s#", errorcount, postcount, snippet.id );
 		errorcount++;
 		return { 'promotedLink': false };
     };
 
-    debug("! %d\t%d %s", errorcount, postcount, link);
+    debug("! %d\t%d %s (%s)", errorcount, postcount, link, link_type);
     return {
          "postLink": link,
+         "linkType": link_type,
          'promotedLink': true
     };
 

@@ -25,7 +25,6 @@ function getPostType(snippet) {
 
     if(!hasLike($)) {
         debug("Nope ・%s ", snippet.id);
-        debugger;
         return retO;
     }
 
