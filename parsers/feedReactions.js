@@ -59,9 +59,7 @@ function getFeedReactions(snippet) {
 		debug("#" + postcount + ": reactions [" + snippet._id + "] : " + JSON.stringify(reactions, undefined, 2));
         return { 'reactions': reactions,
                  'feedReactions': true };
-        }
 	}
-	
 };
 
 return parse.please({
