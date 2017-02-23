@@ -159,19 +159,26 @@ function loadContribution(userId, containerId) {
 
 function loadHTMLs(userId, containerId) {
     var url = "/api/v1/personal/htmls/" + userId + '/0/10';
-
+    $.getJSON(url, function(collection) {
+        _.each(collection, function(entry, i) {
+            $(containerId).append(
+                '<a target="_blank" href="/revision/' +
+                    entry.id + '">Go to the revision page, and verifiy if the metadata extraction is worked properly</a>' +
+                '<pre>' + JSON.stringify(entry, undefined, 2) + '</pre>'
+            );
+        });
+    });
 };
-
 
 function loadProfile(userId, containerId) {
     var url = "/api/v1/personal/profile/" + userId;
     $.getJSON(url, function(collection) {
         _.each(collection, function(entry, i) {
             $(containerId).append(
-                '<p> Key #'
-                + i + 1
+                '<b> Key #'
+                + (i + 1) + '</b>'
                 + '<pre>'
-                + entry
+                + JSON.stringify(entry, undefined, 2)
                 + '</pre>'
             );
         });
