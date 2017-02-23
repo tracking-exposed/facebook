@@ -195,6 +195,16 @@ app.get('/api/v1/personal/promoted/:userId/:skip/:amount', function(req, res) {
 app.get('/api/v1/personal/heatmap/:userId/:skip/:amount', function(req, res) {
     return dispatchPromise('personalHeatmap', req, res);
 });
+app.get('/api/v1/personal/htmls/:userId/:skip/:amount', function(req, res) {
+    return dispatchPromise('personalHTMLs', req, res);
+});
+app.get('/api/v1/personal/profile/:userId/', function(req, res) {
+    return dispatchPromise('personalProfile', req, res);
+});
+app.get('/realitycheck/:userId/:page', function(req, res) {
+    req.params.page = 'realitycheck-' + req.params.page;
+    return dispatchPromise('getPage', req, res);
+});
 /* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
 
 /* Alarm */
@@ -203,9 +213,6 @@ app.get('/api/v1/alarms/:dayback', function(req, res) {
 });
 
 /* TO BE RESTORED */
-app.get('/realitycheck/:userId', function(req, res) {
-    return dispatchPromise('getRealityCheck', req, res);
-});
 app.get('/realitymeter/:postId', function(req, res) {
     return dispatchPromise('getRealityMeter', req, res);
 });
