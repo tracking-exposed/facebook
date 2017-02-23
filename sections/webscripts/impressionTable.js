@@ -47,23 +47,6 @@ function renderTimeline(containerId, detailDesc, timelineId) {
 
 /* ----------------------- */
 
-function loadContribution(userId, containerId) {
-    var url = "/api/v1/personal/contribution/" + userId + '/0/10';
-    console.log(url);
-    /* DaysAgo timeline impressions htmls */
-    $.getJSON(url, function(collections) {
-        /* convert collections with basic shape explained here 
-         * https://datatables.net/manual/data/ */
-        var converted = _.map(collections, function(infob) {
-            return _.values(infob)
-        });
-        console.log(converted[0]);
-        $(containerId).DataTable( {
-            data: converted
-        });
-    });
-};
-
 function loadPromoted(userId, containerId) {
     var url = "/api/v1/personal/promoted/" + userId + '/0/10';
     console.log(url);
@@ -83,6 +66,7 @@ function loadPromoted(userId, containerId) {
     });
 };
 
+/* This is temporarly not used, was called in the two-heatmap landing page */
 function loadHeatmap(userId, recentC, olderC) {
     var url = "/api/v1/personal/heatmap/" + userId;
 
@@ -118,5 +102,78 @@ function loadHeatmap(userId, recentC, olderC) {
         range: 20,
         domain: "day",
         subDomain: "hour"
+    });
+};
+
+function getSupporterId() {
+    var chunks = document.location.pathname.split('/');
+    // ["", "realitycheck", "100009030987674", "recent"]
+    _.reverse(chunks);
+    chunks.pop();
+    chunks.pop();
+    var userId = chunks.pop();
+    console.log("Extracted from URL " + userId);
+    return userId;
+};
+
+function loadCalmap(userId, containerId) {
+    var url = "/api/v1/personal/heatmap/" + userId;
+
+    /* you can ask for a time window from the API */
+    var lastTen= "/api/v1/personal/heatmap/" + userId + "/0/10";
+
+    console.log("loading last 10 days calendar heatmap " + lastTen);
+    var calhtmp= new CalHeatMap();
+    calhtmp.init({
+        itemSelector: containerId,
+        data: lastTen,
+        cellSize: 20,
+        start: new Date(moment().subtract(9, 'd')),
+        range: 10,
+        domain: "day",
+        subDomain: "hour",
+        legendColors: [ "yellow", "steelblue" ]
+    });
+    $(containerId).append('<p>This is the results from</p>');
+    $(containerId).append('<pre>' + url + '</pre>');
+};
+
+function loadContribution(userId, containerId) {
+    var url = "/api/v1/personal/contribution/" + userId + '/0/10';
+    console.log("loading last 10 days of impressions contributed " + url);
+    /* DaysAgo timeline impressions htmls */
+    $.getJSON(url, function(collections) {
+        /* convert collections with basic shape explained here 
+         * https://datatables.net/manual/data/ */
+        var converted = _.map(collections, function(infob) {
+            return _.values(infob)
+        });
+        console.log(converted[0]);
+        $(containerId).DataTable( {
+            data: converted
+        });
+    });
+    $(containerId).append('<p>This is the results from</p>');
+    $(containerId).append('<pre>' + url + '</pre>');
+};
+
+function loadHTMLs(userId, containerId) {
+    var url = "/api/v1/personal/htmls/" + userId + '/0/10';
+
+};
+
+
+function loadProfile(userId, containerId) {
+    var url = "/api/v1/personal/profile/" + userId;
+    $.getJSON(url, function(collection) {
+        _.each(collection, function(entry, i) {
+            $(containerId).append(
+                '<p> Key #'
+                + i + 1
+                + '<pre>'
+                + entry
+                + '</pre>'
+            );
+        });
     });
 };

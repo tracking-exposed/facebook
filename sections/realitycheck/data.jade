@@ -1,0 +1,58 @@
+doctype html
+html
+    head
+        link(rel='stylesheet', type='text/css', href='/js/local/EB+Garamond-Font.css')
+        link(rel='stylesheet', type='text/css', href='/css/datatables.min.css')
+        link(rel='stylesheet', type='text/css', href='/css/bootstrap.css')
+        link(rel='stylesheet', type='text/css', href='/js/local/realitycheck.css')
+
+        script(type='text/javascript', src='/js/jquery.js')
+        script(type='text/javascript', src='/js/d3.min.js')
+        script(type='text/javascript', src='/js/cal-heatmap.min.js')
+        script(type='text/javascript', src='/js/collapse.js')
+        script(type='text/javascript', src='/js/bootstrap.min.js')
+        script(type='text/javascript', src='/js/datatables.min.js')
+        script(type='text/javascript', src='/js/lodash.min.js')
+        script(type='text/javascript', src='/js/moment.min.js')
+
+
+        script(type='text/javascript', charset='utf8', src='/js/local/impressionTable.js')
+
+        title facebook.tracking.exposed RealityCheck - your data
+
+    body(onload="loadHTMLs(getSupporterId(), '#contributionBlock'); loadContribution(getSupporterId(), '#contributionTable'); loadPromoted(getSupporterId(), '#promotedTable');")
+
+        include intro
+        include userNavbar
+
+        div.container-fluid.realitycontainer
+            p.text.text-warning At the moment we are not managing timezone properly, so you'll see the date shifted from GMT
+
+        div.container-fluid.realitycontainer
+            h3 Metadata extracted from your last 10 days 
+            div#contributionBlock
+
+        div.container-fluid.realitycontainer
+            h3 Impressions submitted in the last 10 days 
+            div#contributionTable
+
+        div.container-fluid.realitycontainer
+            h3 Promoted analysis
+            p This is a detailed list on who is promoting your feed
+            div#promotedTable
+
+        div.container-fluid.realitycontainer
+            table#promotedTable.display(cellspacing='0', width='100%')
+                thead
+                    tr
+                        th When
+                        th Owner
+                        th Media type
+                        th Promoted link
+                tfoot
+                    tr
+                        th When
+                        th Owner
+                        th Media type
+                        th Promoted link
+
