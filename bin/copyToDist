@@ -9,6 +9,7 @@ mkdir -p dist/images
 mkdir -p $V 
 
 node_modules/.bin/stylus styles/index.styl -o dist/css
+node_modules/.bin/stylus styles/pages.styl -o dist/css
 
 cp styles/favicon.ico dist/
 cp -r sections/images/* dist/images
