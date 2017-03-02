@@ -3,16 +3,14 @@ html
   head
     link(rel='stylesheet', href='/css/index.css')
     link(rel='stylesheet', href='/css/bootstrap.css')
-    script(type='text/javascript', src='/js/lodash.min.js')
     script(type='text/javascript', src='/js/jquery.js')
     script(type='text/javascript', src='/js/collapse.js')
     script(type='text/javascript', src='/js/bootstrap.min.js')
-    script(type='text/javascript', src='/js/local/suggest.js')
     meta(charset="utf-8")
     meta(http-equiv="X-UA-Compatible" content="IE=edge")
     meta(name="viewport" content="width=device-width, initial-scale=1")
     meta(name="keywords" content="facebook tracking exposed")
-    title facebook tracking exposed: presentations, initiatives
+    title facebook tracking exposed: presentations and initiatives
 
   body
 
@@ -20,19 +18,16 @@ html
     include ../navbar 
 
     .container
-      h2 Initiatives
+      h2 Upcoming initiatives
       ul.fb--icon-list
         li
-            a(href="https://events.ccc.de/congress/2016/wiki/Main_Page") CCC
-            |  ⚡ lightining ⚡ talk is coming!
-        li Developer? 
-            b #extension #javascript
-            |, a 
-            a(href="https://github.com/tracking-exposed/web-extension/issues/15") simple issue
-            |  waits for you
-        li We've a (no irony, really) 
-            a(href="https://www.facebook.com/personalizationalgorithm") Facebook page
-            |  for coordination and updates. If you want to do some experiments on personalisation algorithm, join us.
+          a(href="/NetherlandsElections") The Netherlands elections call
+        li
+          a(href="https://www.rightscon.org") RightsCon 2017
+          |, Demo Room
+        li
+          a(href="http://www.journalismfestival.com/programme/2017/exposing-what-facebook-wants-you-to-see") International Journalism Festival
+          |, 8 April, Perugia.
 
     .container
       h2 Presentations
@@ -46,12 +41,10 @@ html
             th Language
         tbody
            tr
-            td 23st February '17
+            td 23rd February '17
             td Toolbox Coworking, Turin
             td 
               a(href="/talks-torinohacknight/") Torino Hack Night
-              | 
-              a(href="https://www.eventbrite.com/e/biglietti-torino-hacknight-tracking-exposed-31488474876") [event]
             td 
             td Italian
           tr
@@ -59,8 +52,6 @@ html
             td cantiere, Milan
             td 
               a(href="/talks-cyberresistance/") Cyber*Resistance
-              | 
-              a(href="http://www.cantiere.org/eventi/cyber-resistance-5-edition/") [event]
             td 
             td Italian
           tr
