@@ -36,6 +36,9 @@ function renderImpression(something, containerId) {
             y: {
                 label: 'Posts'
             }
+        },
+        point: {
+            r: 1
         }
     });
 };
@@ -84,6 +87,9 @@ function renderUsers(something, containerId) {
                 }
             },
             y2: { 'show': true }
+        },
+        point: {
+            r: 1
         }
     });
 };
@@ -113,6 +119,9 @@ function renderMetadata(something, containerId) {
                     format: '%Y-%m-%d'
                 }
             }
+        },
+        point: {
+            r: 1
         }
     });
 }
