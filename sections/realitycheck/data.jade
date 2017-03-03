@@ -1,26 +1,10 @@
 doctype html
 html
     head
-        link(rel='stylesheet', type='text/css', href='/js/local/EB+Garamond-Font.css')
-        link(rel='stylesheet', type='text/css', href='/css/datatables.min.css')
-        link(rel='stylesheet', type='text/css', href='/css/bootstrap.css')
-        link(rel='stylesheet', type='text/css', href='/js/local/realitycheck.css')
-
-        script(type='text/javascript', src='/js/jquery.js')
-        script(type='text/javascript', src='/js/d3.min.js')
-        script(type='text/javascript', src='/js/cal-heatmap.min.js')
-        script(type='text/javascript', src='/js/collapse.js')
-        script(type='text/javascript', src='/js/bootstrap.min.js')
-        script(type='text/javascript', src='/js/datatables.min.js')
-        script(type='text/javascript', src='/js/lodash.min.js')
-        script(type='text/javascript', src='/js/moment.min.js')
-
-
-        script(type='text/javascript', charset='utf8', src='/js/local/impressionTable.js')
-
+        include headers
         title facebook.tracking.exposed RealityCheck - your data
 
-    body(onload="loadHTMLs(getSupporterId(), '#contributionBlock'); loadPromoted(getSupporterId(), '#promotedTable');")
+    body(onload="loadHTMLs(getSupporterId(), '#contributionBlock'); /* loadPromoted(getSupporterId(), '#promotedTable'); */ ")
 
         include intro
         include userNavbar
@@ -29,25 +13,26 @@ html
             p.text.text-warning At the moment we are not managing timezone properly, so you'll see the date shifted from GMT
 
         div.container-fluid.realitycontainer
-            h3 Metadata extracted from your last 10 days 
+            p The metadata extraction can go deep to the number of likes, comments, language, sentiment and so on… implementation of these analysis will be available in the next weeks
+            div#shiftContributionBlock Load Next…
             div#contributionBlock
 
-        div.container-fluid.realitycontainer
-            h3 Promoted analysis
-            p This is a detailed list on who is promoting your feed
-
-        div.container-fluid.realitycontainer
-            table#promotedTable.display(cellspacing='0', width='100%')
-                thead
-                    tr
-                        th When
-                        th Owner
-                        th Media type
-                        th Promoted link
-                tfoot
-                    tr
-                        th When
-                        th Owner
-                        th Media type
-                        th Promoted link
-
+//        div.container-fluid.realitycontainer
+//            h3 Promoted analysis
+//            p This is a detailed list on who is promoting your feed
+//
+//        div.container-fluid.realitycontainer
+//            table#promotedTable.display(cellspacing='0', width='100%')
+//                thead
+//                    tr
+//                        th When
+//                        th Owner
+//                        th Media type
+//                        th Promoted link
+//                tfoot
+//                    tr
+//                        th When
+//                        th Owner
+//                        th Media type
+//                        th Promoted link
+//

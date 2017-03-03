@@ -1,17 +1,47 @@
-
 /* added in the refactor for the ß */
+@font-face {
+    font-family: 'Work Sans';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Work Sans'), url(/js/local/WorkSans.ttf) format('truetype');
+}
+
 .realitycontainer {
     margin-left: 6%;
     margin-right: 6%;
-    background-color: lightyellow;
+    background-color: #F0FFFF;
+    font-family: 'Work Sans', sans-serif;
 }
 
 .vizavail {
-    font-family: 'Arial';
-    background-color: lightyellow;
+    font-family: 'Work Sans', sans-serif;
+    background-color: #F0FFFF;
     font-size: 1.3em;
     padding-left: 4%;
     padding-right: 4%;
     margin-bottom: 10px;
     margin-top: 10px;
 }
+
+.prefix {
+    padding-left: 10px;
+    background-color: #EFFFD1;
+    margin: 5px;
+}
+
+.feed {
+    background-color: #C7FFCB;
+    margin: 5px;
+}
+
+.promoted {
+    background-color: #FFEA75;
+    margin: 5px;
+}
+
+.error {
+    background-color: #310038;
+    font-color: white;
+    margin: 5px;
+}
+
