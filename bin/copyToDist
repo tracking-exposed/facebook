@@ -14,7 +14,6 @@ node_modules/.bin/stylus styles/pages.styl -o dist/css
 cp styles/favicon.ico dist/
 cp -r sections/images/* dist/images
 cp -r sections/webscripts/* dist/js/local/ 
-cp -r sections/team/*.??? dist/images
 cp -r node_modules/bootstrap/dist/* dist/
 
 cp ./node_modules/bootstrap/js/collapse.js $V

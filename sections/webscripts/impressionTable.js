@@ -157,15 +157,36 @@ function loadContribution(userId, containerId) {
     $(containerId).append('<pre>' + url + '</pre>');
 };
 
+function promotedFormat(entry) {
+    var distance = moment.duration(moment() - moment(entry.savingTime)).humanize();
+    var promotedPrefix = '<span class="prefix">﴿ promoted</span>';
+    if(entry.promotedTitle && entry.promotedInfo)
+       var promotedInfo = '<a target="_blank" href="' + entry.ownerName + '"class="ownerName">' + entry.title + '</a>';
+    else
+       var promotedInfo = '<span class="error">fail in extracting promoted Info</span>';
+
+    return promotedPrefix + '<span class="promoted">' + distance + ' ago, </span>' + promotedInfo;
+};
+
+function feedFormat(entry) {
+    var distance = moment.duration(moment() - moment(entry.savingTime)).humanize();
+    var feedPrefix = '<span class="prefix">⧼ newsfeed</span>';
+    return feedPrefix + '<span class="feed">Saved ' + distance + ' ago </span>';
+};
+
 function loadHTMLs(userId, containerId) {
-    var url = "/api/v1/personal/htmls/" + userId + '/0/10';
+    var url = "/api/v1/personal/htmls/" + userId + '/0/50';
     $.getJSON(url, function(collection) {
         _.each(collection, function(entry, i) {
-            $(containerId).append(
-                '<a target="_blank" href="/revision/' +
-                    entry.id + '">Go to the revision page, and verifiy if the metadata extraction is worked properly</a>' +
-                '<pre>' + JSON.stringify(entry, undefined, 2) + '</pre>'
-            );
+        
+            var prettyHtml = '<a href="/revision/' + entry.id + '">🔗 original </a>';
+            
+            if(entry.type === 'promoted')
+                prettyHtml += promotedFormat(entry);
+            else
+                prettyHtml += feedFormat(entry);
+
+            $(containerId).append('<div class="entry">' + prettyHtml + '</div>');
         });
     });
 };
