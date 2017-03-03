@@ -180,9 +180,10 @@ app.get('/api/v:version/html/ago/:days/:increment', function(req, res) {
 app.get('/api/v:version/html/:htmlId', function(req, res) {
     return dispatchPromise('unitById', req, res);
 });
-
+/* The API above beside unitById have not yet an UX */
 app.get('/revision/:htmlId', function(req, res) {
-    return dispatchPromise('unitById', req, res);
+    req.params.page = 'revision';
+    return dispatchPromise('getPage', req, res);
 });
 
 /* NEW realitycheck page, using `personal` as block */
