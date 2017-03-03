@@ -209,7 +209,7 @@ app.get('/realitycheck/:userId/:page', function(req, res) {
 /* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
 
 /* Alarm */
-app.get('/api/v1/alarms/:dayback', function(req, res) {
+app.get('/api/v1/alarms', function(req, res) {
     return dispatchPromise('getAlarms', req, res);
 });
 
@@ -223,8 +223,8 @@ app.get('/realitymeter', function(req, res) {
 app.get('/impact', function(req, res) {
     return dispatchPromise('getImpact', req, res);
 });
-/* special, admin, to become auth ? */
-app.post('/api/v1/manualboarding', function(req, res) {
+/* first class line jumper */
+app.get('/api/v1/manualboarding', function(req, res) {
     return dispatchPromise('manualBoarding', req, res);
 });
 /* static files, independent by the API versioning */
