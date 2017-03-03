@@ -3,40 +3,31 @@ html
   head
     link(rel='stylesheet', href='/css/index.css')
     link(rel='stylesheet', href='/css/bootstrap.css')
-    script(type='text/javascript', src='/js/vendor/lodash.min.js')
-    script(type='text/javascript', src='/js/vendor/jquery.js')
-    script(type='text/javascript', src='/js/vendor/collapse.js')
-    script(type='text/javascript', src='/js/vendor/bootstrap.min.js')
-    script(type='text/javascript', src='/js/local/suggest.js')
+    script(type='text/javascript', src='/js/jquery.js')
+    script(type='text/javascript', src='/js/collapse.js')
+    script(type='text/javascript', src='/js/bootstrap.min.js')
     meta(charset="utf-8")
     meta(http-equiv="X-UA-Compatible" content="IE=edge")
     meta(name="viewport" content="width=device-width, initial-scale=1")
     meta(name="keywords" content="facebook tracking exposed")
-    title facebook tracking exposed, presentations conference and slided
+    title facebook tracking exposed: presentations and initiatives
 
   body
- 
-    div.jumbotron
-      div.head-text.center.fb-color
-        div.container-fluid
-          h1 facebook.tracking.exposed
-          h3 presentations, conferences and advoacacy
 
-    nav.navbar.navbar-default
-      div.container
-        div.navbar-header
-          button.navbar-toggle.collapsed(type="button" data-toggle="collapse" data-target="#thenavbar" aria-expanded="false")
-            span(id="sr-only") Toggle navigation
-            span.icon-bar
-            span.icon-bar
-            span.icon-bar
+    include ../header
+    include ../navbar 
 
-        div.collapse.navbar-collapse(id="thenavbar")
-          ul.nav.navbar-nav
-            li
-              a(href='/') Home
-            li
-              a(href='/impact') Stats
+    .container
+      h2 Upcoming initiatives
+      ul.fb--icon-list
+        li
+          a(href="/NetherlandsElections") The Netherlands elections call
+        li
+          a(href="https://www.rightscon.org") RightsCon 2017
+          |, Demo Room
+        li
+          a(href="http://www.journalismfestival.com/programme/2017/exposing-what-facebook-wants-you-to-see") International Journalism Festival
+          |, 8 April, Perugia.
 
     .container
       h2 Presentations
@@ -49,13 +40,18 @@ html
             th Video
             th Language
         tbody
+           tr
+            td 23rd February '17
+            td Toolbox Coworking, Turin
+            td 
+              a(href="/talks-torinohacknight/") Torino Hack Night
+            td 
+            td Italian
           tr
             td 2nd December '16
             td cantiere, Milan
             td 
               a(href="/talks-cyberresistance/") Cyber*Resistance
-              | 
-              a(href="http://www.cantiere.org/eventi/cyber-resistance-5-edition/") [event]
             td 
             td Italian
           tr
@@ -81,11 +77,5 @@ html
               a(href="https://docs.google.com/presentation/d/1uDd2oNxWSOJPfm-Jrm0k-4SBS2BNAomfhF6Ef_609So/edit#slide=id.p") PyData
             td
             td English
-          tr
-            td ??
-            td ??
-            td ??
-            td ??
-            td ??
 
     div.footer 

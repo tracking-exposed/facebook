@@ -1,0 +1,14 @@
+doctype html
+html
+    head
+        include headers
+        title facebook.tracking.exposed Your RealityCheck
+
+    body(onload="loadCalmap(getSupporterId(), '#tendaycalmap');")
+
+        include intro
+        include userNavbar
+
+        div.container-fluid.realitycontainer
+            h3 Activities of the past 10 days
+            div#tendaycalmap

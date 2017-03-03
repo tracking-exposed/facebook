@@ -1,6 +1,6 @@
 dist/*
 node_modules/*
-samples/*
 parsers/*.json
-dump/*
 extension/yarn.lock
+vendor/*
+npm-debug.log

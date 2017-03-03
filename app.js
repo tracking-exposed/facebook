@@ -9,9 +9,12 @@ var mongodb = Promise.promisifyAll(require('mongodb'));
 var debug = require('debug')('fbtrex');
 var nconf = require('nconf');
 var jade = require('jade');
+var cors = require('cors');
 
 var utils = require('./lib/utils');
 var escviAPI = require('./lib/allversions');
+var performa = require('./lib/performa');
+var mongo = require('./lib/mongo');
 
 var cfgFile = "config/settings.json";
 var redOn = "\033[31m";
@@ -25,14 +28,16 @@ console.log(redOn + "ઉ nconf loaded, using " + cfgFile + redOff);
 var returnHTTPError = function(req, res, funcName, where) {
     debug("%s HTTP error 500 %s [%s]", req.randomUnicode, funcName, where);
     res.status(500);
+    res.send();
     return false;
 };
+
 
 /* This function wraps all the API call, checking the verionNumber
  * managing error in 4XX/5XX messages and making all these asyncronous
  * I/O with DB, inside this Bluebird */
 var inc = 0;
-var dispatchPromise = function(name, req, res) {
+function dispatchPromise(name, req, res) {
 
     var apiV = _.parseInt(_.get(req.params, 'version'));
 
@@ -78,6 +83,8 @@ var dispatchPromise = function(name, req, res) {
                   req.randomUnicode, name, httpresult.file);
               res.sendFile(__dirname + "/html/" + httpresult.file);
           } else {
+              debug("Undetermined failure in API call, result →  %j", httpresult);
+              console.trace();
               return returnHTTPError(req, res, name, "Undetermined failure");
           }
           return true;
@@ -93,24 +100,24 @@ var dispatchPromise = function(name, req, res) {
 server.listen(nconf.get('port'), '127.0.0.1');
 console.log("  Port " + nconf.get('port') + " listening");
 /* configuration of express4 */
+app.use(cors());
 app.use(bodyParser.json({limit: '3mb'}));
 app.use(bodyParser.urlencoded({limit: '3mb', extended: true}));
 
 app.get('/api/v:version/node/info', function(req, res) {
     return dispatchPromise('nodeInfo', req, res);
 });
-app.get('/api/v:version/node/activity/:format', function(req, res) {
-    return dispatchPromise('byDayActivity', req, res);
+
+/* byDay (impressions, users, metadata ) */
+app.get('/api/v:version/daily/:what', function(req, res) {
+    return dispatchPromise('byDayStats', req, res);
 });
-app.get('/node/posttype/:version/:format', function(req, res) {
-    return dispatchPromise('byDayPostType', req, res);
-});
-app.get('/api/v:version/node/countries/:format', function(req, res) {
+
+/* column only - c3 */
+app.get('/api/v:version/node/countries/c3', function(req, res) {
     return dispatchPromise('countriesStats', req, res);
 });
-app.get('/api/v:version/node/country/:countryCode/:format', function(req, res) {
-    return dispatchPromise('countryStatsByDay', req, res);
-});
+
 app.get('/api/v:version/post/reality/:postId', function(req, res) {
     return dispatchPromise('postReality', req, res);
 });
@@ -122,6 +129,11 @@ app.get('/api/v:version/user/timeline/:userId/:past/:R/:P', function(req, res) {
 });
 app.get('/api/v:version/user/:kind/:CPN/:userId/:format', function(req, res){
     return dispatchPromise('userAnalysis', req, res);
+});
+
+/* Querying API */
+app.post('/api/v:version/query', function(req, res) {
+    return dispatchPromise('queryContent', req, res);
 });
 
 /* Parser API */
@@ -150,19 +162,58 @@ app.post('/api/v:version/events', function(req, res) {
 //     return dispatchPromise('writeContrib', req, res);
 // });
 
+/* new personal page development  -- this will be protected */
+app.get('/api/v:version/timelines/:userId', function(req, res) {
+    return dispatchPromise('getTimelines', req, res);
+});
+app.get('/api/v:version/metadata/:timelineId', function(req, res) {
+    return dispatchPromise('getMetadata', req, res);
+});
 
-/* Only the *last version* is imply in the API below */
-/* legacy because the script it is still pointing here */
-app.get('/api/v:version/realitycheck/:userId', function(req, res) {
-    _.set(req.params, 'page', 'timelines');
-    return dispatchPromise('getPersonal', req, res);
+/* HTML single snippet */
+app.get('/api/v:version/html/coordinates/:userId/:timelineUUID/:order', function(req, res) {
+    return dispatchPromise('unitByCoordinates', req, res);
 });
-app.get('/realitycheck/:page/random', function(req, res) {
-    return dispatchPromise('getRandom', req, res);
+app.get('/api/v:version/html/ago/:days/:increment', function(req, res) {
+    return dispatchPromise('unitByDays', req, res);
 });
-app.get('/api/v:version/realitycheck/:page/:userId', function(req, res) {
-    return dispatchPromise('getPersonal', req, res);
+app.get('/api/v:version/html/:htmlId', function(req, res) {
+    return dispatchPromise('unitById', req, res);
 });
+/* The API above beside unitById have not yet an UX */
+app.get('/revision/:htmlId', function(req, res) {
+    req.params.page = 'revision';
+    return dispatchPromise('getPage', req, res);
+});
+
+/* NEW realitycheck page, using `personal` as block */
+app.get('/api/v1/personal/contribution/:userId/:skip/:amount', function(req, res) {
+    return dispatchPromise('personalContribution', req, res);
+});
+app.get('/api/v1/personal/promoted/:userId/:skip/:amount', function(req, res) {
+    return dispatchPromise('personalPromoted', req, res);
+});
+app.get('/api/v1/personal/heatmap/:userId/:skip/:amount', function(req, res) {
+    return dispatchPromise('personalHeatmap', req, res);
+});
+app.get('/api/v1/personal/htmls/:userId/:skip/:amount', function(req, res) {
+    return dispatchPromise('personalHTMLs', req, res);
+});
+app.get('/api/v1/personal/profile/:userId/', function(req, res) {
+    return dispatchPromise('personalProfile', req, res);
+});
+app.get('/realitycheck/:userId/:page', function(req, res) {
+    req.params.page = 'realitycheck-' + req.params.page;
+    return dispatchPromise('getPage', req, res);
+});
+/* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
+
+/* Alarm */
+app.get('/api/v1/alarms/:dayback', function(req, res) {
+    return dispatchPromise('getAlarms', req, res);
+});
+
+/* TO BE RESTORED */
 app.get('/realitymeter/:postId', function(req, res) {
     return dispatchPromise('getRealityMeter', req, res);
 });
@@ -186,18 +237,22 @@ app.get('/facebook.tracking.exposed.user.js', function (req, res) {
     res.sendFile(__dirname + '/scriptlastversion');
 });
 
-app.use('/css', express.static(__dirname + '/dist/css'));
-app.use('/images', express.static(__dirname + '/dist/images'));
-app.use('/lib/font/league-gothic', express.static(__dirname + '/dist/css'));
 
-app.use('/js/vendor', express.static(__dirname + '/dist/js/vendor'));
-/* development: the local JS are pick w/out "npm run build" every time */
+/* development: the local JS are pick w/out "npm run build" every time, and
+ * our locally developed scripts stay in /js/local */
 if(nconf.get('development') === 'true') {
     console.log(redOn + "ઉ DEVELOPMENT = serving JS from src" + redOff);
     app.use('/js/local', express.static(__dirname + '/sections/webscripts'));
 } else {
     app.use('/js/local', express.static(__dirname + '/dist/js/local'));
 }
+
+/* catch the other 'vendor' script in /js */
+app.use('/js', express.static(__dirname + '/dist/js'));
+app.use('/css', express.static(__dirname + '/dist/css'));
+app.use('/images', express.static(__dirname + '/dist/images'));
+app.use('/fonts', express.static(__dirname + '/dist/fonts'));
+
 /* last one, page name catch-all */
 app.get('/:page', function(req, res) {
     return dispatchPromise('getPage', req, res);
@@ -208,3 +263,17 @@ app.get('/', function(req, res) {
 });
 
 
+function infiniteLoop() {
+    /* this will launch other scheduled tasks too */
+    return Promise
+        .resolve()
+        .delay(60 * 1000)
+        .then(function() {
+            if(_.size(performa.queue))
+                return mongo
+                    .cacheFlush(performa.queue, "performa")
+        })
+        .then(infiniteLoop);
+};
+
+infiniteLoop();
