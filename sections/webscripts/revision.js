@@ -58,18 +58,21 @@ function loadsnippet(metadataContainer, renderContainer) {
 
     var days = _.parseInt($('#days').val());
     var skips = _.parseInt($('#skips').val());
+    var htmlId = document.location.pathname.split('/').pop();
 
-    var url = '/api/v1/html/ago/' + days + '/' + skips;
+    if(htmlId.length == 40) {
+        var url = '/api/v1/html/' + htmlId;
+    } else {
+        var url = '/api/v1/html/ago/' + days + '/' + skips;
+    }
     console.log(url);
 
     $.getJSON(url, function(something) {
         console.log("Metadata[s] " + JSON.stringify(something.metadata));
          
-       // 
         var content= something.html;
         
-         //qui lo fa giusto ma mi manca una regexp per finire
-        
+       //qui lo fa giusto ma mi manca una regexp per finire
        // content = content.replace('width="'+ +'"', '');
         
         $(renderContainer).html(content);
@@ -83,7 +86,6 @@ function loadsnippet(metadataContainer, renderContainer) {
     
         //qui lo fa però su tutta la pagina :(
         cleanstyle();
-    
     });
 };
 

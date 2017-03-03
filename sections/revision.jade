@@ -31,17 +31,6 @@ html
         include navbar
 
         .container-fluid
-            .col-md-5
-            .col-md-1.forms
-                .container-fluid
-                    form.center Days 
-                        input(id="days" type="number" name="days" min="1" max="20" value=1 onchange="loadsnippet('#metadest', '#render');") 
-                .container-fluid
-                    form.center Skip 
-                        input(id="skips" type="number" name="increment" min="0" value=0 onchange="loadsnippet('#metadest', '#render');") 
-            .col-md-4
-
-        .container-fluid
             .col-md-1
             .col-md-4.infoblock
                 h3
@@ -52,5 +41,4 @@ html
                 h3
                     a(id="bysnippet") The user saw this
                 div.snippet(id='render')
- script 
-        div.footer 
+
