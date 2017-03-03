@@ -5,6 +5,7 @@ var debug = require('debug')('hourly-usage');
 var moment = require('moment');
 var nconf = require('nconf');
 
+var utils = require('../lib/utils');
 var mongo = require('../lib/mongo');
 var timutils = require('../lib/timeutils');
 
@@ -27,7 +28,7 @@ var timeFilter = timutils.doFilter(
     );
 debug("Executing timewindow: %s", timutils.prettify(timeFilter));
 
-function getFromAccesses() {
+function getLocalizedAccesses() {
     var filter = { when: {
         "$gt": new Date(timeFilter.start),
         "$lt": new Date(timeFilter.end)
@@ -48,7 +49,7 @@ function getFromAccesses() {
       }, { visits: 0 });
 }
 
-function getNewTimelines() {
+function getLocalizedTimelines() {
     var filter = { startTime: {
         "$gt": new Date(timeFilter.start),
         "$lt": new Date(timeFilter.end)
@@ -105,9 +106,10 @@ function mergeAndSave(mixed) {
         visitcc: _.omit(mixed[0], ['visits']),
         timelines: mixed[1].timelines,
         timelinecc: _.omit(mixed[1], ['timelines']),
-        newsupp: mixed[2],
+        newsupporters: mixed[2],
         htmls: mixed[3],
-        impressions: mixed[4]
+        impressions: mixed[4],
+        id: utils.hash({ start: timeFilter.start })
     };
 
     return mongo
@@ -115,6 +117,7 @@ function mergeAndSave(mixed) {
       .then(function(exists) {
           if(_.size(exists)) {
             debug("Updting previous stats, starting at %s", results.start);
+            /* TODO: line by line comparison and diffs highlight */
             debug("%s", JSON.stringify(results, undefined, 2));
             return mongo
               .updateOne(nconf.get('schema').hourlyIO, {id: results.id}, results);
@@ -129,9 +132,9 @@ function mergeAndSave(mixed) {
 
 
 return Promise
-  .all([ getFromAccesses(),
-         getNewTimelines(),
+  .all([ getLocalizedAccesses(),
+         getLocalizedTimelines(),
          getNewSupporters(),
          getHTMLs(),
-         getImpressions() ])
+         getImpressions(), ])
   .then(mergeAndSave);
