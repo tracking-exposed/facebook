@@ -1,63 +1,68 @@
 doctype html
 html
-  head
-    link(rel='stylesheet', href='/css/index.css')
-    link(rel='stylesheet', href='/css/bootstrap.css')
-    link(rel='stylesheet', href='/css/c3.css')
-    script(type='text/javascript', src='/js/vendor/jquery.js')
-    script(type='text/javascript', src='/js/vendor/collapse.js')
-    script(type='text/javascript', src='/js/vendor/d3.min.js')
-    script(type='text/javascript', src='/js/vendor/c3.min.js')
-    script(type='text/javascript', src='/js/vendor/lodash.min.js')
-    script(type='text/javascript', src='/js/local/impact.js')
-    title ઉ Impact
+    head
+        link(rel='stylesheet', href='/css/index.css')
+        link(rel='stylesheet', href='/css/bootstrap.css')
+        link(rel='stylesheet', href='/css/c3.css')
+        script(type='text/javascript', src='/js/jquery.js')
+        script(type='text/javascript', src='/js/collapse.js')
+        script(type='text/javascript', src='/js/d3.min.js')
+        script(type='text/javascript', src='/js/c3.min.js')
+        script(type='text/javascript', src='/js/lodash.min.js')
+        script(type='text/javascript', src='/js/local/impact.js')
+        title Impact, adoption and open stats
 
-  body(onload="displayTimeAdoption('#timeAdoption'); displayCountryPie('#countrypie'); displayPostType('#postType');")
-  
-  .container-fluid
-    .jumbotron
-      h1 ઉ Impact
-      h3 The meta-data owned by this node, are public and part of the process
+    body(onload="byDay('impressions', '#goldmine'); byDay('metadata', '#metadata'); byDay('users', '#users'); displayCountryPie('#countrypie');")
+    
+    include header
+    include navbar
 
-  nav.navbar.navbar-default
-    div.container
-      div.navbar-header
-        button.navbar-toggle.collapsed(type="button" data-toggle="collapse" data-target="#thenavbar" aria-expanded="false")
-          span(id="sr-only") Toggle navigation
-          span.icon-bar
-          span.icon-bar
-          span.icon-bar
+    .container-fluid
+        .simpletext
+            h2 Adoption statistics
+            p Since the mid of December 2016, facebook.tracking.exposed is in ß release. below some graph of the data collected. As part of the stable delivery, we'll define how third party can download the dataset and how we might integrate third party analysis in our APIs.
+            p We know to be in a slippery terrain: in one side, enabling users to assess Personalisation Algorithm is our goal, in the other, we value Privacy and Identiy rights much more than the corporations we criticize. 
+                a(href="https://responsibledata.io/social-media-intelligence-the-wayward-child-of-open-source-intelligence/") Aware of the risks posed by social media intelligence
+                |, we aim to enable users awareness, but prevent abuses.
 
-      div.collapse.navbar-collapse(id="thenavbar")
-        ul.nav.navbar-nav
-          li
-            a(href='/') Home
-          li
-            a(href='/realitymeter') RealityMeter
-          li
-            a(href='/netzpolitick/') Slides
+        .simpletext
+            p Raw numbers
+            table
+                thead
+                    tr 
+                        th.col-sm-1 supporters
+                        th.col-sm-1 timelines
+                        th.col-sm-1 impressions
+                        th.col-sm-1 htmls
+                        th.col-sm-1 accesses
+                tbody
+                    tr 
+                        th.col-sm-1 #{supporters}
+                        th.col-sm-1 #{timelines}
+                        th.col-sm-1 #{impressions}
+                        th.col-sm-1 #{htmls}
+                        th.col-sm-1 #{accesses}
 
-  .container-fluid
-    .simpletext
-      h2 Adoption statistics
-      p Since the end of Summer 2016 facebook.tracking.exposed is in α release, below the graph of the collected data.
-      p Simple breakdown: #{users} unique users provided #{posts} posts in #{timelines} timelines.
+    .container-fluid
+        .simpletext
+            h2 Supporters, Page views
+        div(id="users")
 
-  .container-fluid
-    div(id="timeAdoption")
+    .container-fluid
+        .simpletext
+            h2 Impressions collected
+        div(id="goldmine")
 
-  .container-fluid
-    .simpletext
-      h2 Number of posts, by type
+    .container-fluid
+        .simpletext
+            h2 Medadata available
+            p The analysis is made by the parser,
+                a(href="https://github.com/tracking-exposed/facebook/issues/44") try to see how they works
+        div(id="metadata")
 
-  .container-fluid
-    div(id="postType")
+    .container-fluid
+        .simpletext
+            h2 Number of timelines collected by Nation
+        div(id="countrypie")
 
-  .container-fluid
-    .simpletext
-      h2 Number of refreshes collected by Nation
-
-  .container-fluid
-    div(id="countrypie")
-
-  div.footer
+    div.footer

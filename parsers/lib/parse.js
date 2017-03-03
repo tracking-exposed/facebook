@@ -1,12 +1,11 @@
-#!/usr/bin/env nodejs
 var _ = require('lodash');
 var Promise = require('bluebird');
 var fs = Promise.promisifyAll(require('fs'));
 var request = Promise.promisifyAll(require('request'));
 var cheerio = require('cheerio');
-var debug = require('debug')('parse⊹core');
+var debug = require('debug')('parser:⊹core');
 var moment = require('moment');
-var nconf = require('nconf');
+var nconf = require('nconf'); 
 
 nconf.argv().env();
 
@@ -28,7 +27,7 @@ function snippetAvailable(config, what) {
         "requirements": config.requirements || {}
     };
 
-    debug("Connect to %s\n%s",
+    debug("Connecting to %s\n%s",
         url, JSON.stringify(requestpayload, undefined, 2));
 
     return request
@@ -43,11 +42,16 @@ function snippetAvailable(config, what) {
 };
 
 function commitResult(config, newmeta, snippet) {
-    /* debug("metadata has %s keys newmeta %s",
-        _.keys(snippet.metadata), _.keys(newmeta)); */
+    debug("metadata was [%s] +[%s]",
+        _.keys(
+            _.omit(snippet, [
+                '_id', 'savingTime', 'id', 'userId',
+                'impressionId', 'timelineId', 'html' ])),
+        _.keys(newmeta)
+    );
 
     var update = {
-        snippetId: snippet.id,
+        htmlId: snippet.id,
         parserKey: config.key,
         metadata: newmeta,
         fields: _.keys(newmeta),
@@ -56,7 +60,7 @@ function commitResult(config, newmeta, snippet) {
     var url = composeURL('result');
     return request
         .postAsync(url, {form: update})
-        .delay(config.delay);
+        .delay(0); // Ignored config.delay
 };
 
 function importKey(config) {
@@ -71,14 +75,16 @@ function importKey(config) {
             return _.extend(config, parserKey);
         })
         .then(function(config) {
-            if(_.isNull(config.repeat))
-                ;
-            else if(config.repeat === 'false')
+            /* explicit, if is true, repeat the failure, otherwise
+             * only the new. if is required to reset a broken parser,
+             * mongo-scripts will permit extraordinaty intervention */
+            if(config.repeat === 'true') {
+                debug("Repeating analysis on previously failure { %s : false }",
+                    config.name);
                 _.set(config.requirements, config.name, false);
-            else if(config.repeat === 'true')
-                _.set(config.requirements, config.name, true);
+            }
             else
-                throw new Error("config.repeat has an unexpected value");
+                _.set(config.requirements, config.name, { "$exists" : false });
 
             return config;
         })
@@ -92,42 +98,24 @@ function importKey(config) {
 function please(config) {
     /* set default values if not specified */
     config.repeat = nconf.get('repeat') || null;
+    /* this is parsing concurrency, but the amount retrieved if server side fixed of 5 */
     config.snippetConcurrency = _.parseInt(nconf.get('concurrency')) || 5;
     config.delay = nconf.get('delay') || 200;
 
     if(!_.isObject(config.requirements)) {
         throw new Error(
-            "Developer, requirements has to be {} and pls check `repeat`");
+            "Developer, requirements has to be an object and check `repeat`");
     }
 
     return importKey(config)
         .then(function(xtConfig) {
-            return snippetAvailable(xtConfig, 'status')
-                .then(function(numbers) {
-                    xtConfig.slots=_.round(numbers.available/numbers.limit);
-                    debug("%d HTMLs, %d per request = %d requests",
-                        numbers.available, numbers.limit, xtConfig.slots);
-                    return Promise.map(
-                        iterateSlots(xtConfig),
-                        processHTMLbulk,
-                        { concurrency: 1 }
-                    );
-                });
+            return snippetAvailable(xtConfig, 'content')
+                .map(function(snippet) {
+                    var newmeta = config.implementation(snippet);
+                    return commitResult(config, newmeta, snippet);
+                }, {concurrency: config.snippetConcurrency});
         });
-};
 
-function iterateSlots(config) {
-    return _.times(config.slots + 1, function(i) {
-        return _.extend(config, { index: i });
-    });
-};
-
-function processHTMLbulk(config) {
-    return snippetAvailable(config, 'content')
-        .map(function(snippet) {
-            var newmeta = config.implementation(snippet);
-            return commitResult(config, newmeta, snippet);
-        }, {concurrency: config.snippetConcurrency});
 };
 
 

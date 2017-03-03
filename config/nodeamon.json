@@ -2,10 +2,12 @@
   "watch": [
     "lib/*.js",
     "sections/*.jade",
+    "sections/*/*.jade",
     "*.js",
     "dist/**"
   ],
   "ignore": [
+    "bin/**",
     ".git/",
     "node_modules/**/node_modules",
     "operations/",
@@ -16,7 +18,7 @@
   "verbose": true,
   "exitcrash": false,
   "env": {
-    "DEBUG": "c3,api-1,parser,onboarding,fbtrex,events,analysis,sharding,staticpages,utils"
+    "DEBUG": "-fbtrex,lib:*,-lib:parser,-lib:performa"
   },
   "ext": "js css json jade"
 }

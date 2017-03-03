@@ -1,0 +1,38 @@
+doctype html
+html
+    head
+        include headers
+        title facebook.tracking.exposed RealityCheck - your data
+
+    body(onload="loadHTMLs(getSupporterId(), '#contributionBlock'); /* loadPromoted(getSupporterId(), '#promotedTable'); */ ")
+
+        include intro
+        include userNavbar
+
+        div.container-fluid.realitycontainer
+            p.text.text-warning At the moment we are not managing timezone properly, so you'll see the date shifted from GMT
+
+        div.container-fluid.realitycontainer
+            p The metadata extraction can go deep to the number of likes, comments, language, sentiment and so on… implementation of these analysis will be available in the next weeks
+            div#shiftContributionBlock Load Next…
+            div#contributionBlock
+
+//        div.container-fluid.realitycontainer
+//            h3 Promoted analysis
+//            p This is a detailed list on who is promoting your feed
+//
+//        div.container-fluid.realitycontainer
+//            table#promotedTable.display(cellspacing='0', width='100%')
+//                thead
+//                    tr
+//                        th When
+//                        th Owner
+//                        th Media type
+//                        th Promoted link
+//                tfoot
+//                    tr
+//                        th When
+//                        th Owner
+//                        th Media type
+//                        th Promoted link
+//

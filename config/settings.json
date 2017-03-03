@@ -1,12 +1,16 @@
 {
   "schema": { 
-      "timelines": "timelines",
-      "impressions": "impressions",
-      "htmls": "htmls",
-      "suggestions": "suggestions",
-      "accesses": "accesses4",
-      "supporters": "supporters4"
+      "impressions": "impressions2",
+      "supporters": "supporters2",
+      "timelines": "timelines2",
+      "accesses": "accesses2",
+      "htmls": "htmls2",
+      "alarms": "alarms",
+      "performa": "performa",
+      "hourlyIO": "hourlyIO"
   },
   "mongodb": "mongodb://localhost/facebook",
-  "port": 8000
+  "password": "overwrittenbyENV",
+  "port": 8000,
+  "htmlMaxAmount": 5
 }

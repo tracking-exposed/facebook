@@ -1,0 +1,26 @@
+doctype html
+html
+    head
+        link(rel='stylesheet', href='/css/index.css')
+        link(rel='stylesheet', href='/css/bootstrap.css')
+        link(rel='stylesheet', href='/css/c3.css')
+        script(type='text/javascript', src='/js/jquery.js')
+        script(type='text/javascript', src='/js/collapse.js')
+        script(type='text/javascript', src='/js/d3.min.js')
+        script(type='text/javascript', src='/js/c3.min.js')
+        script(type='text/javascript', src='/js/lodash.min.js')
+        script(type='text/javascript', src='/js/local/alarms.js')
+        title Impact, adoption and open stats
+
+    body(onload="loadAlarms(5, '#alarms');")
+    
+    include header
+    include navbar
+
+    .container-fluid
+        .simpletext
+            h2 Alarms
+
+        div(id="alarms")
+
+    div.footer
