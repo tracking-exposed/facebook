@@ -82,24 +82,23 @@ function getPostBI(snippet) {
 
     if(_.isUndefined(href)) {
         debug("%s ∅", snippet.id);
-        return { 'feedPostHref': false };
+        return { 'feedBasicInfo': false };
     }
 
     var postCore = getPostCore(href);
     if(!postCore) {
         debug("%s ∅∅", snippet.id);
-        return { 'feedPostHref': false };
+        return { 'feedBasicInfo': false };
     }
 
-    debug("%s\n  ≻  %s", snippet.id, href);
-    var rv = { 'feedBasicInfo': true, 
-             'publicationUTime': postCore.utime,
-             'postId': postCore.postId,
-             'permaLink': href,
-             'hrefType': postCore.type // ['photo','post']
+    debug("%s ≻  %s %s", snippet.id, postCore.type, href);
+    return {
+        feedBasicInfo: true, 
+        publicationUTime: postCore.utime,
+        postId: postCore.postId,
+        permaLink: href,
+        hrefType: postCore.type // ['photo','post']
     };
-    debug("%s", JSON.stringify(rv, undefined, 3));
-    return rv;
 };
 
 var postHref = {
