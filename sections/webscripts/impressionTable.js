@@ -117,25 +117,36 @@ function getSupporterId() {
 };
 
 function loadCalmap(userId, containerId) {
-    var url = "/api/v1/personal/heatmap/" + userId;
 
     /* you can ask for a time window from the API */
     var lastTen= "/api/v1/personal/heatmap/" + userId + "/0/10";
-
     console.log("loading last 10 days calendar heatmap " + lastTen);
+
     var calhtmp= new CalHeatMap();
-    calhtmp.init({
-        itemSelector: containerId,
-        data: lastTen,
-        cellSize: 20,
-        start: new Date(moment().subtract(9, 'd')),
-        range: 10,
-        domain: "day",
-        subDomain: "hour",
-        legendColors: [ "yellow", "steelblue" ]
+
+    return $.getJSON(lastTen, function(content) {
+        if(!_.size(content)) {
+            var sorry = [ '<h3>',
+                          '…Sorry! Seems you have not yet submitted data!',
+                          '</h3>', '<p>',
+                          'Is your key publication been done properly, in a public post, right? (can only post the key, and delete the post later)',
+                          '</p>', '<p>',
+                          'If some problem is going on, admin manually try to fix it, keep using the browser with the extension installed, and thank you for belonging to this collective experiment.',
+                          '</p>' ];
+            $(containerId).html(sorry.join(''));
+            return;
+        } 
+        calhtmp.init({
+            itemSelector: containerId,
+            data: content,
+            cellSize: 20,
+            start: new Date(moment().subtract(9, 'd')),
+            range: 10,
+            domain: "day",
+            subDomain: "hour",
+            legendColors: [ "yellow", "steelblue" ]
+        });
     });
-    $(containerId).append('<p>This is the results from</p>');
-    $(containerId).append('<pre>' + url + '</pre>');
 };
 
 function loadContribution(userId, containerId) {
