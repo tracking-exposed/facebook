@@ -1,4 +1,24 @@
-h2 Page not found! 
+doctype html
+html
+  head
+    link(rel='stylesheet', href='/css/bootstrap.css')
+    link(rel='stylesheet', href='/css/index.css')
+    script(type='text/javascript', src='/js/jquery.js')
+    script(type='text/javascript', src='/js/collapse.js')
+    script(type='text/javascript', src='/js/bootstrap.min.js')
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    meta(name="keywords" content="facebook tracking exposed")
+    title 404
 
-h1
-  a(href="/") follow the path for the entrance
+  body
+
+    include header
+    include navbar
+
+    .container-fluid.center
+        h1 Page not found! 
+
+        h3 If you found a broken link, please 
+          a(href="https://github.com/tracking-exposed/facebook") report the error to the developers 
