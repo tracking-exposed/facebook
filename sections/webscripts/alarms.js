@@ -27,7 +27,7 @@ function loadAlarms(dayback, containerId) {
                             '<pre>' + JSON.stringify( _.omit(alarm.info, ['html']), undefined, 2) + '</pre>' +
                             '</div>'
                         );
-            } if {
+            } else {
                 $(containerId).append('<pre>' + JSON.stringify(alarm, undefined, 2) + '</pre>');
             }
         });
