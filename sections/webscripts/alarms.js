@@ -20,7 +20,7 @@ function loadAlarms(dayback, containerId) {
             /* "what": "supporter not found", */
             if(alarm.what === "supporter not found") {
                 $(containerId).append('<div>'+ alarm.when +' <span class="stuart '+ alarm.info.supporterId + '">publicKey=' + alarm.info.publickey + '&userId=' + alarm.info.supporterId + '</span></div>');
-            } else if(alarm.what === "onboarding" )
+            } else if(alarm.what === "onboarding" ) {
                 $(containerId).append(
                             '<div class="inclusive">' +
                             '<pre>' + JSON.stringify( _.omit(alarm, ['info']), undefined, 2) + '</pre>' +
