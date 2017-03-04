@@ -42,13 +42,13 @@ Open an issue in [facebook.tracking.exposed](https://github.com/tracking-exposed
 
 Some environment variables are checked by the parser library:
 
-  * `concurrency`: numbers of snipped parsed in parallel (but node VM is single thread so I don't really know what happen), default `1`
+  * `concurrency`: numbers of snipped parsed in parallel (but node VM is single thread so I don't really know what happen), default `5`
   * `DEBUG`: as usual by debug module
-  * `delay`: milliseconds to wait after every parsing, default `200`
   * `repeat`: can be undefined, and by default you get only the HTMLs that have not yet been checked by the parser. If `true`, return all the objects in which previous parsing has been successful. If `false`, return the object in which the parser failed during the previous executions.
   * `since`: the starting date by default is `2016-09-11`
   * `until`: the end data of the window in analysis (to be tested?)
   * `url`: by default https://facebook.tracking.exposed
+  * `id`: overwrites all the other requirement, is supposed to be the htmls.id hash, used to request for a specific snippet
 
 
 ## The API and the parser...

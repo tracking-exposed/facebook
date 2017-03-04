@@ -12,5 +12,5 @@
   "mongodb": "mongodb://localhost/facebook",
   "password": "overwrittenbyENV",
   "port": 8000,
-  "htmlMaxAmount": 5
+  "htmlMaxAmount": 30
 }

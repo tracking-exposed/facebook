@@ -27,8 +27,12 @@ function snippetAvailable(config, what) {
         "requirements": config.requirements || {}
     };
 
-    debug("Connecting to %s\n%s",
-        url, JSON.stringify(requestpayload, undefined, 2));
+    /* id overwrites every other requirement */
+    if(nconf.get('id'))
+        requestpayload.requirements = { id : nconf.get('id') };
+
+    debug("Connecting to %s", url);
+    debug("⭐ %s", JSON.stringify(requestpayload, undefined, 2));
 
     return request
         .postAsync(url, {form: requestpayload})
@@ -59,8 +63,7 @@ function commitResult(config, newmeta, snippet) {
     }
     var url = composeURL('result');
     return request
-        .postAsync(url, {form: update})
-        .delay(0); // Ignored config.delay
+        .postAsync(url, {form: update});
 };
 
 function importKey(config) {
@@ -100,7 +103,6 @@ function please(config) {
     config.repeat = nconf.get('repeat') || null;
     /* this is parsing concurrency, but the amount retrieved if server side fixed of 5 */
     config.snippetConcurrency = _.parseInt(nconf.get('concurrency')) || 5;
-    config.delay = nconf.get('delay') || 200;
 
     if(!_.isObject(config.requirements)) {
         throw new Error(
