@@ -1,3 +1,4 @@
+#!/usr/bin/env nodejs
 var _ = require('lodash');
 var cheerio = require('cheerio');
 var moment = require('moment');
