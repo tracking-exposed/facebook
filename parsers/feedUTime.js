@@ -12,13 +12,18 @@ function getFeedUTime(snippet) {
         'feedUTime': false
     }
 
-    var varstr = $(".timestampContent")[0].parent.attribs['data-utime'];
-    var rv = _.parseInt(varstr);
+    try {
+        var varstr = $(".timestampContent")[0].parent.attribs['data-utime'];
+        var rv = _.parseInt(varstr);
+    } catch(error) {
+        debug("probably wrong postType associated to %s", snippet.id);
+        return retO;
+    }
 
     if(_.isNaN(rv)) {
-        debug("Failure ・%s ", snippet.id);
+        debug("Parsng failure %s ", snippet.id);
     } else {
-        debug("Extracted %s ・%s ", moment(rv * 1000), snippet.id);
+        debug("Extracted %s %s ", moment(rv * 1000), snippet.id);
         retO.feedUTime = true;
         retO.publicationUTime = rv;
     }
