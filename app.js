@@ -174,9 +174,6 @@ app.get('/api/v:version/metadata/:timelineId', function(req, res) {
 app.get('/api/v:version/html/coordinates/:userId/:timelineUUID/:order', function(req, res) {
     return dispatchPromise('unitByCoordinates', req, res);
 });
-app.get('/api/v:version/html/ago/:days/:increment', function(req, res) {
-    return dispatchPromise('unitByDays', req, res);
-});
 app.get('/api/v:version/html/:htmlId', function(req, res) {
     return dispatchPromise('unitById', req, res);
 });
