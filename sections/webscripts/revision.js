@@ -56,14 +56,13 @@ function cleanstyle(){
 
 function loadsnippet(metadataContainer, renderContainer) {
 
-    var days = _.parseInt($('#days').val());
-    var skips = _.parseInt($('#skips').val());
     var htmlId = document.location.pathname.split('/').pop();
 
     if(htmlId.length == 40) {
         var url = '/api/v1/html/' + htmlId;
     } else {
-        var url = '/api/v1/html/ago/' + days + '/' + skips;
+        console.error("htmlId not found");
+        console.log(document.location);
     }
     console.log(url);
 
