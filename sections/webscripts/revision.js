@@ -5,6 +5,8 @@ function getParserHref(parserName) {
         return 'https://github.com/tracking-exposed/facebook/blob/master/parsers/postType.js';
     } else if(parserName === 'feedBasicInfo') {
         return 'https://github.com/tracking-exposed/facebook/blob/master/parsers/feedBasicInfo.js';
+    } else if(parserName === 'feedUTime') {
+        return 'https://github.com/tracking-exposed/facebook/blob/master/parsers/feedUTime.js';
     } else if(parserName === 'feedReactions') {
         return 'https://github.com/tracking-exposed/facebook/blob/master/parsers/feedReactions.js';
     } else if(parserName === 'promotedInfo') {
@@ -18,7 +20,7 @@ function getParserHref(parserName) {
 
 function getParserByBool(parserName) {
     var href = getParserHref(parserName);
-    return '<a href="' + href + '" target=_blank>' + parserName + '</a>';
+    return '<a href="' + href + '" target="_blank">' + parserName + '</a>';
 }
 
 function failOrSuccess(value) {
@@ -82,6 +84,16 @@ function loadsnippet(metadataContainer, renderContainer) {
         );
         $('#bymeta').attr('href', '/revision/' + something.metadata.id);
         $('#bysnippet').attr('href', '/revision/' + something.metadata.id);
+
+        /*
+         * test seguendo https://highlightjs.org/usage/ non è funzionato, ppfff
+         * ma potrebbe starci bene avere l'HTML formattato da un plugin
+         * a fine pagina.
+        $('pre code').each(function(i, block) {
+            block.innerText = content;
+            hljs.highlightBlock(block);
+        });
+        */
     
         //qui lo fa però su tutta la pagina :(
         cleanstyle();
