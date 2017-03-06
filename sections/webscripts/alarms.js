@@ -12,8 +12,9 @@ function hostess(e) {
 };
 
 
-function loadAlarms(dayback, containerId) {
-    var url = '/api/v1/alarms';
+function loadAlarms(containerId) {
+    var password = $('#password').val();
+    var url = '/api/v1/alarms/' + password;
 
     $.getJSON(url, function(collection) {
         _.each(collection, function(alarm) {

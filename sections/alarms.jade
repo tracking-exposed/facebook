@@ -12,7 +12,7 @@ html
         script(type='text/javascript', src='/js/local/alarms.js')
         title Impact, adoption and open stats
 
-    body(onload="loadAlarms(5, '#alarms');")
+    body
     
     include header
     include navbar
@@ -23,6 +23,7 @@ html
 
             form.center Password: 
                 input(id="password" name="password")
+                button(onclick="loadAlarms('#alarms');") Load
 
             div(id="alarms")
 
