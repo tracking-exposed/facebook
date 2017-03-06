@@ -185,20 +185,27 @@ function feedFormat(entry) {
     return feedPrefix + '<span class="feed">Saved ' + distance + ' ago </span>';
 };
 
+var currentlyLoaded = 0;
+var amount = 50;
+
 function loadHTMLs(userId, containerId) {
-    var url = "/api/v1/personal/htmls/" + userId + '/0/50';
+    var start = currentlyLoaded;
+    currentlyLoaded = (start + amount);
+    var url = "/api/v1/personal/htmls/" + userId + '/' + start + '/' + amount;
     $.getJSON(url, function(collection) {
         _.each(collection, function(entry, i) {
         
-            var prettyHtml = '<a href="/revision/' + entry.id + '">🔗 original </a>';
+            var prettyHtml = '<a href="/revision/' + entry.id + '" target="_blank">🔗 original </a>';
             
             if(entry.type === 'promoted')
                 prettyHtml += promotedFormat(entry);
             else
                 prettyHtml += feedFormat(entry);
 
-            $(containerId).append('<div class="entry">' + prettyHtml + '</div>');
+            $(containerId).append('<div class="entry">' + '<span class="num">' + (i + 1 + start) + '</span>' + prettyHtml + '</div>');
         });
+        if(_.size(collection) != amount)
+            $('#shiftContributionBlock').hide();
     });
 };
 
