@@ -206,7 +206,7 @@ app.get('/realitycheck/:userId/:page', function(req, res) {
 /* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
 
 /* Alarm */
-app.get('/api/v1/alarms', function(req, res) {
+app.get('/api/v1/alarms/:auth', function(req, res) {
     return dispatchPromise('getAlarms', req, res);
 });
 
