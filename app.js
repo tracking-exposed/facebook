@@ -124,9 +124,6 @@ app.get('/api/v:version/post/reality/:postId', function(req, res) {
 app.get('/api/v:version/post/perceived/:postId/:userId', function(req, res){
     return dispatchPromise('postLife', req, res);
 });
-app.get('/api/v:version/user/timeline/:userId/:past/:R/:P', function(req, res) {
-    return dispatchPromise('userTimeLine', req, res);
-});
 app.get('/api/v:version/user/:kind/:CPN/:userId/:format', function(req, res){
     return dispatchPromise('userAnalysis', req, res);
 });
@@ -158,16 +155,16 @@ app.post('/api/v:version/events', function(req, res) {
 });
 
 
-// app.post('/api/v:version/contrib/:which', function(req, res) {
-//     return dispatchPromise('writeContrib', req, res);
-// });
-
 /* new personal page development  -- this will be protected */
 app.get('/api/v:version/timelines/:userId', function(req, res) {
     return dispatchPromise('getTimelines', req, res);
 });
 app.get('/api/v:version/metadata/:timelineId', function(req, res) {
     return dispatchPromise('getMetadata', req, res);
+});
+app.get('/api/v:version/refreshmap/:userId/:not/:noi', function(req, res) {
+    /* restored from the alpha, from Michele Invernizzi  */
+    return dispatchPromise('userTimeLine', req, res);
 });
 
 /* HTML single snippet */

@@ -1,3 +1,5 @@
+/* This visualization has been recovered just to provide a pretty graph, but the
+ * amout of data available in the ß are far stronger than this.  */
 
 //modify focus behaviour in input fields
 function setFocus(parent) {
@@ -8,18 +10,22 @@ function setFocus(parent) {
 var duration = 200,
     delay = function (d,i) {return i * 25;};
 
-function loadTimelines(fbId, containerId) {
-    var refNum = d3.select(".refresh-num").property("value");
+function loadTimelines(supporterId, containerId) {
+    console.log("loadTimelines of", supporterId, "in", containerId);
 
-    var url = "/api/v1/user/timeline/" + fbId + "/0/" + refNum + "/20";
-    d3.json(url, function(error, data) {
+    /* NOT → number of timelines, NOI →  n.of impressions */
+    var NOT = 6; 
+    var NOI = 20;
+
+    var url = "/api/v1/refreshmap/" + supporterId + "/" + NOT + "/" + NOI;
+    console.log(url);
+
+    return d3.json(url, function(error, data) {
         if (error) return console.error(error);
 
         //control click behaviour
         var clicked = false;
 
-        //show legend and toggle-slider
-        d3.select(".legend-box").classed("showed", true);
         d3.select(".toggle-box").classed("showed", true);
 
         //generate main body and activate toogle-sliders
@@ -31,74 +37,10 @@ function loadTimelines(fbId, containerId) {
                         .append("div")
                         .attr("class", "main");
 
-        var typeToggle = d3
-          .select(".toggle-sort-type")
-          .on("click", function() {
-              var btn = d3.select(this);
-              var other = d3.select(".toggle-sort-time");
-
-              btn.classed("on", !btn.classed("on"));
-              other.classed("on", false);
-
-              d3.selectAll(".main .container")
-                  .each(function(d,i) {
-                      d3.select(this)
-                          .selectAll(".timeline")
-                          .sort(function(a,b) {
-                              if(btn.classed("on"))
-                                  return d3.descending(a.type, b.type);
-                              else
-                                  return a.order - b.order;
-                          })
-                          .transition()
-                          .duration(duration)
-                          .delay(delay)
-                          .style("order", function(d,i) {return i});
-                  });
-            });
-
-        var timeToggle = d3.select(".toggle-sort-time")
-          .on("click", function() {
-                var btn = d3.select(this);
-                var other = d3.select(".toggle-sort-type");
-
-                btn.classed("on", !btn.classed("on"));
-                other.classed("on", false);
-
-                d3.selectAll(".main .container")
-                  .each(function(d,i) {
-                    d3.select(this)
-                      .selectAll(".timeline")
-                      .sort(function(a,b) {
-                        if(btn.classed("on"))
-                          return (
-                            _.get(b, "creationTime", 
-                                new Date(1990, 12)) -
-                            _.get(a, "creationTime", 
-                                new Date(1990, 12))
-                          )
-                        else
-                          return a.order - b.order;
-                      })
-                      .transition()
-                      .duration(duration)
-                      .delay(delay)
-                      .style("order", function(d,i) {return i});
-                  });
-            });
-
-        var infoToggle = d3.select(".toggle-info")
-          .on("click", function() {
-              var btn = d3.select(this),
-                  container = d3.select(".main");
-
-              btn.classed("on", !btn.classed("on"));
-              container.classed("on", !container.classed("on"));
-          });
-
+        console.log(data);
         //generate column headers with date and time
         var topContainer = labels.selectAll("div.container")
-                                  .data(data.refreshes)
+                                  .data(data.timelines)
                                   .enter()
                                   .append("div")
                                   .attr("class", "container");
@@ -120,6 +62,7 @@ function loadTimelines(fbId, containerId) {
 
         var timeline = bottomContainer.selectAll("div.posts")
             .data(function(d) {
+                console.log(d);
                 return d;
             })
             .enter()
