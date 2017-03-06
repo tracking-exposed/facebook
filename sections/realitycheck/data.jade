@@ -4,7 +4,7 @@ html
         include headers
         title facebook.tracking.exposed RealityCheck - your data
 
-    body(onload="loadHTMLs(getSupporterId(), '#contributionBlock'); /* loadPromoted(getSupporterId(), '#promotedTable'); */ ")
+    body(onload="loadHTMLs(getSupporterId(), '#contributionBlock');")
 
         include intro
         include userNavbar
@@ -14,8 +14,9 @@ html
 
         div.container-fluid.realitycontainer
             p The metadata extraction can go deep to the number of likes, comments, language, sentiment and so on… implementation of these analysis will be available in the next weeks
-            div#shiftContributionBlock Load Next…
             div#contributionBlock
+            div#shiftContributionBlock(onclick="loadHTMLs(getSupporterId(), '#contributionBlock');")
+              b Load Next 50…
 
 //        div.container-fluid.realitycontainer
 //            h3 Promoted analysis
