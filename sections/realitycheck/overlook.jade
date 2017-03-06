@@ -1,0 +1,36 @@
+doctype html
+html
+    head
+        link(rel='stylesheet', type='text/css', href='/js/local/overlook.css')
+        include headers
+        script(type='text/javascript', charset='utf8', src='/js/local/overlook.js')
+        title facebook.tracking.exposed Your RealityCheck
+
+    body(onload="loadRefreshMap(getSupporterId(), '#visualization');")
+
+        include intro
+        include userNavbar
+
+        .viz-header
+          .legend-box
+            .legend
+              .container
+                .timeline(style='background-color: #81e3ea')
+                .legend-labels
+                  p feed
+              .container
+                .timeline(style='background-color: #eaea5e')
+                .legend-labels
+                  p friend link
+              .container
+                .timeline(style='background-color: #f76f61')
+                .legend-labels
+                  p promoted
+              .container
+                .timeline(style='background-color: #414141')
+                .legend-labels
+                  p broken
+
+
+        div(id="visualization")
+
