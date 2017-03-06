@@ -19,10 +19,8 @@ function composeURL(what) {
 function snippetAvailable(config, what) {
     var url = composeURL(what);
     var requestpayload = {
-        "since": nconf.get('since')
-            ? moment(nconf.get('since')) : config.since,
-        "until": nconf.get('until')
-            ? moment(nconf.get('until')) : config.until,
+        "since": nconf.get('since') ? nconf.get('since') : config.since,
+        "until": nconf.get('until') ? nconf.get('until') : config.until,
         "parserName": config.name,
         "requirements": config.requirements || {}
     };
