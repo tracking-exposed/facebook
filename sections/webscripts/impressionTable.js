@@ -170,7 +170,7 @@ function loadContribution(userId, containerId) {
 
 function promotedFormat(entry) {
     var distance = moment.duration(moment() - moment(entry.savingTime)).humanize();
-    var promotedPrefix = '<span class="prefix">﴿ promoted</span>';
+    var promotedPrefix = '<span class="prefix promoted">﴿ promoted</span>';
     if(entry.promotedTitle && entry.promotedInfo)
        var promotedInfo = '<a target="_blank" href="' + entry.ownerName + '"class="ownerName">' + entry.title + '</a>';
     else
@@ -179,10 +179,35 @@ function promotedFormat(entry) {
     return promotedPrefix + '<span class="promoted">' + distance + ' ago, </span>' + promotedInfo;
 };
 
+/* In theory, we can regulate here the print of 'Hour:minute day' if is in the last 24 hour, or 'Hour day/month' if older,
+ * specially, some posts are more than 1 year old. In such cases, printing the YYYY is necessary */
+function formatByDistance(entry) {
+    return 'HH:mm DD MMMM';
+}
+
+function feedInfo(entry) {
+
+    var fmtStr = formatByDistance(entry.publicationUTime);
+    var retT = "";
+    if(entry.feedUTime && entry.permaLink)
+        retT += 'posted on <a href="https://www.facebook.com'+ entry.permaLink +'" target="_blank">' + moment(entry.publicationUTime * 1000).format(fmtStr) + '</a>';
+    if(entry.hrefType === 'groupPost')
+        retT += ' <b>post from a Group</b>';
+    else if(entry.hrefType === 'photo')
+        retT += ' <b>photo</b>';
+    else if(entry.hrefType === 'photo')
+        retT += ' <b>video</b>';
+    else if(entry.hrefType)
+        retT += " <b>" + entry.hrefType + "</b>";
+
+    return retT;
+};
+
 function feedFormat(entry) {
     var distance = moment.duration(moment() - moment(entry.savingTime)).humanize();
     var feedPrefix = '<span class="prefix">⧼ newsfeed</span>';
-    return feedPrefix + '<span class="feed">Saved ' + distance + ' ago </span>';
+    var info = feedInfo(entry);
+    return feedPrefix + '<span class="feed">Saved ' + distance + ' ago — ' + info + '</span>';
 };
 
 var currentlyLoaded = 0;
