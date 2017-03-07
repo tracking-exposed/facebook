@@ -91,7 +91,7 @@ function loadRefreshMap(supporterId, containerId) {
                 else if (d.visibility === "private")
                     return "friends-only post are excluded from analysis";
                 else
-                    return "unrecognized posts";
+                    return "unrecognized entry";
             })
             .style("background-color", function(d) {
                 if (d.visibility === "private")
@@ -100,9 +100,8 @@ function loadRefreshMap(supporterId, containerId) {
                     return "#81e3ea";
                 else if (d.metadata && d.metadata.type === "promoted")
                     return "#f76f61";
-                else { /* these are broken/unparsed posts */
-                    return "#414141";
-                }
+                else /* these are broken/unparsed posts */
+                    return 'lavender';
             })
             .style("cursor", function(d) {
                 if(d.metadata && d.metadata.type === 'feed')
@@ -119,8 +118,10 @@ function loadRefreshMap(supporterId, containerId) {
                     return moment(d.metadata.publicationUTime * 1000).format("HH:mm DD ddd");
                 else if (d.metadata && d.metadata.type === "promoted")
                     return "Promoted";
+                if (d.visibility === "private")
+                    return "Friends only";
                 else
-                    return "Not available";
+                    return "Special";
             })
             .on("click", function(d) {
                 var dataId = d3.select(this).attr("data-id");

@@ -45,7 +45,7 @@
     width: 80%;
 }
 
-.timestamp, .legend-labels {
+.timestamp {
     height: 52px;
     text-align: center;
     width: 108px;
@@ -85,6 +85,7 @@
 }
 
 .post-time {
+    border-radius: 4px;
     font-size: 0.9em;
     margin: 0;
     -webkit-transition: all 0.5s ease;
@@ -103,3 +104,7 @@
     font-size: 1.7em;
 }
 
+.legend {
+    padding-left: 10px;
+    border-radius: 4px;
+}
