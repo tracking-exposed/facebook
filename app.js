@@ -193,9 +193,10 @@ app.get('/api/v1/personal/heatmap/:userId/:skip/:amount', function(req, res) {
 app.get('/api/v1/personal/htmls/:userId/:skip/:amount', function(req, res) {
     return dispatchPromise('personalHTMLs', req, res);
 });
+/*
 app.get('/api/v1/personal/profile/:userId/', function(req, res) {
     return dispatchPromise('personalProfile', req, res);
-});
+}); */
 app.get('/realitycheck/:userId/:page', function(req, res) {
     req.params.page = 'realitycheck-' + req.params.page;
     return dispatchPromise('getPage', req, res);
