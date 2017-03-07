@@ -37,7 +37,6 @@ function loadRefreshMap(supporterId, containerId) {
                         .append("div")
                         .attr("class", "main");
 
-        console.log(data);
         //generate column headers with date and time
         var topContainer = labels
               .selectAll("div.container")
@@ -102,7 +101,6 @@ function loadRefreshMap(supporterId, containerId) {
                 else if (d.metadata && d.metadata.type === "promoted")
                     return "#f76f61";
                 else { /* these are broken/unparsed posts */
-                    console.log(d);
                     return "#414141";
                 }
             })
