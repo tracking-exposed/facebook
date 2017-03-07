@@ -140,7 +140,7 @@ function byDay(kind, containerId) {
         return;
     }
 
-    var url = '/api/v1/' + _.nth(kindMap[kind], 0);
+    var url = '/api/v1/' + _.nth(kindMap[kind], 0) + '/3';
     var renderF = _.nth(kindMap[kind], 1);
 
     console.log("Fetching for", kind, "in", url);

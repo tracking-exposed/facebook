@@ -12,7 +12,7 @@ html
         script(type='text/javascript', src='/js/local/impact.js')
         title Impact, adoption and open stats
 
-    body(onload="byDay('impressions', '#goldmine'); byDay('metadata', '#metadata'); byDay('users', '#users'); displayCountryPie('#countrypie');")
+    body(onload="byDay('impressions', '#goldmine'); byDay('metadata', '#metadata'); byDay('users', '#users'); /* displayCountryPie('#countrypie'); */ ")
     
     include header
     include navbar
@@ -24,6 +24,7 @@ html
             p We know to be in a slippery terrain: in one side, enabling users to assess Personalisation Algorithm is our goal, in the other, we value Privacy and Identiy rights much more than the corporations we criticize. 
                 a(href="https://responsibledata.io/social-media-intelligence-the-wayward-child-of-open-source-intelligence/") Aware of the risks posed by social media intelligence
                 |, we aim to enable users awareness, but prevent abuses.
+            p The graphs below are limited to the days after the 4th of March 2017
 
         .simpletext
             p Raw numbers
@@ -43,6 +44,7 @@ html
                         th.col-sm-1 #{htmls}
                         th.col-sm-1 #{accesses}
 
+    // The graph above are limited since the 4th of March
     .container-fluid
         .simpletext
             h2 Supporters, Page views
@@ -60,9 +62,10 @@ html
                 a(href="https://github.com/tracking-exposed/facebook/issues/44") try to see how they works
         div(id="metadata")
 
-    .container-fluid
-        .simpletext
-            h2 Number of timelines collected by Nation
-        div(id="countrypie")
+    //-
+        .container-fluid
+            .simpletext
+                h2 Number of timelines collected by Nation
+            div(id="countrypie")
 
     div.footer
