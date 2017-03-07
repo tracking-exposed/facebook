@@ -109,7 +109,7 @@ app.get('/api/v:version/node/info', function(req, res) {
 });
 
 /* byDay (impressions, users, metadata ) */
-app.get('/api/v:version/daily/:what', function(req, res) {
+app.get('/api/v:version/daily/:what/:dayback', function(req, res) {
     return dispatchPromise('byDayStats', req, res);
 });
 
@@ -164,7 +164,7 @@ app.get('/api/v:version/metadata/:timelineId', function(req, res) {
 });
 app.get('/api/v:version/refreshmap/:userId/:not/:noi', function(req, res) {
     /* restored from the alpha, from Michele Invernizzi  */
-    return dispatchPromise('userTimeLine', req, res);
+    return dispatchPromise('getRefreshMap', req, res);
 });
 
 /* HTML single snippet */
