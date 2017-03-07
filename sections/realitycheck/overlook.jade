@@ -11,26 +11,24 @@ html
         include intro
         include userNavbar
 
-        .viz-header
-          .legend-box
-            .legend
-              .container
-                .timeline(style='background-color: #81e3ea')
-                .legend-labels
-                  p feed
-              .container
-                .timeline(style='background-color: #eaea5e')
-                .legend-labels
-                  p friend link
-              .container
-                .timeline(style='background-color: #f76f61')
-                .legend-labels
-                  p promoted
-              .container
-                .timeline(style='background-color: #414141')
-                .legend-labels
-                  p broken
+        .container-fluid
+            span.col-md-1
+            span.col-md-2
+                div(class="legend" style='background-color: #81e3ea')
+                    p public posts — 
+                        i publication time
+                div(class="legend" style='background-color: #eaea5e')
+                    p friends-only
+                div(class="legend" style='background-color: #f76f61')
+                    p promoted
+                div(class="legend" style='background-color: #414141')
+                    p unrecognized
 
+            span.col-md-1
+            span.col-md-8
+                div(id="information") 
+                    i move over the posts below to get info
+                
 
         div(id="visualization")
 

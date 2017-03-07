@@ -10,7 +10,7 @@ function setFocus(parent) {
 var duration = 200,
     delay = function (d,i) {return i * 25;};
 
-function loadTimelines(supporterId, containerId) {
+function loadRefreshMap(supporterId, containerId) {
     console.log("loadTimelines of", supporterId, "in", containerId);
 
     /* NOT → number of timelines, NOI →  n.of impressions */
@@ -39,120 +39,112 @@ function loadTimelines(supporterId, containerId) {
 
         console.log(data);
         //generate column headers with date and time
-        var topContainer = labels.selectAll("div.container")
-                                  .data(data.timelines)
-                                  .enter()
-                                  .append("div")
-                                  .attr("class", "container");
-
-        var timestamp = topContainer.append("div")
-                                    .attr("class", "timestamp");
-
-        timestamp.append("p")
-            .text(function(d) {
-                return moment(d.refreshTime).format("DD/MM HH:mm");
-            });
+        var topContainer = labels
+              .selectAll("div.container")
+              .data(_.map(data.timelines, 'start'))
+              .enter()
+              .append("div")
+              .attr("class", "container")
+              .append("div")
+              .attr("class", "timestamp")
+              .append("p")
+              .text(function(d) {
+                  return moment(d).format("DD/MM HH:mm");
+              })
+              .append("p")
+              .append("small")
+              .text(function(d) {
+                  return moment.duration(moment() - moment(d)).humanize() + ' ago';
+              });
 
         //generate columns with timelines
         var bottomContainer = main.selectAll("div.container")
-            .data(data.timelines)
+            .data(data.impressions)
             .enter()
             .append("div")
             .attr("class", "container");
 
         var timeline = bottomContainer.selectAll("div.posts")
-            .data(function(d) {
-                console.log(d);
-                return d;
+            .data(function(timelines) {
+                return _.map(timelines, function(t) {
+                    var match  = _.find(data.metadata, { id: t.htmlId });
+                    if(match)
+                        t.metadata = match;
+                    return t;
+                });
             })
             .enter()
             .append("div")
             .attr("class", "timeline")
             .attr("data-id", function(d) {
-                if (d.postId === null) {
-                    if (d.hasOwnProperty("href")) {
-                        var re = /['\n]/g,
-                            newRef = d.href.replace(re, " ");
-                        var finalRef = newRef.replace(/"\sdata-t.*/, "");
-                        return finalRef;
-                    }
-                } else {
-                    return d.postId;
-                }
+                if(d.metadata && d.metadata.type === 'feed')
+                    return d.metadata.permaLink;
+                else if(d.metadata && d.metadata.type === 'promoted')
+                    return d.metadata.titleId;
+                else
+                    return d.id;
+            })
+            .attr("info", function(d) {
+                if(d.metadata && d.metadata.type === 'feed')
+                    return "🔗 " + d.metadata.permaLink + " ⟬" + d.metadata.hrefType + "⟭";
+                else if(d.metadata && d.metadata.type === 'promoted')
+                    return d.metadata.title;
+                else if (d.visibility === "private")
+                    return "friends-only post are excluded from analysis";
+                else
+                    return "unrecognized posts";
             })
             .style("background-color", function(d) {
-                if (d.type === "broken") {
-                    return "#414141";
-                } else if (d.type === "feed") {
-                    return "#81e3ea";
-                } else if (d.type === "promoted") {
-                    return "#f76f61";
-                } else {
+                if (d.visibility === "private")
                     return "#eaea5e";
+                else if (d.metadata && d.metadata.type === "feed")
+                    return "#81e3ea";
+                else if (d.metadata && d.metadata.type === "promoted")
+                    return "#f76f61";
+                else { /* these are broken/unparsed posts */
+                    console.log(d);
+                    return "#414141";
                 }
             })
             .style("cursor", function(d) {
-                if (d.type !== "broken") {
+                if(d.metadata && d.metadata.type === 'feed')
                     return "pointer";
-                }
+                else if(d.metadata && d.metadata.type === 'promoted')
+                    return "not-allowed";
             })
             .style("order", function(d) {
-                return d.order;
+                return d.impressionOrder;
             })
-            .on("click", function(d) {
-                clicked = !clicked;
-                if (clicked) {
-                    if (d.type !== "broken") {
-                        var dataId = d3.select(this).attr("data-id");
-
-                        d3.selectAll(".main .timeline:not([data-id='" + dataId + "'])")
-                            .classed("fade", true);
-                        d3.selectAll(".main .timeline[data-id='" + dataId + "']")
-                            .classed("highlight", true);
-                    }
-                } else {
-                    d3.selectAll(".timeline")
-                        .classed("fade", false);
-                    d3.selectAll(".timeline")
-                        .classed("highlight", false);
-                }
-            })
-            .on("mouseover", function(d) {
-                if (!clicked) {
-                    if (d.type !== "broken") {
-                        var dataId = d3.select(this).attr("data-id");
-
-                        d3.selectAll(".main .timeline:not([data-id='" + dataId + "'])")
-                            .classed("fade", true);
-                        d3.selectAll(".main .timeline[data-id='" + dataId + "']")
-                            .classed("highlight", true);
-                    }
-                }
-            })
-            .on("mouseout", function(d) {
-                if (!clicked) {
-                    d3.selectAll(".timeline")
-                        .classed("fade", false);
-                    d3.selectAll(".timeline")
-                        .classed("highlight", false);
-                }
-            });
-
-        //assign post order and creation time to all the posts
-        timeline.append("p")
-            .attr("class", "post-order")
-            .text(function(d) {
-                return d.order + "º";
-            });
-
-        timeline.append("div")
-            .append("p")
             .attr("class", "post-time")
             .text(function(d) {
-                if(d.type === 'promoted')
+                if(d.metadata && d.metadata.type === 'feed')
+                    return moment(d.metadata.publicationUTime * 1000).format("HH:mm DD ddd");
+                else if (d.metadata && d.metadata.type === "promoted")
+                    return "Promoted";
+                else
                     return "Not available";
-                return moment(d.creationTime).format("DD/MM HH:mm:ss");
-            });
+            })
+            .on("click", function(d) {
+                var dataId = d3.select(this).attr("data-id");
+                if(_.startsWith(dataId, '/'))
+                    window.open('https://www.facebook.com' + dataId, '_blank');
+            })
+            .on("mouseover", function(d) {
+                var info = d3.select(this).attr("info");
+                var dataId = d3.select(this).attr("data-id");
 
+                d3.select("#information")
+                    .text(info);
+                d3.selectAll(".main .timeline:not([data-id='" + dataId + "'])")
+                    .classed("highlight", true);
+            })
+            .on("mouseout", function(d) {
+                d3.selectAll("#information").text("");
+            })
+            .append("p")
+                .attr("class", "post-order")
+                .text(function(d) {
+                    return d.impressionOrder + "º";
+            });
     });
 }
