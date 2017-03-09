@@ -1,7 +1,7 @@
 #!/usr/bin/env nodejs
 var _ = require('lodash');
 var Promise = require('bluebird');
-var debug = require('debug')('hourly-usage');
+var debug = require('debug')('hourly-basic-stats');
 var moment = require('moment');
 var nconf = require('nconf');
 
@@ -109,7 +109,9 @@ function mergeAndSave(mixed) {
         newsupporters: mixed[2],
         htmls: mixed[3],
         impressions: mixed[4],
-        id: utils.hash({ start: timeFilter.start })
+        id: utils.hash({ start: timeFilter.start, type: 'basic' }),
+        type: 'basic' 
+            /* basic I/O stats, not to be confunded with 'metadata' stats */
     };
 
     return mongo
