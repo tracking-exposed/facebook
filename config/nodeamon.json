@@ -1,9 +1,8 @@
 {
   "watch": [
     "lib/*.js",
-    "sections/*.jade",
-    "sections/*/*.jade",
-    "*.js",
+    "sections/**",
+    "app.js",
     "dist/**"
   ],
   "ignore": [
@@ -13,7 +12,8 @@
     "operations/",
     "errors/",
     "sections/webscripts/*.js",
-    "parsers/*"
+    "parsers/*",
+    "mongo-scripts/*"
   ],
   "verbose": true,
   "exitcrash": false,
