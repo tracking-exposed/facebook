@@ -108,9 +108,12 @@ app.get('/api/v:version/node/info', function(req, res) {
     return dispatchPromise('nodeInfo', req, res);
 });
 
-/* byDay (impressions, users, metadata ) */
+/* byDay (impressions, users, metadata ) -- discontinued GUI */
 app.get('/api/v:version/daily/:what/:dayback', function(req, res) {
     return dispatchPromise('byDayStats', req, res);
+});
+app.get('/api/v:version/stats/:what', function(req, res) {
+    return dispatchPromise('getStats', req, res);
 });
 
 /* column only - c3 */
