@@ -210,6 +210,12 @@ function feedFormat(entry) {
     return feedPrefix + '<span class="feed">Saved ' + distance + ' ago — ' + info + '</span>';
 };
 
+function unprocessedFormat(entry) {
+    var distance = moment.duration(moment() - moment(entry.savingTime)).humanize();
+    var unpPrefix = '<span class="unprocessed">unprocessed</span>';
+    return unpPrefix + '<span class="feed">Saved ' + distance + ' ago </span>';
+};
+
 var currentlyLoaded = 0;
 var amount = 50;
 
@@ -224,8 +230,10 @@ function loadHTMLs(userId, containerId) {
             
             if(entry.type === 'promoted')
                 prettyHtml += promotedFormat(entry);
-            else
+            else if(entry.type === 'feed' )
                 prettyHtml += feedFormat(entry);
+            else
+                prettyHtml += unprocessedFormat(entry);
 
             $(containerId).append('<div class="entry">' + '<span class="num">' + (i + 1 + start) + '</span>' + prettyHtml + '</div>');
         });
