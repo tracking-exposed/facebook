@@ -6,12 +6,12 @@
   "scripts": {
     "build": "bin/copyToDist",
     "watch": "nodemon --config config/nodeamon.json app",
+    "test": "mocha --reporter spec",
     "start": "DEBUG=lib:* node app"
   },
   "author": "Claudio Agosti <claudio@tracking.exposed>, https://github.com/tracking-exposed/facebook/graphs/contributors",
   "license": "(ISC OR GPL-3.0)",
   "dependencies": {
-    "base58": "^0.1.0",
     "bluebird": "^3.4.1",
     "body-parser": "^1.15.2",
     "bootstrap": "^3.3.7",
@@ -42,5 +42,8 @@
     "reveal.js": "^3.3.0",
     "stylus": "^0.54.5",
     "tweetnacl": "^0.14.3"
+  },
+  "devDependencies": {
+    "mocha": "^3.2.0"
   }
 }
