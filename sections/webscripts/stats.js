@@ -13,7 +13,7 @@ function aggregateTime(smallchunks, timeattr, amount, unit) {
         return _.set(e, timeattr, moment(_.get(e, timeattr)));
     });
 
-    var x = _.reduce(momentz, function(memo, entry, order) {
+    _.reduce(momentz, function(memo, entry, order) {
         /* Taking the first is good only because we've a periodic
          * list of entries,
          * If you've a hole of some days, this will be a bug */

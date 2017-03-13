@@ -34,6 +34,16 @@
     margin: 5px;
 }
 
+.unprocessed {
+    background-color: darkgrey;
+    color: white;
+    margin: 5px;
+}
+
+#shiftContributionBlock {
+    cursor: 'pointer';
+}
+
 .promoted {
     background-color: #FFEA75;
     margin: 5px;
