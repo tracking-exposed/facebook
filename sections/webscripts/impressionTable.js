@@ -242,6 +242,12 @@ function loadHTMLs(userId, containerId) {
     });
 };
 
+function downloadCSV(userId, type) {
+    var url = "/api/v1/personal/csv/" + userId + "/" + type;
+    console.log(url);
+    window.open(url);
+};
+
 function loadProfile(userId, containerId) {
     var url = "/api/v1/personal/profile/" + userId;
     $.getJSON(url, function(collection) {

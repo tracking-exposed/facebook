@@ -68,16 +68,16 @@ function dispatchPromise(name, req, res) {
                   res.setHeader(key, value);
               });
 
-          if(!_.isUndefined(httpresult.json)) {
+          if(httpresult.json) {
               debug("%s API %s success, returning JSON (%d bytes)",
                   req.randomUnicode, name,
                   _.size(JSON.stringify(httpresult.json)) );
               res.json(httpresult.json)
-          } else if(!_.isUndefined(httpresult.text)) {
+          } else if(httpresult.text) {
               debug("%s API %s success, returning text (size %d)",
                   req.randomUnicode, name, _.size(httpresult.text));
               res.send(httpresult.text)
-          } else if(!_.isUndefined(httpresult.file)) {
+          } else if(httpresult.file) {
               /* this is used for special files, beside the css/js below */
               debug("%s API %s success, returning file (%s)",
                   req.randomUnicode, name, httpresult.file);
@@ -196,6 +196,10 @@ app.get('/api/v1/personal/heatmap/:userId/:skip/:amount', function(req, res) {
 app.get('/api/v1/personal/htmls/:userId/:skip/:amount', function(req, res) {
     return dispatchPromise('personalHTMLs', req, res);
 });
+app.get('/api/v1/personal/csv/:userId/:kind', function(req, res) {
+    return dispatchPromise('personalCSV', req, res);
+});
+
 /*
 app.get('/api/v1/personal/profile/:userId/', function(req, res) {
     return dispatchPromise('personalProfile', req, res);

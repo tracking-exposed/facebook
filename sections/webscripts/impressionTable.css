@@ -13,6 +13,16 @@
     font-family: 'Work Sans', sans-serif;
 }
 
+.documentation {
+    background-color: #FBFBEF;
+    border-top: black 1px solid;
+    border-left: black 1px solid;
+}
+
+.click {
+    cursor: pointer;
+}
+
 .vizavail {
     font-family: 'Work Sans', sans-serif;
     background-color: #F0FFFF;

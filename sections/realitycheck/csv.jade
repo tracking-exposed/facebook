@@ -1,0 +1,48 @@
+doctype html
+html
+    head
+        include headers
+        title facebook.tracking.exposed RealityCheck - your data in csv
+
+    body
+
+        include intro
+        include userNavbar
+
+        div.container-fluid.realitycontainer
+            p If you are a data journalist, a researcher, or just a curious artist, here you can download a CSV containing all the metadata we have extracted from your post. Soon or later we'll implement new visualization, in this phase of the project, we prefer delegate and distribute the research on algorithm visualization. many eyes will do better than few.
+            p therefore, here you got your CSV. You can use some desktop program to do computation, or be inspired by 
+                a(target="_blank" href="https://rawgraphs.io") RawGraphs
+                |. Note, the .csv below are capped to the most 3000 entry in your profile.
+            h4 Download 
+                b
+                    a(class="click" onclick="downloadCSV(getSupporterId(), 'feed')") All the feed posts sent by your user, without the HTML, with all the metadata associated
+            h4 Download 
+                b
+                    a(class="click" onclick="downloadCSV(getSupporterId(), 'promoted')") All the promoted posts you saw
+
+        div.container-fluid.realitycontainer.documentation
+            h2 Open Data documentation
+        div.container-fluid.realitycontainer.documentation
+            h3 Keys shared among all the CSV:
+            p
+                ul
+                    li savingTime: ISO format, is the time when the HTML entities has been saved
+                    li id: is an unique identified of the HTML piace analyzed
+                    li type: 'promoted' or 'feed', based on what you downloaded
+                    li timelineId: is the timeline in which the HTML is appear. when the user refresh, the timeline change
+            h3 Keys only in the Feed CSV:
+            p
+                ul
+                    li publicationUTime: ISO format, describe when the post has been published
+                    li postId: An integer representing the unique facebook Id of the post
+                    li permaLink: The URI section which brins you to the post if used in facebook.com
+            h3 Keys only in the Promoted CSV:
+            p
+                ul
+                    li title: The promoted headline
+                    li postLink: Where the links point, if you click on the campaign
+                    li linkType: The kind of media embedded
+                    li ownerName: Name of the promoted page
+
+
