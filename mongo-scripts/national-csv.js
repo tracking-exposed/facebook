@@ -86,12 +86,11 @@ function appendCSV(timeline, counter) {
     ])
     .then(function(combos) {
         return _.map(combos[0], function(metadata, id) {
+
             if(!combos[1][id])
-                debugger;
-            var fix = _.merge(
-                    _.pick(metadata, ['permaLink', 'hrefType', 'postId', 'publicationUTime' ]),
-                    combos[1][id]
-                );
+                throw new Error("impossible!?");
+
+            var fix = _.extend(combos[1][id], metadata);
             fix.userPseudo = utils.numId2Words([1, fix.userId]);
             fix.counter = counter;
             return fix;
