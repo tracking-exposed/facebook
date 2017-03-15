@@ -34,6 +34,6 @@ return parse.please({
     'name': 'imageAltTag',
     'requirements': { hrefType: 'photo' },
     'implementation': implementation,
-    'since': "2017-02-23",
+    'since': "2017-03-15",
     'until': moment().toISOString(),
 });
