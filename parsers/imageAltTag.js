@@ -40,7 +40,7 @@ function implementation(snippet) {
 
 return parse.please({
     'name': 'imageAltTag',
-    'requirements': { 'imageAltTag': true },
+    'requirements': { hrefType: 'photo' },
     'implementation': PARSER_COMPLETED_SUCCESSFULLY,
     'since': "2017-02-23",
     'until': moment().toISOString(),
