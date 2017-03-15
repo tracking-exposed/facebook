@@ -120,7 +120,10 @@ function fillUsersGraphs(activitiesContainer, userContainer) {
             },
             point: {
                 r: 1
-            }
+            },
+            /* subchart: {
+                show: true
+            } */
         });
 
         c3.generate({
@@ -162,7 +165,10 @@ function fillUsersGraphs(activitiesContainer, userContainer) {
             },
             point: {
                 r: 1
-            }
+            },
+            /* subchart: {
+                show: true
+            } */
         });
     });
 };
@@ -179,17 +185,24 @@ function fillMetadataGraph(containerId) {
                 json: aggregateTime(something, 'start', 2, 'd'),
                 keys: {
                     x: 'start',
-                    value: [ "feed", "photo", "post", "postId", "promoted", "video" ]
+                    value: [ "photo", "video", "post", "feed", "postId", "promoted" ]
                 },
                 xFormat: '%Y-%m-%d %H:%M:%S',
-                type: 'spline',
                 axes: {
-                    'promoted': 'y2',
-                    'feed': 'y2',
-                    'postId': 'y2',
                     'photo': 'y',
                     'video': 'y',
                     'post': 'y',
+                    'feed': 'y',
+                    'postId': 'y',
+                    'promoted': 'y',
+                },
+                types: {
+                    photo: 'area',
+                    video: 'area',
+                    post: 'area',
+                    feed: 'line',
+                    postId: 'line',
+                    promoted: 'line',
                 }
             },
             axis: {
@@ -199,114 +212,21 @@ function fillMetadataGraph(containerId) {
                         format: '%Y-%m-%d'
                     } 
                 },
-                y2: {
+                /* y2: {
                     show: true,
                     label: 'Posts by intrinsical reasons'
-                },
+                }, */
                 y: {
-                    label: 'Kinds of UGC'
+                    label: 'Kinds of Impressions'
                 }
             },
             point: {
                 r: 1
-            }
+            },
+            /* subchart: {
+                show: true
+            } */
         });
-    });
-};
-
-
-function renderImpression(something, containerId) {
-    return c3.generate({
-        bindto: containerId,
-        data: {
-            json: something,
-            keys: {
-                x: 'date',
-                value: ['htmls','impressions','timelines']
-            },
-            axes: {
-                htmls: 'y',
-                impressions: 'y',
-                timelines: 'y2'
-            },
-            types: {
-                htmls: 'line',
-                impressions: 'line',
-                timelines: 'area'
-            },
-            colors: {
-                timelines: '#f0e971'
-            }
-        },
-        axis: {
-            x: {
-                type: 'timeseries',
-                tick: {
-                    format: '%Y-%m-%d'
-                }
-            },
-            y2: {
-                show: true,
-                label: 'Timelines'
-            },
-            y: {
-                label: 'Posts'
-            }
-        },
-        point: {
-            r: 1
-        }
-    });
-};
-
-function renderUsers(something, containerId) {
-    return c3.generate({
-        bindto: containerId,
-        data: {
-            json: something,
-            keys: {
-                x: 'date',
-                value: [ "activeusers", "newusers", "notcomingback", "pageviews" ]
-            },
-            names: {
-                activeusers: "Active Users",
-                newusers: "new Supporters",
-                // At this momnet I'm not successfully saving this data,
-                // has to be fixed ASAP 
-                notcomingback: "Supporters not coming back",
-                pageviews: "Page views"
-            },
-            axes: {
-                activeusers: 'y',
-                newusers: 'y',
-                notcomingback: 'y',
-                pageviews: 'y2'
-            },
-            types: {
-                activeusers: 'line',
-                newusers: 'bar',
-                notcomingback: 'bar',
-                pageviews: 'area'
-            },
-            colors: {
-                activeusers: 'rgb(227, 119, 194)',
-                newusers: 'rgb(188, 189, 34)',
-                notcomingback: 'rgb(214, 39, 40)',
-                pageviews:'#d4d7d0'
-            }
-        },
-        axis: {
-            x: {
-                type: 'timeseries',
-                tick: {
-                    format: '%Y-%m-%d'
-                }
-            },
-            y2: { 'show': true }
-        },
-        point: {
-            r: 1
-        }
     });
 };
 
