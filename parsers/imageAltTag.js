@@ -10,7 +10,7 @@ var parse = require('./lib/parse');
 
 var PARSER_COMPLETED_SUCCESSFULLY = false;
 
-function implementation(snippet) {
+function imageAltTag(snippet) {
 
     debug("→ %j", _.omit(snippet, ['html']));
 
@@ -33,7 +33,7 @@ function implementation(snippet) {
 return parse.please({
     'name': 'imageAltTag',
     'requirements': { hrefType: 'photo' },
-    'implementation': implementation,
+    'implementation': imageAltTag,
     'since': "2017-03-15",
     'until': moment().toISOString(),
 });
