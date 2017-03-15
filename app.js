@@ -121,12 +121,6 @@ app.get('/api/v:version/node/countries/c3', function(req, res) {
     return dispatchPromise('countriesStats', req, res);
 });
 
-app.get('/api/v:version/post/reality/:postId', function(req, res) {
-    return dispatchPromise('postReality', req, res);
-});
-app.get('/api/v:version/post/perceived/:postId/:userId', function(req, res){
-    return dispatchPromise('postLife', req, res);
-});
 app.get('/api/v:version/user/:kind/:CPN/:userId/:format', function(req, res){
     return dispatchPromise('userAnalysis', req, res);
 });
