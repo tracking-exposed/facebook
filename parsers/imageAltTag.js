@@ -2,18 +2,14 @@
 var _ = require('lodash');
 var cheerio = require('cheerio');
 var moment = require('moment');
-var debug = require('debug')('parser:imageAltTag');
+var debug = require('debug')('parser:imageAltText');
 var parse = require('./lib/parse');
 
 /*
  * Extract alt text from img tags
  */
 
-var PARSER_COMPLETED_SUCCESSFULLY = false;
-
-function imageAltTag(snippet) {
-
-    debug("→ %j", _.omit(snippet, ['html']));
+function imageAltText(snippet) {
 
     var $ = cheerio.load(snippet.html);
 
@@ -21,20 +17,30 @@ function imageAltTag(snippet) {
     altTagFounds = _.map(altTagFounds, function (e) {
       return e.attribs.alt;
     });
+    debug("Found %j", altTagFounds);
     altTagFounds = _.flatten(altTagFounds);
+    altTagFounds = _.reject(altTagFounds, "");
     altTagFounds = _.uniq(altTagFounds);
 
-    PARSER_COMPLETED_SUCCESSFULLY = true;
-    return {
-        imageAltTag: PARSER_COMPLETED_SUCCESSFULLY,
-        altTexts: altTagFounds
+    debug("Found %j", altTagFounds);
+
+    if(!_.size(altTagFounds)) {
+        debug("Failed in %s", snippet.id);
+        return { imageAltText: false };
+    }
+    else {
+        debug("Found %j", altTagFounds);
+        return {
+            imageAltText: true,
+            altTexts: altTagFounds
+        };
     }
 };
 
 return parse.please({
-    'name': 'imageAltTag',
+    'name': 'imageAltText',
     'requirements': { hrefType: 'photo' },
-    'implementation': imageAltTag,
-    'since': "2017-03-15",
+    'implementation': imageAltText,
+    'since': "2017-12-09",
     'until': moment().toISOString(),
 });
