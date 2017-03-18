@@ -114,6 +114,10 @@ function please(config) {
                     var newmeta = config.implementation(snippet);
                     return commitResult(config, newmeta, snippet);
                 }, {concurrency: config.snippetConcurrency});
+        })
+        .catch(function(error) {
+            console.error("Execution failure, consult the documentaton");
+            console.error(error);
         });
 
 };
