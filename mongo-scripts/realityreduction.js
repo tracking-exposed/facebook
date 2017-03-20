@@ -14,12 +14,31 @@ var cfgFile = "config/settings.json";
 nconf.argv().env().file({ file: cfgFile });
 
 /*
- * when: `ISO date`
- * htmls: `Int`      | number of htmls
- * impressions: `Int`| guess what..
- * accesses: `Int`   | accesses, page views
- * active: `Int`     | timelines, count users + countries
- * new: `Int`        | supporters, `keyTime`
+ * This batch produce (many, potentially updating) entries for two collections:
+ *   `reality`: chronologically ordered postId list, with accessory data used by postId
+ *   `perception`: timeline with medatada expanded 
+ */
+
+/*
+ * reality
+ *
+ * { postId: <Int>(I), publicationUtime: <ISODate>(I), contributions: [{
+ *      userId: <Int>,
+ *      impressionTime: <Int>,
+ *      impressionOrder: <Int>
+ *   }],
+ *   metadata: [{
+ *      id: <String>,
+ *      name: <String>,
+ *      value: <Object>
+ *   }]
+ */
+
+/* perception
+ *
+ * { timelineId: <String>(I), userId: <Int>(I)
+ * I'll think about later, when semantic data analyis can be done
+ *
  */
 
 var timeFilter = timutils.doFilter(
@@ -137,11 +156,15 @@ function reality(timeline, counter) {
 
 }
 
-function reportTimelines(timelines) {
-    debug("Operating over %d timelines", _.size(timelines));
+function printSimple(htmls) {
+    debug("Operating over %d htmls", _.size(htmls));
 };
 
-function preprocess(timeline) {
+function extension(html) {
+
+    /* TODO cerca impression con lookup di timeline */
+    /* TODO estendi le info al meglio */
+    /* ritorna a chi deve fare un update/insert */
 
     var id = utils.hash({ 'start': timeFilter.start, 
         'type': 'reality',
@@ -150,23 +173,39 @@ function preprocess(timeline) {
 
 }
 
-function getTimelinesByCountry(tlc) {
+function getHTMLs(tlc) {
 
-    var filter = { startTime: {
-        "$gt": new Date(timeFilter.start),
-        "$lt": new Date(timeFilter.end)
-    }};
-
+    var filter = { 
+        savingTime: {
+            "$gt": new Date(timeFilter.start),
+            "$lt": new Date(timeFilter.end)
+        },
+        type: 'feed',
+        publicationUTime: { "$exists": true }
+    };
 
     debug("Selecting timelines as: %s", JSON.stringify(filter, undefined, 2));
     return mongo
-        .read(nconf.get('schema').timelines, filter, {startTime: -1})
+        .readLimit(nconf.get('schema').htmls, filter)
 };
 
-return getTimelinesByCountry()
-  .tap(reportTimelines)
-  .map(preprocess)
-  .map(reality, { concurrency: _.parseInt(nconf.get('concurrency')) || 1 });
+function shapeReality(previous, blockSize) {
 
+    debug("Iterating over a %d block", blockSize);
+    var blockSize = 2000;
+    return getHTMLs(blockSize)
+        .tap(printSimple)
+        .map(extension)
+        .map(reality, { concurrency: _.parseInt(nconf.get('concurrency')) || 1 });
+        .then(function(results) {
+            if(_.size(results) < blockSize) {
+                debug("Process completed!");
+                return 0;
+            } else {
+                previous += _.size(results);
+                return shapeReality(previous, blockSize);
+            }
+        });
+};
 
-
+return shapeReality();
