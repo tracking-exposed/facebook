@@ -119,12 +119,14 @@ function reality(html, i, x) {
             debug("existent %s", JSON.stringify(existent, undefined, 2)); */
 
             if(!existent) {
-                debug("%d/%d ++ %s userId %s postId %s", i, x, html.savingTime, html.userId, html.postId);
+                debug("%d/%d %s NEW userId %s postId %s", i, x, html.savingTime, html.userId, html.postId);
                 existent = { 'postId': _.toString(html.postId), 'publicationUTime': html.publicationUTime, timelines: [], updates: 0 };
             }
             else if(_.find(existent.timelines, {id: related.timelineId })) {
-                debug("%d/%d --- Present, %s", i,x, html.savingTime);
+                debug("%d/%d  __ Present %s", i,x, html.savingTime);
                 return true;
+            } else {
+                debug("%d/%d %s +update postId %s", i, x, html.savingTime, html.postId);
             }
 
             /* as cleaning mechanism, if something has 1 update after five days, is deleted ? */
