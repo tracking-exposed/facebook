@@ -1,7 +1,96 @@
+function loadStage(postId, topPcId, infocId, graphPcId) {
 
-var displayRealityGraph = function(postId, containerId, infoId) {
-    if(!postId || postId === "0") return;
-    var url = '/api/v1/post/reality/' + postId;
+    var url;
+    if(postId > 1)
+        url = "/api/v1/realitymeter/" + postId;
+    else
+        url = "/api/v1/posts/top";
+
+    console.log("Generated URL " + url);
+    if(postId > 1) {
+        return displayRealityGraph(url, graphPcId, infocId);
+    } else {
+        $.getJSON(url, function(content) {
+            _.each(content, function(c, i) {
+                var d = moment.duration(moment(c.publicationTime) - moment() ).humanize();
+                $('<span>')
+                    .addClass("col-md-2")
+                    .addClass("reduced")
+                    .attr("data-id", c.postId)
+                    .text([ i, '] ', '(', c.updates, ') ', d, ' ', c.metadata.permaLink ].join(''))
+                    .click(function(e) {
+                        console.log($(this).attr('data-id'));
+                    })
+                    .appendTo(topPcId);
+            });
+        });
+    }
+};
+
+function getPostId() {
+    var chunks = document.location.pathname.split('/');
+    // ["", "realitymeter", "100009030987674" ]
+    var postId = chunks.pop();
+    return _.parseInt(postId);
+};
+
+var displayRealityGraph = function(url, containerId, infoId) {
+
+    d3.json(url, function(something) {
+
+        console.log(something.timelines);
+        something.timelines = _.map(something.timelines, function(t) {
+            start = moment(t.startTime)
+            impression = moment(t.impressionTime)
+            t.distance = moment.duration(impression - start).humanize();
+            t.startTime = start.format("YYYY-MM-DD HH:mm:SS");
+            t.impressionTime = impression.format("YYYY-MM-DD HH:mm:SS");
+            return t;
+        });
+
+        c3.generate({
+            bindto: containerId,
+            data: {
+                json: something.timelines,
+                keys: {
+                    x: 'impressionTime',
+                    value: [ "impressionOrder", "startTime", "userPseudo", "distance", "geoip" ]
+                },
+                xFormat: '%Y-%m-%d %H:%M:%S',
+                axes: {
+                    impressionOrder: 'y',
+                    startTime: 'y2'
+                },
+                types: {
+                    impressionOrder: 'bar',
+                    startTime: 'scatter',
+                }
+            },
+            axis: {
+                x: {
+                    type: 'timeseries',
+                    tick: {
+                        format: '%d/%m %H:%M'
+                    } 
+                },
+                y2: {
+                    show: true,
+                    label: 'Users'
+                },
+                y: {
+                    label: 'Timeline position'
+                }
+            },
+            point: {
+                r: 5
+            },
+        });
+    });
+
+
+};
+
+var displayRealityGraph_OLD = function(url, containerId, infoId) {
 
     var maxWidth = window.innerWidth
       || document.documentElement.clientWidth
@@ -60,6 +149,8 @@ var displayRealityGraph = function(postId, containerId, infoId) {
     };
 
     d3.json(url, function(data) {
+
+        console.log(data);
 
         var totals = _.countBy(data, function(d) { return d.userPseudo; });
 
@@ -223,14 +314,3 @@ var displayRealityGraph = function(postId, containerId, infoId) {
     });
 };
 
-
-
-/* not working at the moment the 'click' trapping of button ? */
-var getPostId = function(formId) {
-    var writtenv = document.getElementById(formId).value;
-    var postId = _.parseInt(writenv);
-
-    if(postId === NaN)
-        return null;
-    return postId;
-};
