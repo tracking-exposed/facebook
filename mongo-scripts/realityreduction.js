@@ -14,32 +14,17 @@ var cfgFile = "config/settings.json";
 nconf.argv().env().file({ file: cfgFile });
 
 /*
- * This batch produce (many, potentially updating) entries for two collections:
+ * This batch produce (many, potentially updating) entries for one collection:
  *   `reality`: chronologically ordered postId list, with accessory data used by postId
- *   `perception`: timeline with medatada expanded 
+ * 
+ * TODO update has to be done on the collection: 
+ *   `perception`: timeline with medatada expanded. This collection would be the chronological
+ *                 perception of the users, maybe would be already aggregated, for example with
+ *                 semantic analysis of the content processed
  */
 
-/*
- * reality
- *
- * { postId: <Int>(I), publicationUtime: <ISODate>(I), contributions: [{
- *      userId: <Int>,
- *      impressionTime: <Int>,
- *      impressionOrder: <Int>
- *   }],
- *   metadata: [{
- *      id: <String>,
- *      name: <String>,
- *      value: <Object>
- *   }]
- */
-
-/* perception
- *
- * { timelineId: <String>(I), userId: <Int>(I)
- * I'll think about later, when semantic data analyis can be done
- *
- */
+if(!_.parseInt(nconf.get('DAYS')))
+    throw new Error("DAYS is required, specifiy the start-until window of time");
 
 var timeFilter = timutils.doFilter(
         nconf.get('HOURSAFTER'), 
@@ -63,149 +48,156 @@ var keys = [
 debug("Executing timewindow: %s and nation",
     timutils.prettify(timeFilter));
 
-function getFromHtmls(timeline) {
+function getRelativeInfo(htmlId) {
+
+    var sequence = {
+        $lookup: {
+            from: nconf.get('schema').timelines,
+            localField: 'timelineId',
+            foreignField: 'id',
+            as: "timeline"
+         }
+    };
+
     return mongo
-        .read(nconf.get('schema').htmls, { timelineId: timeline.id, type: 'feed' })
-        .reduce(function(memo, e) {
-            if(!e || !e.id)
-                return memo;
-
-            memo[e.id] = _.pick(e, ['id', 'publicationUTime', 'postId', 'permaLink', 'timelineId' ]);
-            return memo;
-        }, {});
-};
-
-function getFromImpressions(timeline) {
-    return mongo
-        .read(nconf.get('schema').impressions, { timelineId: timeline.id })
-        .reduce(function(memo, imp) {
-            if(!imp || !imp.htmlId)
-                return memo;
-
-            memo[imp.htmlId] = {
-                userId: imp.userId,
-                impressionOrder: imp.impressionOrder,
-                impressionTime: moment(imp.impressionTime).toISOString(),
-            };
-            return memo;
-        }, {});
-};
-
-function reality(timeline, counter) {
-
-    var nation = timeline.geoip;
-    /* TODO control group */
-    return Promise.all([
-            getFromHtmls(timeline),
-            getFromImpressions(timeline)
-    ])
-    .then(function(combos) {
-        return _.map(combos[0], function(metadata, id) {
-
-            if(!combos[1][id])
-                throw new Error("impossible!?");
-
-            var fix = _.extend(combos[1][id], metadata);
-            fix.userPseudo = utils.numId2Words([1, fix.userId]);
-            fix.counter = counter;
-            fix.nation = nation;
-            fix.publicationUTime = moment(_.parseInt(metadata.publicationUTime) * 1000).toISOString();
-            debugger;
-            // timelineincremental 
-            return fix;
+        .lookup(nconf.get('schema').impressions, { $match: { htmlId: htmlId }}, sequence)
+        .then(_.first)
+        .then(function(c) {
+            var f = _.pick(c, [ 'timelineId', 'userId', 'impressionOrder', 'impressionTime' ]);
+            var s = _.pick(c.timeline[0], [ 'geoip', 'startTime' ]);
+            return _.extend(f, s);
+        })
+        .catch(function(error) {
+            debug("Error: %s %s", error, htmlId);
         });
-    })
-    .then(function(content) {
-        debug("Saving %d entries", _.size(content));
+    ;
+};
 
-            var results = _.extend(f, {
-                start: new Date(timeFilter.start),
-                id: utils.hash({
-                    start: timeFilter.start,
-                    infos : JSON.stringify(infomap)
-                }),
-                type: 'metadata'
+
+function getExisting(postId) {
+
+    return mongo
+        .read(nconf.get('schema').reality, { postId: postId })
+        .then(_.first)
+        .catch(function(error) {
+            debug("Error getExisting: %s %s %j", error, htmlId, sequence);
+        });
+};
+
+function getMetadata(present, html) {
+    var now = _.omit(html, ['_id', 'publicationUTime', 'savingTime', 'id', 
+                            'userId', 'impressionId', 'timelineId', 'html', 'postId',
+                            /* and parsers meta-results ... */ 
+                            'postType', 'feedUTime' ]);
+
+    if(_.size(_.keys(now)) < _.size(_.keys(present))) {
+        debug("Strange situation, returning %j instead of %j", present, now);
+        return present;
+    }
+    return now;
+};
+
+function reality(html, i, x) {
+
+    /* here we take the postId, we're to check for every postId if is already in the DB 
+     * and update the entry or upsert.
+     *
+     * postId is an index and is unique 
+     */
+
+    return Promise
+        .all([ getRelativeInfo(html.id), getExisting(html.postId) ])
+        .then(function(infos) {
+            var related = infos[0];
+            var existent = infos[1];
+
+            /* debug("related %s", JSON.stringify(related, undefined, 2));
+            debug("existent %s", JSON.stringify(existent, undefined, 2)); */
+
+            if(!existent) {
+                debug("%d/%d ++ %s userId %s postId %s", i, x, html.savingTime, html.userId, html.postId);
+                existent = { 'postId': _.toString(html.postId), 'publicationUTime': html.publicationUTime, timelines: [] };
+            }
+            else if(_.find(existent.timelines, {id: related.timelineId })) {
+                debug("%d/%d --- Present, skip %s", i,x, html.id);
+                return true;
+            }
+
+            existent.metadata = getMetadata(existent.metadata, html);
+            existent.timelines.push({
+                'id': related.timelineId,
+                'impressionTime': new Date(related.impressionTime),
+                'impressionOrder': related.impressionOrder,
+                'startTime': new Date(related.startTime),
+                'geoip': related.geoip,
+                'userPseudo' : utils.numId2Words([ _.parseInt(existent.postId), related.userId])
             });
 
+            if( existent.publicationUTime != html.publicationUTime )
+                debug("Strange: %d %d %d", 
+                    _.parseInt(existent.publicationUTime),
+                    _.parseInt(html.publicationUTime),
+                    _.parseInt(existent.publicationUTime) - _.parseInt(html.publicationUTime) );
+
+            if(!existent.publicationTime)
+                existent.publicationTime = new Date(moment(html.publicationUTime * 1000).toISOString());
+
+            var t = _.countBy(existent.timelines, 'userPseudo');
+            if(_.size(t) > 2)
+                debug("someone new: %s", JSON.stringify(t, undefined, 2));
+
             return mongo
-              .read(nconf.get('schema').hourlyIO, {id: results.id })
-              .then(function(exists) {
-                  if(_.size(exists)) {
-                    debug("Updting previous stats, starting at %s", results.start);
-                    /* TODO: line by line comparison and diffs highlight */
-                    debug("%s", JSON.stringify(results, undefined, 2));
-                    return mongo
-                      .updateOne(nconf.get('schema').hourlyIO, {id: results.id}, results);
-                  } else {
-                    debug("Writing stats, starting at %s", results.start);
-                    debug("%s", JSON.stringify(results, undefined, 2));
-                    return mongo
-                      .writeOne(nconf.get('schema').hourlyIO, results);
-                  }
-              });
-        };
+                .updateOne(nconf.get('schema').reality, {postId: existent.postId}, existent )
+                .then(function(result) {
+                    return true;
+                })
+                .catch(function(error) {
+                    debug("Error: %j", error);
+                    return false;
+                });
+        });
 
-
-        return mongo.writeMany(nconf.get('schema').reality, content);
-    })
-    .catch(function(error) {
-        debug("Error: %s", error);
-        return false;
-    })
-    .return(true);
 
 }
 
-function printSimple(htmls) {
-    debug("Operating over %d htmls", _.size(htmls));
-};
-
-function extension(html) {
-
-    /* TODO cerca impression con lookup di timeline */
-    /* TODO estendi le info al meglio */
-    /* ritorna a chi deve fare un update/insert */
-
-    var id = utils.hash({ 'start': timeFilter.start, 
-        'type': 'reality',
-        'userId': null 
-    });
-
-}
-
-function getHTMLs(tlc) {
+function getHTMLs(previous, blockSize) {
 
     var filter = { 
+        postId: { "$exists": true },
+        publicationUTime: { "$exists": true },
         savingTime: {
             "$gt": new Date(timeFilter.start),
             "$lt": new Date(timeFilter.end)
-        },
-        type: 'feed',
-        publicationUTime: { "$exists": true }
+        }
     };
 
-    debug("Selecting timelines as: %s", JSON.stringify(filter, undefined, 2));
+    if(!previous)
+        previous = 0;
+    debug("Selecting timelines as: %s previously read %d blockSize %d",
+        JSON.stringify(filter, undefined, 2), previous, blockSize);
+
     return mongo
-        .readLimit(nconf.get('schema').htmls, filter)
+        .readLimit(nconf.get('schema').htmls, filter, {}, blockSize, previous);
 };
 
-function shapeReality(previous, blockSize) {
+function saveReality(previous, blockSize) {
 
-    debug("Iterating over a %d block", blockSize);
-    var blockSize = 2000;
-    return getHTMLs(blockSize)
-        .tap(printSimple)
-        .map(extension)
-        .map(reality, { concurrency: _.parseInt(nconf.get('concurrency')) || 1 });
+    debug("Iterating over a %d block skipping %d", blockSize, previous);
+    return getHTMLs(previous, blockSize)
+        .tap(function(htmls) {
+            debug("~~ skipping %d block of %d working on %d",
+                previous, blockSize, _.size(htmls)); 
+        })
+        .map(reality, { concurrency: _.parseInt(nconf.get('CONCURRENCY')) || 1 })
         .then(function(results) {
             if(_.size(results) < blockSize) {
                 debug("Process completed!");
                 return 0;
             } else {
                 previous += _.size(results);
-                return shapeReality(previous, blockSize);
+                return saveReality(previous, blockSize);
             }
         });
 };
 
-return shapeReality();
+return saveReality(_.parseInt('SKIP') || 0, _.parseInt(nconf.get('BLOCK')) || 2000 );
