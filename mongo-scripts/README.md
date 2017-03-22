@@ -21,3 +21,8 @@ the script starting with a number, are incremental ad executed only during data 
 # Remind
 
     DEBUG=* KEYS=postType-postType,type START=2017-01-17  mongo-scripts/parser-error-mngmnt.js
+
+
+# Reminder realitycheck
+
+    for i in `seq 196 300`; do DEBUG=*,-lib:* SKIP=$(($i*100)) BLOCK=100 CONCURRENCY=5 DAYS=30 DAYSAGO=30 node mongo-scripts/realityreduction.js; done

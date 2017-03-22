@@ -123,7 +123,7 @@ function reality(html, i, x) {
                 existent = { 'postId': _.toString(html.postId), 'publicationUTime': html.publicationUTime, timelines: [], updates: 0 };
             }
             else if(_.find(existent.timelines, {id: related.timelineId })) {
-                debug("%d/%d --- Present, skip %s", i,x, html.id);
+                debug("%d/%d --- Present, %s", i,x, html.savingTime);
                 return true;
             }
 
