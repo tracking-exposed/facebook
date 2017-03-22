@@ -80,7 +80,7 @@ function getExisting(postId) {
         .read(nconf.get('schema').reality, { postId: postId })
         .then(_.first)
         .catch(function(error) {
-            debug("Error getExisting: %s %s %j", error, htmlId, sequence);
+            debug("Error getExisting: %s %s", error, postId);
         });
 };
 
@@ -111,18 +111,25 @@ function reality(html, i, x) {
             var related = infos[0];
             var existent = infos[1];
 
+            if(!related || !related.timelineId)
+                throw new Error("missing related!" + html.id);
+                /* likely do not mix, and is a connection error */
+
             /* debug("related %s", JSON.stringify(related, undefined, 2));
             debug("existent %s", JSON.stringify(existent, undefined, 2)); */
 
             if(!existent) {
                 debug("%d/%d ++ %s userId %s postId %s", i, x, html.savingTime, html.userId, html.postId);
-                existent = { 'postId': _.toString(html.postId), 'publicationUTime': html.publicationUTime, timelines: [] };
+                existent = { 'postId': _.toString(html.postId), 'publicationUTime': html.publicationUTime, timelines: [], updates: 0 };
             }
             else if(_.find(existent.timelines, {id: related.timelineId })) {
                 debug("%d/%d --- Present, skip %s", i,x, html.id);
                 return true;
             }
 
+            /* as cleaning mechanism, if something has 1 update after five days, is deleted ? */
+            /* maybe if got access from two or more users, only ? */
+            existent.updates += 1;
             existent.metadata = getMetadata(existent.metadata, html);
             existent.timelines.push({
                 'id': related.timelineId,
@@ -147,7 +154,7 @@ function reality(html, i, x) {
                 debug("someone new: %s", JSON.stringify(t, undefined, 2));
 
             return mongo
-                .updateOne(nconf.get('schema').reality, {postId: existent.postId}, existent )
+                .upsertOne(nconf.get('schema').reality, {postId: existent.postId}, existent )
                 .then(function(result) {
                     return true;
                 })
@@ -160,7 +167,7 @@ function reality(html, i, x) {
 
 }
 
-function getHTMLs(previous, blockSize) {
+function getHTMLs(skip, blockSize) {
 
     var filter = { 
         postId: { "$exists": true },
@@ -171,33 +178,31 @@ function getHTMLs(previous, blockSize) {
         }
     };
 
-    if(!previous)
-        previous = 0;
-    debug("Selecting timelines as: %s previously read %d blockSize %d",
-        JSON.stringify(filter, undefined, 2), previous, blockSize);
+    debug("Selecting timelines as: with previously read %d blockSize %d",
+        skip, blockSize);
 
     return mongo
-        .readLimit(nconf.get('schema').htmls, filter, {}, blockSize, previous);
+        .readLimit(nconf.get('schema').htmls, filter, {}, blockSize, skip);
 };
 
-function saveReality(previous, blockSize) {
+function saveReality(skip, blockSize) {
 
-    debug("Iterating over a %d block skipping %d", blockSize, previous);
-    return getHTMLs(previous, blockSize)
+    debug("Iterating over a %d block skipping %d", blockSize, skip);
+    return getHTMLs(skip, blockSize)
         .tap(function(htmls) {
             debug("~~ skipping %d block of %d working on %d",
-                previous, blockSize, _.size(htmls)); 
+                skip, blockSize, _.size(htmls)); 
         })
         .map(reality, { concurrency: _.parseInt(nconf.get('CONCURRENCY')) || 1 })
         .then(function(results) {
             if(_.size(results) < blockSize) {
-                debug("Process completed!");
+                debug("Process completed! %d < %d", _.size(results), blockSize);
                 return 0;
             } else {
-                previous += _.size(results);
-                return saveReality(previous, blockSize);
+                debug("Still to do skipping %d", skip + blockSize);
+                return 1;
             }
         });
 };
 
-return saveReality(_.parseInt('SKIP') || 0, _.parseInt(nconf.get('BLOCK')) || 2000 );
+return saveReality(_.parseInt(nconf.get('SKIP')) || 0, _.parseInt(nconf.get('BLOCK')) || 2000 );
