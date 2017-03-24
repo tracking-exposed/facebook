@@ -17,5 +17,34 @@ svg {
 
 .text {
     font-size: 1.4em;
-};
+}
+
+.abitmore {
+    font-size: 1.3em;
+}
+
+.entries {
+    width:250px; /* or whatever width you want. */
+    max-width:250px; /* or whatever width you want. */
+    display: inline-block;
+    border-bottom: black 1px dotted;
+}
+
+.reduced {
+    font-size: 0.7em;
+    font-weight: bold;
+    color: darkblue;
+}
+
+.toppost {
+    cursor: pointer;
+    word-wrap: break-word;
+}
+
+.infoblock {
+    border-bottom: #336335 1px dotted;
+    margin: 10px;
+    padding: 10px;
+    background-color: lightcyan;
+}
 
