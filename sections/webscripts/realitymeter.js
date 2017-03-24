@@ -1,4 +1,4 @@
-function loadStage(postId, topPostTitle, topPcId, infocId, graphPcId) {
+function loadStage(postId, postsTable, infocId, graphPcId) {
 
 
     console.log("Generated URL " + url);
@@ -9,26 +9,32 @@ function loadStage(postId, topPostTitle, topPcId, infocId, graphPcId) {
 
     var url = "/api/v1/posts/top";
     $.getJSON(url, function(content) {
-        _.each(content, function(c, i) {
+        var tabbed = _.map(content, function(c, i) {
             var d = moment.duration(moment(c.publicationTime) - moment() ).humanize();
-            console.log(c);
-            $('<span>')
-                .addClass("col-md-2")
-                .addClass("toppost")
-                .attr("data-id", c.postId)
-                .html( [ '<span>', '<span class="reduced">views:</span>', c.updates, 
-                         '<span class="reduced">users</span>',
-                         _.size(_.countBy(c.timelines, 'userPseudo')),
-                         c.metadata.hrefType, d, 'ago </span>' ].join(' ')
-                )
-                .click(function(e) {
-                    var pid = $(this).attr('data-id');
+
+                return [
+                    c.updates, 
+                    _.size(_.countBy(c.timelines, 'userPseudo')),
+                    c.metadata.hrefType,
+                    d,
+                    _.size(_.countBy(c.timelines, 'geoip')),
+                    c.timelines[0].geoip,
+                    c.postId
+                ];
+        });
+
+        console.log(tabbed);
+        $(postsTable).DataTable({
+            data: tabbed,
+            createdRow: function ( row, data, index ) {
+                $(row).click(function() {
+                    var pid = data[6];
                     $(graphPcId).html("");
                     $(infocId).html("");
                     history.pushState({}, "Post " + pid, "/realitymeter/" + pid);
                     displayRealityGraph("/api/v1/realitymeter/" + pid, graphPcId, infocId);
-                })
-                .appendTo(topPcId);
+                });
+            }
         });
     });
 };
