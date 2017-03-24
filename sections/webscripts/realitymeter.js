@@ -11,11 +11,16 @@ function loadStage(postId, topPostTitle, topPcId, infocId, graphPcId) {
     $.getJSON(url, function(content) {
         _.each(content, function(c, i) {
             var d = moment.duration(moment(c.publicationTime) - moment() ).humanize();
+            console.log(c);
             $('<span>')
                 .addClass("col-md-2")
                 .addClass("toppost")
                 .attr("data-id", c.postId)
-                .text([ i, '] ', '(', c.updates, ') ', d, ' ago' ].join(' '))
+                .html( [ '<span>', '<span class="reduced">views:</span>', c.updates, 
+                         '<span class="reduced">users</span>',
+                         _.size(_.countBy(c.timelines, 'userPseudo')),
+                         c.metadata.hrefType, d, 'ago </span>' ].join(' ')
+                )
                 .click(function(e) {
                     var pid = $(this).attr('data-id');
                     $(graphPcId).html("");
