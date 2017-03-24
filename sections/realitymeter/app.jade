@@ -4,6 +4,7 @@ html
     head
         link(rel='stylesheet', type='text/css', href='/css/bootstrap.css')
         link(rel='stylesheet', type='text/css', href='/js/local/realitymeter.css')
+        link(rel='stylesheet', type='text/css', href='/js/local/impressionTable.css')
 
         script(type='text/javascript', src='/js/jquery.js')
         script(type='text/javascript', src='/js/collapse.js')
@@ -17,12 +18,15 @@ html
 
         title facebook.tracking.exposed RealityMeter
 
-    body(onload="loadStage(getPostId(), '#topPosts', '#infobox', '#container')")
+    body(onload="loadStage(getPostId(), '#topPostsMessage', '#topPosts', '#infobox', '#container')")
 
-        .container-fluid
+        .container-fluid.realitycontainer
+            h2 RealityMeter: how much a post lives? how much is really saw?
+
+        .container-fluid.realitycontainer
             span.col-md-1
             span.container-fluid.col-md-4.niceborder
-                p When you publish a post in a page, Facebook tell you how many impressions the post got. 
+                p.abitmore When you publish a post in a page, Facebook tell you how many impressions the post got. 
                     b But what does it really means? 
                     | In the timelines, does the post appears many times in a favorable position, or once to disappear at the next feed refresh? 
                     b Positioning 
@@ -39,8 +43,9 @@ html
                     |  28 Sept '16
             span.col-md-1
 
-        .container-fluid
-            h3 There are the most active post measured so far
-            div#topPosts
+        .container-fluid.realitycontainer
+            p We don't know yet what is the best way to explain how algorithm works. we didn't yet found a visualization that scale well, with time and users. The metadata provided can be extended or changed if necessary, 
             div#infobox
             div#container
+            h3#topPostMessage
+            div#topPosts

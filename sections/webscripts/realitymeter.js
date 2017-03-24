@@ -1,30 +1,31 @@
-function loadStage(postId, topPcId, infocId, graphPcId) {
+function loadStage(postId, topPostTitle, topPcId, infocId, graphPcId) {
 
-    var url;
-    if(postId > 1)
-        url = "/api/v1/realitymeter/" + postId;
-    else
-        url = "/api/v1/posts/top";
 
     console.log("Generated URL " + url);
     if(postId > 1) {
-        return displayRealityGraph(url, graphPcId, infocId);
-    } else {
-        $.getJSON(url, function(content) {
-            _.each(content, function(c, i) {
-                var d = moment.duration(moment(c.publicationTime) - moment() ).humanize();
-                $('<span>')
-                    .addClass("col-md-2")
-                    .addClass("reduced")
-                    .attr("data-id", c.postId)
-                    .text([ i, '] ', '(', c.updates, ') ', d, ' ', c.metadata.permaLink ].join(''))
-                    .click(function(e) {
-                        console.log($(this).attr('data-id'));
-                    })
-                    .appendTo(topPcId);
-            });
-        });
+        var url = "/api/v1/realitymeter/" + postId;
+        displayRealityGraph(url, graphPcId, infocId);
     }
+
+    var url = "/api/v1/posts/top";
+    $.getJSON(url, function(content) {
+        _.each(content, function(c, i) {
+            var d = moment.duration(moment(c.publicationTime) - moment() ).humanize();
+            $('<span>')
+                .addClass("col-md-2")
+                .addClass("toppost")
+                .attr("data-id", c.postId)
+                .text([ i, '] ', '(', c.updates, ') ', d, ' ago' ].join(' '))
+                .click(function(e) {
+                    var pid = $(this).attr('data-id');
+                    $(graphPcId).html("");
+                    $(infocId).html("");
+                    history.pushState({}, "Post " + pid, "/realitymeter/" + pid);
+                    displayRealityGraph("/api/v1/realitymeter/" + pid, graphPcId, infocId);
+                })
+                .appendTo(topPcId);
+        });
+    });
 };
 
 function getPostId() {
@@ -38,57 +39,80 @@ var displayRealityGraph = function(url, containerId, infoId) {
 
     d3.json(url, function(something) {
 
-        console.log(something.timelines);
+        var $info = $("<div>", { "class": "infoblock" });
+        $info.html(metadata(something));
+        $(infoId).append($info);
+
+        console.log(something);
         something.timelines = _.map(something.timelines, function(t) {
             start = moment(t.startTime)
             impression = moment(t.impressionTime)
-            t.distance = moment.duration(impression - start).humanize();
             t.startTime = start.format("YYYY-MM-DD HH:mm:SS");
             t.impressionTime = impression.format("YYYY-MM-DD HH:mm:SS");
+            // console.log( moment.duration(impression - moment(something.publicationTime) ));
+            // console.log( moment.duration(moment() - moment(something.publicationTime)).humanize() );
+            t.timeago = moment.duration(moment(something.publicationTime) - impression).humanize();
             return t;
         });
+        
+        var times = _.map({ 'publication': 0, 
+                           '5 minutes': 5, 
+                           '20 minutes' : 20,
+                           '40 minutes': 40,
+                           '1 hour': 60,
+                           '2 hours':60 * 2,
+                           'day quarter': 60 * 6,
+                           'a day': 6 * 24,
+                           'two days': 2 * 48,
+                           '1 week': 2 * 24 * 7
+        }, function(minutes, name) {
+            return { 
+                reftime: moment(something.publicationTime).add(minutes, 'm'),
+                name: name
+            };
+        });
 
-        c3.generate({
-            bindto: containerId,
-            data: {
-                json: something.timelines,
-                keys: {
-                    x: 'impressionTime',
-                    value: [ "impressionOrder", "startTime", "userPseudo", "distance", "geoip" ]
-                },
-                xFormat: '%Y-%m-%d %H:%M:%S',
-                axes: {
-                    impressionOrder: 'y',
-                    startTime: 'y2'
-                },
-                types: {
-                    impressionOrder: 'bar',
-                    startTime: 'scatter',
-                }
-            },
-            axis: {
-                x: {
-                    type: 'timeseries',
-                    tick: {
-                        format: '%d/%m %H:%M'
-                    } 
-                },
-                y2: {
-                    show: true,
-                    label: 'Users'
-                },
-                y: {
-                    label: 'Timeline position'
-                }
-            },
-            point: {
-                r: 5
-            },
+
+        var tmlns = _.orderBy(something.timelines, 'impressionTime');
+
+        console.log("x");
+        _.each(tmlns, function(t) {
+
+            var $div = $("<div>", {id: t.id, "class": "timeline" });
+            $div.html(spanWhen(t)+ spanUser(t) + spanOrder(t) );
+            $div.click(function(){ console.log("click " + $(this).attr("id")); });
+            $(containerId).append($div);
+
         });
     });
-
-
 };
+
+function spanWhen(t) {
+    var timglip = '<span class="glyphicon glyphicon-time"></span>';
+    return '<span class="col-fixed-160 entries when">' +timglip + ' ' + t.timeago + ' after publication </span>';
+};
+
+function spanUser(t) {
+    // XX
+    var userIntro = '<span class="reduced">user pseudonym: </span>';
+    return '<span class="col-fixed-160 entries "'+ t.userPseudo + '">' + userIntro + ' ' + t.userPseudo + '</span>';
+};
+
+function spanOrder(t) {
+    var impressionIntro = '<span class="reduced">feed ranking # </span>';
+    return '<span class="col-fixed-160 entries impression">' + impressionIntro + ' ' + t.impressionOrder + '</span>';
+};
+
+function metadata(s) {
+    return [ '<span>', 'views:', s.updates, 'ദ', 
+             'users', _.size(_.countBy(s.timelines, 'userPseudo')),
+             'ദ', 'kind:', s.metadata.hrefType, 'ദ',
+             s.metadata.permaLink, 'ദ', 'published', 
+             moment(s.publicationTime).format("YYYY-MM-DD HH:mm"), ', ',
+             moment.duration(moment() - moment(s.publicationTime)).humanize(),
+             'ago </span>'].join(' ');
+};
+
 
 var displayRealityGraph_OLD = function(url, containerId, infoId) {
 
