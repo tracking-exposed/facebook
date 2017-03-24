@@ -238,12 +238,13 @@ app.use('/css', express.static(__dirname + '/dist/css'));
 app.use('/images', express.static(__dirname + '/dist/images'));
 app.use('/fonts', express.static(__dirname + '/dist/fonts'));
 
-/* last one, page name catch-all */
-app.get('/:page/:param', function(req, res) {
-    debug("Special: parametered page");
+/* special realitycheck page shaper */
+app.get('/realitycheck/:userId/:detail*', function(req, res) {
+    req.params.page = 'realitycheck-' + req.params.detail;
     return dispatchPromise('getPage', req, res);
 });
-app.get('/:page', function(req, res) {
+/* last one, page name catch-all */
+app.get('/:page*', function(req, res) {
     return dispatchPromise('getPage', req, res);
 });
 /* true last */
