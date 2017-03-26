@@ -22,7 +22,6 @@ function loadStage(postId, postsTable, infocId, graphPcId) {
                 ];
         });
 
-        console.log(tabbed);
         $(postsTable).DataTable({
             data: tabbed,
             createdRow: function ( row, data, index ) {
@@ -53,7 +52,6 @@ var displayRealityGraph = function(url, containerId, infoId) {
         $info.html(metadata(something));
         $(infoId).append($info);
 
-        console.log(something);
         something.timelines = _.map(something.timelines, function(t) {
             t.start = moment(t.startTime)
             t.impression = moment(t.impressionTime)
@@ -94,7 +92,6 @@ var displayRealityGraph = function(url, containerId, infoId) {
             }
         }, tmlns);
 
-        console.log(content);
         _.each(content, function(t) {
 
             if(t.interruption) {
@@ -116,7 +113,6 @@ var displayRealityGraph = function(url, containerId, infoId) {
 };
 
 function interruptionSpan(infostring) {
-    console.log(infostring);
     return '<span>' + infostring + '</span>  ' +
            '<span class="glyphicon glyphicon-time"></span>';
 };
@@ -207,8 +203,6 @@ var displayRealityGraph_OLD = function(url, containerId, infoId) {
     };
 
     d3.json(url, function(data) {
-
-        console.log(data);
 
         var totals = _.countBy(data, function(d) { return d.userPseudo; });
 
