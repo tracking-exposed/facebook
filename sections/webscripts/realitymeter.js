@@ -1,6 +1,5 @@
 function loadStage(postId, postsTable, infocId, graphPcId) {
 
-
     console.log("Generated URL " + url);
     if(postId > 1) {
         var url = "/api/v1/realitymeter/" + postId;
@@ -56,26 +55,24 @@ var displayRealityGraph = function(url, containerId, infoId) {
 
         console.log(something);
         something.timelines = _.map(something.timelines, function(t) {
-            start = moment(t.startTime)
-            impression = moment(t.impressionTime)
-            t.startTime = start.format("YYYY-MM-DD HH:mm:SS");
-            t.impressionTime = impression.format("YYYY-MM-DD HH:mm:SS");
-            // console.log( moment.duration(impression - moment(something.publicationTime) ));
-            // console.log( moment.duration(moment() - moment(something.publicationTime)).humanize() );
-            t.timeago = moment.duration(moment(something.publicationTime) - impression).humanize();
+            t.start = moment(t.startTime)
+            t.impression = moment(t.impressionTime)
+            t.startTime = t.start.format("YYYY-MM-DD HH:mm:SS");
+            t.impressionTime = t.impression.format("YYYY-MM-DD HH:mm:SS");
+            t.timeago = moment.duration(moment(something.publicationTime) - t.impression).humanize();
             return t;
         });
         
-        var times = _.map({ 'publication': 0, 
-                           '5 minutes': 5, 
-                           '20 minutes' : 20,
-                           '40 minutes': 40,
-                           '1 hour': 60,
-                           '2 hours':60 * 2,
-                           'day quarter': 60 * 6,
-                           'a day': 6 * 24,
-                           'two days': 2 * 48,
-                           '1 week': 2 * 24 * 7
+        var times = _.map({ 'publication time': 0, 
+                           '5 minutes after': 5, 
+                           '20 minutes after' : 20,
+                           '40 minutes after': 40,
+                           '1 hour after': 60,
+                           '2 hours after':60 * 2,
+                           'after a day quarter': 60 * 6,
+                           'after a day': 60 * 24,
+                           'after two days': 2 * 24 * 60,
+                           'after 1 week': 7 * 24 * 60
         }, function(minutes, name) {
             return { 
                 reftime: moment(something.publicationTime).add(minutes, 'm'),
@@ -83,35 +80,61 @@ var displayRealityGraph = function(url, containerId, infoId) {
             };
         });
 
+        var tmlns = _.orderBy(something.timelines, 'impression');
 
-        var tmlns = _.orderBy(something.timelines, 'impressionTime');
+        var content = _.reduce(times, function(memo, refli) {
+            var p = _.partition(memo, function(e) {
+                return (e.impression && e.impression.isAfter(refli.reftime));
+            });
+            if(p[1] && _.last(p[1]) && _.last(p[1]).interruption) {
+                // p[1][_.size(p[1] - 1)].interruption = refli.name;
+                return _.concat(p[1], p[0]);
+            } else {
+                return _.concat(p[1], { interruption: refli.name }, p[0]);
+            }
+        }, tmlns);
 
-        console.log("x");
-        _.each(tmlns, function(t) {
+        console.log(content);
+        _.each(content, function(t) {
 
-            var $div = $("<div>", {id: t.id, "class": "timeline" });
-            $div.html(spanWhen(t)+ spanUser(t) + spanOrder(t) );
-            $div.click(function(){ console.log("click " + $(this).attr("id")); });
+            if(t.interruption) {
+                var $div = $("<div>", { "class": "timentry" });
+                $div.html(interruptionSpan(t.interruption));
+            } else {
+                var $div = $("<div>", {id: t.id, "class": "timeline " + t.userPseudo });
+                $div.html(spanWhen(t)+ spanUser(t) + spanOrder(t) );
+                $div.click(function(e){
+                    var userP  = $(this).attr('class').split(' ')[1];
+                    $(".timeline").removeClass('highlight');
+                    $("." + userP).addClass('highlight');
+                });
+            }
             $(containerId).append($div);
 
         });
     });
 };
 
+function interruptionSpan(infostring) {
+    console.log(infostring);
+    return '<span>' + infostring + '</span>  ' +
+           '<span class="glyphicon glyphicon-time"></span>';
+};
+
 function spanWhen(t) {
-    var timglip = '<span class="glyphicon glyphicon-time"></span>';
-    return '<span class="col-fixed-160 entries when">' +timglip + ' ' + t.timeago + ' after publication </span>';
+    var timglip = '<span class="glyphicon glyphicon-eye-open"></span>';
+    return '<span class="entries when">' +timglip + ' ' + t.timeago + ' after publication </span>';
 };
 
 function spanUser(t) {
     // XX
     var userIntro = '<span class="reduced">user pseudonym: </span>';
-    return '<span class="col-fixed-160 entries "'+ t.userPseudo + '">' + userIntro + ' ' + t.userPseudo + '</span>';
+    return '<span class="entries "'+ t.userPseudo + '">' + userIntro + ' ' + t.userPseudo + '</span>';
 };
 
 function spanOrder(t) {
     var impressionIntro = '<span class="reduced">feed ranking # </span>';
-    return '<span class="col-fixed-160 entries impression">' + impressionIntro + ' ' + t.impressionOrder + '</span>';
+    return '<span class="entries impression">' + impressionIntro + ' ' + t.impressionOrder + '</span>';
 };
 
 function metadata(s) {
