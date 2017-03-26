@@ -129,7 +129,7 @@ function spanUser(t) {
 };
 
 function spanOrder(t) {
-    var impressionIntro = '<span class="reduced">feed ranking # </span>';
+    var impressionIntro = '<span class="reduced">display order # </span>';
     return '<span class="entries impression">' + impressionIntro + ' ' + t.impressionOrder + '</span>';
 };
 
