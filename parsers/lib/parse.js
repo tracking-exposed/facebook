@@ -32,14 +32,23 @@ function snippetAvailable(config, what) {
     debug("Connecting to %s", url);
     debug("⭐ %s", JSON.stringify(requestpayload, undefined, 2));
 
+    var begin = moment();
     return request
         .postAsync(url, {form: requestpayload})
         .then(function(response) {
+            if(_.size(response.body) < 3 && response.statusCode === 200) {
+                debug("This query return zero HTMLs");
+                return [];
+            }
             return JSON.parse(response.body);
         })
         .catch(function(error) {
             debug("Error with %s: %s", url, error);
             throw new Error(error);
+        })
+        .tap(function() {
+            debug("Execution completed in %d seconds",
+                moment.duration(moment() - begin).asSeconds());
         });
 };
 

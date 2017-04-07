@@ -17,8 +17,7 @@ function tryPhoto(href) {
      */
     try {
         return _.parseInt(href.match(/\/photos\/.\.\d+.\.\d+\.\d+\/\d+\//)[0].split('/')[3]);
-    } catch (err){
-    }
+    } catch (err){ }
 
 		/*
 		https://www.facebook.com/photo.php?fbid=10209913340943131&set=a.10205966341230605.1073741826.1622311740&type=3
@@ -29,15 +28,13 @@ function tryPhoto(href) {
 		*/
     try {
         return _.parseInt(_.trim(href.match(/fbid=\d+.&/)[0], 'fbid=&'));
-    } catch(err) {
-    }
+    } catch(err) { }
 }
 
 function tryPost(href) {
     try {
         return _.parseInt(href.match(/posts\/\d+/)[0].split('/')[1]);
-    } catch (err) {
-    }
+    } catch (err) { }
 }
 
 function tryGroupPost(href) {
@@ -54,8 +51,7 @@ function tryGroupPost(href) {
         var chunks = href.split('/');
         if(chunks[1] === 'groups' && chunks[3] === 'permalink')
             return _.parseInt(chunks[4]);
-    } catch(err) {
-    }
+    } catch(err) { }
 }
 
 function tryVideo(href) {
@@ -74,8 +70,7 @@ function tryEvent(href) {
         var chunks = href.split('/');
         if(chunks[1] === 'events' && chunks[3] === 'permalink')
             return _.parseInt(chunks[4]);
-    } catch(err) {
-    }
+    } catch(err) { }
 }
 
 function tryNotes(href) {
@@ -84,8 +79,7 @@ function tryNotes(href) {
         var chunks = href.split('/');
         if(chunks[1] === 'notes')
             return _.parseInt(chunks[4]);
-    } catch(err) {
-    }
+    } catch(err) { }
 }
 
 function tryAlbum(href) {
@@ -156,7 +150,6 @@ function getPostBI(snippet) {
         return { 'feedBasicInfo': false };
     }
 
-    // debug("%s ≻  %s %s", snippet.id, postCore.type, href);
     return {
         feedBasicInfo: true, 
         postId: postCore.postId,
@@ -174,22 +167,3 @@ var postHref = {
 };
 
 return parse.please(postHref);
-
-
-/* 
- * "/sustainabledirections/photos/a.2044902392402301.1073741828.2032149717010902/2148280472064492/?type=3" rel="theater" ajaxify="/sustainabledirections/photos/a.2044902392402301.1073741828.2032149717010
- *
- * https://www.facebook.com/2084online/posts/1340414852682111
- *
- * https://www.facebook.com/joana.varon/posts/10154308117673520?ref=3&action_history=null
- *
- * https://www.facebook.com/events/1374872899192516/permalink/1383884268291379/?ref=3&action_history=null
- *
- * INSTAGRAM
- *
- * <a class="_5pcq" href="https://www.facebook.com/photo.php?fbid=1611982902443533&amp;set=a.1501650293476795.1073741846.100008955168308&amp;type=3" rel="theater" ajaxify="https://www.facebook.com/photo.php?fbid=1611982902443533&amp;set=a.1501650293476795.1073741846.100008955168308&amp;type=3&amp;size=1080%2C608&amp;source=12&amp;player_origin=unknown" target=""><abbr title="Segunda, 19 de dezembro de 2016 às 11:44" data-utime="1482155081" data-shorten="1" class="_5ptz"><span class="timestampContent" id="js_dr0">19 de dezembro às 11:44</span></abbr></a>
- *
- * https://www.facebook.com/events/130962834057280/permalink/139790183174545/?ref=3&action_history=null
- *
- *
- * */

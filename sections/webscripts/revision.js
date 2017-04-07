@@ -53,7 +53,7 @@ function doHTMLentries(dictionary) {
 function cleanstyle(){
     $('img').attr('width','');
     $('img').attr('height','');
-    $('*').attr('style','');
+    // $('*').attr('style','');
 }
 
 function loadsnippet(metadataContainer, renderContainer) {
