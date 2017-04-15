@@ -20,5 +20,5 @@
   "env": {
     "DEBUG": "-fbtrex,lib:*,-lib:parser,-lib:performa"
   },
-  "ext": "js css json jade"
+  "ext": "js css json pug"
 }
