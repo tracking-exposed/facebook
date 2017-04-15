@@ -13,17 +13,17 @@ var parse = require('./lib/parse');
 var commentsR = [ /Comments$/, /Comentarios$/, /Commenti$/, /Comentári$/ ];
 var translation = [ /Visualizza traduzione$/ ];
 
-function mapReduceTrim(reglist, stext) {
+function mapReduceTrim(reglist, stext, init) {
     return _.reduce(reglist, function(memo, regex) {
         if( !stext || !_.size(stext) )
             return memo;
-        if(!_.isNull(memo))
+        if(memo !== init)
             return memo;
-        var c = _.trimEnd(stext, regex);
+        var c = stext.replace(regex, '');
         if(_.size(c) !== _.size(stext))
             return c;
         return memo;
-    }, null);
+    }, init);
 }
 
 function getText(snippet) {
@@ -34,7 +34,7 @@ function getText(snippet) {
     try {
         var s = $('.userContent');
         var extractedT = s.text();
-        var rt = mapReduceTrim(translation, extractedT);
+        var rt = mapReduceTrim(translation, extractedT, extractedT);
     } catch(err) { }
 
     var h5 = $('h5');
@@ -43,42 +43,20 @@ function getText(snippet) {
     var sei = h6.text();
     var source, reason;
 
-    console.log(" ↓ " +
-        [ "H", h5.length, h6.length, "T", cinque.length, sei.length,
-          _.size(rt), snippet.id ].join(",")
-    );
-
-    source = mapReduceTrim(commentsR, sei);
-    if(!source) {
-        source = mapReduceTrim(commentsR, cinque);
-    } else {
+    source = mapReduceTrim(commentsR, sei, sei);
+    if(!source || source == "")
+        source = mapReduceTrim(commentsR, cinque, cinque);
+    else
         reason = cinque;
-        debug("Reason: %s", reason);
-    }
-    /*
-    try {
-        source = mapReduceTrim(commentsR, sei);
-        if(!source)
-            debug("Despite the possibilities: no `source` %s", sei);
-        else
-            debug("----» %s", source);
-    } catch(error) {
-        debug("Error in looking for `sei` %s: %s", sei, error);
-    }
 
-    debugger;
-    if(cinque.length === 1) {
-        if(_.isUndefined(source)) {
-            debug("5 set source %s over (%d)", cinque, _.size(source) );
-            source = cinque;
-        } else {
-            reason = cinque;
-            debug("Reason: %s", reason);
-        }
-    }
-    */
-    debug("→ s[%s] T[%s] r[%s]", source, rt, reason);
+
     if(_.size(source)) {
+
+        var debt = "[" + source + "] T: " + _.size(rt);
+        if(reason)
+            debt += " [" + reason + "]";
+
+        debug("Success %s", debt);
 
         retO.feedText = true;
 
@@ -89,6 +67,8 @@ function getText(snippet) {
 
         if(_.size(reason))
             _.extend(retO, { reason: reason });
+
+        return retO;
 
     } else {
         debug("øø unable to get .userContent and source: %s", snippet.id);
