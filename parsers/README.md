@@ -4,7 +4,7 @@ Note that these parsers depend on each others' work in sequence.
 
 For example, no parsers working on "promoted" posttype can match anything before the parser _postType.js_ is run to analyze and mark the postTypes.
 
-On adding new parsers, the dependency hierarchy should be recorded here for future reference. 
+On adding new parsers, the dependency hierarchy should be recorded here for future reference.
 
 Automatic resolving of dependencies should in the end be implemented.
 
@@ -50,12 +50,27 @@ Some environment variables are checked by the parser library:
   * `url`: by default https://facebook.tracking.exposed
   * `id`: overwrites all the other requirement, is supposed to be the htmls.id hash, used to request for a specific snippet
 
-
-## The API and the parser...
-
-are documented in the website via docco! (**TODO**)
-
 ## easy reminder
 
 p=`/bin/ls parsers/*.js`
 for i in $p; do DEBUG=* url='http://localhost:8000' node $i; done
+
+
+## The API and the parser...
+
+### Commit the parser results
+
+When the parser has operated, it has to commit a result in order to mark
+the snippet already processed by the parser. Even if the parser hasn't
+given back any answer the results have to be committed (so that they would be marked as processed).
+
+*Endpoint*: `POST /snippet/result`
+
+```
+{
+  "snippetId": "<hash of html snippet>",
+  "parserName": "<string>",
+  "parserKey": "<parserKey>",
+  "result": "<metadata">
+}
+```
