@@ -8,7 +8,7 @@ var Promise = require('bluebird');
 var mongodb = Promise.promisifyAll(require('mongodb'));
 var debug = require('debug')('fbtrex');
 var nconf = require('nconf');
-var jade = require('jade');
+var pug = require('pug');
 var cors = require('cors');
 
 var utils = require('./lib/utils');
