@@ -10,7 +10,7 @@ var parse = require('./lib/parse');
  * huge, it is better if I'll use this as experiment for 
  * language-dependned analysis and extraction */
 
-var commentsR = [ /Comments$/, /Comentarios$/, /Commenti$/, /Comentári$/ ];
+var commentsR = [ /Comments$/, /Comentarios$/, /Commenti$/, /Comentári$/, /Comentários$/, /Reacties$/, /Kommentare$/, /Commentaires$/ ];
 var translation = [ /Visualizza traduzione$/ ];
 
 function mapReduceTrim(reglist, stext, init) {
@@ -52,22 +52,23 @@ function getText(snippet) {
 
     if(_.size(source)) {
 
-        var debt = "[" + source + "] T: " + _.size(rt);
-        if(reason)
-            debt += " [" + reason + "]";
-
-        debug("Success %s", debt);
+        var debt = "[" + source + "]";
 
         retO.feedText = true;
 
         _.extend(retO, { source: source });
 
-        if(_.size(rt))
+        if(_.size(rt)) {
             _.extend(retO, { text: rt });
+            debt += " ε " + _.size(rt);
+        }
 
-        if(_.size(reason))
+        if(_.size(reason)) {
             _.extend(retO, { reason: reason });
+            debt += " [" + reason + "]";
+        }
 
+        debug("𝛶 %s %s", snippet.id, debt);
         return retO;
 
     } else {
