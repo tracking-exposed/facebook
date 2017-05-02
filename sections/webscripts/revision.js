@@ -1,21 +1,22 @@
 
+var parsers = [
+    'postType',
+    'feedBasicInfo',
+    'feedUTime',
+    'feedReactions',
+    'promotedInfo',
+    'promotedLink',
+    'promotedTitle',
+    'feedText'
+];
+
 function getParserHref(parserName) {
-    /* there is a pattern as you see... but I'm not completely sure, so, sloppy code ATM */
-    if(parserName === 'postType') {
-        return 'https://github.com/tracking-exposed/facebook/blob/master/parsers/postType.js';
-    } else if(parserName === 'feedBasicInfo') {
-        return 'https://github.com/tracking-exposed/facebook/blob/master/parsers/feedBasicInfo.js';
-    } else if(parserName === 'feedUTime') {
-        return 'https://github.com/tracking-exposed/facebook/blob/master/parsers/feedUTime.js';
-    } else if(parserName === 'feedReactions') {
-        return 'https://github.com/tracking-exposed/facebook/blob/master/parsers/feedReactions.js';
-    } else if(parserName === 'promotedInfo') {
-        return 'https://github.com/tracking-exposed/facebook/blob/master/parsers/promotedInfo.js';
-    } else if(parserName === 'promotedLink') {
-        return 'https://github.com/tracking-exposed/facebook/blob/master/parsers/promotedLink.js';
-    } else if(parserName === 'promotedTitle') {
-        return 'https://github.com/tracking-exposed/facebook/blob/master/parsers/promotedTitle.js';
-    }
+    return _.reduce(parsers, function(memo, p) {
+        if(memo)
+            return memo;
+        if(p == parserName)
+            return 'https://github.com/tracking-exposed/facebook/blob/master/parsers/' + p + '.js';
+    }, undefined);
 };
 
 function getParserByBool(parserName) {

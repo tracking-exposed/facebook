@@ -124,8 +124,10 @@ function please(config) {
                     var newmeta = config.implementation(snippet);
                     return commitResult(config, newmeta, snippet);
                 }, {concurrency: config.snippetConcurrency});
+        })
+        .then(function(done) {
+            return _.size(done);
         });
-
 };
 
 
