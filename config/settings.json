@@ -7,11 +7,12 @@
       "htmls": "htmls2",
       "alarms": "alarms",
       "performa": "performa",
-      "hourlyIO": "hourlyIO"
+      "hourlyIO": "hourlyIO",
+      "reality": "reality"
   },
   "mongodb": "mongodb://localhost/facebook",
   "password": "overwrittenbyENV",
   "port": 8000,
-  "htmlMaxAmount": 30,
+  "htmlMaxAmount": 1000,
   "NOPERFORMA": true
 }

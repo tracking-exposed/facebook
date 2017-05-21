@@ -8,7 +8,7 @@ var Promise = require('bluebird');
 var mongodb = Promise.promisifyAll(require('mongodb'));
 var debug = require('debug')('fbtrex');
 var nconf = require('nconf');
-var jade = require('jade');
+var pug = require('pug');
 var cors = require('cors');
 
 var utils = require('./lib/utils');
@@ -121,12 +121,6 @@ app.get('/api/v:version/node/countries/c3', function(req, res) {
     return dispatchPromise('countriesStats', req, res);
 });
 
-app.get('/api/v:version/post/reality/:postId', function(req, res) {
-    return dispatchPromise('postReality', req, res);
-});
-app.get('/api/v:version/post/perceived/:postId/:userId', function(req, res){
-    return dispatchPromise('postLife', req, res);
-});
 app.get('/api/v:version/user/:kind/:CPN/:userId/:format', function(req, res){
     return dispatchPromise('userAnalysis', req, res);
 });
@@ -200,43 +194,32 @@ app.get('/api/v1/personal/csv/:userId/:kind', function(req, res) {
     return dispatchPromise('personalCSV', req, res);
 });
 
-/*
-app.get('/api/v1/personal/profile/:userId/', function(req, res) {
-    return dispatchPromise('personalProfile', req, res);
-}); */
-app.get('/realitycheck/:userId/:page', function(req, res) {
-    req.params.page = 'realitycheck-' + req.params.page;
-    return dispatchPromise('getPage', req, res);
-});
-/* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
-
 /* Alarm */
 app.get('/api/v1/alarms/:auth', function(req, res) {
     return dispatchPromise('getAlarms', req, res);
 });
 
-/* TO BE RESTORED */
-app.get('/realitymeter/:postId', function(req, res) {
-    return dispatchPromise('getRealityMeter', req, res);
+/* realityMeter API -- page served by getPage */
+app.get('/api/v1/posts/top', function(req, res) {
+    return dispatchPromise('getTopPosts', req, res);
 });
-app.get('/realitymeter', function(req, res) {
-    return dispatchPromise('getRealityMeter', req, res);
+app.get('/api/v1/realitymeter/:postId', function(req, res) {
+    return dispatchPromise('postReality', req, res);
 });
+
+/* stats */
 app.get('/impact', function(req, res) {
     return dispatchPromise('getImpact', req, res);
 });
+
 /* first class line jumper */
 app.get('/api/v1/manualboarding', function(req, res) {
     return dispatchPromise('manualBoarding', req, res);
 });
+
 /* static files, independent by the API versioning */
 app.get('/favicon.ico', function(req, res) {
     res.sendFile(__dirname + '/dist/favicon.ico');
-});
-app.get('/facebook.tracking.exposed.user.js', function (req, res) {
-    var ipaddr = _.get(req.headers, "x-forwarded-for") || "127.0.0.1";
-    debug("ScriptLastVersion requested in %j", utils.getGeoIP(ipaddr));
-    res.sendFile(__dirname + '/scriptlastversion');
 });
 
 
@@ -255,8 +238,13 @@ app.use('/css', express.static(__dirname + '/dist/css'));
 app.use('/images', express.static(__dirname + '/dist/images'));
 app.use('/fonts', express.static(__dirname + '/dist/fonts'));
 
+/* special realitycheck page shaper */
+app.get('/realitycheck/:userId/:detail*', function(req, res) {
+    req.params.page = 'realitycheck-' + req.params.detail;
+    return dispatchPromise('getPage', req, res);
+});
 /* last one, page name catch-all */
-app.get('/:page', function(req, res) {
+app.get('/:page*', function(req, res) {
     return dispatchPromise('getPage', req, res);
 });
 /* true last */
