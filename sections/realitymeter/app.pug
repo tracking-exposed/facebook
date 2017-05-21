@@ -1,0 +1,70 @@
+doctype html
+html
+    head
+        link(rel='stylesheet', type='text/css', href='/css/bootstrap.css')
+        link(rel='stylesheet', type='text/css', href='/css/datatables.min.css')
+        link(rel='stylesheet', type='text/css', href='/js/local/realitymeter.css')
+        link(rel='stylesheet', type='text/css', href='/js/local/impressionTable.css')
+
+        script(type='text/javascript', src='/js/jquery.js')
+        script(type='text/javascript', src='/js/collapse.js')
+        script(type='text/javascript', src='/js/bootstrap.min.js')
+        script(type='text/javascript', src='/js/lodash.min.js')
+        script(type='text/javascript', src='/js/d3.min.js')
+        script(type='text/javascript', src='/js/c3.min.js')
+        script(type='text/javascript', src='/js/moment.min.js')
+        script(type='text/javascript', src='/js/datatables.min.js')
+
+        script(type='text/javascript', charset='utf8', src='/js/local/realitymeter.js')
+
+        title facebook.tracking.exposed RealityMeter
+
+    body(onload="loadStage(getPostId(), '#postsTable', '#infobox', '#container')")
+
+        .container-fluid.realitycontainer
+            h2 RealityMeter
+            h3 and reframe your expections in the algorithm society
+            p.text This is a prototype, and display how many times, when, in which rank, a facebook post is appear in a supporter newsfeed.
+        
+        .container-fluid.realitycontainer
+            span.col-md-1
+            span.container-fluid.col-md-4.niceborder
+                p.abitmore When you publish a post in a page, Facebook tell you how many impressions the post got. 
+                    b But what does it really means? 
+                    | In the timelines, does the post appears many times in a favorable position, or once to disappear at the next feed refresh? 
+                    b Positioning 
+                    | is the metric to judge if a post might got an impact in the users eyeballs or not… and 
+                    b now you can know it! 
+            span.col-md-1
+            span.container-fluid.col-md-4.niceborder
+                i But Facebook is so much more than a media company. [...] Facebook plays both sides: it offers real estate (video advertising) and provides the assessments (viewership data). Not surprisingly, 
+                    a(href="http://arstechnica.com/business/2016/09/facebook-apologizes-for-feeding-inflated-video-view-numbers-to-advertisers/") Facebook makes mistakes.
+                    | There is no auditing, no independence; we simply take Facebook’s word for it, when and how much the errors occur. Like Poseidon, FB blows, the currents move, and content producers and advertisers are swept in new directions.
+                div.smaller
+                    p.right From 
+                        a(href="https://www.theguardian.com/technology/2016/sep/28/google-facebook-powerful-secretive-empire-transparency") Facebook and Google: most powerful and secretive empires we've ever known
+                    |  2016 September
+            span.col-md-1
+
+        .container-fluid.realitycontainer
+            div#infobox
+            div#container
+            h4 Every post collected can be seen in realitymeter. Still, the only post with evidence provided by many users is interesting. Below you can pick some samples:
+            table#postsTable.display(cellspacing='0', width='100%')
+                thead
+                    tr
+                        th Accesses
+                        th users
+                        th Post type
+                        th Time ago
+                        th Countries 
+                        th First country
+                tfoot
+                    tr
+                        th Accesses
+                        th users
+                        th Post type
+                        th Time ago
+                        th Countries 
+                        th First country
+

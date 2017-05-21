@@ -10,27 +10,37 @@ html
     meta(http-equiv="X-UA-Compatible" content="IE=edge")
     meta(name="viewport" content="width=device-width, initial-scale=1")
     meta(name="keywords" content="facebook tracking exposed")
-    title facebook tracking exposed: presentations and initiatives
+    title facebook tracking exposed: initiatives, experiments, and talks
 
   body
 
     include ../header
-    include ../navbar 
+    include ../navbar
 
     .container
-      h2 Upcoming initiatives
+      h3 Experiments done
       ul.fb--icon-list
         li
           a(href="/NetherlandsElections") The Netherlands elections call
+          |, and this
+          a(href="https://www.oneworld.nl/deze-tool-checkt-facebook-echt-de-verkiezingen-beinvloedt" target="_blank") OneWorld
+          |'s call for action
         li
-          a(href="https://www.rightscon.org") RightsCon 2017
-          |, Demo Room
-        li
-          a(href="http://www.journalismfestival.com/programme/2017/exposing-what-facebook-wants-you-to-see") International Journalism Festival
-          |, 8 April, Perugia.
+          a(href="/beta") beta
+          |  updates, for supporters and technologiest
 
     .container
-      h2 Presentations
+      h3 Running experiments
+      ul.fb--icon-list
+        li Project's
+          a(href="/impact") Open statistics
+      ul.fb--icon-list
+        li
+          a(href="/realitymeter") RealityMeter
+          |, check which post get more evidences
+
+    .container
+      h3 Presentations
       table.table.table-striped
         thead
           tr
@@ -41,28 +51,48 @@ html
             th Language
         tbody
            tr
+            td 8th April '17
+            td
+              a(href="http://www.journalismfestival.com/programme/2017/exposing-what-facebook-wants-you-to-see") International Journalism Festival, Perugia
+            td
+              a(href="/talks-ijf17/") IJF '17
+            td
+              a(href="https://www.youtube.com/watch?v=wpnmDz9Os50") 45 mins video
+            td English
+        tbody
+           tr
+            td 29th March '17
+            td
+              a(href="https://www.rightscon.org") RightsCon
+              |, Demo Room, Day 1. Brussels
+            td
+              a(href="/talks-rightscon17/") RightsCon '17
+            td
+            td English
+        tbody
+           tr
             td 23rd February '17
             td Toolbox Coworking, Turin
-            td 
+            td
               a(href="/talks-torinohacknight/") Torino Hack Night
-            td 
+            td
             td Italian
-          tr
+           tr
             td 2nd December '16
             td cantiere, Milan
-            td 
+            td
               a(href="/talks-cyberresistance/") Cyber*Resistance
-            td 
+            td
             td Italian
-          tr
+           tr
             td 1st November '16
             td c-base, Berlin
-            td 
+            td
               a(href="/talks-netzpolitischer054/") Netzpolitischer Abend 54
             td
-              a(href="https://vimeo.com/189842857") https://vimeo.com/189842857
+              a(href="https://vimeo.com/189842857") 25 mins video
             td English
-          tr
+           tr
             td 25th October '16
             td c-base, Berlin
             td
@@ -70,7 +100,7 @@ html
             td
               a(href="https://twitter.com/_vecna/status/791002928211431424") evidences ;)
             td English
-          tr
+           tr
             td 19th October '16
             td Berlin
             td
@@ -78,4 +108,4 @@ html
             td
             td English
 
-    div.footer 
+    div.footer

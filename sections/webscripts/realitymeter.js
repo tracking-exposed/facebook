@@ -1,7 +1,150 @@
+function loadStage(postId, postsTable, infocId, graphPcId) {
 
-var displayRealityGraph = function(postId, containerId, infoId) {
-    if(!postId || postId === "0") return;
-    var url = '/api/v1/post/reality/' + postId;
+    console.log("Generated URL " + url);
+    if(postId > 1) {
+        var url = "/api/v1/realitymeter/" + postId;
+        displayRealityGraph(url, graphPcId, infocId);
+    }
+
+    var url = "/api/v1/posts/top";
+    $.getJSON(url, function(content) {
+        var tabbed = _.map(content, function(c, i) {
+            var d = moment.duration(moment(c.publicationTime) - moment() ).humanize();
+
+                return [
+                    c.updates, 
+                    _.size(_.countBy(c.timelines, 'userPseudo')),
+                    c.metadata.hrefType,
+                    d,
+                    _.size(_.countBy(c.timelines, 'geoip')),
+                    c.timelines[0].geoip,
+                    c.postId
+                ];
+        });
+
+        $(postsTable).DataTable({
+            data: tabbed,
+            createdRow: function ( row, data, index ) {
+                $(row).click(function() {
+                    var pid = data[6];
+                    $(graphPcId).html("");
+                    $(infocId).html("");
+                    history.pushState({}, "Post " + pid, "/realitymeter/" + pid);
+                    displayRealityGraph("/api/v1/realitymeter/" + pid, graphPcId, infocId);
+                });
+            }
+        });
+    });
+};
+
+function getPostId() {
+    var chunks = document.location.pathname.split('/');
+    // ["", "realitymeter", "100009030987674" ]
+    var postId = chunks.pop();
+    return _.parseInt(postId);
+};
+
+var displayRealityGraph = function(url, containerId, infoId) {
+
+    d3.json(url, function(something) {
+
+        var $info = $("<div>", { "class": "infoblock" });
+        $info.html(metadata(something));
+        $(infoId).append($info);
+
+        something.timelines = _.map(something.timelines, function(t) {
+            t.start = moment(t.startTime)
+            t.impression = moment(t.impressionTime)
+            t.startTime = t.start.format("YYYY-MM-DD HH:mm:SS");
+            t.impressionTime = t.impression.format("YYYY-MM-DD HH:mm:SS");
+            t.timeago = moment.duration(moment(something.publicationTime) - t.impression).humanize();
+            return t;
+        });
+        
+        var times = _.map({ 'publication time': 0, 
+                           '5 minutes after': 5, 
+                           '20 minutes after' : 20,
+                           '40 minutes after': 40,
+                           '1 hour after': 60,
+                           '2 hours after':60 * 2,
+                           'after a day quarter': 60 * 6,
+                           'after a day': 60 * 24,
+                           'after two days': 2 * 24 * 60,
+                           'after 1 week': 7 * 24 * 60
+        }, function(minutes, name) {
+            return { 
+                reftime: moment(something.publicationTime).add(minutes, 'm'),
+                name: name
+            };
+        });
+
+        var tmlns = _.orderBy(something.timelines, 'impression');
+
+        var content = _.reduce(times, function(memo, refli) {
+            var p = _.partition(memo, function(e) {
+                return (e.impression && e.impression.isAfter(refli.reftime));
+            });
+            if(p[1] && _.last(p[1]) && _.last(p[1]).interruption) {
+                // p[1][_.size(p[1] - 1)].interruption = refli.name;
+                return _.concat(p[1], p[0]);
+            } else {
+                return _.concat(p[1], { interruption: refli.name }, p[0]);
+            }
+        }, tmlns);
+
+        _.each(content, function(t) {
+
+            if(t.interruption) {
+                var $div = $("<div>", { "class": "timentry" });
+                $div.html(interruptionSpan(t.interruption));
+            } else {
+                var $div = $("<div>", {id: t.id, "class": "timeline " + t.userPseudo });
+                $div.html(spanWhen(t)+ spanUser(t) + spanOrder(t) );
+                $div.click(function(e){
+                    var userP  = $(this).attr('class').split(' ')[1];
+                    $(".timeline").removeClass('highlight');
+                    $("." + userP).addClass('highlight');
+                });
+            }
+            $(containerId).append($div);
+
+        });
+    });
+};
+
+function interruptionSpan(infostring) {
+    return '<span>' + infostring + '</span>  ' +
+           '<span class="glyphicon glyphicon-time"></span>';
+};
+
+function spanWhen(t) {
+    var timglip = '<span class="glyphicon glyphicon-eye-open"></span>';
+    return '<span class="entries when">' +timglip + ' ' + t.timeago + ' after publication </span>';
+};
+
+function spanUser(t) {
+    // XX
+    var userIntro = '<span class="reduced">user pseudonym: </span>';
+    return '<span class="entries "'+ t.userPseudo + '">' + userIntro + ' ' + t.userPseudo + '</span>';
+};
+
+function spanOrder(t) {
+    var impressionIntro = '<span class="reduced">display order # </span>';
+    return '<span class="entries impression">' + impressionIntro + ' ' + t.impressionOrder + '</span>';
+};
+
+function metadata(s) {
+    return [ '<span>', 'views:', s.updates, 'ദ', 
+             'users', _.size(_.countBy(s.timelines, 'userPseudo')),
+             'ദ', 'kind:', s.metadata.hrefType, 'ദ',
+             s.metadata.permaLink, 'ദ', 'published', 
+             moment(s.publicationTime).format("YYYY-MM-DD HH:mm"), ', ',
+             moment.duration(moment() - moment(s.publicationTime)).humanize(),
+             'ago </span>'].join(' ');
+};
+
+
+var displayRealityGraph_OLD = function(url, containerId, infoId) {
 
     var maxWidth = window.innerWidth
       || document.documentElement.clientWidth
@@ -223,14 +366,3 @@ var displayRealityGraph = function(postId, containerId, infoId) {
     });
 };
 
-
-
-/* not working at the moment the 'click' trapping of button ? */
-var getPostId = function(formId) {
-    var writtenv = document.getElementById(formId).value;
-    var postId = _.parseInt(writenv);
-
-    if(postId === NaN)
-        return null;
-    return postId;
-};

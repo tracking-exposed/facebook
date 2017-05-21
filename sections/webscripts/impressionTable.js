@@ -203,6 +203,13 @@ function feedInfo(entry) {
     return retT;
 };
 
+function postText(entry) {
+    var R = "<span class='promoted'>" + entry.source + "</span>";
+    if(entry.text)
+        R += "<small> " + entry.text + "</small>";
+    return R;
+};
+
 function feedFormat(entry) {
     var distance = moment.duration(moment() - moment(entry.savingTime)).humanize();
     var feedPrefix = '<span class="prefix">⧼ newsfeed</span>';
@@ -230,9 +237,11 @@ function loadHTMLs(userId, containerId) {
             
             if(entry.type === 'promoted')
                 prettyHtml += promotedFormat(entry);
-            else if(entry.type === 'feed' )
+            else if(entry.type === 'feed' ) {
                 prettyHtml += feedFormat(entry);
-            else
+                if(entry.hrefType === 'post')
+                    prettyHtml += postText(entry);
+            } else
                 prettyHtml += unprocessedFormat(entry);
 
             $(containerId).append('<div class="entry">' + '<span class="num">' + (i + 1 + start) + '</span>' + prettyHtml + '</div>');
