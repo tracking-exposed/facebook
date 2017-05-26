@@ -1,24 +1,18 @@
 {
   "watch": [
-    "lib/*.js",
-    "sections/**",
+    "lib/**",
     "app.js",
+    "sections/**",
+    "sections/**/*",
     "dist/**"
   ],
   "ignore": [
-    "bin/**",
-    ".git/",
-    "node_modules/**/node_modules",
-    "operations/",
-    "errors/",
-    "sections/webscripts/*.js",
-    "parsers/*",
-    "mongo-scripts/*"
+    "sections/webscripts/*.js"
   ],
   "verbose": true,
   "exitcrash": false,
   "env": {
     "DEBUG": "fbtrex,lib:*"
   },
-  "ext": "js css json pug"
+  "ext": "js css pug"
 }
