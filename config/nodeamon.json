@@ -1,9 +1,9 @@
 {
   "watch": [
-    "lib/**",
+    "lib/*.js",
     "app.js",
-    "sections/**",
-    "sections/**/*",
+    "sections/*.pug",
+    "sections/*/*.pug",
     "dist/**"
   ],
   "ignore": [

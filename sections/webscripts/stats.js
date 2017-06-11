@@ -1,10 +1,10 @@
-function aggregateTime(smallchunks, timeattr, amount, unit) {
+function aggregateTime(hourlychunks, timeattr, amount, unit) {
     /* 1st: result of .hourlyIO
      * 2nd: 'start', or 'savingTime'
      * 3rd & 4th, amount/unit for moment().add().subtract */
 
     /* here can be partinioned if we want only small part */
-    var y = _.orderBy(smallchunks, timeattr);
+    var y = _.orderBy(hourlychunks, timeattr);
     var first = _.get(_.first(y), timeattr);
     var last = _.get(_.last(y), timeattr);
 
@@ -50,48 +50,106 @@ function aggregateTime(smallchunks, timeattr, amount, unit) {
     return retv;
 };
 
+function c3statsGenerate(blob) {
+
+    blob.data.xFormat = '%Y-%m-%d %H:%M:%S';
+    blob.data.keys.x = 'start';
+    blob.axis.x = {
+        type: 'timeseries', tick: { format: '%d-%m %H:00' }
+    };
+    blob.point = { r: 1 };
+
+    c3.generate(blob);
+};
+
 function fillUsersGraphs(activitiesContainer, userContainer) {
 
-    var url = '/api/v1/stats/basic';
+    var url = '/api/v1/stats/basic/2';
 
     d3.json(url, function(something) {
+
+        var last2w = _.filter(something, function(e) {
+            return moment(e.start).isAfter(moment().subtract(2, 'w'));
+        });
+
+        /* country analysis is based on the last two weeks only */
+        var contributors = [];
+        var ccc = _.map(last2w, function(e) {
+            return _.reduce(e.timelinecc, function(memo, amount, cc) {
+                memo[cc] = amount;
+                var f = _.find(contributors, { nation: cc});
+                if(!f)
+                    contributors.push({ nation: cc, amount: amount});
+                else
+                    f.amount += amount;
+                return memo;
+            }, _.set({}, 'start', e['start']));
+        });
+        contributors = _.reverse(
+            _.orderBy(_.filter(contributors, function(c) {
+                return c.amount > 200;
+        }), 'amount'));
+
+        c3statsGenerate({
+            bindto: '#contribcountries',
+            data: {
+                json: aggregateTime(ccc, 'start', 4, 'h'),
+                keys: {
+                    value: _.map(contributors, 'nation')
+                },
+                type: 'spline',
+                labels: true
+            },
+            axis: {
+                y: { label: 'Timelines by Country' }
+            }
+        });
+
+        /* views viz */
+        var visitors = [];
+        var vcc = _.map(last2w, function(e) {
+            return _.reduce(e.visitcc, function(memo, amount, cc) {
+                memo[cc] = amount;
+                var f = _.find(visitors, { nation: cc});
+                if(!f)
+                    visitors.push({ nation: cc, amount: amount});
+                else
+                    f.amount += amount;
+                return memo;
+            }, _.set({}, 'start', e['start']));
+        });
+        visitors = _.reverse(
+            _.orderBy(_.filter(visitors, function(c) {
+                return c.amount > 50;
+        }), 'amount'));
+
+        c3statsGenerate({
+            bindto: '#viewscountries',
+            data: {
+                json: aggregateTime(vcc, 'start', 4, 'h'),
+                keys: {
+                    value: _.map(visitors, 'nation')
+                },
+                type: 'spline',
+                labels: true
+            },
+            axis: {
+                y: { label: 'Views by Country' }
+            }
+        });
+
 
         var activities = _.map(something, function(e) {
             return _.pick(e, ['htmls', 'impressions', 'timelines', 'start']);
         });
 
-        /* 
-         * The "total" can't work in this way here, has to be done 
-         * after the time aggregation -- still, is something to take back 
-         *
-        var users = _.reduce(something, function(memo, e) {
-            var o = _.pick(e, ['visits', 'newsupporters', 'start']);
-
-            memo.counters.supporters += o.newsupporters;
-            memo.counters.evidences += o.htmls;
-
-            o.supporters = memo.counters.supporters;
-            o.evidences = memo.counters.evidences;
-
-            memo.accumulated.push(o);
-            return memo;
-
-        }, { accumulated: [], counters: { supporters: 0, evidences: 0 }}).accumulated;
-          */
-
-        var users = _.map(something, function(e) {
-            return _.pick(e, ['visits', 'newsupporters', 'start']);
-        });
-
-        c3.generate({
+        c3statsGenerate({
             bindto: activitiesContainer,
             data: {
                 json: aggregateTime(activities, 'start', 1, 'd'),
                 keys: {
-                    x: 'start',
                     value: [ "htmls", "impressions", "timelines" ]
                 },
-                xFormat: '%Y-%m-%d %H:%M:%S',
                 types: {
                     'impressions': 'area',
                     'timelines': 'line',
@@ -104,37 +162,25 @@ function fillUsersGraphs(activitiesContainer, userContainer) {
                 }
             },
             axis: {
-                x: {
-                    type: 'timeseries',
-                    tick: {
-                        format: '%Y-%m-%d'
-                    } 
-                },
                 y2: {
                     show: true,
                     label: 'Timelines'
                 },
-                y: {
-                    label: 'Informative objects'
-                }
-            },
-            point: {
-                r: 1
-            },
-            /* subchart: {
-                show: true
-            } */
+                y: { label: 'Informative objects' }
+            }
         });
 
-        c3.generate({
+        var users = _.map(something, function(e) {
+            return _.pick(e, ['visits', 'newsupporters', 'start']);
+        });
+
+        c3statsGenerate({
             bindto: userContainer,
             data: {
                 json: aggregateTime(users, 'start', 12, 'h'),
                 keys: {
-                    x: 'start',
                     value: [ "newsupporters", "visits" ]
                 },
-                xFormat: '%Y-%m-%d %H:%M:%S',
                 types: {
                     'newsupporters': 'bar',
                     'visits': 'line'
@@ -149,84 +195,65 @@ function fillUsersGraphs(activitiesContainer, userContainer) {
                 }
             },
             axis: {
-                x: {
-                    type: 'timeseries',
-                    tick: {
-                        format: '%Y-%m-%d %H:%M'
-                    } 
-                },
                 y2: {
                     show: true,
                     label: 'Visits'
                 },
-                y: {
-                    label: 'New Supporters'
-                }
-            },
-            point: {
-                r: 1
-            },
-            /* subchart: {
-                show: true
-            } */
+                y: { label: 'New Supporters' }
+            }
         });
     });
 };
 
 function fillMetadataGraph(containerId) {
 
-    var url = '/api/v1/stats/metadata';
+    var url = '/api/v1/stats/metadata/2';
 
     d3.json(url, function(something) {
 
-        c3.generate({
+        var last2w = _.filter(something, function(e) {
+            return moment(e.start).isAfter(moment().subtract(2, 'w'));
+        });
+
+        c3statsGenerate({
             bindto: containerId,
             data: {
-                json: aggregateTime(something, 'start', 2, 'd'),
+                json: aggregateTime(last2w, 'start', 6, 'h'),
                 keys: {
-                    x: 'start',
-                    value: [ "photo", "video", "post", "feed", "postId", "promoted" ]
+                    value: [ "photo", "video", "post",
+                             "feed", "postId", "promoted" ]
                 },
-                xFormat: '%Y-%m-%d %H:%M:%S',
                 axes: {
-                    'photo': 'y',
-                    'video': 'y',
-                    'post': 'y',
+                    'photo': 'y2',
+                    'video': 'y2',
+                    'post': 'y2',
                     'feed': 'y',
                     'postId': 'y',
                     'promoted': 'y',
                 },
+                type: 'line',
                 types: {
-                    photo: 'area',
-                    video: 'area',
-                    post: 'area',
-                    feed: 'line',
-                    postId: 'line',
-                    promoted: 'line',
+                    photo: 'bar',
+                    video: 'bar',
+                    post: 'bar',
+                },
+                groups: [ [ 'photo', 'video', 'post' ] ],
+                colors: {
+                    photo: 'rgba(243, 208, 19, 0.87)',
+                    video: 'rgba(238, 15, 26, 0.68)',
+                    post: 'rgba(51, 234, 33, 0.78)'
                 }
             },
             axis: {
-                x: {
-                    type: 'timeseries',
-                    tick: {
-                        format: '%Y-%m-%d'
-                    } 
-                },
-                /* y2: {
+                y2: {
                     show: true,
-                    label: 'Posts by intrinsical reasons'
-                }, */
-                y: {
-                    label: 'Kinds of Impressions'
-                }
+                    label: 'Kind of feed posts'
+                },
+                y: { label: 'Kinds of Impressions' }
             },
-            point: {
-                r: 1
+            tooltip: {
+                grouped: false
             },
-            /* subchart: {
-                show: true
-            } */
         });
     });
 };
-
