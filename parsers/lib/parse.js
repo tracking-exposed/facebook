@@ -127,6 +127,10 @@ function please(config) {
         })
         .then(function(done) {
             return _.size(done);
+        })
+        .catch(function(error) {
+            console.error("Execution failure, consult the documentaton");
+            console.error(error);
         });
 };
 
