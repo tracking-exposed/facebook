@@ -112,8 +112,12 @@ app.get('/api/v:version/node/info', function(req, res) {
 app.get('/api/v:version/daily/:what/:dayback', function(req, res) {
     return dispatchPromise('byDayStats', req, res);
 });
+/* actually used APIs for stats/impact */
 app.get('/api/v:version/stats/:what/:months', function(req, res) {
     return dispatchPromise('getStats', req, res);
+});
+app.get('/api/v:version/stats/engagement', function(req, res) {
+    return dispatchPromise('getEngagement', req, res);
 });
 
 /* column only - c3 */
