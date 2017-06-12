@@ -120,7 +120,7 @@ function fillUsersGraphs(activitiesContainer, userContainer) {
         });
         visitors = _.reverse(
             _.orderBy(_.filter(visitors, function(c) {
-                return c.amount > 50;
+                return c.amount > 100;
         }), 'amount'));
 
         c3statsGenerate({
@@ -208,7 +208,6 @@ function fillUsersGraphs(activitiesContainer, userContainer) {
 function fillMetadataGraph(containerId) {
 
     var url = '/api/v1/stats/metadata/2';
-
     d3.json(url, function(something) {
 
         var last2w = _.filter(something, function(e) {
@@ -253,7 +252,57 @@ function fillMetadataGraph(containerId) {
             },
             tooltip: {
                 grouped: false
+            }
+        });
+    });
+
+    var engaurl = "/api/v1/stats/engagement";
+    d3.json(engaurl, function(engainfo) {
+
+        var md = _.last(_.orderBy(engainfo, 'endured')).endured;
+
+        var active = _.filter(engainfo, function(e) {
+            return moment(e.lastActivity).isAfter(moment().subtract(1, 'w'));
+        });
+        var activeC = _.times(md, function(i) {
+            return _.size(_.filter(active, { endured: i })) || null;
+        });
+
+        var allC = _.times(md, function(i) {
+            return _.size(_.filter(engainfo, { endured: i })) || null;
+        });
+
+        c3.generate({
+            bindto: '#engagement',
+            data: {
+                columns: [
+                    _.concat(['active in the last week'], activeC),
+                    _.concat(['users'], allC),
+                ],
+                types: {
+                    users: 'bar',
+                    'active in the last week': 'scatter'
+                },
+                labels: true,
+                colors: {
+                    users: '#4bd1f7',
+                    'active in the last week': 'rgba(45, 204, 128, 0.84)'
+                },
+                groups: [ [ 'active in the last week', 'users' ] ]
             },
+            size: { height: 900 },
+            axis: {
+                rotated: true,
+                x: { label: 'days' }
+            },
+            point: { r: 10 },
+            grid: { x: {
+                lines: [
+                    { value: 7, text: 'one week', position: 'middle'},
+                    { value: 30, text: 'one month', position: 'middle'},
+                    { value: 90, text: 'three months', position: 'middle'}
+                ]
+            } }
         });
     });
 };
