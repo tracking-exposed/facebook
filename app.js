@@ -156,54 +156,28 @@ app.post('/api/v:version/events', function(req, res) {
 });
 
 
-/* new personal page development  -- this will be protected */
-app.get('/api/v:version/timelines/:userId', function(req, res) {
-    return dispatchPromise('getTimelines', req, res);
-});
-app.get('/api/v:version/metadata/:timelineId', function(req, res) {
-    return dispatchPromise('getMetadata', req, res);
-});
-app.get('/api/v:version/refreshmap/:userId/:not/:noi', function(req, res) {
-    /* restored from the alpha, from Michele Invernizzi  */
-    return dispatchPromise('getRefreshMap', req, res);
-});
-
 /* HTML single snippet */
-app.get('/api/v:version/html/coordinates/:userId/:timelineUUID/:order', function(req, res) {
-    return dispatchPromise('unitByCoordinates', req, res);
-});
 app.get('/api/v:version/html/:htmlId', function(req, res) {
     return dispatchPromise('unitById', req, res);
 });
-/* The API above beside unitById have not yet an UX */
-app.get('/revision/:htmlId', function(req, res) {
-    req.params.page = 'revision';
-    return dispatchPromise('getPage', req, res);
-});
 
-/* NEW realitycheck page, using `personal` as block */
-app.get('/api/v1/personal/contribution/:userId/:skip/:amount', function(req, res) {
-    return dispatchPromise('personalContribution', req, res);
+/* APIs used in RealityCheck */
+app.get('/api/v:version/htmls/:userId/days/:days', function(req, res) {
+    return dispatchPromise('metadataByTime', req, res);
 });
-app.get('/api/v1/personal/promoted/:userId/:skip/:amount', function(req, res) {
-    return dispatchPromise('personalPromoted', req, res);
+app.get('/api/v:version/htmls/:userId/n/:skip/:amount', function(req, res) {
+    return dispatchPromise('metadataByAmount', req, res);
 });
-app.get('/api/v1/personal/heatmap/:userId/:skip/:amount', function(req, res) {
-    return dispatchPromise('personalHeatmap', req, res);
-});
-app.get('/api/v1/personal/htmls/:userId/:skip/:amount', function(req, res) {
-    return dispatchPromise('personalHTMLs', req, res);
-});
-app.get('/api/v1/personal/csv/:userId/:kind', function(req, res) {
+app.get('/api/v:version/personal/csv/:userId/:kind', function(req, res) {
     return dispatchPromise('personalCSV', req, res);
 });
 
-/* Alarm */
+/* Alarm listing  API */
 app.get('/api/v1/alarms/:auth', function(req, res) {
     return dispatchPromise('getAlarms', req, res);
 });
 
-/* realityMeter API -- page served by getPage */
+/* realityMeter API(s) */
 app.get('/api/v1/posts/top', function(req, res) {
     return dispatchPromise('getTopPosts', req, res);
 });
@@ -225,6 +199,9 @@ app.get('/api/v1/manualboarding', function(req, res) {
 app.get('/favicon.ico', function(req, res) {
     res.sendFile(__dirname + '/dist/favicon.ico');
 });
+app.get('/robots.txt', function(req, res) {
+    res.sendFile(__dirname + '/dist/robots.txt');
+});
 
 
 /* development: the local JS are pick w/out "npm run build" every time, and
@@ -242,11 +219,16 @@ app.use('/css', express.static(__dirname + '/dist/css'));
 app.use('/images', express.static(__dirname + '/dist/images'));
 app.use('/fonts', express.static(__dirname + '/dist/fonts'));
 
-/* special realitycheck page shaper */
-app.get('/realitycheck/:userId/:detail*', function(req, res) {
-    req.params.page = 'realitycheck-' + req.params.detail;
+/* special pages: the parameters are acquired by JS client side */
+app.get('/realitycheck/:userId/:detail', function(req, res) {
+    req.params.page = 'realitycheck';
     return dispatchPromise('getPage', req, res);
 });
+app.get('/revision/:htmlId', function(req, res) {
+    req.params.page = 'revision';
+    return dispatchPromise('getPage', req, res);
+});
+
 /* last one, page name catch-all */
 app.get('/:page*', function(req, res) {
     return dispatchPromise('getPage', req, res);

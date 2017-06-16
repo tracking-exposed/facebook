@@ -7,7 +7,9 @@ var parsers = [
     'promotedInfo',
     'promotedLink',
     'promotedTitle',
-    'feedText'
+    'feedText',
+    'feedHref',
+    'imgAltTag'
 ];
 
 function getParserHref(parserName) {
@@ -54,7 +56,10 @@ function doHTMLentries(dictionary) {
 function cleanstyle(){
     $('img').attr('width','');
     $('img').attr('height','');
-    // $('*').attr('style','');
+
+    /* only special case */
+    $('#logoimg').attr('width', 24);
+    $('#logoimg').attr('height', 24);
 }
 
 function loadsnippet(metadataContainer, renderContainer) {
