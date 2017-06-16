@@ -70,7 +70,7 @@ function initialize() {
     $(".switch").click(switchpage);
     $('li #' + pinfo.pageName).addClass('active');
 
-    var basicApi = "/api/v1/htmls/" + pinfo.userId + "/days/" + 37;
+    var basicApi = "/api/v1/htmls/" + pinfo.userId + "/days/" + 7;
     console.log("Loading first batch of data from", basicApi);
 
     return $.getJSON(basicApi, function(data) {
