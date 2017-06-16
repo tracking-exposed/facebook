@@ -13,6 +13,11 @@
     font-family: 'Work Sans', sans-serif;
 }
 
+.headerborders {
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
+
 .documentation {
     background-color: #FBFBEF;
     border-top: black 1px solid;
@@ -23,15 +28,34 @@
     cursor: pointer;
 }
 
-.vizavail {
+.pageSection {
     font-family: 'Work Sans', sans-serif;
-    background-color: #F0FFFF;
-    font-size: 1.3em;
-    padding-left: 4%;
-    padding-right: 4%;
-    margin-bottom: 10px;
-    margin-top: 10px;
+    background-color: #F0F0FF;
 }
+
+div, h3 {
+    font-family: 'Work Sans', sans-serif;
+}
+
+.c3-texts-uniquePosts {
+    font-size: 0.7em;
+    font-weight: bold;
+}
+
+#dietGraph {
+    width: 80%;
+}
+
+.text {
+    border-left: 2em;
+    border-right: 2em;
+    font-size: 1.2em;
+}
+
+.right {
+    text-align: right;
+}
+
 
 .prefix {
     padding-left: 10px;
@@ -75,4 +99,35 @@
     padding-right: 5px;
     margin-right: 5px;
     display: inline-block;
+}
+
+.loader-container {
+  border-right: 15%;
+  border-left:15%;
+  width: 100%;
+  text-align: center;
+}
+
+.logo-background {
+  -webkit-animation: spin 1.7s infinite linear;
+  -moz-animation: spin 1.7s infinite linear;
+  -o-animation: spin 1.7s infinite linear;
+  -ms-animation: spin 1.7s infinite linear;
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg);}
+  100% { -webkit-transform: rotate(360deg);}
+}
+@-moz-keyframes spin {
+  0% { -moz-transform: rotate(0deg);}
+  100% { -moz-transform: rotate(360deg);}
+}
+@-o-keyframes spin {
+  0% { -o-transform: rotate(0deg);}
+  100% { -o-transform: rotate(360deg);}
+}
+@-ms-keyframes spin {
+  0% { -ms-transform: rotate(0deg);}
+  100% { -ms-transform: rotate(360deg);}
 }
