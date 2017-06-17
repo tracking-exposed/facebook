@@ -179,8 +179,8 @@ function loadNextHTMLs(containerId) {
 };
 
 function loadHTMLs(userId, containerId, collection, cnt) {
-    _.each(collection, function(entry, i) {
-
+    
+    _.each(_.reverse(collection), function(entry, i) {
         var prettyHtml = '<a href="/revision/' + entry.id + '" target="_blank">🔗 original </a>';
 
         if(entry.type === 'promoted')
