@@ -20,29 +20,41 @@ html
     meta(property="og:image:height" content="400")
     title facebook tracking exposed
 
-  body.container
+  body
 
     include header
     include navbar
     
-
-    div.propaganda.row
-        div#vision.col-sm-6
-            include vision
-        div#mission.col-sm-6
-            include mission
+    div.container
+        div.propaganda.row
+            div.col-md-4.icontext
+                img.icon(src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAC/UlEQVRoge1WQUvcQBj9foBYf0Kgd+lP2JPnvXlq6z+o514aEkRaNFOUnSm4oIhmPCgRL5XuQaEUFdTGU6lldduDQilqPWjLsn49ZLKbrJkku9msFObBd0ky773vm8lLABQUFBQUFBT+RxhkHAxyCiZBMMkWmKSQeq1JCmINehzWi/yMRhqwFoTxcBlkLHGtQcYka+fzNx4yYF2BSYqgEw0Ma12YuASdaNK1OtHAIJfes9Y66EQDkxQFV7oBZELIQJuYYW2LaTrS9c1Gre3wdTGUpAFkhmG5zem1Qydac5JRJrxpezsXdd9vziSfc3AOACbRhYEa6GRI8kwx8QiZpCi5NwSmVRNN6D1wHDJWCLxwhd6S562jk6FAXOq9IY2Bv9MGOZXudEdovXhudrLUmm5iIKQjCkRmrunQhmAgdB2tcZHZD2SO1rjI7Be6jtY0kdkPdBWt/YrMtOjIjx+ZEzMI02UHqE2A2V+A8nNgHCOL8jpQfg6l5QNg/BWUlp9I+RnXgNrPgdofBedtDO+5p20TmC47MDGTIlpfsz2YXYwm7KQo/waMTzR5S0uT4lo23tlFhDfvdqPNU7vaMmAjULsBjONgeQ1HNw9x+uAMKyf1e2Xu/cDRzUN8VF5DoByB8bskIwNzqzi6eYgvP1VjOQfLa76fRoijtFyN2t57QsMrFXSObyJF2ss5vsHhlYq/9gqo3ca3cp2RM1wRDbiBHfgDjOPUfmvq1csGXv9FRES8uL2LFJzaP0s8Bl1zCk+iYv4KqD3uP+iTfP/dwCBkYpWTeusIlpYmQ+9AVk6Pd1xuPOI4+QR1ofX1VwO3avHbLt3iPDjTNnBxexc7oW4a6AmnFNSuAePI3J+pBPzSd2ryM5oHp7wBvgCM49PKUUdij5fey89qHpxSMF7wty3NxJzjGxzZ2GlF6Lxz/2uZB2d8E/ZbX3BkYycUf8GIe/bhCAfmVltCsb8SOXDGN8H1Dj71biqhPDgTBDUxOTdSwLtXeHBOBQUFBQUFhQfAP6mjVcwtT1hbAAAAAElFTkSuQmCC")
+                h3 Facebook users that want data about own filter bubble
+            div.col-md-4.icontext
+                img.icon(src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAACfElEQVRoge2ZP2/aQBjG+QCNlDUbU1byEdgaqR2ysZKBKVMqMZKlUQeWs5RKHhMJW6nSxU2lDKEo0EhVfQxmYIAMBCVTBgOKQNzZQm8HYmOK3fofXJDukZ4JkJ6f730fnUwiwcXFxbX2QnUzLajkXsAUfFkl96huplnntoVU0vUd3gHBOrcthOkgKABSSZd1bluobqaDnAJSSfdVjZAlvwCsc3qKA7AWB2AtZ8jrjgmPzxO47pjrCfD4PLG9lgBrfwJrvwMcYNVC2Mj+HVRuGtDSJ9DSJyA3jdldCBtZ1nnnhOpm2u1Jt/VZE7X0+TZ6NZc5hI0dAdO+G0CnPwNo6wt12kfY2GEbXoNNAVPNa9blpgFtfRreOUIOa0iDTWYAAiY3fhfX2+SGUXh6Gj287dOVhndrnKheWTM5G6dyeAk/c18i+ceH76trJmfj3ObOYZTIxOLb3Pnym8nZOFdHZe9AqTyQUg1IqQajVN43xNVRebnNZDVOSbqD3sa+Z5CxVAVSbkxdqvkG6G3sQ0m6W04zWY0jVnr/DD9KZIAov22AsVSd/3yvCMOCDMOCDKO3H10hxEov3mayGkes9OBh28dIpPIwlqrT8M4R2ivCEH2b9+7xwu8ftvM2RORmcjZO491JpEUdfvq6CFCQXb+rvf8cvZmQBsk4GycIwCiRgcrh5ayZNEgGB8D0TMAUlOKvWKpyuHvsa4TcmglhehYYwHr6/TfZWABsiJcl/l94a6mtUwhzAoO4AYL6aetgegJh3mQjlSoCpnAhNuBp64BJ+Aux8QJAleAAGiTDvPeP/5JHB6GW2IZQqRLqH5iowVXSRSpVQofn4uLiWon+AIkwb5ipkjkJAAAAAElFTkSuQmCC")
+                h3 Researchers collecting data with control grups in FB
             
-    div#useit
-    div.propaganda
-        include useit
-        
-    div#background
-      div.propaganda
-        include background
+            div.col-md-4.icontext    
+                img.icon(src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAADlklEQVRoge2Y327SUBzHeQTeQB4BqQ5ITOQN5GJXu6GT7HbhYhGyDKnhwgQ22gujQTDzgkyTRU83YzRL2tPFHhgdrDPubyBhbwDubupyvGCdhULoAQqb4Zv8rqDt93PO+Z6eX222iSaayLQi7KojzGVBhMvWIly2FuayIMKuOsbty5SuzNcjXBbrK8xl62YhaIa109EkS0eT9dlo8pyOJlmaYe0WW28qzGb4dvPXEGyG73X9pph/+CT1ukBHk7illhLcKPzbwmymoRmeWWDwzAKjh6jp/wugat8U0aMNQWZ5UYa8iDAvIjzHpHA7wGw0eT4SAP2IT88v4un5xZZZ2IBygBfQKi+imma4vToBBJnUnxsB0M20vuLpnAEgns5hICDrl5Fmulv1Mg8EdPbui7gWSrzaCsaWf88xKRxP5/D61nbzd5j33ygAICIJCIgDMO8HUG3ZaQBU7UBAZ63XyHUAC46xAQAR8UBADIAFn5n7AYicxpmSoSXmoeLiJIXCxRM3Lle9HUs5ch+S3hcIcqjDUmOGbJ56KykURt/vdzWvVfHIXSGGEJFkgDA5i73N77pCkkJhSaHw7mn30W+BOHavEQE089Aw5kEd7A0NVadDMy/v9x59rUoVD945pR6QQRR8hjwICAwGoLgkDaBwOGUaoFz1YuXUXSd9HhAQY8yDHOrP/K7Tp5mXFAqXKh4igHLVi3cO7hE/HIjyvjEPyEkOcBVcSaHwtz2K2PxVFsgDDQsOYx5QjSgPUHXa9aOf/0G2fPSFju7eIYfI+3kR4fWtbRxP5/DcMxYHYysXpo/esEj59QCk619f+QP3c1IAm81mAwLiOp2bTB29tZeWVsVjc9tn55fb1F5fAFC1B2Mrl30dvfW7D8n+3xHgZIp4N9L0+Onyr3aAwFLiZ2+AoutMD9Cvea36MQ9gwdf3EtKbHxcAL8rwOsRMCgdjK5f0UoIbWf88iICAaMvORlYLQNXOi3K9ra/o+cHgxggIiGs7WjcsbXKGKQALDst7Ayul//yi9dDj9mRa2vGhNbgWN/nDUjO4rd+SgIikcfsyrY59wO0Kbtu2eauCKyBg3DYH7IVHpTfga4jLfcT6ynz4nB23L9N68X7zQm/+5ftPjXF7MqhU9QRKFa/a70GwVPGqpaonMHLjas1pH8R4JxC15hxdNoZpXg8xEvPlqocetvl/5aEtB7Bi9Ec6C9aNfv8d3kQT/c/6C12JW3K+fEPIAAAAAElFTkSuQmCC")
+                h3 Journalist interested in echo chambers and algorithm personalization
 
-    div#problemsInPA
-      div.propaganda
-        include problemsInPA
+        div#useit
+        div.propaganda
+            include useit
+    
+        div.propaganda.row
+            div#vision.col-sm-6
+                include vision
+            div#mission.col-sm-6
+                include mission
+    
+        div#background
+        div.propaganda
+            include background
+
+        div#problemsInPA
+        div.propaganda
+            include problemsInPA
 
   
 
