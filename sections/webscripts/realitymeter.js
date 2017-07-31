@@ -1,12 +1,14 @@
+var fixedurl= "https://facebook.tracking.exposed";
+
 function loadStage(postId, postsTable, infocId, graphPcId) {
 
     console.log("Generated URL " + url);
     if(postId > 1) {
-        var url = "/api/v1/realitymeter/" + postId;
+        var url = fixedurl + "/api/v1/realitymeter/" + postId;
         displayRealityGraph(url, graphPcId, infocId);
     }
 
-    var url = "/api/v1/posts/top";
+    var url = fixedurl + "/api/v1/posts/top";
     $.getJSON(url, function(content) {
         var tabbed = _.map(content, function(c, i) {
             var d = moment.duration(moment(c.publicationTime) - moment() ).humanize();
@@ -30,7 +32,7 @@ function loadStage(postId, postsTable, infocId, graphPcId) {
                     $(graphPcId).html("");
                     $(infocId).html("");
                     history.pushState({}, "Post " + pid, "/realitymeter/" + pid);
-                    displayRealityGraph("/api/v1/realitymeter/" + pid, graphPcId, infocId);
+                    displayRealityGraph(fixedurl + "/api/v1/realitymeter/" + pid, graphPcId, infocId);
                 });
             }
         });

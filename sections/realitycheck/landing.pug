@@ -42,30 +42,19 @@ html
         br
         b Art? Comics? Graph? Papers?
         |  We're open with anything who can make accessible this topic to a larger audience than our bubble.
-
-    nav.navbar.navbar-default
-      div.container
-        div.navbar-header
-          button.navbar-toggle.collapsed(type="button" data-toggle="collapse" data-target="#thenavbar" aria-expanded="false")
-            span(id="sr-only") Toggle navigation
-            span.icon-bar
-            span.icon-bar
-            span.icon-bar
-
-        div.collapse.navbar-collapse(id="thenavbar")
-          ul.nav.navbar-nav
-            li
-              a.switch#diet Information diet
-            li
-              a.switch#data Raw data
-            li
-              a.switch#csv CSV
-            li
-              a.switch#knowmore Know more
+    div.container
+        nav#thenavbar(role="navigation")
+            ul.nav.nav-pills
+                li.presentation
+                    a.switch#diet Information diet
+                li.presentation
+                    a.switch#data Raw data
+                li.presentation
+                    a.switch#csv CSV
+                li.presentation
+                    a.switch#knowmore Know more
             // li
               // a.switch#publications Publications
-            li
-              a(href="/") Project homepage
 
     .container-fluid
       .loader-container

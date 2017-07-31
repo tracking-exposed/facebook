@@ -54,12 +54,8 @@ function doHTMLentries(dictionary) {
 };
 
 function cleanstyle(){
-    $('img').attr('width','');
-    $('img').attr('height','');
-
-    /* only special case */
-    $('#logoimg').attr('width', 24);
-    $('#logoimg').attr('height', 24);
+    $('.realitycontainer img').attr('width','');
+    $('.realitycontainer img').attr('height','');
 }
 
 function loadsnippet(metadataContainer, renderContainer) {
