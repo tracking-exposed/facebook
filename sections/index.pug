@@ -20,19 +20,22 @@ html
     meta(property="og:image:height" content="400")
     title facebook tracking exposed
 
-  body
+  body.container
 
     include header
     include navbar
+    
 
-    div#vision
-      div.polite-propaganda
-        include vision
-
-    div#mission
-      div.propaganda
-        include mission
-
+    div.propaganda.row
+        div#vision.col-sm-6
+            include vision
+        div#mission.col-sm-6
+            include mission
+            
+    div#useit
+    div.propaganda
+        include useit
+        
     div#background
       div.propaganda
         include background
@@ -41,7 +44,5 @@ html
       div.propaganda
         include problemsInPA
 
-    div#useit
-      div.propaganda
-        include useit
+  
 
