@@ -3,7 +3,7 @@ html
   head
     link(rel='stylesheet', type='text/css', href='/css/bootstrap.css')
     link(rel='stylesheet', type='text/css', href='/js/local/personal.css')
-
+    link(rel='stylesheet', href='/css/index.css')
     script(type='text/javascript', src='/js/jquery.js')
     script(type='text/javascript', src='/js/collapse.js')
     script(type='text/javascript', src='/js/bootstrap.min.js')
@@ -29,6 +29,9 @@ html
 
   body(onload="initialize();")
 
+    include ../header
+    include ../navbar
+    
     div.container-fluid.realitycontainer.headerborders
       span.col-md-5.right.text-info
         b Here are some of the data! 
