@@ -1,6 +1,7 @@
 /*
  * This file contain the code executed in /realitycheck/$userId/$sectionType
  */
+var fixedurl= "https://facebook.tracking.exposed";
 
 var pageMap = {
     diet: '#dietSection',
@@ -70,7 +71,7 @@ function initialize() {
     $(".switch").click(switchpage);
     $('li #' + pinfo.pageName).addClass('active');
 
-    var basicApi = "/api/v1/htmls/" + pinfo.userId + "/days/" + 7;
+    var basicApi = fixedurl + "/api/v1/htmls/" + pinfo.userId + "/days/" + 30;
     console.log("Loading first batch of data from", basicApi);
 
     return $.getJSON(basicApi, function(data) {
@@ -166,7 +167,7 @@ function initialize() {
 
 function loadNextHTMLs(containerId) {
     var pinfo = getURLinfo();
-    var url = "/api/v1/htmls/" + pinfo.userId + '/n/' 
+    var url = fixedurl + "/api/v1/htmls/" + pinfo.userId + '/n/' 
         + _.size(firstBatch) + '/' + nextBatch;
 
     $.getJSON(url, function(collection) {
@@ -253,7 +254,7 @@ function unprocessedFormat(entry) {
 
 function downloadCSV(type) {
     var pinfo = getURLinfo();
-    var url = "/api/v1/personal/csv/" + pinfo.userId + "/" + type;
+    var url = fixedurl + "/api/v1/personal/csv/" + pinfo.userId + "/" + type;
     console.log(url);
     window.open(url);
 };

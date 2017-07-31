@@ -114,6 +114,12 @@ div, h3 {
   -moz-animation: spin 1.7s infinite linear;
   -o-animation: spin 1.7s infinite linear;
   -ms-animation: spin 1.7s infinite linear;
+    width:5em;
+}
+
+/*reality check*/
+#shiftContributionBlock b {
+    cursor: pointer;
 }
 
 @-webkit-keyframes spin {
