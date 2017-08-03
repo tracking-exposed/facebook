@@ -13,6 +13,7 @@
   "mongodb": "mongodb://localhost/facebook",
   "password": "overwrittenbyENV",
   "port": 8000,
+  "interface": "127.0.0.1",
   "htmlMaxAmount": 1000,
   "NOPERFORMA": true
 }

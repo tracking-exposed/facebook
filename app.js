@@ -97,12 +97,12 @@ function dispatchPromise(name, req, res) {
 };
 
 /* everything begin here, welcome */
-server.listen(nconf.get('port'), '0.0.0.0');
-console.log(" All the interfaces, port " + nconf.get('port') + " listening");
+server.listen(nconf.get('port'), nconf.get('interface'));
+console.log(" Listening on " + nconf.get('interface') + ":" + nconf.get('port'));
 /* configuration of express4 */
 app.use(cors());
-app.use(bodyParser.json({limit: '3mb'}));
-app.use(bodyParser.urlencoded({limit: '3mb', extended: true}));
+app.use(bodyParser.json({limit: '4mb'}));
+app.use(bodyParser.urlencoded({limit: '4mb', extended: true}));
 
 app.get('/api/v:version/node/info', function(req, res) {
     return dispatchPromise('nodeInfo', req, res);
