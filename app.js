@@ -195,6 +195,11 @@ app.get('/api/v1/manualboarding', function(req, res) {
     return dispatchPromise('manualBoarding', req, res);
 });
 
+/* hyperlink extraction */
+app.get('/api/v1/opendata/href', function(req, res) {
+    return dispatchPromise('openDataHref', req, res);
+});
+
 /* static files, independent by the API versioning */
 app.get('/favicon.ico', function(req, res) {
     res.sendFile(__dirname + '/dist/favicon.ico');
