@@ -93,8 +93,9 @@ function lookintoHTMLs(timeline, counter) {
             return _.merge(
                 _.omit(x, ['_id', 'id', 'visibility', 'htmlId' ]),
                 _.omit(html, ['_id', 'html', 'impressionId', 'postType',
-                              'publicationUTime', 'feedUTime', 'type', 'feedText',
-                              'feedBasicInfo', 'imageAltText', 'savingTime' ])
+                              'publicationUTime', 'feedUTime', 'type',
+                              'feedText', 'feedHref', 'feedBasicInfo',
+                              'imageAltText', 'savingTime' ])
             );
         });
     })
