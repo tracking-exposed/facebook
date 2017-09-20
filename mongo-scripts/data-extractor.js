@@ -27,7 +27,7 @@ nconf.argv().env().file({ file: cfgFile });
 
 
 if(!(nconf.get("STARTDAY") || nconf.get("ENDDAY") || nconf.get("TIMEF") || nconf.get("HTMLF"))) {
-    console.log("STARTDAY, ENDDAY, TIMEF (timeline), HTMLF, concurrency");
+    console.log("STARTDAY, ENDDAY, TIMEF (timeline), HTMLF, [pattern]");
     process.exit(1);
 }
 
@@ -39,26 +39,11 @@ var timeFilter = {
 var timediff = moment.duration(timeFilter.end - timeFilter.start);
 var destFile = "extracted-" + timediff.humanize() + ".json";
 
-/* remind. at the end I will have extracted:
- * 9 = the following Keys,
- * + = the metadata provided by the parser (without the boolean)
- */
-var keys = [
-    'id',
-    'userPseudo',
-    'publicationUTime',
-    'impressionTime',
-    'impressionOrder',
-    'postId',
-    'permaLink',
-    'timelineId',
-    'counter'
-];
-
 var timef = nconf.get('TIMEF') || '{}';
 timef = JSON.parse(timef);
 var htmlf = nconf.get('HTMLF') || '{}';
 htmlf = JSON.parse(htmlf);
+var pattern = nconf.get('pattern') || null;
 
 debug("Executing timewindow: %s %s timeline filter %s, htmls filter %s +feed only",
     JSON.stringify(timeFilter, undefined, 2),
@@ -82,24 +67,33 @@ function lookintoHTMLs(timeline, counter) {
         if((counter % 100) === 0)
             debug("Timelines before end: %d", counter);
 
+        if(pattern)
+            var re = new RegExp(pattern, 'i');
+
         return _.map(combos[0], function(html, i) {
             var x = _.find(combos[1], { htmlId: html.id });
 
             if(!x) return null;
 
             if(html.permaLink) {
-                if(x.hrefType === "groupPost")
+                if(html.hrefType === "groupPost")
                     x.sourceId = html.permaLink.split('/')[2];
                 else
                     x.sourceId = html.permaLink.split('/')[1];
             }
 
+            if(pattern) {
+                var bool = html.html.match(re) ? true: false;
+                _.set(x, pattern, bool);
+            }
+
+            x.geoip = timeline.geoip;
             x.publicationTime = moment(html.publicationUTime * 1000);
 
             return _.merge(
                 _.omit(x, ['_id', 'id', 'visibility', 'htmlId' ]),
                 _.omit(html, ['_id', 'html', 'impressionId', 'postType',
-                              'publicationUTime', 'feedUTime', 'type',
+                              'publicationUTime', 'feedUTime', 'type', 'feedText',
                               'feedBasicInfo', 'imageAltText', 'savingTime' ])
             );
         });
