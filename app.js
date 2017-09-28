@@ -200,6 +200,11 @@ app.get('/api/v1/opendata/href', function(req, res) {
     return dispatchPromise('openDataHref', req, res);
 });
 
+/* selector experiment */
+app.get('/api/v1/selector', function(req, res) {
+    return dispatchPromise('getSelector', req, res);
+});
+
 /* static files, independent by the API versioning */
 app.get('/favicon.ico', function(req, res) {
     res.sendFile(__dirname + '/dist/favicon.ico');
