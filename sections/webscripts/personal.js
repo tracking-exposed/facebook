@@ -71,7 +71,7 @@ function initialize() {
     $(".switch").click(switchpage);
     $('li #' + pinfo.pageName).addClass('active');
 
-    var basicApi = fixedurl + "/api/v1/htmls/" + pinfo.userId + "/days/" + 30;
+    var basicApi = fixedurl + "/api/v1/htmls/" + pinfo.userId + "/days/" + 5;
     console.log("Loading first batch of data from", basicApi);
 
     return $.getJSON(basicApi, function(data) {
