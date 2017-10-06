@@ -1,41 +1,123 @@
 // ==UserScript==
 // @name         autoscroll
 // @namespace    autoscroll
-// @version      1.4
+// @version      1.5
 // @description  autoscroller to be used with https://facebook.tracking.exposed, This userscript works with TamperMoneky extension.
 // @author       Claudio Agosti @_vecna
 // @match        https://www.facebook.com/*
 // @connect      autoscroll
+// @grant        GM_setValue
+// @grant        GM_getValue
+// @require      https://cdnjs.cloudflare.com/ajax/libs/lodash-compat/3.10.2/lodash.min.js
+// @require      https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js
 // ==/UserScript==
 
-var whereScroll = 0;
-var refreshTimes = 1;
-var height = 800;
+var times = 40;
+var delay = 2;
+var fixedH = 800;
+var plan = [
+    "09:01",
+    "11:01",
+    "13:01",
+    "15:01",
+    "17:01",
+    "19:01",
+    "21:01"
+];
 
-/* Timings below */
-var scrollDelay = 2000;
-var maxScrollTimes = 2 /* minutes */ * 60 /* seconds */ * 1000 /* milliseconds */ / scrollDelay ;
-var bigStop = (58 * 60 * 1000); 
-// 2 hours : 58 minutes, one scroll every 3 hours, 8 scroll x day.
+function timeline(reference) {
 
-var scrollDown = function() {
-    whereScroll = ( (height * refreshTimes) + 100);
-    
-    refreshTimes += 1;
-    if(refreshTimes == maxScrollTimes ) {
-        console.log("Big stop now!");
-        setTimeout(scrollDown, bigStop);
-    } else if (refreshTimes > maxScrollTimes ) {
-        location.reload();
+    if(!reference) {
+        console.log("Initializing!");
+        GM_setValue("scrolling", moment().format());
+        reference = {
+            counter: 0,
+            y: 0,
+        };
+    }
+
+    if(reference.counter === times) {
+        console.log("Calling doTheNext..");
+        GM_setValue("scrolling", null);
+        return _.delay(doTheNext, 1);
+    }
+
+    reference.counter += 1;
+    reference.y = reference.counter * fixedH;
+
+	console.log("scrolling for the", reference.counter, "at",
+            moment().format(), "a the Y", reference.y);
+
+    scrollTo(0, reference.y);
+
+    return _.delay(timeline, delay * 1000, reference);
+}
+
+function doTheNext() {
+
+    var isNight = moment().hour();
+    var subdays = 0;
+    if(isNight < 4) {
+        console.log("It is night -- not timezone safe");
+        subdays = 1;
+    }
+
+	var tinfo = _.map(plan, function(t) {
+
+		var hour = _.parseInt(t.split(':')[0]);
+		var minute = _.parseInt(t.split(':')[1]);
+		var personalO = moment().utcOffset() + 360;
+		var target = moment().set({
+            hour: hour,
+            minute: minute,
+            second: 0
+        }).utcOffset(360);
+        target.subtract(subdays, 'd');
+        var secsdiff = moment.duration(target - moment()).asSeconds();
+		var secto =  secsdiff + (personalO * 60);
+
+		return {
+            secsdiff: secsdiff,
+			hto: _.round(secto / 3600, 1),
+			secto: secto,
+			target: t,
+			x: target.format()
+		};
+	});
+
+	console.log(tinfo);
+	var next = _.first(_.filter(tinfo, function(t) {
+		return t.secto > 0;
+	}));
+
+    if(!next) {
+        console.log("Odd, setting refresh in 1 hour: emergency");
+        GM_setValue("refresh", true);
+        return _.delay(cleanAndReload, 3600 * 1000);
     } else {
-        console.log("Autoscroll: scroll to " + whereScroll + " next will happen in: " + scrollDelay + " ms");
-        scrollTo(0, whereScroll);
-        setTimeout(scrollDown, scrollDelay);
+        console.log("Setting the next timeline to", next.secto);
+        GM_setValue("refresh", true);
+        return _.delay(cleanAndReload, next.secto * 1000);
     }
 };
 
+function cleanAndReload() {
+    GM_setValue("scrolling", null);
+    GM_setValue("refresh", null);
+    location.reload();
+};
+
 (function() {
-    'use strict';
-    console.log("Numbers: bigStop", bigStop, "after", maxScrollTimes, "scrolls, happening once every", scrollDelay);
-    setTimeout (scrollDown, scrollDelay);
+
+    var s = GM_getValue("scrolling");
+    var r = GM_getValue("refresh");
+    if(r)
+        console.log("Wait");
+    else if(!s || moment(s).isAfter( moment().add(5, 'm') ) )
+        timeline();
+    else
+        console.log("Nope");
+
 })();
+
+
