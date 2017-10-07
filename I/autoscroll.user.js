@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         autoscroll
 // @namespace    autoscroll
-// @version      1.5
+// @version      1.6
 // @description  autoscroller to be used with https://facebook.tracking.exposed, This userscript works with TamperMoneky extension.
 // @author       Claudio Agosti @_vecna
 // @match        https://www.facebook.com/*
@@ -12,8 +12,8 @@
 // @require      https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js
 // ==/UserScript==
 
-var times = 40;
-var delay = 2;
+var times = 30;
+var delay = 4;
 var fixedH = 800;
 var plan = [
     "09:01",
@@ -103,6 +103,7 @@ function doTheNext() {
 
 function cleanAndReload() {
     GM_setValue("scrolling", null);
+    // this value 'refresh' is not used because remain dirty in case a browser restart
     GM_setValue("refresh", null);
     location.reload();
 };
@@ -110,10 +111,7 @@ function cleanAndReload() {
 (function() {
 
     var s = GM_getValue("scrolling");
-    var r = GM_getValue("refresh");
-    if(r)
-        console.log("Wait");
-    else if(!s || moment(s).isAfter( moment().add(5, 'm') ) )
+    if(!s || moment(s).isAfter( moment().add(5, 'm') ) )
         timeline();
     else
         console.log("Nope");
