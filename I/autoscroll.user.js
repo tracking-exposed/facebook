@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         autoscroll
 // @namespace    autoscroll
-// @version      1.8
+// @version      1.9
 // @description  autoscroller to be used with https://facebook.tracking.exposed, This userscript works with TamperMoneky extension.
 // @author       Claudio Agosti @_vecna
 // @match        https://www.facebook.com/*
@@ -17,9 +17,6 @@ var delay = 5;
 var fixedH = 800;
 var plan = [
     "09:01",
-    "09:31",
-    "09:51",
-    "10:01",
     "11:01",
     "13:01",
     "15:01",
@@ -31,8 +28,19 @@ var plan = [
 function timeline(reference) {
 
     if(!reference) {
-        console.log("Initializing!");
+        var s = GM_getValue("scrolling");
+
+        if(s && moment().subtract(5, 'm').isAfter(moment(s))) {
+            console.log("an old scroll interrupted?");
+        }
+
+        if(s && moment().subtract(5, 'm').isBefore(moment(s))) {
+            return;
+        }
+
+        console.log("setting GM_setValue 'scrolling'", moment().format() );
         GM_setValue("scrolling", moment().format());
+
         reference = {
             counter: 0,
             y: 0,
@@ -41,20 +49,25 @@ function timeline(reference) {
 
     if(reference.counter === times) {
         var s = GM_getValue("scrolling");
-        console.log("Timeline counter", times, "calling doTheNext, removing GM_[scrolling]", s);
-        GM_setValue("scrolling", null);
-        return _.delay(doTheNext, 1);
+        console.log("Timeline counter reach", times);
+        if(s) {
+            console.log(s, "'scrolling': is present, -> doTheNext, removing GM_[scrolling]", s);
+            GM_setValue("scrolling", null);
+            return _.delay(doTheNext, 1);
+        } else {
+            console.log("GM_[scrolling] is null", s, "killed ramification");
+        }
+    } else {
+        reference.counter += 1;
+        reference.y = reference.counter * fixedH;
+
+        console.log("scrolling", reference.counter, "at",
+                  moment().format("HH:mm:ss"), "a the Y", reference.y);
+
+        scrollTo(0, reference.y);
+
+        return _.delay(timeline, delay * 1000, reference);
     }
-
-    reference.counter += 1;
-    reference.y = reference.counter * fixedH;
-
-	console.log("scrolling for the", reference.counter, "at",
-            moment().format(), "a the Y", reference.y);
-
-    scrollTo(0, reference.y);
-
-    return _.delay(timeline, delay * 1000, reference);
 }
 
 function doTheNext() {
@@ -62,9 +75,14 @@ function doTheNext() {
     var isNight = moment().hour();
     var subdays = 0;
     if(isNight < 4) {
-        console.log("It is night -- not timezone safe");
+        console.log("It is night -- (FIXME: this check is not timezone safe)");
         subdays = 1;
     }
+    /*
+     * This function has to compute the seconds of distance between
+     * now and the next TESING-HOUR. the hours are 9:00,11:00 etc,
+     * and they happen in GMT-3, (180 minutes, below in the variables)
+     */
 
 	var tinfo = _.map(plan, function(t) {
 
@@ -116,10 +134,15 @@ function cleanAndReload() {
 (function() {
 
     var s = GM_getValue("scrolling");
-    if(!s || moment(s).isAfter( moment().add(5, 'm') ) )
+
+    if( s && moment().subtract(5, 'm').isBefore(moment(s)))
         timeline();
-    else
-        console.log("Nope", s, moment().add(5, 'm').format());
+    else if(!s) {
+        var r = GM_getValue("refresh");
+        console.log("beginning tampermonkey, scrolling", s, "refresh", r);
+        timeline();
+    } else
+        console.log("Nope");
 
 })();
 
