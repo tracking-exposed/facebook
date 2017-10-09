@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         autoscroll
 // @namespace    autoscroll
-// @version      1.9
+// @version      1.10
 // @description  autoscroller to be used with https://facebook.tracking.exposed, This userscript works with TamperMoneky extension.
 // @author       Claudio Agosti @_vecna
 // @match        https://www.facebook.com/*
@@ -30,11 +30,11 @@ function timeline(reference) {
     if(!reference) {
         var s = GM_getValue("scrolling");
 
-        if(s && moment().subtract(5, 'm').isAfter(moment(s))) {
-            console.log("an old scroll interrupted?");
+        if(s && moment(s).add(50, 's').isBefore(moment())) {
+            console.log("a previous scroll interrupted?");
         }
 
-        if(s && moment().subtract(5, 'm').isBefore(moment(s))) {
+        if(s && moment(s).add(50, 's').isAfter(moment())) {
             return;
         }
 
@@ -60,6 +60,7 @@ function timeline(reference) {
     } else {
         reference.counter += 1;
         reference.y = reference.counter * fixedH;
+        GM_setValue("scrolling", moment().format());
 
         console.log("scrolling", reference.counter, "at",
                   moment().format("HH:mm:ss"), "a the Y", reference.y);
@@ -114,9 +115,9 @@ function doTheNext() {
 
     console.log("Schedule computed, next on", next);
     if(!next) {
-        console.log("Odd, setting refresh in 1 hour: emergency");
+        console.log("Night problem, check back in 1 hour");
         GM_setValue("refresh", true);
-        return _.delay(cleanAndReload, 3600 * 1000);
+        return _.delay(doTheNext, 3600 * 1000);
     } else {
         console.log("Setting the next timeline to", next.secto);
         GM_setValue("refresh", true);
@@ -135,14 +136,17 @@ function cleanAndReload() {
 
     var s = GM_getValue("scrolling");
 
-    if( s && moment().subtract(5, 'm').isBefore(moment(s)))
+    if( s && moment(s).add(50, 's').isBefore(moment())) {
+        console.log("Considering the diff of", 
+                moment.duration(moment() - moment(s)).humanize(), "...");
         timeline();
+    }
     else if(!s) {
         var r = GM_getValue("refresh");
         console.log("beginning tampermonkey, scrolling", s, "refresh", r);
         timeline();
     } else
-        console.log("Nope");
+        console.log("Nope, recorded is", moment(s).format("HH:mm:ss"), "now", moment().format("HH:mm:ss"));
 
 })();
 
