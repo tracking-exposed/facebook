@@ -43,8 +43,6 @@ var timef = nconf.get('TIMEF') || '{}';
 timef = JSON.parse(timef);
 var htmlf = nconf.get('HTMLF') || '{}';
 htmlf = JSON.parse(htmlf);
-var pattern = nconf.get('pattern') || null; // string into html / barcellona
-
 
 debug("Executing timewindow: %s %s timeline filter %s, htmls filter %s +feed only",
     JSON.stringify(timeFilter, undefined, 2),
@@ -68,10 +66,6 @@ function lookintoHTMLs(timeline, counter) {
 
         if((counter % 100) === 0)
             debug("Timelines before end: %d", counter);
-
-        /* this used case is 'Barcellona' */
-        if(pattern)
-            var re = new RegExp(pattern, 'i');
 
         return _.map(combos[0], function(html, i) {
             var x = _.find(combos[1], { htmlId: html.id });
@@ -139,6 +133,7 @@ function appendPromise(fpath, str, reset=false) {
 
 function beginQuery(user) {
 
+    debug("User %j", user);
     var filter = _.extend(timef, {
         userId: _.parseInt(user.id),
         startTime: {
@@ -151,9 +146,6 @@ function beginQuery(user) {
     return mongo
         .read(nconf.get('schema').timelines, filter, { startTime: -1 })
 };
-
-
-
 
 return various
     .loadJSONfile("config/users.json")
@@ -171,5 +163,3 @@ return various
         return appendPromise(destFile, "]");
         debug("Complete! output in %s", destFile);
     });
-
-
