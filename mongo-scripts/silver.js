@@ -140,6 +140,9 @@ function beginQuery(user) {
     
     return mongo
         .read(nconf.get('schema').timelines, filter, { startTime: -1 })
+        .map(function(e) {
+            e.userName = user.name
+        });
 };
 
 return various
