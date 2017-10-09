@@ -27,7 +27,7 @@ var cfgFile = "config/settings.json";
 nconf.argv().env().file({ file: cfgFile });
 
 if(!(nconf.get("STARTDAY") || nconf.get("ENDDAY") || nconf.get("TIMEF") || nconf.get("HTMLF"))) {
-    console.log("STARTDAY, ENDDAY, TIMEF (timeline), HTMLF, [pattern]");
+    console.log("STARTDAY, ENDDAY, TIMEF (timeline), HTMLF");
     process.exit(1);
 }
 
@@ -77,11 +77,6 @@ function lookintoHTMLs(timeline, counter) {
                     x.sourceId = html.permaLink.split('/')[2];
                 else
                     x.sourceId = html.permaLink.split('/')[1];
-            }
-
-            if(pattern) {
-                var bool = html.html.match(re) ? true: false;
-                _.set(x, pattern, bool);
             }
 
             x.geoip = timeline.geoip;
