@@ -14,17 +14,17 @@
 var _ = require('lodash');
 var Promise = require('bluebird');
 var fs = Promise.promisifyAll(require('fs'));
-var debug = require('debug')('data-extractor');
+var debug = require('debug')('silver');
 var moment = require('moment');
 var nconf = require('nconf');
 var fs = Promise.promisifyAll(require('fs'));
 
 var utils = require('../lib/utils');
 var mongo = require('../lib/mongo');
+var various = require('../lib/various');
 
 var cfgFile = "config/settings.json";
 nconf.argv().env().file({ file: cfgFile });
-
 
 if(!(nconf.get("STARTDAY") || nconf.get("ENDDAY") || nconf.get("TIMEF") || nconf.get("HTMLF"))) {
     console.log("STARTDAY, ENDDAY, TIMEF (timeline), HTMLF, [pattern]");
@@ -51,6 +51,7 @@ debug("Executing timewindow: %s %s timeline filter %s, htmls filter %s +feed onl
     timediff.humanize(),
     JSON.stringify(timef, undefined, 2),
     JSON.stringify(htmlf, undefined, 2) );
+
 
 function lookintoHTMLs(timeline, counter) {
 
@@ -136,9 +137,10 @@ function appendPromise(fpath, str, reset=false) {
         });
 }
 
-function beginQuery() {
+function beginQuery(user) {
 
     var filter = _.extend(timef, {
+        userId: _.parseInt(user.id),
         startTime: {
             "$gt": new Date(timeFilter.start),
             "$lt": new Date(timeFilter.end) 
@@ -148,17 +150,26 @@ function beginQuery() {
     
     return mongo
         .read(nconf.get('schema').timelines, filter, { startTime: -1 })
-        .tap(function(tmls) {
-            debug("processing %d timelines", _.size(tmls));
-            return appendPromise(destFile, "[\n", true);
-        })
 };
 
-return beginQuery()
+
+
+
+return various
+    .loadJSONfile("config/users.json")
+    .tap(function(users) {
+        debug("Creating file");
+        return appendPromise(destFile, "[\n", true);
+    })
+    .then(function(c) {
+        return c['silver'];
+    })
+    .map(beginQuery)
     .map(lookintoHTMLs, { concurrency: 1 })
-    /* concurrency has to be 1 because there is an hack-on-filesystem */
     .tap(function() {
+        debugger;
         return appendPromise(destFile, "]");
         debug("Complete! output in %s", destFile);
     });
+
 
