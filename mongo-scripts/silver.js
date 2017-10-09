@@ -157,6 +157,7 @@ return various
         return c['silver'];
     })
     .map(beginQuery)
+    .then(_.flatten)
     .map(lookintoHTMLs, { concurrency: 1 })
     .tap(function() {
         debugger;
