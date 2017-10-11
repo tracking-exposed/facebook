@@ -61,40 +61,43 @@ function lookintoHTMLs(timeline, counter) {
         mongo.read(nconf.get('schema').impressions, {
             timelineId: timeline.id
         }),
-	timeline.name
+        timeline.name
     ])
-
     .then(function(combos) {
 
-	debug("htmls %d, impressions %d, %s timeline %s of %s",
-		_.size(combos[0]), _.size(combos[1]), combos[2],
-		timeline.startTime, timeline.name);
+        debug("htmls %d, impressions %d, %s timeline %s of %s",
+            _.size(combos[0]), _.size(combos[1]), combos[2],
+            timeline.startTime, timeline.name);
 
         return _.map(combos[1], function(impression, i) {
+
             var html = _.find(combos[0], { id: impression.htmlId });
 
-            if(html) {
-		    if(html.permaLink) {
-			if(html.hrefType === "groupPost")
-			    html.sourceId = html.permaLink.split('/')[2];
-			else
-			    html.sourceId = html.permaLink.split('/')[1];
-		    }
-		var ret = impression;
-		    ret.name = combos[2];
-		    ret.geoip = timeline.geoip;
-		    ret.publicationTime = moment(html.publicationUTime * 1000);
-                return _.merge(
-                    _.omit(ret, ['_id', 'id', 'htmlId' ]),
-                    _.omit(html, ['_id', 'html', 'impressionId', 'postType',
-                                  'publicationUTime', 'feedUTime', 'type',
-                                  'feedText', 'feedHref', 'feedBasicInfo',
-                                  'imageAltText', 'savingTime' ])
-		);
-	    } else {
-	        impression.name = combos[2];
+            if(!html) {
+                impression.name = combos[2]
                 return _.omit(impression, ['_id', 'id', 'htmlId' ])
-	    }
+            }
+
+            if(html.permaLink) {
+                if(html.hrefType === "groupPost")
+                    html.sourceId = html.permaLink.split('/')[2];
+                else
+                    html.sourceId = html.permaLink.split('/')[1];
+            }
+
+            var ret = impression;
+
+            ret.name = combos[2];
+            ret.geoip = timeline.geoip;
+            ret.publicationTime = moment(html.publicationUTime * 1000);
+
+            return _.merge(
+                _.omit(ret, ['_id', 'id', 'htmlId' ]),
+                _.omit(html, ['_id', 'html', 'impressionId', 'postType',
+                              'publicationUTime', 'feedUTime', 'type',
+                          'feedText', 'feedHref', 'feedBasicInfo',
+                          'imageAltText', 'savingTime' ])
+            );
         });
     })
     .then(function(content) {
@@ -110,7 +113,6 @@ function lookintoHTMLs(timeline, counter) {
         if(str !== "")
             return appendPromise(destFile, str + ",\n");
     });
-
 }
 
 function appendPromise(fpath, str, reset=false) {
@@ -139,19 +141,17 @@ function beginQuery(user) {
             "$gt": new Date(timeFilter.start),
             "$lt": new Date(timeFilter.end) 
         },
-        "nonfeed": { "$exists": false },
+        nonfeed: { "$exists": false },
         userId: _.parseInt(user.id)
     });
    
-    debug("%j", filter); 
     return mongo
-	.read(nconf.get('schema').timelines, filter, { startTime: -1 })
-	.map(function(e, i) {
-	    debug("%d %s %s %s %s", i, e.id, user.name, moment(e.startTime).format("DD HH:mm"), e.geoip);
-	    e.name = user.name;
-	    return e;
-	})
-    	.map(lookintoHTMLs, { concurrency: 1 });
+        .read(nconf.get('schema').timelines, filter, { startTime: -1 })
+        .map(function(e, i) {
+            e.name = user.name;
+            return e;
+        })
+        .map(lookintoHTMLs, { concurrency: 1 });
 };
 
 return various
