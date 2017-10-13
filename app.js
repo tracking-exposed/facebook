@@ -24,6 +24,7 @@ nconf.argv()
      .env()
      .file({ file: cfgFile });
 console.log(redOn + "ઉ nconf loaded, using " + cfgFile + redOff);
+nconf.file('users', { file: "config/users.json" });
 
 var returnHTTPError = function(req, res, funcName, where) {
     debug("%s HTTP error 500 %s [%s]", req.randomUnicode, funcName, where);
@@ -196,7 +197,7 @@ app.get('/api/v1/manualboarding', function(req, res) {
 });
 
 /* hyperlink extraction */
-app.get('/api/v1/opendata/href', function(req, res) {
+app.get('/api/v1/opendata/href/:campaign?', function(req, res) {
     return dispatchPromise('openDataHref', req, res);
 });
 
