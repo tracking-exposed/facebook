@@ -197,7 +197,7 @@ app.get('/api/v1/manualboarding', function(req, res) {
 });
 
 /* hyperlink extraction */
-app.get('/api/v1/opendata/href/:campaign?', function(req, res) {
+app.get('/api/v1/opendata/href/:campaign?/:max?', function(req, res) {
     return dispatchPromise('openDataHref', req, res);
 });
 
