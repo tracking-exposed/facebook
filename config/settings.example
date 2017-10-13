@@ -1,3 +1,5 @@
+Rename this file as settings.json 
+
 {
   "schema": { 
       "impressions": "impressions2",
@@ -12,9 +14,10 @@
       "entities": "entitites"
   },
   "mongodb": "mongodb://localhost/facebook",
-  "password": "overwrittenbyENV",
+  "password": "yours",
   "port": 8000,
   "interface": "127.0.0.1",
   "htmlMaxAmount": 1000,
-  "NOPERFORMA": true
+  "NOPERFORMA": true,
+  "dandelion": "optional if you are using dandelion"
 }

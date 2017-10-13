@@ -1,4 +1,6 @@
 dist/*
+config/settings.json
+config/users.json
 node_modules/*
 parsers/*.json
 extension/yarn.lock
