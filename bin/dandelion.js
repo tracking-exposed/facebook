@@ -5,8 +5,8 @@ var Promise = require('bluebird');
 var request = Promise.promisifyAll(require('request'));
 var nconf = require('nconf');
 var debug = require('debug')("dandelion");
-var mongo = require('./lib/mongo');
-var various = require('./lib/various');
+var mongo = require('../lib/mongo');
+var various = require('../lib/various');
 
 nconf.argv().env();
 nconf.file('settings', { file: './config/settings.json' });
@@ -17,7 +17,8 @@ function composeNEX(fbtrexobj) {
             'href': fbtrexobj.link,
             'type': "original",
         }),
-        original: fbtrexobj.link 
+        original: fbtrexobj.link,
+        publicationTime: new Date(fbtrexobj.putime)
     };
     return mongo
         .read("entities", { id: content.id })
@@ -46,15 +47,21 @@ function dandelion(partialo) {
             debug("Tested %s, units left %d",
                     partialo.original,
                     response.headers['x-dl-units-left']);
+            if(_.parseInt(response.headers['x-dl-units-left']) < 2) {
+                console.log("Units terminated!");
+                process.exit(0);
+            }
             return _.extend(partialo, JSON.parse(response.body));
         })
         .catch(function(error) {
             debug("Error with %s: %s", partialo.original, error);
             return null;
         })
-        .tap(function() {
+        .then(function(e) {
             debug("Dandelion get completed in %d seconds",
                 moment.duration(moment() - begin).asSeconds());
+            e.timestamp = new Date(e.timestamp);
+            return e;
         })
         .then(saveJSON)
 }
@@ -72,9 +79,6 @@ return various
         debug("retrieved %d urls", _.size(urls));
     })
     .map(composeNEX, { concurrency: 1 })
-    .then(function(x) {
-        debugger;
-    })
     .then(_.compact)
     .tap(function(xxx) {
         debug("new urls %d, in %d seconds", _.size(xxx),
