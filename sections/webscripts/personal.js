@@ -153,7 +153,7 @@ function initialize() {
         });
 
         /* initialize Raw data section */
-        loadHTMLs(pinfo.userId, '#contributionBlock', firstBatch, 0);
+        loadHTMLs(_.reverse(pinfo.userId), '#contributionBlock', firstBatch, 0);
 
         /* initialize CSV section */
         /* initialize knowmore section */
