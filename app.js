@@ -22,9 +22,10 @@ var redOff = "\033[0m";
 
 nconf.argv()
      .env()
-     .file({ file: cfgFile });
+     .file({ file: cfgFile })
+     .file('users', { file: "config/users.json" });
+
 console.log(redOn + "ઉ nconf loaded, using " + cfgFile + redOff);
-nconf.file('users', { file: "config/users.json" });
 
 var returnHTTPError = function(req, res, funcName, where) {
     debug("%s HTTP error 500 %s [%s]", req.randomUnicode, funcName, where);
