@@ -72,9 +72,6 @@ return various
         debug("retrieved %d urls", _.size(urls));
     })
     .map(composeNEX, { concurrency: 1 })
-    .then(function(x) {
-        debugger;
-    })
     .then(_.compact)
     .tap(function(xxx) {
         debug("new urls %d, in %d seconds", _.size(xxx),
