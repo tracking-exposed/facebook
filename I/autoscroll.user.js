@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         autoscroll
 // @namespace    autoscroll
-// @version      1.11
+// @version      1.13
 // @description  autoscroller to be used with https://facebook.tracking.exposed, This userscript works with TamperMoneky extension.
 // @author       Claudio Agosti @_vecna
 // @match        https://www.facebook.com/*
@@ -16,13 +16,20 @@ var times = 30;
 var delay = 5;
 var fixedH = 800;
 var plan = [
+    "08:01",
     "09:01",
+    "10:01",
     "11:01",
+    "12:01",
     "13:01",
+    "14:01",
     "15:01",
+    "16:01",
     "17:01",
+    "18:01",
     "19:01",
-    "21:01"
+    "20:01",
+    "21:01",
 ];
 
 function timeline(reference) {
@@ -87,15 +94,15 @@ function doTheNext() {
 
 	var tinfo = _.map(plan, function(t) {
 
-        var GMT3 = 180;
+        var GMTARG = 180;
 		var hour = _.parseInt(t.split(':')[0]);
 		var minute = _.parseInt(t.split(':')[1]);
-		var personalO = moment().utcOffset() + GMT3;
+		var personalO = moment().utcOffset() + GMTARG;
 		var target = moment().set({
             hour: hour,
             minute: minute,
             second: 0
-        }).utcOffset(GMT3);
+        }).utcOffset(GMTARG);
         target.subtract(subdays, 'd');
         var secsdiff = moment.duration(target - moment()).asSeconds();
 		var secto =  secsdiff + (personalO * 60);
