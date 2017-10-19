@@ -87,14 +87,15 @@ function doTheNext() {
 
 	var tinfo = _.map(plan, function(t) {
 
+        var GMT3 = 180;
 		var hour = _.parseInt(t.split(':')[0]);
 		var minute = _.parseInt(t.split(':')[1]);
-		var personalO = moment().utcOffset() + 120;
+		var personalO = moment().utcOffset() + GMT3;
 		var target = moment().set({
             hour: hour,
             minute: minute,
             second: 0
-        }).utcOffset(180);
+        }).utcOffset(GMT3);
         target.subtract(subdays, 'd');
         var secsdiff = moment.duration(target - moment()).asSeconds();
 		var secto =  secsdiff + (personalO * 60);
