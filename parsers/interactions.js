@@ -64,13 +64,13 @@ function getInteractions(snippet) {
                         var commadot = !!amountStr.match(/[,.]/);
                         var i = _.parseInt(amountStr.replace(/[.,Kk]/g, ''));
                         var amount = commadot ? (i * 100) : (i * 1000);
-                        debug("E, commadot %s\ti %d\tamount %d\t[%s]", commadot, i, amount, amountStr);
+                        // debug("E, commadot %s\ti %d\tamount %d\t[%s]", commadot, i, amount, amountStr);
                         statsNeeded = false;
                     } else if(amountStr.match(/mil/)) {
                         var commadot = !!amountStr.match(/[,.]/);
                         var i = _.parseInt(amountStr.replace(/[.,mil]/g, ''));
                         var amount = commadot ? (i * 100) : (i * 1000);
-                        debug("S, commadot %s\ti %d\tamount %d\t(%s)", commadot, i, amount, amountStr);
+                        // debug("S, commadot %s\ti %d\tamount %d\t(%s)", commadot, i, amount, amountStr);
                         statsNeeded = false;
                     } else {
                         var amount = _.parseInt(amountStr);
@@ -107,16 +107,34 @@ function getInteractions(snippet) {
                 JSON.stringify(reactionmap, undefined, 2));
         }
 
-        var shares = $('[aria-live="polite"]');
-        if(_.size(shares)) {
-            debugger;
+        var polites = $('[aria-live="polite"]');
+        /* shares number and count number */
+        var sn = 0;
+        var cn = 0;
+        if(_.size(polites) === 1) {
+            if(!!polites.attr('href')) {
+                if(polites.text().match(/[,.]/)) {
+                    debug("!!! risk %s", polites.text());
+                }
+                if(polites.attr('href').match(/shares\//)) {
+                    var sn = _.parseInt(polites.text().replace(/[a-zA-Z: ]/g, ''));
+                }
+                if(polites.attr('href').match(/comment/)) {
+                    var cn = _.parseInt(polites.text().replace(/[a-zA-Z: ]/g, ''));
+                }
+            }
         };
 
         stats.success +=1;
-        return {
+        var retv = {
             interactions: true,
-            rmap: reactionmap
+            rmap: reactionmap,
+            rtotal: rcount,
+            shares: sn,
+            comments: cn
         };
+        debug("%s", JSON.stringify(retv));
+        return retv;
 
     } catch(err) {
         debug("øø unable to get reaction in %s: %s", snippet.id, err);

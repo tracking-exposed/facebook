@@ -1,7 +1,7 @@
 #!/usr/bin/env nodejs
 var _ = require('lodash');
 var Promise = require('bluebird');
-var debug = require('debug')('parser-error-mngmnt');
+var debug = require('debug')('parserectomy');
 var moment = require('moment');
 var nconf = require('nconf');
 
@@ -10,6 +10,13 @@ var timutils = require('../lib/timeutils');
 
 var cfgFile = "config/settings.json";
 nconf.argv().env().file({ file: cfgFile });
+
+/*
+ * example:
+ *
+ * mongodb="mongodb://10.0.2.2/facebook" KEYS="interactions-interactions,rmap" DEBUG=* START=2017-10-01 mongo-scripts/parserctomy.js 
+ *
+ */
 
 function cleanABlock(keyinfo, std, blockSize) {
     var discrimK = keyinfo.discrimK;
@@ -26,10 +33,12 @@ function cleanABlock(keyinfo, std, blockSize) {
             return _.omit(he, tbremK);
         })
         .then(function(htelems) {
-            debug("First elements processed now is from %s and has %d fields",
-                htelems[0].savingTime, _.size(htelems[0]));
-            return mongo
-                .updateMany(nconf.get('schema').htmls, htelems);
+            if(_.size(htelems)) {
+                debug("First elements processed now is from %s and has %d fields",
+                    htelems[0].savingTime, _.size(htelems[0]));
+                return mongo
+                    .updateMany(nconf.get('schema').htmls, htelems);
+            }
         })
         .then(function(htelems) {
             return _.size(htelems);
