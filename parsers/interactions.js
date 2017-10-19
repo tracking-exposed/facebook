@@ -133,7 +133,7 @@ function getInteractions(snippet) {
             shares: sn,
             comments: cn
         };
-        debug("%s", JSON.stringify(retv));
+        // debug("%s", JSON.stringify(retv));
         return retv;
 
     } catch(err) {
