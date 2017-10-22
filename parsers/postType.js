@@ -12,39 +12,88 @@ function hasLike($) {
     return (mayLike.length > 0 )
 };
 
+const sponsoredText = {
+    'cs': 'Sponzorováno',
+    'da': 'Sponsoreret',
+    'de': 'Gesponsert',
+    'en': 'Sponsored',
+    'es': 'Publicidad',
+    'fr': 'Sponsorisé',
+    'hu': 'Hirdetés',
+    'it': 'Sponsorizzata',
+    'ja': '広告',
+    'nb': 'Sponset',
+    'nl': 'Gesponsord',
+    'nn': 'Sponsa',
+    'pl': 'Sponsorowane',
+    'pt': 'Patrocinado',
+    'ru': 'Реклама',
+    'sk': 'Sponzorované',
+    'sr': 'Спонзорисано',
+    'sv': 'Sponsrad',
+    'tr': 'Sponsorlu'
+};
+
+function promotedCheck($) {
+
+    var as = $('a');
+    
+    var leafs = _.reduce(as, function(memo, chentr) { 
+        if(_.size(chentr.children) === 1) {
+            memo.push({
+                cheerio: chentr,
+                text: $(chentr).text()
+            });
+        }
+        return memo;
+    }, []);
+
+    return _.reduce(sponsoredText, function(memo, label, lang) {
+        _.each(leafs, function(l) {
+            memo |= l.text === label;
+
+            if(l.text === label)
+                debug("Language used to detect sponsored content is", lang);
+        });
+        return memo;
+    }, false);
+};
+
+var stats = { 'forced': 0, 'promoted': 0, 'feed': 0, 'error': 0};
+
 function getPostType(snippet) {
 
-    debug("→ %j", _.omit(snippet, ['html']));
-
     var $ = cheerio.load(snippet.html);
-    var retO = {
-        'postType': false
-    }
-
-    /* new theory: is missing the timeStampContent and the <abbr>, so
-     * the binary decision can start from that */
+    var retO = {};
 
     if(!hasLike($)) {
-        debug("Nope ・%s ", snippet.id);
-        return retO;
-    }
-
-    // debug("<abbr>: %d", $("abbr").length);
-    if($(".timestampContent").length === 0) {
-        debug("Promoted ・%s ", snippet.id);
-        retO.type = 'promoted';
+        retO.type = 'forced';
         retO.postType = true;
-    } else {
-        debug("Feed ・%s ", snippet.id);
+        stats.forced += 1;
+    } else if($(".timestampContent").length > 0) {
         retO.type = 'feed';
         retO.postType = true;
+        stats.feed += 1;
+    } else if(promotedCheck($)) {
+        retO.type = 'promoted';
+        retO.postType = true;
+        stats.promoted += 1;
+    } else {
+        retO.postType = false;
+        stats.error += 1;
     }
+
+    debug("F %d P %d + %d ? %d ・ %s %s",
+        stats.feed, stats.promoted,
+        stats.forced, stats.error,
+        snippet.id, retO.type);
+
     return retO;
 };
 
 var postType = {
     'name': 'postType',
-    'requirements': {},
+    'requirements': { },
     'implementation': getPostType,
     'since': "2016-11-13",
     'until': moment().toISOString(),
