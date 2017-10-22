@@ -44,8 +44,10 @@ function dandelion(partialo) {
         } }
         ).then(function (response, body) {
             // response.headers['x-dl-units-reset']
-            debug("Tested %s, units left %d",
+            debug("Tested %s, published %s (%s) units left %d",
                     partialo.original,
+                    moment(partialo.publicationTime).format(),
+                    moment.duration(moment() - moment(partialo.publicationTime)).humanize(),
                     response.headers['x-dl-units-left']);
             if(_.parseInt(response.headers['x-dl-units-left']) < 2) {
                 console.log("Units terminated!");
@@ -58,8 +60,8 @@ function dandelion(partialo) {
             return null;
         })
         .then(function(e) {
-            debug("Dandelion get completed in %d seconds",
-                moment.duration(moment() - begin).asSeconds());
+            /* debug("Dandelion get completed in %d seconds",
+                moment.duration(moment() - begin).asSeconds()); */
             e.timestamp = new Date(e.timestamp);
             return e;
         })
@@ -80,13 +82,16 @@ return various
     })
     .map(composeNEX, { concurrency: 1 })
     .then(_.compact)
+    .then(_.orderBy({ publicationTime: 1 }))
     .tap(function(xxx) {
-        debug("new urls %d, in %d seconds", _.size(xxx),
-            moment.duration(moment() - bigbang).asSeconds());
+        var ranked = _.countBy(xxx, function(x) {
+            return moment.duration(moment() - moment(x.publicationTime)).humanize();
+        });
+        debug("new urls %d, in %d seconds, this time distribution: %s", _.size(xxx),
+            moment.duration(moment() - bigbang).asSeconds(), JSON.stringify(ranked, undefined, 2));
     })
     .map(dandelion, { concurrency: 1 })
     .tap(function(xxx) {
         debug("Fetched %d resources in %d seconds", _.size(xxx),
             moment.duration(moment() - bigbang).asSeconds());
     });
-

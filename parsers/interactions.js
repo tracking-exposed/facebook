@@ -147,7 +147,7 @@ var postInteractions = {
     'name': 'interactions',
     'requirements': {},
     'implementation': getInteractions,
-    'since': "2017-10-08",
+    'since': "2017-10-01",
     'until': moment().toISOString(),
 };
 
