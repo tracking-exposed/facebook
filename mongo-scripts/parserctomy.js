@@ -78,13 +78,14 @@ function importKeys(csStr) {
 
 /* YYYY-MM-DD expected here */
 function importStartDate(dateStr) {
-    debug("Parsing string START [%s] expecting a YYYY-MM-DD", dateStr);
+    debug("Parsing string $since [%s] expecting a YYYY-MM-DD", dateStr);
     var dat = moment(dateStr);
     return dat;
 };
 
+debug("KEYS format is discrimKey-keytoremove1,keytoremove2");
 var keys = importKeys(nconf.get('KEYS'));
-var startDay = importStartDate(nconf.get('START'));
+var startDay = importStartDate(nconf.get('since'));
 
 debug("Addressing keys: %j since %s", keys, startDay);
 
