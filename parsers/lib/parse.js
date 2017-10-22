@@ -19,15 +19,27 @@ function composeURL(what) {
 function snippetAvailable(config, what) {
     var url = composeURL(what);
     var requestpayload = {
-        "since": nconf.get('since') ? nconf.get('since') : config.since,
-        "until": nconf.get('until') ? nconf.get('until') : config.until,
+        "since": moment().subtract(1, 'h').toISOString(),
+        "until": moment().toISOString(),
         "parserName": config.name,
         "requirements": config.requirements || {}
     };
 
+    /* if since or until are specify, use the command, 
+     * otherwise use keep the default: last hour */
+    if( nconf.get('since') || nconf.get('until') ) {
+        debug("Remind: if you specify only one 'since' or 'until', the default is from the config");
+        requestpayload.since = nconf.get('since') ? nconf.get('since') : config.since;
+        requestpayload.until = nconf.get('until') ? nconf.get('until') : config.until;
+    }
+
     /* id overwrites every other requirement */
-    if(nconf.get('id'))
+    if(nconf.get('id')) {
+        debug("Remind: when id is specify is not used the last hour. but $env 'since' 'until' or the default from the config");
+        requestpayload.since = nconf.get('since') ? nconf.get('since') : config.since;
+        requestpayload.until = nconf.get('until') ? nconf.get('until') : config.until;
         requestpayload.requirements = { id : nconf.get('id') };
+    }
 
     debug("Connecting to %s", url);
     debug("⭐ %s", JSON.stringify(requestpayload, undefined, 2));
