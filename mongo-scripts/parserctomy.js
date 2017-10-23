@@ -18,9 +18,10 @@ nconf.argv().env().file({ file: cfgFile });
  *
  */
 
-function cleanABlock(keyinfo, std, blockSize) {
+function cleanABlock(keyinfo, std) {
     var discrimK = keyinfo.discrimK;
     var tbremK = keyinfo.tbremK;
+    var blockSize = 2000;
 
     var selector = {
         "savingTime": { "$gt": new Date(std) }
@@ -34,36 +35,23 @@ function cleanABlock(keyinfo, std, blockSize) {
         })
         .then(function(htelems) {
             if(_.size(htelems)) {
-                debug("First elements processed now is from %s and has %d fields",
-                    htelems[0].savingTime, _.size(htelems[0]));
+                debug("sample: from %s %s begin with %d fields",
+                    htelems[0].id, htelems[0].savingTime,
+                    _.size(htelems[0]));
                 return mongo
-                    .updateMany(nconf.get('schema').htmls, htelems);
+                    .updateMany(nconf.get('schema').htmls, htelems)
+                    .catch(function(error) {
+                        debug("Error in update (redo): %s", error);
+                        return [ null ];
+                    });
             }
         })
         .then(function(htelems) {
+            if(!_.size(htelems))
+                return -1;
             return _.size(htelems);
         });
 }
-
-function recursiveRemoval(k, std, blockSize) {
-
-    return cleanABlock(k, std, blockSize)
-        .then(function(numbers) {
-            if(numbers < blockSize) {
-                debug("Process completed!");
-                return;
-            } else {
-                return recursiveRemoval(k, std, blockSize);
-            }
-        });
-};
-
-function removeParserData(k, std) {
-    var blockSize = 2000;
-    debug("Removing keys %j starting since %s, processin %d block per time",
-        k, std, blockSize);
-    return recursiveRemoval(k, std, blockSize);
-};
 
 /* comma separared string, like: "postType,type" */
 function importKeys(csStr) {
@@ -89,4 +77,17 @@ var startDay = importStartDate(nconf.get('since'));
 
 debug("Addressing keys: %j since %s", keys, startDay);
 
-return removeParserData(keys, startDay);
+/* thanks stackoverflow https://stackoverflow.com/questions/24660096/correct-way-to-write-loops-for-promise */
+var promiseFor = Promise.method(function(condition, action, value) {
+    if (!condition(value)) return value;
+    return action(value).then(promiseFor.bind(null, condition, action));
+});
+
+promiseFor(function(numbers) {
+    return numbers >= 0;
+}, function(count) {
+    return cleanABlock(keys, startDay);
+}, 0).then(function() {
+    debug("operation complete!");
+});
+
