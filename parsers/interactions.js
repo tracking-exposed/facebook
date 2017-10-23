@@ -107,11 +107,13 @@ function getInteractions(snippet) {
                 JSON.stringify(reactionmap, undefined, 2));
         }
 
+        /* polities are the polite writings for comments & shares */
         var polites = $('[aria-live="polite"]');
         /* shares number and count number */
         var sn = 0;
         var cn = 0;
-        if(_.size(polites) === 1) {
+        debug("%d", _.size(polites));
+        if(_.size(polites) >= 1) {
             if(!!polites.attr('href')) {
                 if(polites.text().match(/[,.]/)) {
                     debug("!!! risk %s", polites.text());
@@ -133,7 +135,7 @@ function getInteractions(snippet) {
             shares: sn,
             comments: cn
         };
-        // debug("%s", JSON.stringify(retv));
+        debug("%s", JSON.stringify(retv));
         return retv;
 
     } catch(err) {
