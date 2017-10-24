@@ -57,7 +57,7 @@ promiseFor(function(timew) {
 },  cleanABlock,
     manageState({ shifts: 1 })
 ).then(function(completed) {
-    debug("operation complete after %d day shift", completed.shifts);
+    debug("operation complete after %d shifts", completed.shifts);
 });
 
 
