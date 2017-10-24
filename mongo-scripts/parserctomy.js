@@ -12,24 +12,66 @@ var cfgFile = "config/settings.json";
 nconf.argv().env().file({ file: cfgFile });
 
 /*
- * example:
  *
- * mongodb="mongodb://10.0.2.2/facebook" KEYS="interactions-interactions,rmap" DEBUG=* START=2017-10-01 mongo-scripts/parserctomy.js 
+ * mongodb="mongodb://10.0.2.2/facebook" KEYS="interactions-interactions,rmap" DEBUG=* since=2017-10-01 mongo-scripts/parserctomy.js 
+ *                                             ^^^^^^^^^^^^ ^^^^^^^^^^^^^^^^^
+ *                                     discriminative key/   \keys to be removed
  *
- */
+ * it removed the keys 'interactions' and 'rmap' from all the object with 'interactions'
+ *
+ * YYYY-MM-DD expected here */
 
-function cleanABlock(keyinfo, std) {
-    var discrimK = keyinfo.discrimK;
-    var tbremK = keyinfo.tbremK;
-    var blockSize = 2000;
+function manageState(state) {
+    var timewindow = 4; // hours
+    var shifts = state.shifts + 1;
+    var startM  = moment(nconf.get('since')).add( timewindow * (shifts -1), 'h');
+    var endM  = moment(nconf.get('since')).add( timewindow * shifts, 'h');
+
+    if(nconf.get('until') && moment(nconf.get('until')).isAfter(startM)) {
+        debug("until date trigger: %s isAfter %s", nconf.get('until'), startM.format() );
+        process.exit();
+    }
+
+    return {
+        start: startM.toISOString(),
+        end: endM.toISOString(),
+        shifts: shifts,
+    };
+};
+
+debug("KEYS format is discrimKey-keytoremove1,keytoremove2");
+var keys = importKeys(nconf.get('KEYS'));
+debug("keys: %j", keys);
+
+/* thanks stackoverflow https://stackoverflow.com/questions/24660096/correct-way-to-write-loops-for-promise */
+var promiseFor = Promise.method(function(condition, action, value) {
+    if (!condition(value)) return value;
+    return action(value).then(promiseFor.bind(null, condition, action));
+});
+
+promiseFor(function(timew) {
+
+    /* if `start` is arrive in the future, its over */
+    return moment(timew.start).isBefore();
+
+},  cleanABlock,
+    manageState({ shifts: 1 })
+).then(function(completed) {
+    debug("operation complete after %d day shift", completed.shifts);
+});
+
+
+function cleanABlock(state) {
+    var discrimK = keys.discrimK;
+    var tbremK = keys.tbremK;
 
     var selector = {
-        "savingTime": { "$gt": new Date(std) }
+        "savingTime": { "$gt": new Date(state.start), "$lt": new Date(state.end) }
     }
     _.set(selector, discrimK, { "$exists": true });
 
     return mongo
-        .readLimit(nconf.get('schema').htmls, selector, {}, blockSize, 0)
+        .read(nconf.get('schema').htmls, selector)
         .map(function(he) {
             return _.omit(he, tbremK);
         })
@@ -40,17 +82,17 @@ function cleanABlock(keyinfo, std) {
                     _.size(htelems[0]));
                 return mongo
                     .updateMany(nconf.get('schema').htmls, htelems)
-                    .catch(function(error) {
-                        debug("Error in update (redo): %s", error);
-                        return [ null ];
-                    });
+                    .return(state);
+            } else {
+                return manageState(state);
             }
         })
-        .then(function(htelems) {
-            if(!_.size(htelems))
-                return -1;
-            return _.size(htelems);
-        });
+        .catch(function(error) {
+            debug("Error in update, wait 2000ms and redo: %s", error);
+            return Promise
+                .delay(2000)
+                .return(state);
+        })
 }
 
 /* comma separared string, like: "postType,type" */
@@ -63,31 +105,4 @@ function importKeys(csStr) {
         tbremK: alls
     };
 };
-
-/* YYYY-MM-DD expected here */
-function importStartDate(dateStr) {
-    debug("Parsing string $since [%s] expecting a YYYY-MM-DD", dateStr);
-    var dat = moment(dateStr);
-    return dat;
-};
-
-debug("KEYS format is discrimKey-keytoremove1,keytoremove2");
-var keys = importKeys(nconf.get('KEYS'));
-var startDay = importStartDate(nconf.get('since'));
-
-debug("Addressing keys: %j since %s", keys, startDay);
-
-/* thanks stackoverflow https://stackoverflow.com/questions/24660096/correct-way-to-write-loops-for-promise */
-var promiseFor = Promise.method(function(condition, action, value) {
-    if (!condition(value)) return value;
-    return action(value).then(promiseFor.bind(null, condition, action));
-});
-
-promiseFor(function(numbers) {
-    return numbers >= 0;
-}, function(count) {
-    return cleanABlock(keys, startDay);
-}, 0).then(function() {
-    debug("operation complete!");
-});
 
