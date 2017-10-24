@@ -112,19 +112,34 @@ function getInteractions(snippet) {
         /* shares number and count number */
         var sn = 0;
         var cn = 0;
-        debug("%d", _.size(polites));
         if(_.size(polites) >= 1) {
-            if(!!polites.attr('href')) {
-                if(polites.text().match(/[,.]/)) {
-                    debug("!!! risk %s", polites.text());
+
+            _.times(polites.length, function(i) {
+                /* remember: this is Cheerio! */
+                var p = _.get(polites, String(i));
+
+                if( !! $(p).attr('href')) {
+
+                    var politehref = $(p).attr('href');
+                    var politelabel = $(p).text();
+
+                    var value = _.parseInt(politelabel.replace(/[a-zA-Z:.,]/g, ''));
+
+                    if( politelabel.match(/[Kk]/) || politelabel.match(/mil/) ) {
+                        var commadot = !!politelabel.match(/[,.]/);
+                        value = commadot ? (value * 100) : (value * 1000);
+                    }
+
+                    if(politehref.match(/shares\//))
+                        sn = value;
+
+                    if(politehref.match(/comment/))
+                        cn = value;
+
+                    debug("[%s], shares %d comments %d", politelabel, sn, cn);
                 }
-                if(polites.attr('href').match(/shares\//)) {
-                    var sn = _.parseInt(polites.text().replace(/[a-zA-Z: ]/g, ''));
-                }
-                if(polites.attr('href').match(/comment/)) {
-                    var cn = _.parseInt(polites.text().replace(/[a-zA-Z: ]/g, ''));
-                }
-            }
+
+            });
         };
 
         stats.success +=1;
