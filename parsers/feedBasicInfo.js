@@ -86,8 +86,7 @@ function tryAlbum(href) {
     /* https://www.facebook.com/media/set/?set=a.156035371537982.1073741837.100013945592641&type=3 */
     try {
         return _.parseInt(_.trim(href.match(/set=a\.\d+.\./)[0], 'set=a.'));
-    } catch(err) {
-    }
+    } catch(err) { }
 }
 
 
@@ -118,7 +117,7 @@ function getPostCore(htmlId, href) {
             }
 
             if(!_.isInteger(foundpId))
-                debug("øøø !! %s %s", htmlId, href);
+                debug("øøøø !! %s %s", htmlId, href);
             else
                 retVal = { postId: foundpId, type: postTypef };
         }
@@ -136,8 +135,16 @@ function getPostBI(snippet) {
         // abbr elem with data-utime as attr
         // element a parent of the <abbr>
         if(_.isUndefined(href)) {
-            debug("ø undefined href? %s", snippet.id);
-            return { 'feedBasicInfo': false };
+            debug("ø undefined href? %s, trying album", snippet.id);
+
+            _.each($('a'), function(a) {
+                if($(a).attr('href').match(/\/media\/set\/.set=a/)) {
+                    href = $(a).attr('href');
+                }
+            });
+
+            if(_.isUndefined(href))
+                return { 'feedBasicInfo': false };
         }
     } catch(err) {
         debug("øø unable to get href! %s", snippet.id);

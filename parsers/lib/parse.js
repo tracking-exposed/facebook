@@ -11,7 +11,7 @@ nconf.argv().env();
 
 function composeURL(what) {
     return [
-        (nconf.get('url') || 'https://facebook.tracking.exposed' ),
+        (nconf.get('url') || 'http://localhost:8000' ),
         'api', 'v1', 'snippet', what
     ].join('/');
 };

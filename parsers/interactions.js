@@ -109,9 +109,9 @@ function getInteractions(snippet) {
 
         /* polities are the polite writings for comments & shares */
         var polites = $('[aria-live="polite"]');
-        /* shares number and count number */
-        var sn = 0;
-        var cn = 0;
+        /* shares and comments counting */
+        var sn = 0, cn = 0;
+
         if(_.size(polites) >= 1) {
 
             _.times(polites.length, function(i) {
@@ -122,23 +122,19 @@ function getInteractions(snippet) {
 
                     var politehref = $(p).attr('href');
                     var politelabel = $(p).text();
-
                     var value = _.parseInt(politelabel.replace(/[a-zA-Z:.,]/g, ''));
 
                     if( politelabel.match(/[Kk]/) || politelabel.match(/mil/) ) {
                         var commadot = !!politelabel.match(/[,.]/);
                         value = commadot ? (value * 100) : (value * 1000);
                     }
-
                     if(politehref.match(/shares\//))
                         sn = value;
-
                     if(politehref.match(/comment/))
                         cn = value;
 
-                    debug("[%s], shares %d comments %d", politelabel, sn, cn);
+                    // debug("[%s], shares %d comments %d", politelabel, sn, cn);
                 }
-
             });
         };
 
@@ -150,7 +146,10 @@ function getInteractions(snippet) {
             shares: sn,
             comments: cn
         };
-        debug("%s", JSON.stringify(retv));
+        debug("%s %s",
+            moment.duration(moment(html.savingTime)).humanize(),
+            JSON.stringify(retv));
+
         return retv;
 
     } catch(err) {
