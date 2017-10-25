@@ -1,0 +1,47 @@
+[
+    {
+        "key": "4",
+        "name": "feedPostHref",
+        "fields":["feedPostHref"]
+    },  {
+        "key": "k",
+        "name": "postType",
+        "fields":["postType", "type"]
+    } , {
+        "key": "q",
+        "name": "promotedInfo",
+        "fields":["ownerName", "promotedInfo", "promotedMedia", "promotedPage"]
+    } , {
+        "key": "6",
+        "name": "promotedLink",
+        "fields":["promotedLink", "postLink", "linkType" ]
+    } , {
+        "key": "n",
+        "name": "promotedTitle",
+        "fields":["promotedTitle", "title", "titleId"]
+    } , {
+        "key": "1",
+        "name": "feedUTime",
+        "fields": [ "feedUTime", "publicationUTime" ]
+    } , {
+        "key": "8",
+        "name": "feedText",
+        "fields": [ "feedText", "source", "text", "reason" ]
+    } , {
+        "key": "f",
+        "name": "feedBasicInfo",
+        "fields": [ "feedBasicInfo", "postId", "permaLink", "hrefType", "feedPostHref"]
+    } , {
+        "key": "G", 
+        "name": "imageAltText", 
+        "fields":["imageAltText", "altTexts"]
+    } , {
+        "key": "8", 
+        "name": "feedHref", 
+        "fields":["feedHref", "externalHref"]
+    } , {
+        "key": "D", 
+        "name": "interactions", 
+        "fields":["interactions", "rmap", "rtotal", "shares", "comments"]
+    }
+]
