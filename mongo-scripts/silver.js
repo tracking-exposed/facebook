@@ -52,11 +52,11 @@ debug("Executing timewindow: %s %s timeline filter %s, htmls filter %s +feed onl
 
 var patterns = {
     /* the regexp is case insensitive and global, because we want a count */
-    "Nisman": new RegExp("Nisman", 'ig'),
-    "Maldonado": new RegExp("Maldonado", 'ig'),
-    "Kirchner": new RegExp("Kirchner", 'ig'),
-    "Bullrich": new RegExp("Bullrich", 'ig'),
-    "Massa": new RegExp("Massa", 'ig')
+    "_Nisman": new RegExp("Nisman", 'ig'),
+    "_Maldonado": new RegExp("Maldonado", 'ig'),
+    "_Kirchner": new RegExp("Kirchner", 'ig'),
+    "_Bullrich": new RegExp("Bullrich", 'ig'),
+    "_Massa": new RegExp("Massa", 'ig')
 };
 
 function patternMap(htmlstring) {
@@ -67,6 +67,49 @@ function patternMap(htmlstring) {
         _.set(memo, pattern, l);
         return memo;
     }, {});
+};
+
+function flattenReactions(rmap) {
+    /* `rmap` contains a collections of object like this:  *
+       { "label":"1 Love","type":"2","amount":"1"}         *
+       or is empty, and we need to provide defauls         */
+    var ret = {
+        'love': 0,
+        'like': 0,
+        'sad': 0,
+        'haha': 0,
+        'wow': 0,
+        'angry': 0,
+        'thankful': 0,
+    };
+    _.each(rmap, function(r) {
+        switch(r.type) {
+            case "1":
+                ret.like = _.parseInt(r.amount);
+                break;
+            case "2":
+                ret.love = _.parseInt(r.amount);
+                break;
+            case "3":
+                ret.wow = _.parseInt(r.amount);
+                break;
+            case "4":
+                ret.haha = _.parseInt(r.amount);
+                break;
+            case "7":
+                ret.sad = _.parseInt(r.amount);
+                break;
+            case "8":
+                ret.angry = _.parseInt(r.amount);
+                break;
+            case "11":
+                ret.thankful = _.parseInt(r.amount);
+                break;
+            default:
+                debug("Uncommon reaction spot: %s", JSON.stringify(r));
+        };
+    });
+    return ret;
 };
 
 function lookintoHTMLs(timeline, counter) {
@@ -132,17 +175,30 @@ function lookintoHTMLs(timeline, counter) {
                     moment(html.publicationUTime * 1000).utcOffset(-180)
                 ).asSeconds();
 
-            ret.reactions = html.rmap;
-            ret.interactions = {
-                total: html.rtotal,
-                comments: html.comments,
-                shares: html.shares
-            };
+            ret.type = html.hrefType;
             ret.displayName = html.source;
 
-            return _.merge(ret, patternMap(html.html),
+            /* if displayName is null, it is probably an album, and only two people posted an album */
+            if(ret.pageName === '' && ret.type === 'album') {
+                var userId = _.split(html.permaLink, '&')[0].split('.')[5];
+
+                if(userId === "1439011312989701") {
+                    ret.displayName = "Jorge Taiana";
+                    ret.pageName = "TaianaJorge";
+                }
+                else if(userId === "115689108495633") {
+                    ret.displayName = "Cristina Fernandez de Kirchner";
+                    ret.pageName = "CFKArgentina";
+                }
+                else
+                    debug("Warning, `album` not seen in testing database - id: %s", html.id);
+            }
+
+            return _.merge(ret,
+                flattenReactions(html.rmap),
+                patternMap(html.html),
                 _.pick(impression, ['impressionOrder' ]),
-                _.pick(html, ['id', 'hrefType', 'timelineId' ])
+                _.pick(html, ['id', 'permaLink', 'rtotal', 'comments', 'shares', 'timelineId' ])
             );
         });
     });
