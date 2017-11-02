@@ -37,7 +37,6 @@ var timeFilter = {
 }
 
 var timediff = moment.duration(timeFilter.end - timeFilter.start);
-var destFile = "extracted-" + timediff.humanize() + ".json";
 
 var timef = nconf.get('TIMEF') || '{}';
 timef = JSON.parse(timef);
@@ -198,11 +197,42 @@ function lookintoHTMLs(timeline, counter) {
                 flattenReactions(html.rmap),
                 patternMap(html.html),
                 _.pick(impression, ['impressionOrder' ]),
-                _.pick(html, ['id', 'permaLink', 'rtotal', 'comments', 'shares', 'timelineId' ])
+                _.pick(html, ['id', 'text', 'permaLink', 'rtotal', 'comments', 'shares', 'timelineId' ])
             );
         });
     });
 }
+
+function postSequence(content) {
+
+    var bid = _.groupBy(content, 'postId');
+    var unsorted = _.map(bid, function(posts, postId) {
+
+        var ret = {
+            postId: postId,
+            publicationTime: posts[0].publicationTime,
+            mpt: moment(posts[0].publicationTime),
+            pageName: posts[0].pageName,
+        };
+
+        if(posts[0].externals)
+            ret.externals = posts[0].externals;
+
+        if(posts[0].text)
+            ret.text = posts[0].text;
+
+        var appears = _.map(posts, function(p) {
+            return _.pick(p, ['visualizationDiff', 'impressionOrder', 'profile', 'id']);
+        });
+
+        ret.appears = _.sortBy(appears, 'visualizationDiff');
+        return ret;
+    });
+
+    return _.map(_.sortBy(unsorted, 'mpt'), function(p) {
+        return _.omit(p, ['mpt']);
+    });
+};
 
 function appendPromise(fpath, str, reset=false) {
     var options = {
@@ -257,10 +287,19 @@ return various
     .map(beginQuery, { concurrency: 1})
     .then(_.flatten)
     .tap(function(c) {
-        debug("All the posts are %d", _.size(c));
-        /* saving the file, all the data are kept togheder */
-        return appendPromise(destFile, JSON.stringify(c, undefined, 2), reset=true);
+        debug("[+] All the impressions are %d", _.size(c));
+        /* saving the file, all the data are kept togheder, but not 'text' */
+        var clean = _.map(c, function(o) { return _.omit(o, ['text'])});
+        var destFile = "impressions - " + timediff.humanize() + ".json";
+        return appendPromise(destFile, JSON.stringify(clean, undefined, 2), reset=true);
+    })
+    .then(postSequence)
+    .tap(function(p) {
+        debug("[+] Unique posts are %d", _.size(p));
+        /* saving the post, all the data are kept togheder */
+        var destFile = "posts - " + timediff.humanize() + ".json";
+        return appendPromise(destFile, JSON.stringify(p, undefined, 2), reset=true);
     })
     .tap(function(c) {
-        debug("Done! %s saved", destFile);
+        debug("Done! files saved");
     });
