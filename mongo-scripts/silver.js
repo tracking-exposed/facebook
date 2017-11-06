@@ -289,7 +289,7 @@ return various
     .tap(function(c) {
         debug("[+] All the impressions are %d", _.size(c));
         /* saving the file, all the data are kept togheder, but not 'text' */
-        var clean = _.map(c, function(o) { return _.omit(o, ['text'])});
+        var clean = _.map(c, function(o) { return _.omit(o, ['text', 'externals'])});
         var destFile = "impressions - " + timediff.humanize() + ".json";
         return appendPromise(destFile, JSON.stringify(clean, undefined, 2), reset=true);
     })
