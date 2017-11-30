@@ -1,5 +1,3 @@
-Rename this file as settings.json 
-
 {
   "schema": { 
       "impressions": "impressions2",
