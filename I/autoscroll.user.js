@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         autoscroll
 // @namespace    autoscroll
-// @version      1.14
+// @version      1.15
 // @description  autoscroller to be used with https://facebook.tracking.exposed, This userscript works with TamperMoneky extension.
 // @author       Claudio Agosti @_vecna
 // @match        https://www.facebook.com/*
@@ -15,10 +15,11 @@
 var times = 30;
 var delay = 5;
 var fixedH = 800;
+
 var plan = [
-    "10:01",
-    "14:01",
-    "18:01"
+    "08:01",
+    "16:01",
+    "23:55"
 ];
 
 function timeline(reference) {
@@ -69,56 +70,27 @@ function timeline(reference) {
 
 function doTheNext() {
 
-    var isNight = moment().hour();
-    var subdays = 0;
-    if(isNight < 4) {
-        console.log("It is night -- (FIXME: this check is not timezone safe)");
-        subdays = 1;
-    }
-    /*
-     * This function has to compute the seconds of distance between
-     * now and the next TESING-HOUR. the hours are 9:00,11:00 etc,
-     * and they happen in GMT-3, (180 minutes, below in the variables)
-     */
+    /* this is not anymore timezone robust, it is intended to be run in the right place */
+    var next = null;
+    _.each(plan, function(t) {
 
-	var tinfo = _.map(plan, function(t) {
-
-        var GMTARG = 180;
 		var hour = _.parseInt(t.split(':')[0]);
 		var minute = _.parseInt(t.split(':')[1]);
-		var personalO = moment().utcOffset() + GMTARG;
-		var target = moment().set({
-            hour: hour,
-            minute: minute,
-            second: 0
-        }).utcOffset(GMTARG);
-        target.subtract(subdays, 'd');
-        var secsdiff = moment.duration(target - moment()).asSeconds();
-		var secto =  secsdiff + (personalO * 60);
 
-		return {
-            secsdiff: secsdiff,
-			hto: _.round(secto / 3600, 1),
-			secto: secto,
-			target: t,
-			x: target.format()
-		};
-	});
+        var target = moment().startOf('day').add(hour, 'h').add(minute, 'm');
 
-	console.log(tinfo);
-	var next = _.first(_.filter(tinfo, function(t) {
-		return t.secto > 0;
-	}));
+        if(!next && moment().isBefore( target ) )
+            next = moment.duration(target - moment()).asSeconds();
+    });
 
-    console.log("Schedule computed, next on", next);
     if(!next) {
-        console.log("Night problem, check back in 1 hour");
+        console.log("strange condition before midnight, check in 1 hour");
         GM_setValue("refresh", true);
         return _.delay(doTheNext, 3600 * 1000);
     } else {
-        console.log("Setting the next timeline to", next.secto);
+        console.log("Setting the next timeline in", next, "seconds");
         GM_setValue("refresh", true);
-        return _.delay(cleanAndReload, next.secto * 1000);
+        return _.delay(cleanAndReload, next * 1000);
     }
 };
 
@@ -144,7 +116,4 @@ function cleanAndReload() {
         timeline();
     } else
         console.log("Nope, recorded is", moment(s).format("HH:mm:ss"), "now", moment().format("HH:mm:ss"));
-
 })();
-
-
