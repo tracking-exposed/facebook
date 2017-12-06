@@ -12,7 +12,7 @@
 // @require      https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js
 // ==/UserScript==
 
-var SCROLL_TIMES = 32;
+var SCROLL_TIMES = 30;
 var AWAITSECS = 5;
 var fixedH = 800;
 
@@ -117,5 +117,5 @@ function cleanAndReload() {
         console.log("beginning tampermonkey, scrolling", s, "refresh", r);
         timeline();
     } else
-        console.log("Nope, recorded is", moment(s).format("HH:mm:ss"), "now", moment().format("HH:mm:ss"), "check in do The Next");
+        console.log("Nope, recorded is", moment(s).format("HH:mm:ss"), "now is:", moment().format("HH:mm:ss"));
 })();
