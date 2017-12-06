@@ -22,7 +22,8 @@ var redOff = "\033[0m";
 
 nconf.argv()
      .env()
-     .file({ file: cfgFile });
+     .file({ file: cfgFile })
+     .file('users', { file: "config/users.json" });
 
 console.log(redOn + "ઉ nconf loaded, using " + cfgFile + redOff);
 
