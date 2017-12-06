@@ -280,7 +280,7 @@ function beginQuery(user) {
 };
 
 return various
-    .loadJSONfile("config/users.json")
+    .loadJSONfile("config/elections-users.json")
     .then(function(c) {
         return c['silver'];
     })
