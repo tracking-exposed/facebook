@@ -117,5 +117,5 @@ function cleanAndReload() {
         console.log("beginning tampermonkey, scrolling", s, "refresh", r);
         timeline();
     } else
-        console.log("Nope, recorded is", moment(s).format("HH:mm:ss"), "now", moment().format("HH:mm:ss"));
+        console.log("Nope, recorded is", moment(s).format("HH:mm:ss"), "now", moment().format("HH:mm:ss"), "check in do The Next");
 })();
