@@ -38,15 +38,15 @@ var timeFilter = {
 
 var timediff = moment.duration(timeFilter.end - timeFilter.start);
 
-var timef = nconf.get('TIMEF') || '{}';
-timef = JSON.parse(timef);
+var timelinefi = nconf.get('TIMEF') || '{}';
+timelinefi = JSON.parse(timelinefi);
 var htmlf = nconf.get('HTMLF') || '{}';
 htmlf = JSON.parse(htmlf);
 
 debug("Executing timewindow: %s %s timeline filter %s, htmls filter %s +feed only",
     JSON.stringify(timeFilter, undefined, 2),
     timediff.humanize(),
-    JSON.stringify(timef, undefined, 2),
+    JSON.stringify(timelinefi, undefined, 2),
     JSON.stringify(htmlf, undefined, 2) );
 
 var patterns = {
@@ -124,11 +124,11 @@ function lookintoHTMLs(timeline, counter) {
         timeline.name
     ])
     .then(function(combos) {
-/*
+
         debug("htmls %d, impressions %d, %s timeline %s of %s",
             _.size(combos[0]), _.size(combos[1]), combos[2],
             timeline.id, timeline.name);
-*/
+
         if(_.size(combos[0]) < 3)
             return [];
 
@@ -195,7 +195,7 @@ function lookintoHTMLs(timeline, counter) {
 
             return _.merge(ret,
                 flattenReactions(html.rmap),
-                patternMap(html.html),
+                // patternMap(html.html),
                 _.pick(impression, ['impressionOrder' ]),
                 _.pick(html, ['id', 'text', 'permaLink', 'rtotal', 'comments', 'shares', 'timelineId' ])
             );
@@ -254,7 +254,7 @@ function appendPromise(fpath, str, reset=false) {
 
 function beginQuery(user) {
 
-    var filter = _.extend(timef, {
+    var filter = _.extend(timelinefi, {
         startTime: {
             "$gt": new Date(timeFilter.start),
             "$lt": new Date(timeFilter.end) 
@@ -282,7 +282,7 @@ function beginQuery(user) {
 return various
     .loadJSONfile("config/elections-users.json")
     .then(function(c) {
-        return c['silver'];
+        return c['wto'];
     })
     .map(beginQuery, { concurrency: 1})
     .then(_.flatten)
