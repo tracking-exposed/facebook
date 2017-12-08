@@ -279,10 +279,16 @@ function beginQuery(user) {
         });
 };
 
+// var USER_SOURCE = "config/elections-users.json";
+var USER_SOURCE = "config/users.json";
+// var USER_KEY = "silver";
+var USER_KEY = "wto";
+
+debug("Using %s as user file looking fro %s", USER_SOURCE, USER_KEY);
 return various
-    .loadJSONfile("config/elections-users.json")
+    .loadJSONfile(USER_SOURCE)
     .then(function(c) {
-        return c['wto'];
+        return _.get(c, USER_KEY);
     })
     .map(beginQuery, { concurrency: 1})
     .then(_.flatten)
