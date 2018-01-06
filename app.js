@@ -190,6 +190,11 @@ app.get('/api/v1/realitymeter/:postId', function(req, res) {
     return dispatchPromise('postReality', req, res);
 });
 
+/* opendata export reduced data */
+app.get('/api/v1/metaxpt/:selector/:type/:hoursago', function(req, res) {
+    return dispatchPromise('metaxpt', req, res);
+});
+
 /* stats */
 app.get('/impact', function(req, res) {
     return dispatchPromise('getImpact', req, res);
