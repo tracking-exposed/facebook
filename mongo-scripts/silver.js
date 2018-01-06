@@ -165,19 +165,29 @@ function lookintoHTMLs(timeline, counter) {
                 });
             }
 
-            /* the timings are recorded in GTM, I want to display in Buenos Aires time */
-            ret.impressionTime = moment(impression.impressionTime).utcOffset(-180).format();
-            ret.publicationTime = moment(html.publicationUTime * 1000).utcOffset(-180).format();
+            /* the timings are recorded in GTM, I originally they were converted in
+             * display in Buenos Aires time:
+            moment(impression.impressionTime).utcOffset(-180).format();
+            moment(html.publicationUTime * 1000).utcOffset(-180).format();
+             *
+             * but with the comparison of FB API posts it is simpler keep them GMT */
+            ret.impressionTime = moment(impression.impressionTime)
+                .utcOffset(0)
+                .format();
+            ret.publicationTime = moment(html.publicationUTime * 1000)
+                .utcOffset(0)
+                .format();
             ret.visualizationDiff = moment
                 .duration(
-                    moment(impression.impressionTime).utcOffset(-180) -
-                    moment(html.publicationUTime * 1000).utcOffset(-180)
-                ).asSeconds();
+                    moment(impression.impressionTime) - moment(html.publicationUTime * 1000)
+                )
+                .asSeconds();
 
             ret.type = html.hrefType;
             ret.displayName = html.source;
 
-            /* if displayName is null, it is probably an album, and only two people posted an album */
+            /* if displayName is null, it is probably an album,
+             * and only two people posted an album */
             if(ret.pageName === '' && ret.type === 'album') {
                 var userId = _.split(html.permaLink, '&')[0].split('.')[5];
 

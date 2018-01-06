@@ -3,6 +3,7 @@ var _ = require('lodash');
 var cheerio = require('cheerio');
 var moment = require('moment');
 var debug = require('debug')('feedBasicInfo');
+var verbose = require('debug')('v:postType');
 var parse = require('./lib/parse');
 
 function tryPhoto(href) {
@@ -16,8 +17,10 @@ function tryPhoto(href) {
   '2154377274788145', <---- we need this                     ,'']
      */
     try {
-        return _.parseInt(href.match(/\/photos\/.\.\d+.\.\d+\.\d+\/\d+\//)[0].split('/')[3]);
-    } catch (err){ }
+        return href.match(/\/photos\/.\.\d+.\.\d+\.\d+\/\d+\//)[0].split('/')[3];
+    } catch (err){
+        verbose("1¹-Photo fail [%s]", href);
+    }
 
 		/*
 		https://www.facebook.com/photo.php?fbid=10209913340943131&set=a.10205966341230605.1073741826.1622311740&type=3
@@ -27,14 +30,18 @@ function tryPhoto(href) {
 		'10209913340943131'
 		*/
     try {
-        return _.parseInt(_.trim(href.match(/fbid=\d+.&/)[0], 'fbid=&'));
-    } catch(err) { }
+        return _.trim(href.match(/fbid=\d+.&/)[0], 'fbid=&');
+    } catch(err) {
+        verbose("1²-Photo fail [%s]", href);
+    }
 }
 
 function tryPost(href) {
     try {
-        return _.parseInt(href.match(/posts\/\d+/)[0].split('/')[1]);
-    } catch (err) { }
+        return href.match(/posts\/\d+/)[0].split('/')[1];
+    } catch (err) {
+        verbose("2-Post fail [%s]", href);
+    }
 }
 
 function tryGroupPost(href) {
@@ -50,8 +57,10 @@ function tryGroupPost(href) {
     try {
         var chunks = href.split('/');
         if(chunks[1] === 'groups' && chunks[3] === 'permalink')
-            return _.parseInt(chunks[4]);
-    } catch(err) { }
+            return chunks[4];
+    } catch(err) {
+        verbose("3-GroupPost fail [%s]", href);
+    }
 }
 
 function tryVideo(href) {
@@ -59,8 +68,9 @@ function tryVideo(href) {
     try {
         var chunks = href.split('/');
         if(chunks[2] === 'videos')
-            return _.parseInt(chunks[3]);
+            return chunks[3];
     } catch(err) {
+        verbose("4-Video fail [%s]", href);
     }
 }
 
@@ -69,8 +79,10 @@ function tryEvent(href) {
     try {
         var chunks = href.split('/');
         if(chunks[1] === 'events' && chunks[3] === 'permalink')
-            return _.parseInt(chunks[4]);
-    } catch(err) { }
+            return chunks[4];
+    } catch(err) {
+        verbose("5-Event fail [%s]", href);
+    }
 }
 
 function tryNotes(href) {
@@ -78,15 +90,19 @@ function tryNotes(href) {
     try {
         var chunks = href.split('/');
         if(chunks[1] === 'notes')
-            return _.parseInt(chunks[4]);
-    } catch(err) { }
+            return chunks[4];
+    } catch(err) {
+        verbose("6-Notes fail [%s]", href);
+    }
 }
 
 function tryAlbum(href) {
     /* https://www.facebook.com/media/set/?set=a.156035371537982.1073741837.100013945592641&type=3 */
     try {
-        return _.parseInt(_.trim(href.match(/set=a\.\d+.\./)[0], 'set=a.'));
-    } catch(err) { }
+        return _.trim(href.match(/set=a\.\d+.\./)[0], 'set=a.');
+    } catch(err) {
+        verbose("7-Album fail [%s]", href);
+    }
 }
 
 
@@ -103,23 +119,30 @@ function getPostCore(htmlId, href) {
         album: tryAlbum
     };
 
-    _.each(postTypes, function(extractor, postTypef) {
+    _.each(postTypes, function(extractorf, postType) {
 
-        if(!(retVal && retVal.type === 'photo' && postTypef === 'album'))
-            var foundpId = extractor(href);
+        if(!(retVal && retVal.type === 'photo' && postType === 'album'))
+            var foundpId = extractorf(href);
 
         if(foundpId) {
 
             if(retVal) {
-                debug("already assigned? %j (new %d %s)",
-                    retVal, foundpId, postTypef);
+                debug("already assigned? %j (new %s %s)",
+                    retVal, foundpId, postType);
                 debug("conflict in %s %s", htmlId, href);
             }
 
-            if(!_.isInteger(foundpId))
+            /*
+            > foundpId.match(/\d+/)
+            [ '10156056604079165', index: 0, input: '10156056604079165' ]
+            */
+            var check = foundpId.match(/\d+/)
+            if(_.size(check[0] != _.size(check.input)))
                 debug("øøøø !! %s %s", htmlId, href);
-            else
-                retVal = { postId: foundpId, type: postTypef };
+            else {
+                verbose("function %s success: %s", postType, foundpId);
+                retVal = { postId: foundpId, type: postType };
+            }
         }
     });
     return retVal;
@@ -157,6 +180,7 @@ function getPostBI(snippet) {
         return { 'feedBasicInfo': false };
     }
 
+    verbose("Result: %s, %s", postCore.type, postCore.postId);
     return {
         feedBasicInfo: true, 
         postId: postCore.postId,

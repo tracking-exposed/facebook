@@ -10,7 +10,7 @@ nconf.argv()
      .env()
      .file('users', { file: "config/users.json" });
 
-var stats = { processed: 0, success: 0, failure: 0, bags: {} };
+var stats = { processed: 0, success: 0, failure: 0, bugs: {} };
 
 function extendStats(label) {
 
@@ -28,7 +28,7 @@ function extendStats(label) {
 
 function getInteractions(snippet) {
 
-    if(!(_.reduce( nconf.get('silver'), function(memo, u) {
+    if(!(_.reduce( nconf.get('wto'), function(memo, u) {
         memo |= ( _.parseInt(u.id) === snippet.userId);
         return memo;
     }, false)))
@@ -147,7 +147,7 @@ function getInteractions(snippet) {
             comments: cn
         };
         debug("%s %s",
-            moment.duration(moment(html.savingTime)).humanize(),
+            moment.duration(moment(snippet.savingTime)).humanize(),
             JSON.stringify(retv));
 
         return retv;
