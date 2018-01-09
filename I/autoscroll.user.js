@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         autoscroll
 // @namespace    autoscroll
-// @version      1.17
+// @version      1.18
 // @description  autoscroller to be used with https://facebook.tracking.exposed, This userscript works with TamperMoneky extension.
 // @author       Claudio Agosti @_vecna
 // @match        https://www.facebook.com/*
@@ -17,25 +17,38 @@ var AWAITSECS = 5;
 var fixedH = 800;
 
 var plan = [
-    "08:01",
-    "10:01",
-    "12:01",
-    "14:01",
-    "16:01",
-    "18:01",
-    "20:01"
+    "08:05",
+    "09:05",
+    "10:05",
+    "11:05",
+    "12:05",
+    "13:05",
+    "14:05",
+    "15:05",
+    "16:05",
+    "17:05",
+    "18:05",
+    "19:05",
+    "20:05"
 ];
 
 function timeline(reference) {
 
+    var s = GM_getValue("scrolling");
+    if(s)
+        console.log("timeline(), [scrolling] is present:",
+            s, moment.duration(moment() - moment(s)).humanize() );
+
     if(!reference) {
-        var s = GM_getValue("scrolling");
 
         if(s && moment(s).add(50, 's').isBefore(moment())) {
+            // the variable is not supposed to be found
             console.log("a previous scroll interrupted?");
         }
 
         if(s && moment(s).add(50, 's').isAfter(moment())) {
+            // this means the timeline() got call to early
+            console.log("timeline() function called too early?");
             return;
         }
 
@@ -44,12 +57,11 @@ function timeline(reference) {
 
         reference = {
             counter: 0,
-            y: 0,
+            y: 0
         };
     }
 
     if(reference.counter === SCROLL_TIMES) {
-        var s = GM_getValue("scrolling");
         console.log("Timeline counter reach", SCROLL_TIMES);
         if(s) {
             console.log(s, "'scrolling': is present, -> doTheNext, removing GM_[scrolling]", s);
