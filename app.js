@@ -215,6 +215,13 @@ app.get('/api/v1/selector', function(req, res) {
     return dispatchPromise('getSelector', req, res);
 });
 
+/* reducer(s) */
+app.get('/api/v1/reducer/:reducerId/:authkey/:start/:end', function(req, res) {
+    var rid = _.parseInt(req.params.reducerId);
+    if(rid && rid < 10)
+        return dispatchPromise('reducer' + rid, req, res);
+});
+
 /* static files, independent by the API versioning */
 app.get('/favicon.ico', function(req, res) {
     res.sendFile(__dirname + '/dist/favicon.ico');

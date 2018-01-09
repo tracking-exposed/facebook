@@ -1,6 +1,8 @@
-dist/*
 config/settings.json
 config/users.json
+config/italy-2018.json
+
+dist/**
 node_modules/*
 parsers/*.json
 extension/yarn.lock
