@@ -200,16 +200,6 @@ app.get('/impact', function(req, res) {
     return dispatchPromise('getImpact', req, res);
 });
 
-/* first class line jumper */
-app.get('/api/v1/manualboarding', function(req, res) {
-    return dispatchPromise('manualBoarding', req, res);
-});
-
-/* hyperlink extraction */
-app.get('/api/v1/opendata/href/:campaign?/:max?', function(req, res) {
-    return dispatchPromise('openDataHref', req, res);
-});
-
 /* selector experiment */
 app.get('/api/v1/selector', function(req, res) {
     return dispatchPromise('getSelector', req, res);
