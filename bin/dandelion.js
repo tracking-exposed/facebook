@@ -59,8 +59,10 @@ function recordTokenUsage(token, unitsLStr) {
 
     var ul = _.parseInt(unitsLStr)
 
-    if(_.isNaN(ul))
+    if(!ul) {
         debug("Error with the last session: units not consumed?");
+        return;
+    }
 
     var e = _.find(tokenTrackers, { token: token });
     e.unitsLeft = ul;
