@@ -34,12 +34,54 @@ function saveJSON(content) {
     return mongo.save("entities", content);
 }
 
+var tokenTrackers = _.map(nconf.get("dandelion"), function(token) {
+    return {
+        unitsLeft: 1000,
+        token: token
+    };
+});
+
+function getToken() {
+
+    var token = _.find(tokenTrackers, function(o) {
+        return o.unitsLeft > 10;
+    }).token;
+
+    if(_.isUndefined(token)) {
+        console.log("Error, token exhausted %j", tokenTrackers);
+        process.exit(0);
+    }
+    debug("token status: %j", _.map(tokenTrackers, 'unitsLeft'), token);
+    return token;
+};
+
+function recordTokenUsage(token, unitsLStr) {
+
+    var ul = _.parseInt(unitsLStr)
+
+    if(_.isNaN(ul))
+        debug("Error with the last session: units not consumed?");
+
+    var e = _.find(tokenTrackers, { token: token });
+    e.unitsLeft = ul;
+    tokenTrackers = _.orderBy(tokenTrackers, 'unitsLeft', 'desc');
+
+/*
+            if(_.parseInt(response.headers['x-dl-units-left']) < 2) {
+                console.log("Units terminated, key", nconf.get('key'));
+                process.exit(0);
+            }
+*/
+}
+
+
 function dandelion(partialo) {
     var begin = moment();
+    var token = getToken();
     return request.postAsync(
         "https://api.dandelion.eu/datatxt/nex/v1/",
         { form: {
-            token: nconf.get("dandelion"),
+            token: token,
             url: partialo.original
         } }
         ).then(function (response, body) {
@@ -49,10 +91,8 @@ function dandelion(partialo) {
                     moment(partialo.publicationTime).format(),
                     moment.duration(moment() - moment(partialo.publicationTime)).humanize(),
                     response.headers['x-dl-units-left']);
-            if(_.parseInt(response.headers['x-dl-units-left']) < 2) {
-                console.log("Units terminated!");
-                process.exit(0);
-            }
+
+            recordTokenUsage(token, response.headers['x-dl-units-left']);
             return _.extend(partialo, JSON.parse(response.body));
         })
         .catch(function(error) {
@@ -77,8 +117,10 @@ debug("API endpoint %s", SERVER_API_URL);
 var bigbang = moment();
 return various
     .loadJSONurl(SERVER_API_URL)
-    .tap(function(urls) {
-        debug("retrieved %d urls", _.size(urls));
+    .then(function(ret) {
+        var urls = ret.results;
+        debug("retrieved %d urls %s", _.size(urls), ret.queryInfo.times);
+        return urls;
     })
     .map(composeNEX, { concurrency: 1 })
     .then(_.compact)
