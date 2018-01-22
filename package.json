@@ -27,7 +27,7 @@
     "docco": "^0.7.0",
     "express": "^4.14.0",
     "food-words": "^1.1.0",
-    "jquery": "^1.9.1",
+    "jquery": "^3.0.0",
     "lodash": "^4.13.1",
     "moment": "^2.14.1",
     "mongodb": "^2.1.8",
