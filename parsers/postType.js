@@ -72,7 +72,6 @@ function getPostType(snippet) {
         retO.postType = true;
         stats.feed += 1;
     } else if($('[href="/ads/about"]')) {
-        var hasL  = hasLike($);
         retO.type = 'promoted';
         retO.postType = true;
         stats.promoted += 1;
