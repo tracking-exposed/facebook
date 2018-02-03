@@ -5,10 +5,10 @@ var moment = require('moment');
 var debug = require('debug')('parser:postType');
 var parse = require('./lib/parse');
 
+/*
 function hasLike($) {
     var mayLike = $(".UFILikeLink");
-    /* a number of entry for each like button present */
-    // debug("Likes spot %d", mayLike.length);
+    // a number of entry for each like button present
     return (mayLike.length > 0 )
 };
 
@@ -58,23 +58,21 @@ function promotedCheck($) {
         return memo;
     }, false);
 };
+*/
 
-var stats = { 'forced': 0, 'promoted': 0, 'feed': 0, 'error': 0};
+var stats = { 'feed': 0, 'promoted': 0, 'error': 0 };
 
 function getPostType(snippet) {
 
     var $ = cheerio.load(snippet.html);
     var retO = {};
 
-    if(!hasLike($)) {
-        retO.type = 'forced';
-        retO.postType = true;
-        stats.forced += 1;
-    } else if($(".timestampContent").length > 0) {
+    if($(".timestampContent").length > 0) {
         retO.type = 'feed';
         retO.postType = true;
         stats.feed += 1;
-    } else if(promotedCheck($)) {
+    } else if($('[href="/ads/about"]')) {
+        var hasL  = hasLike($);
         retO.type = 'promoted';
         retO.postType = true;
         stats.promoted += 1;
@@ -83,10 +81,9 @@ function getPostType(snippet) {
         stats.error += 1;
     }
 
-    debug("F %d P %d + %d ? %d ・ %s %s",
-        stats.feed, stats.promoted,
-        stats.forced, stats.error,
-        snippet.id, retO.type);
+    debug("%s %s [f %d p %d error %d]",
+        snippet.id, retO.type, stats.feed,
+        stats.promoted, stats.error);
 
     return retO;
 };
