@@ -147,7 +147,7 @@ function getInteractions(snippet) {
             comments: cn
         };
         debug("%s %s",
-            moment.duration(moment(snippet.savingTime)).humanize(),
+            moment.duration(moment() - moment(snippet.savingTime)).humanize(),
             JSON.stringify(retv));
 
         return retv;
