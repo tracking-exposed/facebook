@@ -86,10 +86,10 @@ function processTheDay(direction, i) {
                     var publicationMoment = moment( ( html.publicationUTime - timeZone ) * 1000);
                     var produced = {
                         impressionOrder: impression.impressionOrder,
-                        impressionTime: impression.impressionTime,
+                        impressionTime: new Date(impression.impressionTime),
                         profileName: _.find(direction.users, { id: _.toString(html.userId) }).name,
                         profileAlign: TRANSLATE[_.find(direction.users, { id: _.toString(html.userId) }).orientamento],
-                        publicationTime: publicationMoment.toISOString(),
+                        publicationTime: new Date(publicationMoment.toISOString()),
                         visualizationDiff: moment
                             .duration(moment(impression.impressionTime) - publicationMoment).asSeconds(),
                         postId: html.postId,
@@ -99,6 +99,8 @@ function processTheDay(direction, i) {
                         timelineId: html.timelineId,
                         permaLink: html.permaLink,
                         rtotal: html.rtotal,
+                        comments: html.comments,
+                        shares: html.shares,
                         id: html.id,
                         by: "fbtrex"
                     };
