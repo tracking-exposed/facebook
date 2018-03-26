@@ -32,6 +32,7 @@ var TRANSLATE = {
 var destCollection = nconf.get('dest');
 var campaignPath = nconf.get('campaignPath');
 var tagId = nconf.get('tagId');
+var beginSince = nconf.get('beginSince');
 
 var FORCEWRITE = !_.isUndefined(nconf.get('FORCEWRITE'));
 FORCEWRITE ? debug("Overwrite ON") : debug("FORCEWRITE disable");
@@ -44,17 +45,17 @@ function getTimelineCount(filter) {
         mongo.distinct(nconf.get('schema').timelines, 'userId', filter)
     ])
     .then(function(mixed) {
-        var begin = moment(mixed[1][0].startTime);
+        var begin = beginSince ? moment(beginSince) : moment(mixed[1][0].startTime);
         var end = moment(mixed[2][0].startTime);
         var duration = moment.duration(end - begin);
         var info = {
             count: mixed[0],
-            first: mixed[1][0].startTime,
+            first: begin.format(),
             last: mixed[2][0].startTime,
             days: _.round(duration.asDays()) + 1,
             userList: mixed[3]
         };
-        debug("Counting timelines by %j: %d entries, first %s, last %s %d days (%s)",
+        debug("Counting timelines by %j: %d entries. Using as first date %s, last %s %d days (%s)",
                 filter, info.count, info.first, info.last, info.days, duration.humanize());
         return info;
     });
