@@ -25,7 +25,8 @@ var TRANSLATE = {
     'Fascistoidi': 'far-right',
     'Sinistra': 'left',
     'Centro Sinistra': 'center-left',
-    'non orientato': 'undecided'
+    'non orientato': 'undecided',
+    'M5S': 'M5S'
 };
 
 /* loading input options */
@@ -33,6 +34,7 @@ var destCollection = nconf.get('dest');
 var campaignPath = nconf.get('campaignPath');
 var tagId = nconf.get('tagId');
 var beginSince = nconf.get('beginSince');
+var timeZone = _.parseInt(nconf.get('TZ'));
 
 var FORCEWRITE = !_.isUndefined(nconf.get('FORCEWRITE'));
 FORCEWRITE ? debug("Overwrite ON") : debug("FORCEWRITE disable");
@@ -81,15 +83,15 @@ function processTheDay(direction, i) {
                     if(!html.permaLink || !html.publicationUTime)
                         return null;
 
+                    var publicationMoment = moment( ( html.publicationUTime - timeZone ) * 1000);
                     var produced = {
                         impressionOrder: impression.impressionOrder,
                         impressionTime: impression.impressionTime,
                         profileName: _.find(direction.users, { id: _.toString(html.userId) }).name,
                         profileAlign: TRANSLATE[_.find(direction.users, { id: _.toString(html.userId) }).orientamento],
-                        publicationTime: moment(html.publicationUTime * 1000).toISOString(),
-                        visualizationDiff: moment.duration(
-                            moment(impression.impressionTime) - moment(html.publicationUTime * 1000)
-                        ).asSeconds(),
+                        publicationTime: publicationMoment.toISOString(),
+                        visualizationDiff: moment
+                            .duration(moment(impression.impressionTime) - publicationMoment).asSeconds(),
                         postId: html.postId,
                         utype: html.hrefType,
                         displayName: html.source,
@@ -168,11 +170,12 @@ function processTheDay(direction, i) {
 };
 
 
-if(!destCollection || !campaignPath || !tagId) {
+if(!destCollection || !campaignPath || !tagId || !timeZone) {
     debug("Mandatory option miss:");
     console.log("dest\t\t\tmongodb dest collection");
     console.log("tagId\t\t\tcontrol group");
     console.log("campaignPath\t\t/home/storyteller/invi.sible.link/campaign/$name");
+    console.log("TZ\t\t\tnumber of seconds to be -subtract from publicationUTime (GMT)");
     process.exit(1);
 }
 
