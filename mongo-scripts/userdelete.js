@@ -6,7 +6,7 @@ var mongodb = Promise.promisifyAll(require('mongodb'));
 var debug = require('debug')('userdelete');
 var nconf = require('nconf');
 
-var mongo = require('./lib/mongo');
+var mongo = require('../lib/mongo');
 
 var cfgFile = "config/settings.json";
 
