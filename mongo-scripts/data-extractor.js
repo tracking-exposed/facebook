@@ -26,8 +26,8 @@ var cfgFile = "config/settings.json";
 nconf.argv().env().file({ file: cfgFile });
 
 
-if(!(nconf.get("STARTDAY") || nconf.get("ENDDAY") || nconf.get("TIMEF") || nconf.get("HTMLF"))) {
-    console.log("STARTDAY, ENDDAY, TIMEF (timeline), HTMLF, [pattern]");
+if(!(nconf.get("STARTDAY") || nconf.get("ENDDAY") || nconf.get("TIMEF") || nconf.get("HTMLF") || nconf.get('o') )) {
+    console.log("STARTDAY, ENDDAY, TIMEF (timeline), HTMLF, o {JSON outfile} [pattern]");
     process.exit(1);
 }
 
@@ -37,7 +37,7 @@ var timeFilter = {
 }
 
 var timediff = moment.duration(timeFilter.end - timeFilter.start);
-var destFile = "extracted-" + timediff.humanize() + ".json";
+var destFile = nconf.get('o');
 
 var timef = nconf.get('TIMEF') || '{}';
 timef = JSON.parse(timef);
@@ -159,6 +159,6 @@ return beginQuery()
     /* concurrency has to be 1 because there is an hack-on-filesystem */
     .tap(function() {
         return appendPromise(destFile, "]");
-        debug("Complete! output in %s", destFile);
+        debug("Complete! output in %s, REMIND TO DELETE LAST COMMA", destFile);
     });
 
