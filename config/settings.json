@@ -12,7 +12,6 @@
       "entities": "entitites"
   },
   "mongodb": "mongodb://localhost/facebook",
-  "password": "yours",
   "port": 8000,
   "interface": "127.0.0.1",
   "htmlMaxAmount": 1000,

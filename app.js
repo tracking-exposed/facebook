@@ -28,7 +28,7 @@ nconf.argv()
 console.log(redOn + "ઉ nconf loaded, using " + cfgFile + redOff);
 
 if(!nconf.get('interface') || !nconf.get('port') )
-    throw new Error("Rename config/settings.example to config/settins.json, and read the content");
+    throw new Error("check your config/settings.json, config of 'interface' and 'post' missing");
 
 var returnHTTPError = function(req, res, funcName, where) {
     debug("%s HTTP error 500 %s [%s]", req.randomUnicode, funcName, where);
