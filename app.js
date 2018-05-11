@@ -200,10 +200,15 @@ app.get('/impact', function(req, res) {
     return dispatchPromise('getImpact', req, res);
 });
 
-/* selector experiment */
+/* via POST the user gived publicKey and fbtrex returns selector + access token */
+app.post('/api/v1/userInfo', function(req, res) {
+    return dispatchPromise('userInfo', req, res);
+});
+/* selector experiment, should be discontinued */
 app.get('/api/v1/selector', function(req, res) {
     return dispatchPromise('getSelector', req, res);
 });
+
 
 /* reducer(s) */
 app.get('/api/v1/reducer/:reducerId/:authkey/:start/:end', function(req, res) {
@@ -239,6 +244,10 @@ app.use('/autoscroll.user.js', express.static(__dirname + '/I/autoscroll.user.js
 
 /* special pages: the parameters are acquired by JS client side */
 app.get('/realitycheck/:userId/:detail', function(req, res) {
+    req.params.page = 'realitycheck';
+    return dispatchPromise('getPage', req, res);
+});
+app.get('/personal/:userId/:detail', function(req, res) {
     req.params.page = 'realitycheck';
     return dispatchPromise('getPage', req, res);
 });
