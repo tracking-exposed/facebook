@@ -1,4 +1,4 @@
-#!/usr/bin/env nodejs
+#!/usr/bin/env node
 /* this is a script intended to extract section of the dataset
  * to feed analysis tool like tableau.
  *

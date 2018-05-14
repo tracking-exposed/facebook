@@ -1,4 +1,4 @@
-#!/usr/bin/env nodejs
+#!/usr/bin/env node
 /*
  * this script pick the information from the database and create a JSON file, which
  * and represent the official opendata extraction tool.
