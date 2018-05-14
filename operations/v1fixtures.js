@@ -1,4 +1,4 @@
-#!/usr/bin/env nodejs
+#!/usr/bin/env node
 var _ = require('lodash');
 var Promise = require('bluebird');
 var util = require('util');
