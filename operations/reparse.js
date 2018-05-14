@@ -1,4 +1,4 @@
-#!/usr/bin/env nodejs
+#!/usr/bin/env node
 
 var fbParserCode = require('../userscript/fb-parser');
 var _ = require('lodash');
