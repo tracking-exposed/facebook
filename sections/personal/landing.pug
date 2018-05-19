@@ -29,32 +29,39 @@ html
 
   body(onload="initialize();")
 
-    include ../header
-    include ../navbar
-    
-    div.container-fluid.realitycontainer.headerborders
-      span.col-md-5.right.text-info
-        b Here are some of the data! 
-        |  We want aggregate a community capable of doing less than a glimpse of the analysis Facebook can do: in humanistic, journalistic, algorithmic, and political fields. Making this ability mainstream is the first awareness.
+    include header
 
-      span.col-md-1
-      span.col-md-6 Our visualization sucks, right? We are unfunded and with a small set of volunteers. If you find a smart way to display how Facebook algorithm distorts the perceived reality, get in touch.
-        br
-        b Art? Comics? Graph? Papers?
-        |  We're open with anything who can make accessible this topic to a larger audience than our bubble.
     div.container
-        nav#thenavbar(role="navigation")
-            ul.nav.nav-pills
-                li.presentation
-                    a.switch#diet Information diet
-                li.presentation
-                    a.switch#data Raw data
-                li.presentation
-                    a.switch#csv CSV
-                li.presentation
-                    a.switch#knowmore Know more
-            // li
-              // a.switch#publications Publications
+      div.navbar-header
+        button.navbar-toggle.collapsed(type="button" data-toggle="collapse" data-target="#thenavbar" aria-expanded="false")
+          span(id="sr-only") Toggle navigation
+          span.icon-bar
+          span.icon-bar
+          span.icon-bar
+
+      div.collapse.navbar-collapse(id="thenavbar")
+        ul.nav.navbar-nav.navbar-left
+          li.presentation
+            a.switch#landing
+              span.glyphicon.glyphicon-picture
+          li.presentation
+            a.switch#data
+              span.glyphicon.glyphicon-user
+              |  Your data
+          li.presentation
+            a.switch#diet
+              span.glyphicon.glyphicon-grain
+              |  Information diet
+          li.presentation
+            a.switch#csv 
+              span.glyphicon.glyphicon-cog
+              |  Accesses and Reuse 
+        ul.nav.navbar-nav.navbar-right.black
+          li.presentation
+            a.switch#knowmore Know more
+          li
+            a(href='/')
+              span.glyphicon.glyphicon-home
 
     .container-fluid
       .loader-container
@@ -64,10 +71,14 @@ html
     .container-fluid
       .pageSection#dietSection.hidden
         p.text
-          b What feeds you during your navigation? 
-          | Maybe you think your 500 fiends are 500 diverse observation points of the world. 
-          b Don't give it for granted
-          |, Facebook algorithm play in the middle. In your case, we recorder in the last 7 days 
+          b What 
+            i feeds 
+            | you during the many Facebook access? 
+          | We think our fiends, and pages, are our multiple intermediary to see the world. They are, but 
+          b That's not under your control
+          |! Facebook algorithm plays in the middle, change constanly, and it is known is used to control how social interactions should happen in the platform.
+
+        p.text
           span#dietSourcesNumber
           |  different sources,
           b  display below

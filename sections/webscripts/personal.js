@@ -1,5 +1,5 @@
 /*
- * This file contain the code executed in /realitycheck/$userId/$sectionType
+ * This file contain the code executed in /personal/$userToken/$sectionType
  */
 
 var pageMap = {
@@ -13,10 +13,10 @@ var pageMap = {
 function getURLinfo() {
     var pathblock = window.location.pathname.split('/');
     var pageName = pathblock.pop();
-    var userId = _.parseInt(pathblock.pop());
-    console.log("getURLinfo → userId", userId, "pageName", pageName);
+    var userToken = pathblock.pop();
+    console.log("getURLinfo →  token", userToken, "pageName", pageName);
     return {
-        userId: userId,
+        userToken: userToken,
         pageName: pageName
     };
 };
@@ -70,7 +70,7 @@ function initialize() {
     $(".switch").click(switchpage);
     $('li #' + pinfo.pageName).addClass('active');
 
-    var basicApi = "/api/v1/htmls/" + pinfo.userId + "/days/" + 5;
+    var basicApi = "/api/v1/htmls/" + pinfo.userToken + "/days/" + 5;
     console.log("Loading first batch of data from", basicApi);
 
     return $.getJSON(basicApi, function(data) {
@@ -152,7 +152,7 @@ function initialize() {
         });
 
         /* initialize Raw data section */
-        loadHTMLs(pinfo.userId, '#contributionBlock', _.reverse(firstBatch), 0);
+        loadHTMLs(pinfo.userToken, '#contributionBlock', _.reverse(firstBatch), 0);
 
         /* initialize CSV section */
         /* initialize knowmore section */
@@ -166,19 +166,19 @@ function initialize() {
 
 function loadNextHTMLs(containerId) {
     var pinfo = getURLinfo();
-    var url = "/api/v1/htmls/" + pinfo.userId + '/n/' 
+    var url = "/api/v1/htmls/" + pinfo.userToken + '/n/' 
         + _.size(firstBatch) + '/' + nextBatch;
 
     $.getJSON(url, function(collection) {
         var start = _.size(firstBatch);
 
-        loadHTMLs(pinfo.userId, containerId, collection, start);
+        loadHTMLs(pinfo.userToken, containerId, collection, start);
         firstBatch = _.concat(firstBatch, collection);
         console.log("completed loadNextHTMLs", _.size(collection));
     });
 };
 
-function loadHTMLs(userId, containerId, collection, cnt) {
+function loadHTMLs(userToken, containerId, collection, cnt) {
     
     _.each(_.reverse(collection), function(entry, i) {
         var prettyHtml = '<a href="/revision/' + entry.id + '" target="_blank">🔗 original </a>';
@@ -253,7 +253,7 @@ function unprocessedFormat(entry) {
 
 function downloadCSV(type) {
     var pinfo = getURLinfo();
-    var url = "/api/v1/personal/csv/" + pinfo.userId + "/" + type;
+    var url = "/api/v1/personal/csv/" + pinfo.userToken + "/" + type;
     console.log(url);
     window.open(url);
 };
