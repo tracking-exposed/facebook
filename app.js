@@ -167,13 +167,13 @@ app.get('/api/v:version/html/:htmlId', function(req, res) {
 });
 
 /* APIs used in RealityCheck */
-app.get('/api/v:version/htmls/:userId/days/:days', function(req, res) {
+app.get('/api/v:version/htmls/:userToken/days/:days', function(req, res) {
     return dispatchPromise('metadataByTime', req, res);
 });
-app.get('/api/v:version/htmls/:userId/n/:skip/:amount', function(req, res) {
+app.get('/api/v:version/htmls/:userToken/n/:skip/:amount', function(req, res) {
     return dispatchPromise('metadataByAmount', req, res);
 });
-app.get('/api/v:version/personal/csv/:userId/:kind', function(req, res) {
+app.get('/api/v:version/personal/csv/:userToken/:kind', function(req, res) {
     return dispatchPromise('personalCSV', req, res);
 });
 
@@ -242,11 +242,14 @@ app.use('/images', express.static(__dirname + '/dist/images'));
 app.use('/fonts', express.static(__dirname + '/dist/fonts'));
 app.use('/autoscroll.user.js', express.static(__dirname + '/I/autoscroll.user.js'));
 
-/* special pages: the parameters are acquired by JS client side */
-app.get('/realitycheck/:userId/:detail', function(req, res) {
+/* legacy for realitycheck */
+app.get('/realitycheck/:userId?/:detail?', function(req, res) {
     req.params.page = 'realitycheck';
     return dispatchPromise('getPage', req, res);
 });
+
+
+/* special pages: the parameters are acquired by JS client side */
 app.get('/personal/:userId/:detail', function(req, res) {
     req.params.page = 'realitycheck';
     return dispatchPromise('getPage', req, res);
