@@ -61,7 +61,7 @@ function dispatchPromise(name, req, res) {
     var func = _.get(escviAPI.implementations, name, null);
 
     if(_.isNull(func))
-        return returnHTTPError(req, res, name, "Not a function request");
+        return returnHTTPError(req, res, name, "function not found?");
 
     /* in theory here we can keep track of time */
     return new Promise.resolve(func(req))
@@ -209,6 +209,19 @@ app.get('/api/v1/selector', function(req, res) {
     return dispatchPromise('getSelector', req, res);
 });
 
+/* researcher interfaces */
+app.get('/api/v1/distinct/:authkey', function(req, res) {
+    return dispatchPromise('distinct', req, res);
+});
+app.get('/api/v1/research/stats/:requestList', function(req, res) {
+    return dispatchPromise('rstats', req, res);
+});
+app.get('/api/v1/research/data/:requestList', function(req, res) {
+    return dispatchPromise('rdata', req, res);
+});
+app.get('/researcher/:requestList?', function(req, res) {
+    return dispatchPromise('researcher', req, res);
+});
 
 /* reducer(s) */
 app.get('/api/v1/reducer/:reducerId/:authkey/:start/:end', function(req, res) {

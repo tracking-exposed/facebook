@@ -16,5 +16,6 @@
   "interface": "127.0.0.1",
   "htmlMaxAmount": 1000,
   "NOPERFORMA": true,
-  "dandelion": "optional if you are using dandelion"
+  "dandelion": "optional if you are using dandelion",
+  "password": "FbTREXadmin:youSHOULDnotUSEthis"
 }
