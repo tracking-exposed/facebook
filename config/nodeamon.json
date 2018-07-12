@@ -12,7 +12,7 @@
   "verbose": true,
   "exitcrash": false,
   "env": {
-    "DEBUG": "fbtrex,lib:*,-lib:mongo:read"
+    "DEBUG": "lib:*,-lib:mongo:read"
   },
   "ext": "js css pug"
 }
