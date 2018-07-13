@@ -166,7 +166,7 @@ app.get('/api/v:version/html/:htmlId', function(req, res) {
     return dispatchPromise('unitById', req, res);
 });
 
-/* APIs used in RealityCheck */
+/* APIs used in personal page */
 app.get('/api/v:version/htmls/:userToken/days/:days', function(req, res) {
     return dispatchPromise('metadataByTime', req, res);
 });
@@ -175,6 +175,9 @@ app.get('/api/v:version/htmls/:userToken/n/:skip/:amount', function(req, res) {
 });
 app.get('/api/v:version/personal/csv/:userToken/:kind', function(req, res) {
     return dispatchPromise('personalCSV', req, res);
+});
+app.get('/api/v:version/personal/diet/:userToken/:days', function(req, res) {
+    return dispatchPromise('dietBasic', req, res);
 });
 
 /* Alarm listing  API */
@@ -269,7 +272,7 @@ app.get('/realitycheck/:userId?/:detail?', function(req, res) {
 
 /* special pages: the parameters are acquired by JS client side */
 app.get('/personal/:userId/:detail', function(req, res) {
-    req.params.page = 'realitycheck';
+    req.params.page = 'personal';
     return dispatchPromise('getPage', req, res);
 });
 app.get('/revision/:htmlId', function(req, res) {
