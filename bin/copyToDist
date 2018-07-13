@@ -8,10 +8,11 @@ mkdir -p dist/js/local
 mkdir -p dist/images 
 mkdir -p $V 
 
-echo -e "User-agent: *\nAllow: /\n" >> dist/robots.txt
+echo "User-agent: *\nAllow: /\n" >> dist/robots.txt
 
 node_modules/.bin/stylus styles/index.styl -o dist/css
 node_modules/.bin/stylus styles/pages.styl -o dist/css
+node_modules/.bin/stylus styles/personal.styl -o dist/css
 
 cp styles/favicon.ico dist/
 cp -r sections/images/* dist/images

@@ -2,8 +2,9 @@ doctype html
 html
   head
     link(rel='stylesheet', type='text/css', href='/css/bootstrap.css')
-    link(rel='stylesheet', type='text/css', href='/js/local/personal.css')
     link(rel='stylesheet', href='/css/index.css')
+    link(rel='stylesheet', href='/css/personal.css')
+
     script(type='text/javascript', src='/js/jquery.js')
     script(type='text/javascript', src='/js/collapse.js')
     script(type='text/javascript', src='/js/bootstrap.min.js')
@@ -13,6 +14,7 @@ html
     script(type='text/javascript', src='/js/moment.min.js')
 
     script(type='text/javascript', charset='utf8', src='/js/local/personal.js')
+
     meta(charset="utf-8")
     meta(http-equiv="X-UA-Compatible" content="IE=edge")
     meta(name="viewport" content="width=device-width, initial-scale=1")
@@ -42,54 +44,66 @@ html
       div.collapse.navbar-collapse(id="thenavbar")
         ul.nav.navbar-nav.navbar-left
           li.presentation
-            a.switch#landing
+            a.switch#landing.click
               span.glyphicon.glyphicon-picture
           li.presentation
-            a.switch#data
+            a.switch#data.click
               span.glyphicon.glyphicon-user
               |  Your data
           li.presentation
-            a.switch#diet
+            a.switch#diet.click
               span.glyphicon.glyphicon-grain
               |  Information diet
           li.presentation
-            a.switch#csv 
+            a.switch#csv.click
               span.glyphicon.glyphicon-cog
-              |  Accesses and Reuse 
+              |  Export and reuse
         ul.nav.navbar-nav.navbar-right.black
           li.presentation
-            a.switch#knowmore Know more
+            a.switch#knowmore.click Know more
           li
-            a(href='/')
+            a(href='/' alt='return to project homepage')
               span.glyphicon.glyphicon-home
+              | 
+              span.glyphicon.glyphicon-log-out
 
     .container-fluid
-      .loader-container
+      #loader
         h3 Loading…
         img(class="logo-background" src="/images/fbtrex_logo.svg")
 
-    .container-fluid
+    .container-fluid.whitebehind
       .pageSection#dietSection.hidden
-        p.text
-          b What 
-            i feeds 
-            | you during the many Facebook access? 
-          | We think our fiends, and pages, are our multiple intermediary to see the world. They are, but 
-          b That's not under your control
-          |! Facebook algorithm plays in the middle, change constanly, and it is known is used to control how social interactions should happen in the platform.
 
-        p.text
-          span#dietSourcesNumber
-          |  different sources,
-          b  display below
-          |. Do you think it is a complete 
-          b informative diet
-          |?
-        #dietGraph
+        .container-fluid
+          div.col-sm-4.infoblock.description
+            p How much Facebook insists on you?
+            small this is based on the last 20 days, address "
+                a(id="repetitionInfo") repetition
+                |"
+          div.col-sm-4.infoblock.description
+            p Details
+            small know more on 
+                a(id="metadataInfo") metadata attribution 
+          div.col-sm-4.infoblock.description
+            p Watch Facebook's guesses!
+            small what if, you are only 
+                a(id="candymetaphor") eating candies?
+
+        .container-fluid
+          div.col-sm-4.infoblock
+            div#insist
+          div.col-sm-4.infoblock
+            div#middle-loader.hidden
+                h3 Loading evidence…
+                img(class="logo-background" src="/images/fbtrex_logo.svg")
+            div#details
+          div.col-sm-4.infoblock
+            div#sources
 
     .container-fluid
       .pageSection#dataSection.hidden
-        p This is a list of the data sent to us. If something is missing, probably it is a problem: let us know
+        p These are the data you sent us so far:
         div#contributionBlock
         div#shiftContributionBlock(onclick="loadNextHTMLs('#contributionBlock');")
           b Load Next 100…
