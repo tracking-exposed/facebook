@@ -21,83 +21,76 @@ nconf.argv().env().file({ file: cfgFile });
  *
  * YYYY-MM-DD expected here */
 
-function manageState(state) {
-    var timewindow = 4; // hours
-    var shifts = state.shifts + 1;
-    var startM  = moment(nconf.get('since')).add( timewindow * (shifts -1), 'h');
-    var endM  = moment(nconf.get('since')).add( timewindow * shifts, 'h');
+if(!nconf.get('KEYS') && !nconf.get('since')) {
+    console.log("KEYS format is discrimKey-keytoremove1,keytoremove2");
+    console.log("since is YYYY-MM-DD mandatory");
+    return 0;
+}
+var keys = importKeys(nconf.get('KEYS'));
+var timew = _.parseInt('timew') || 14;
+var since = nconf.get('since');
+var total = 0;
+
+debug("%s using timew shift of %d hours", JSON.stringify(keys, undefined, 2), timew);
+
+var slots = _.times(_.round( moment.duration( moment() - moment(since) ).asHours() / timew ), function(shift) {
+    return 1 + shift;
+});
+
+debug("%d shifts ahead", _.size(slots));
+var start = moment();
+
+return Promise
+    .map(slots, cleanABlock, { concurrency: 1} )
+    .tap(function(completed) {
+        debug("operation complete after %s, %d html updated", moment.duration( moment() - start).humanize(), total );
+    });
+
+
+function cleanABlock(shift) {
+    var startM  = moment(nconf.get('since')).add( timew * (shift -1), 'h');
+    var endM  = moment(nconf.get('since')).add( timew * shift, 'h');
 
     if(nconf.get('until') && moment(nconf.get('until')).isAfter(startM)) {
         debug("until date trigger: %s isAfter %s", nconf.get('until'), startM.format() );
         process.exit();
     }
 
-    return {
+    var state = {
         start: startM.toISOString(),
         end: endM.toISOString(),
-        shifts: shifts,
     };
-};
-
-debug("KEYS format is discrimKey-keytoremove1,keytoremove2");
-var keys = importKeys(nconf.get('KEYS'));
-debug("keys: %j", keys);
-
-/* thanks stackoverflow https://stackoverflow.com/questions/24660096/correct-way-to-write-loops-for-promise */
-var promiseFor = Promise.method(function(condition, action, value) {
-    if (!condition(value)) return value;
-    return action(value).then(promiseFor.bind(null, condition, action));
-});
-
-promiseFor(function(timew) {
-
-    /* if `start` is arrive in the future, its over */
-    return moment(timew.start).isBefore();
-
-},  cleanABlock,
-    manageState({ shifts: 1 })
-).then(function(completed) {
-    debug("operation complete after %d shifts", completed.shifts);
-});
-
-
-function cleanABlock(state) {
-    var discrimK = keys.discrimK;
-    var tbremK = keys.tbremK;
 
     var selector = {
         "savingTime": { "$gt": new Date(state.start), "$lt": new Date(state.end) }
     }
-    _.set(selector, discrimK, { "$exists": true });
+    _.set(selector, keys.discrimK, { "$exists": true });
 
     return mongo
         .read(nconf.get('schema').htmls, selector)
         .map(function(he) {
-            return _.omit(he, tbremK);
+            return _.omit(he, keys.tbremK);
         })
         .then(function(htelems) {
             if(_.size(htelems)) {
-                debug("sample: from %s %s begin with %d fields",
-                    htelems[0].id, htelems[0].savingTime,
+                debug("1st among %d, %s of %s starts with %d fields",
+                    _.size(htelems),
+                    htelems[0].id, moment(htelems[0].savingTime).format("YYYY-MM-DD"),
                     _.size(htelems[0]));
+                total += _.size(htelems);
                 return mongo
-                    .updateMany(nconf.get('schema').htmls, htelems)
-                    .return(state);
-            } else {
-                return manageState(state);
+                    .updateMany(nconf.get('schema').htmls, htelems);
             }
         })
         .catch(function(error) {
-            debug("Error in update, wait 2000ms and redo: %s", error);
-            return Promise
-                .delay(2000)
-                .return(state);
-        })
+            debug("Error in update! %s", error);
+            process.exit();
+        });
 }
 
 /* comma separared string, like: "postType,type" */
 function importKeys(csStr) {
-    debug("Splitting string KEYS [%s] expecting a string with 0 or more commas and 0 or more dash", csStr);
+    debug("Splitting string KEYS [%s]", csStr);
     var f = csStr.split('-');
     var alls = f[1].split(',');
     return {
