@@ -16,9 +16,9 @@ nconf.set("PARSER_PROMOTEDTITLE_VERSION", "201612.03");
 function getPromotedTitle(snippet) {
 
 	var title;
+    var name;
 	var title_type;
 	var found = false;
-	
 	var e_threshold;
 	var e_ptr;
 		
@@ -28,7 +28,6 @@ function getPromotedTitle(snippet) {
     
 	var e_threshold = $('div.userContent');
 	
-	// original missed p title ObjectId("5838f145c8c8b82a4efe1fe4")
 	e_ptr = $(e_threshold).find("p").first();
 	if (e_ptr.text() !== "") {
 		title = e_ptr.text();
@@ -45,15 +44,23 @@ function getPromotedTitle(snippet) {
 		});
 	}
 
+    try {
+        var name = $('a[data-hovercard^="/ajax/hovercard/page"]').text();
+    } catch(error) {
+        name = null;
+    }
+
+
 	if (!found) {
 		errorcount++;
         debug("Err %d post %d [%s] Title NOT FOUND", errorcount, postcount, snippet.id);
         return { "promotedTitle": false };
 	} else {
-		debug("Err %d post %d [%s] Title: %s", errorcount, postcount, snippet.id, title);
+		debug("+[%s] %s ≬ %s (err %d/%d)", snippet.id, name, title, errorcount, postcount);
 	    return { 
             "promotedTitle": true,
             "title": title,
+            "promotedName": name,
             "titleId": utils.hash({'title': title}) 
         };
 	}
