@@ -56,9 +56,8 @@ window.addEventListener('popstate', function(event) {
  * but until that moment: amen */
 
 var firstBatch = null;
-var sources = null;
 var currentlyLoaded = null;
-var nextBatch = 100;
+var nextBatch = 300;
 
 function initialize() {
 
@@ -66,7 +65,7 @@ function initialize() {
 
     var sectionName = _.get(pageMap, pinfo.pageName);
     console.log("loadpage → ", sectionName);
-    var days = 20;
+    var days = 30;
 
     $(".switch").click(switchpage);
     $('li #' + pinfo.pageName).addClass('active');
@@ -78,13 +77,17 @@ function initialize() {
 
         console.log("received `htmls` objects: ", _.size(data));
 
-        /* remind: firstBatch and souces are global */
+        /* remind: firstBatch is global because this is the logic for loadNextHTMLs function */
         firstBatch = data;
 
         /* initialize Raw data section */
         loadHTMLs(pinfo.userToken, '#contributionBlock', _.reverse(firstBatch), 0);
 
         /* initialize CSV section */
+        renderSponsoredGraph(firstBatch, '#sponsoredStats');
+        renderNewsFeed(firstBatch, '#newsFeedStats');
+        $("#objectCount").text(_.size(firstBatch));
+
         /* initialize knowmore section */
         /* initialize publication section */
 
@@ -93,7 +96,8 @@ function initialize() {
         showandhidesections(sectionName, pinfo.pageName);
     });
 
-    /* initialize the two graph in `diet` */
+    /* initialize the two graph in `diet`
+     * this API should evolve with entities & keywords, or merged with the one above */
     var dietURL = '/api/v1/personal/diet/' + pinfo.userToken + '/' + days;
     $.getJSON(dietURL, function(data) {
         var repetitionRanks = '#insist';
@@ -110,6 +114,9 @@ function initialize() {
         var html = "";
         var last = null;
         _.each(_.reverse(_.orderBy(repetition, 'amount')), function(o) {
+
+            if(!o.post)
+                return console.log("error in", o);
 
             if(last !== o.amount) {
                 last = o.amount;
@@ -172,8 +179,8 @@ function initialize() {
                 $('#details > img').removeAttr('width');
                 $('#details > img').removeAttr('alt width');
 
-                $('#details > img').attr('width', refwidth);
-                $('#details').css('cssText', 'width' + refwidth + 'px !important');
+                $('#details > img').css('cssText', 'width: ' + refwidth + 'px !important');
+                $('#details').css('cssText', 'width: ' + refwidth + 'px !important');
 
                 $(".middle-loader").addClass('hidden');
 
@@ -324,6 +331,114 @@ function unprocessedFormat(entry) {
 function downloadCSV(type) {
     var pinfo = getURLinfo();
     var url = "/api/v1/personal/csv/" + pinfo.userToken + "/" + type;
-    console.log(url);
+    console.log("downloadCSV from: ", url);
     window.open(url);
 };
+
+
+/* in both of the function I'm using `content` and not `firstBatch` because we do not 
+ * support yet any kind of update */
+function renderSponsoredGraph(content, targetId) {
+    var graphInfo = {
+        data: {
+            type: 'bar',
+            colors: {
+                evidences: '#f5000f'
+            },
+            keys: {
+                xFormat: '%Y-%m-%d'
+            }
+        }
+    };
+    var g = _.groupBy(content, function(o) {
+        return moment(o.savingTime).format("YYYY-MM-DD");
+    });
+    if(_.size(g) === 1) { /* only one day!?, offer a different graph */
+        var g = _.groupBy(content, function(o) {
+            return moment(o.savingTime).format("YYYY-MM-DD HH:mm");
+        });
+        graphInfo.data.xFormat = '%Y-%m-%d %H:%M';
+    }
+
+    /* this only render columns on quantities, and is pretty lame. we can display more */
+    _.extend(graphInfo.data, {
+        json: _.reduce(g, function(memo, byDay, day) {
+            memo.push({ day: day, evidences: _.size(byDay) });
+            return memo;
+        }, [])
+    });
+
+    if(_.size(content) < 2)
+        curtesyGraph("Sorry! We have too few data, so far, to display this graph. Checks other tabs", targetId);
+    else if(_.size(g) === 1)
+        curtesyGraph("Sorry! We have too few data, so far, to display this graph. Checks other tabs", targetId);
+    else
+        renderC3Graph(graphInfo, targetId);
+};
+
+function renderNewsFeed(content, targetId) {
+    var graphInfo = {
+        data: {
+            type: 'bar',
+            keys: {
+                xFormat: '%Y-%m-%d'
+            }
+        }
+    };
+    var g = _.groupBy(content, function(o) {
+        return moment(o.savingTime).format("YYYY-MM-DD");
+    });
+    if(_.size(g) === 1) { /* only one day!?, offer a different graph */
+        var g = _.groupBy(content, function(o) {
+            return moment(o.savingTime).format("YYYY-MM-DD HH:mm");
+        });
+        graphInfo.data.xFormat = '%Y-%m-%d %H:%M';
+    }
+
+    /* this only render columns on quantities, and is pretty lame. we can display more */
+    _.extend(graphInfo.data, {
+        json: _.reduce(g, function(memo, byDay, day) {
+            memo.push({ day: day, evidences: _.size(byDay) });
+            return memo;
+        }, [])
+    });
+
+    if(_.size(content) < 2)
+        curtesyGraph("Sorry! We have too few data, so far, to display this graph. Checks other tabs", targetId);
+    else if(_.size(g) === 1)
+        curtesyGraph("Sorry! We have too few data, so far, to display this graph. Checks other tabs", targetId);
+    else
+        renderC3Graph(graphInfo, targetId);
+};
+
+function renderC3Graph(graphInfo, targetId) {
+    _.extend(graphInfo, {
+        bindto: targetId,
+        axis: {
+            x: {
+                type: 'timeseries',
+                tick: {
+                    format: '%Y-%m-%d'
+                }
+            },
+            y: {
+                label: 'evidences per day'
+            }
+        },
+    });
+    _.extend(graphInfo.data, {
+        axes: {
+            evidences: 'y'
+        },
+        keys: { 
+            value: [ 'evidences' ],
+            x: 'day',
+        }
+    });
+    c3.generate(graphInfo);
+};
+
+function curtesyGraph(message, containerId) {
+    $(containerId).text(message);
+    $(containerId).addClass('curtesy');
+}
