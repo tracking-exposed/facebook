@@ -1,0 +1,36 @@
+doctype html
+html
+    head
+        link(rel='stylesheet', href='/css/bootstrap.css')
+        link(rel='stylesheet', href='/css/index.css')
+
+        script(type='text/javascript', src='/js/jquery.js')
+        script(type='text/javascript', src='/js/collapse.js')
+        script(type='text/javascript', src='/js/bootstrap.min.js')
+
+        meta(charset="utf-8")
+        meta(http-equiv="X-UA-Compatible" content="IE=edge")
+        meta(name="viewport" content="width=device-width, initial-scale=1")
+        meta(name="keywords" content="facebook tracking exposed")
+        title Ops? you probably have not opt-in yet
+
+    body
+    
+    include header
+    include navbar
+
+    .container-fluid.simpletext
+        h2 This error should appear only if:
+        p.text
+            ul
+                li You click in "Your Data" before opt-in: there are not data collected from you, we shouldn't even make the link appear, but we didn't yet had time to fix that.
+                li Something else went wrong: you opt-in, you click in "Your data", and now you are here, 
+                    b 
+                        i rightfully disapponted
+                    |. Sorry for that, if you feel to help us, describe your issue in 
+                    a(href="https://www.facebook.com/personalizationalgorithm") Community of Tracking-Exposed
+                    |, or in our 
+                    a(href="https://github.com/tracking-exposed/web-extension") github repository
+                    |. Many thanks!
+
+    div.footer
