@@ -269,6 +269,11 @@ app.get('/realitycheck/:userId?/:detail?', function(req, res) {
     return dispatchPromise('getPage', req, res);
 });
 
+/* this if someone click on 'Your Data' before opt-in */
+app.get('/personal/unset/:stuff', function(req, res) {
+    req.params.page = 'unset';
+    return dispatchPromise('getPage', req, res);
+});
 
 /* special pages: the parameters are acquired by JS client side */
 app.get('/personal/:userId/:detail', function(req, res) {
