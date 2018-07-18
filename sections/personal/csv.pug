@@ -24,7 +24,7 @@
 
         div.col-sm-6.container-fluid
             p.text
-                a(class="click" onclick="downloadCSV('promoted')") Download the sponsored posts you got, as CSV
+                a(class="click" onclick="downloadCSV('promoted')") Download the sponsored posts who targeted you (CSV)
                 |.
             div.documentation
                 h4 Sponsored CSV format, has these four columns
@@ -40,7 +40,7 @@
 
         div.col-sm-6.container-fluid
             p.text
-                a(class="click" onclick="downloadCSV('feed')") Download the newsfeed copy as CSV
+                a(class="click" onclick="downloadCSV('feed')") Download copy of the newsfeed (CSV)
                 |.
             div.documentation
                 h4 CSV format specifics. In the csv you'll find these seven columns
@@ -54,11 +54,15 @@
                     li reason: special optional header facebook put on top (it could explain why a post is appearing in your timeline)
 
         div.col-sm-6.container-fluid
-            h2 You want to manage a research group?
+            h2 Want to manage a comparative research?
             p.text You might have notice, in the web-extension you can mark your submission as part of a
                 i control group
-                |. That marker permit to a researcher to retrieve all the data of the users with the same marker. Our suggestion is to use this marker as a password not easy to be guessed, which you can share among a group of friends which paricipate to the collection, and then you can download all the data marked with the same control group with this interface:
+                |. That marker permit to a researcher to download in JSON 
+                b all the data of the users with the same marker
+                |. Our suggestion is to use this marker not easy to be guessed (let's say, 
+                span.ours ctrlGroupName_0fh3s034hp
+                |), which you can share among the partecipants in the collection. When they want, they can retrieve their data with:
             div.api
-                h2 https://facebook.tracking.exposed/blah
-
-
+                h4 https://facebook.tracking.exposed/researcher/l:
+                    span.ours
+                        ctrlGroupName_0fh3s034hp

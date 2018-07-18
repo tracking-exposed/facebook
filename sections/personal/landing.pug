@@ -19,15 +19,15 @@ html
     meta(http-equiv="X-UA-Compatible" content="IE=edge")
     meta(name="viewport" content="width=device-width, initial-scale=1")
     meta(name="keywords" content="facebook tracking exposed")
-    meta(property="og:title" content="RealityCheck - facebook.tracking.exposed")
+    meta(property="og:title" content="Your information diet - facebook.tracking.exposed")
     meta(property="og:type" content="website")
-    meta(property="og:description" content="This is the personal page where users can see their information diet, download CSV, know more about the project")
+    meta(property="og:description" content="This page is mean to be shared only to people you trust, is the personal page where users can see their information diet, download CSV, know more about the project")
     meta(property="og:url" content="https://facebook.tracking.exposed")
     meta(property="og:image" content="https://facebook.tracking.exposed/images/fbtrex_logo-400x400.png")
     meta(property="og:image:width" content="400")
     meta(property="og:image:height" content="400")
 
-    title facebook.tracking.exposed RealityCheck 
+    title FbTREX, Information diet - facebook.tracking.exposed 
 
   body(onload="initialize();")
 
@@ -43,9 +43,6 @@ html
 
       div.collapse.navbar-collapse(id="thenavbar")
         ul.nav.navbar-nav.navbar-left
-          li.presentation
-            a.switch#landing.click
-              span.glyphicon.glyphicon-picture
           li.presentation
             a.switch#data.click
               span.glyphicon.glyphicon-user
@@ -86,9 +83,14 @@ html
             small know more on 
                 a(id="metadataInfo") metadata attribution 
           div.col-sm-4.infoblock.description
-            p Watch Facebook's guesses!
-            small what if, you are only 
-                a(id="candymetaphor") eating candies?
+            p Facebook guess what you like?
+            small Do you agree with their prioritisation? 
+                a(id="candymetaphor") what if...
+
+        .container-fluid
+          include repetitionInfo
+          include metadataInfo
+          include candymetaphor
 
         .container-fluid
           div.col-sm-4.infoblock
