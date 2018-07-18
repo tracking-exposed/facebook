@@ -70,6 +70,8 @@ function initialize() {
     $(".switch").click(switchpage);
     $('li #' + pinfo.pageName).addClass('active');
 
+    initializeTriggers(); /* the few link which hide/show some helper */
+
     var basicApi = "/api/v1/htmls/" + pinfo.userToken + "/days/" + days;
     console.log("Loading first batch of data from", basicApi);
 
@@ -441,4 +443,13 @@ function renderC3Graph(graphInfo, targetId) {
 function curtesyGraph(message, containerId) {
     $(containerId).text(message);
     $(containerId).addClass('curtesy');
+}
+
+function initializeTriggers() {
+    $('.optionalBlock').addClass('hidden');
+    $('.trigger').on('click', function(e) {
+        $('.optionalBlock').addClass('hidden');
+        var x = $(this).attr('id');
+        $('#' + x + 'Block').toggleClass('hidden');
+    });
 }
