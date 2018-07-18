@@ -103,7 +103,7 @@ function dispatchPromise(name, req, res) {
 
 /* everything begin here, welcome */
 server.listen(nconf.get('port'), nconf.get('interface'));
-console.log(" Listening on " + nconf.get('interface') + ":" + nconf.get('port'));
+console.log(" Listening on http://" + nconf.get('interface') + ":" + nconf.get('port'));
 /* configuration of express4 */
 app.use(cors());
 app.use(bodyParser.json({limit: '4mb'}));
