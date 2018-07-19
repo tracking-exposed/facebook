@@ -86,8 +86,9 @@ function initialize() {
         loadHTMLs(pinfo.userToken, '#contributionBlock', _.reverse(firstBatch), 0);
 
         /* initialize CSV section */
-        renderSponsoredGraph(firstBatch, '#sponsoredStats');
-        renderNewsFeed(firstBatch, '#newsFeedStats');
+        renderSponsoredGraph(_.filter(firstBatch, { type: 'sponsored'}), '#sponsoredStats');
+        renderNewsFeed(_.filter(firstBatch, { type: 'feed' }), '#newsFeedStats');
+
         $("#objectCount").text(_.size(firstBatch));
 
         /* initialize knowmore section */
