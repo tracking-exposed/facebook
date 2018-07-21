@@ -372,7 +372,7 @@ function renderSponsoredGraph(content, targetId) {
     });
 
     if(_.size(content) < 2)
-        curtesyGraph("Sorry! We have too few data, so far, to display this graph. Checks other tabs", targetId);
+        curtesyGraph("Sponsored post graph is termporarly disable!", targetId);
     else if(_.size(g) === 1)
         curtesyGraph("Sorry! We have too few data, so far, to display this graph. Checks other tabs", targetId);
     else
