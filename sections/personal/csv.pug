@@ -14,7 +14,7 @@
 
         div.col-sm-6.container-fluid
             div.documentation
-                h4 in both sponsored and newsfeed, these columns are always present
+                h4 CSV format description
                 ul.fb--icon-list
                     li savingTime: ISO format, is the time when the HTML entities has been saved
                     li id: is an unique identified of the HTML piace analyzed
@@ -24,26 +24,10 @@
 
         div.col-sm-6.container-fluid
             p.text
-                a(class="click" onclick="downloadCSV('promoted')") Download the sponsored posts who targeted you (CSV)
-                |.
-            div.documentation
-                h4 Sponsored CSV format, has these four columns
-                ul.fb--icon-list
-                    li title: The promoted headline
-                    li postLink: Where the links point, if you click on the campaign
-                    li linkType: The kind of media embedded
-                    li ownerName: Name of the promoted page
-
-    div.container-fluid
-        h2 Sponsored content
-        #sponsoredStats
-
-        div.col-sm-6.container-fluid
-            p.text
                 a(class="click" onclick="downloadCSV('feed')") Download copy of the newsfeed (CSV)
                 |.
             div.documentation
-                h4 CSV format specifics. In the csv you'll find these seven columns
+                h4 "Newsfeed" CSV format has additionally these seven columns
                 ul.fb--icon-list
                     li publicationUTime: ISO format, describe when the post has been published
                     li postId: An integer representing the unique facebook Id of the post
@@ -53,14 +37,31 @@
                     li text: text of the post
                     li reason: special optional header facebook put on top (it could explain why a post is appearing in your timeline)
 
+    div.container-fluid
+        h2 Sponsored content
+        #sponsoredStats
+
+        div.col-sm-6.container-fluid
+            p.text
+                a(class="click" onclick="downloadCSV('promoted')") Download the sponsored posts who targeted you (CSV)
+                |.
+            div.documentation
+                h4 "Sponsored" CSV format has additionaly these four columns
+                ul.fb--icon-list
+                    li title: The promoted headline
+                    li postLink: Where the links point, if you click on the campaign
+                    li linkType: The kind of media embedded
+                    li ownerName: Name of the promoted page
+
         div.col-sm-6.container-fluid
             h2 Want to manage a comparative research?
-            p.text You might have notice, in the web-extension you can mark your submission as part of a
+            p.text You might have noticed, in the web-extension, you can mark your submission as part of a 
                 i control group
-                |. That marker permit to a researcher to download in JSON 
+                |. That marker permits to a researcher to download in JSON 
                 b all the data of the users with the same marker
                 |. Our suggestion is to use this marker not easy to be guessed (let's say, 
                 span.ours ctrlGroupName_0fh3s034hp
-                |), which you can share among the partecipants in the collection. When they want, they can retrieve their data with:
+                |), which you can share among the participants in the collection. When they want, they can retrieve their data with:
             div.api
                 h4 https://facebook.tracking.exposed/researcher/l:ctrlGroupName_0fh3s034hp
+
