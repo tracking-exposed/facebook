@@ -26,11 +26,23 @@ html
     include ../navbar
 
     div.mainstyle
-      h3 Experiments and Publications 
+      h3 2018 
       ul.fb--icon-list
-        li For the Italian elections 2018 has been made a certain campaign, the main website is 
+        li TacticalTech publish aa report written by Claudio Agosti and Fabio Chiusi, on 
+            a(href="https://ourdataourselves.tacticaltech.org/posts/overview-italy/") Italian political election and digital propaganda
+            |.
+        li WebFoundation released a report produced by a joint collaboration:
+            a(href="https://webfoundation.org/research/the-invisible-curation-of-content-facebooks-news-feed-and-our-information-diets/") The invisible curation of content
+            |.
+        li The first academic paper entirely based on FbTREX data: 
+            pre.
+                @unpublished{FacebookFairness,
+                author = {Hargreaves, Eduardo and Agosti, Claudio and Menasch{\'{e}}, Daniel and Neglia, Giovanni and Reiffers-masson, Alexandre and Altman, Eitan},
+                booktitle = {to appear in the 36th International Symposium on Computer Performance, Modeling, Measurements and Evaluation 2018},
+                title = {{Fairness in Online Social Network Timelines : Measurements , Models and Mechanism Design}}
+        li For the Italian elections 2018 has been made a certain campaign, the main website is in italian
           a(href="https://elezioni.tracking.exposed") https://elezioni.tracking.exposed
-          |  and publications explainig it are: 
+          |  some small blogpost commenting on the analysis are:
           a(href="https://medium.com/@trackingexposed/facebook-tracking-exposed-background-80e0f72e615f") fbtrex - Background
           |, 
           a(href="https://medium.com/@trackingexposed/testing-facebook-algorithm-in-an-electoral-campaign-methodology-e7f886776890") testing Facebook algorithm in an electoral campagin (methodology)
@@ -42,10 +54,36 @@ html
           a(href="https://medium.com/@trackingexposed/facebook-stab-online-media-twice-3bd751dbd819") Facebook stab online media twice
           |.
 
+      table.table.table-striped
+        thead
+          tr
+            th When
+            th Video
+            th Event & Slides
+            th Language
+        tbody
+          tr
+            td 20th July '18
+            td HOPE 
+            td
+              a(href="https://github.com/tracking-exposed/presentation/blob/master/HOPE-2018.pdf") .pdf
+            td
+          tr
+            td 12th April '18
+            td
+              a(href="https://www.journalismfestival.com/programme/2018/algorithms-corporate-surveillance-and-elections-argentinian-and-italian-cases") IJF18, Italian & Argentinian cases
+            td
+              a(href="https://github.com/tracking-exposed/presentation/blob/master/slides-perugia-2018-ClaudioFederico.pdf") .pdf
+
+            td
+
+      h3 2017 - 2016
+      ul.fb--icon-list
         li 
           a(href="https://www.opendemocracy.net/digitaliberties/claudio-agosti/could-populism-be-side-effect-of-personalized-algorithm") Article on openDemocracy.net
           |, explaining the idea of Information Diet visualization.
-
+        li
+          a(href="https://magazine.journalismfestival.com/the-algorithm-medley-explaining-facebook-tracking-exposed/") The algorithm medley: explaining facebook.tracking.exposed
         li
           a(href="https://medium.com/@trackingexposed/facebook-algorithm-and-impact-on-media-french-election-experiment-1-d760ed5a242f" target="_blank") French election experiment
           |  Our preliminary publication on how the same media got differentiated coverage
@@ -58,16 +96,6 @@ html
           a(href="/beta") beta
           |  announcement. Lesson learn and what's new. For supporters and technologist
 
-      h3 Running experiments
-      ul.fb--icon-list
-        li Project's 
-          a(href="/impact") Open statistics
-      ul.fb--icon-list
-        li
-          a(href="/realitymeter") RealityMeter
-          |, check which post get more evidences
-
-      h3 Presentations
       table.table.table-striped
         thead
           tr
