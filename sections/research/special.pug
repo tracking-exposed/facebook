@@ -27,7 +27,7 @@ html
         meta(property="og:image:height" content="400")
         title Adoption trends, metadata extraction and open statistics
 
-    body(onload="distinct('#active', '#list');")
+    body(onload="specialInit();")
     
     include ../header
     include ../navbar
@@ -35,8 +35,18 @@ html
     .container-fluid
         .simpletext
             h2 Admin Researcher interface
-            p Active groupId in te last 30 days
-        div(id="active")
-        div(id="list")
+            
+        .simpletext.hidden#oops
+            h1 If you see this text, is because you didn't put the proper password in the URL
+            h1 ask to claudio at tracking . exposed 
+
+        .simpletext.hidden#results
+
+
+            .col-md-1
+            .col-md-4
+                
+
+
 
     div.footer
