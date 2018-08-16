@@ -6,7 +6,6 @@ var moment = require('moment');
 var nconf = require('nconf');
 
 var mongo = require('../lib/mongo');
-var timutils = require('../lib/timeutils');
 
 var cfgFile = "config/settings.json";
 nconf.argv().env().file({ file: cfgFile });
