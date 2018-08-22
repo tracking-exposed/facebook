@@ -74,13 +74,15 @@ return various
         if(!settings)
             console.log("Invalid researcher name?, not found!");
 
+        var acquireTimelineHtml = _.partialRight(tagId.acquireTimeline, ['html']);
+
         return Promise
             .map(settings.users, getTimelinesByUsers, { concurrency: 1})
             .then(_.flatten)
             .tap(function(t) {
                 debug("timelines %d", _.size(t));
             })
-            .map(tagId.acquireTimeline, { concurrency: 1 })
+            .map(acquireTimelineHtml, { concurrency: 1 })
             .then(_.flatten)
             .then(function(i) {
                 debug("impressions %d", _.size(i));
