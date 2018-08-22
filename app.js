@@ -216,15 +216,27 @@ app.get('/api/v1/selector', function(req, res) {
 app.get('/api/v1/distinct/:authkey', function(req, res) {
     return dispatchPromise('distinct', req, res);
 });
-app.get('/api/v1/research/stats/:requestList', function(req, res) {
+app.get('/api/v1/research/stats/:requestList/:start?', function(req, res) {
     return dispatchPromise('rstats', req, res);
 });
-app.get('/api/v1/research/data/:requestList', function(req, res) {
+app.get('/api/v1/research/data/:requestList/:start?', function(req, res) {
     return dispatchPromise('rdata', req, res);
 });
 app.get('/researcher/:requestList?', function(req, res) {
     return dispatchPromise('researcher', req, res);
 });
+
+/* qualitative research APIs */
+app.get('/api/v1/qualitative/:rname/overview', function(req, res) {
+    return dispatchPromise('qualitativeOverview', req, res);
+});
+app.post('/api/v1/qualitative/:rname/update/:postId', function(req, res) {
+    return dispatchPromise('qualitativeUpdate', req, res);
+});
+app.get('/api/v1/qualitative/:rname/day/:date', function(req, res) {
+    return dispatchPromise('qualitativeGet', req, res);
+});
+
 
 /* reducer(s) */
 app.get('/api/v1/reducer/:reducerId/:authkey/:start/:end', function(req, res) {

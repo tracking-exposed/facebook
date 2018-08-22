@@ -33,6 +33,7 @@ debug("Generation of collection %s for qualitative analysis, time window %s (%s)
 
 function shrinkPost(o) {
     _.set(o, 'qualitative', qualitative);
+    _.set(o, 'evaluated', false);
     return _.omit(o, ['savingTime', 'impressionTime', 'impressionOrder', 'impressionId', 'timelineId']);
 }
 

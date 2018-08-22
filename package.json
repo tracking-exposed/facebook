@@ -6,7 +6,8 @@
   "scripts": {
     "build": "bin/copyToDist",
     "watch": "nodemon --config config/nodeamon.json app",
-    "start": "DEBUG=lib:*,-fbtrex node app"
+    "start": "DEBUG=lib:*,-fbtrex node app",
+    "logging": "DEBUG=*,-body-parser:*,-express:*,-send,-fbtrex,-lib:parser,-lib:mongo:* node app 2>&1 >&/tmp/`date +%F`.log"
   },
   "author": "Claudio Agosti <claudio@tracking.exposed>, https://github.com/tracking-exposed/facebook/graphs/contributors",
   "license": "(ISC OR GPL-3.0)",

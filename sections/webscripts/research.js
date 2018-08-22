@@ -18,11 +18,14 @@ function specialInit() {
 
     console.log(window.location);
     console.log(window.location.pathname);
+    var info = window.location.search.replace(/\?/, '');
+    var researcher = info.split(',')[0];
+    var page = info.split(',')[1] || 1;
+
+    $.getJSON('/api/v1/qualitative/' + researcher + '/paged/' + page, function(data) {
+        console.log(data);
 
 
-
-    $("#shoot").on('click', function(e) {
-        console.log("click happen");
     });
 };
 
@@ -30,14 +33,14 @@ function specialInit() {
 function postObject() {
 
     var subjects = [
-      'Government',
-      'Parliamento',
-      'Local Issue',
-      'General theme',
-      'M5S',
-      'Media Debate',
-      'Value Statement',
-      'Personal Consideration'
+        'Government',
+        'Parlament',
+        'Local Issue',
+        'General theme',
+        'M5S',
+        'Media Debate',
+        'Value Statement',
+        'Personal Consideration'
     ];
 };
 
@@ -51,6 +54,7 @@ function goal1() {
 };
 
 function goal2() {
+
     var goals = [
         'Responsiveness statement',
         'Accountability Statement',
