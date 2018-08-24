@@ -27,20 +27,14 @@ html
         meta(property="og:image:height" content="400")
         title Adoption trends, metadata extraction and open statistics
 
-    body(onload="fillSubjectGraphs('#filters', '#byUser', '#bySource', '#byiTime', '#byType');")
+    body(onload="renderPostAndCheckboxes();")
     
-    include ../header
-    include ../navbar
+        include ../header
+        include ../navbar
 
-    .container-fluid
-        h1 Still a work in progress!
-        .simpletext
-            h2 Researcher interface
+        .container-fluid
+            p.center
+                i the system automatically save the status of the checkboxes when the mouse left the colored area, it can be update multiple times
+            .cointainer-fluid#postList
 
-        div(id="filters")
-        div(id="byUser")
-        div(id="bySource")
-        div(id="byiTime")
-        div(id="byType")
-
-    div.footer
+        div.footer

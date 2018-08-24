@@ -212,7 +212,7 @@ app.get('/api/v1/selector', function(req, res) {
     return dispatchPromise('getSelector', req, res);
 });
 
-/* researcher interfaces */
+/* researcher API interfaces */
 app.get('/api/v1/distinct/:authkey', function(req, res) {
     return dispatchPromise('distinct', req, res);
 });
@@ -222,11 +222,9 @@ app.get('/api/v1/research/stats/:requestList/:start?', function(req, res) {
 app.get('/api/v1/research/data/:requestList/:start?', function(req, res) {
     return dispatchPromise('rdata', req, res);
 });
-app.get('/researcher/:requestList?', function(req, res) {
-    return dispatchPromise('researcher', req, res);
-});
 
-/* qualitative research APIs */
+
+/* qualitative research APIs + static pages */
 app.get('/api/v1/qualitative/:rname/overview', function(req, res) {
     return dispatchPromise('qualitativeOverview', req, res);
 });
@@ -235,6 +233,14 @@ app.post('/api/v1/qualitative/:rname/update/:postId', function(req, res) {
 });
 app.get('/api/v1/qualitative/:rname/day/:date', function(req, res) {
     return dispatchPromise('qualitativeGet', req, res);
+});
+app.get('/qualitative/:rname/day/:refday', function(req, res) {
+    req.params.page = 'qualitativeDaylist';
+    return dispatchPromise('getPage', req, res);
+});
+app.get('/qualitative/:rname?', function(req, res) {
+    req.params.page = 'qualitativeLanding';
+    return dispatchPromise('getPage', req, res);
 });
 
 
