@@ -42,6 +42,20 @@ function landingInit() {
             },
             bindto: '#graphContainer'
         });
+
+        var tableHtml = "";
+        _.each(_.orderBy(sth, 'day'), function(entry, i) {
+
+            tableHtml += [
+                "<tr>", 
+                    "<td>" + (i + 1) + "</td>", 
+                    "<td><a href='/qualitative/" + researcher + "/day/" + entry.day + "'>" + entry.day + "</a></td>",
+                    "<td>" + entry.evaluated + "</td>",
+                    "<td>" + entry.notyet + "</td>",
+                "</tr>"
+            ].join("");
+        });
+        $("#tableContent").append(tableHtml);
     });
 };
 
@@ -74,7 +88,6 @@ function renderPostAndCheckboxes() {
             '</div>'
         );
 
-        posts = [ posts[14], posts[15], posts[17] ];
         _.each(posts, function(post) {
             $("#postList").append(evaluationHTML(post));
         });
@@ -107,11 +120,18 @@ var modsInProgress = {};
 function reportClick(e) {
     var completeId =  $(e).attr('id');
     var postId = completeId.split('-')[0];
+    var groupName = completeId.split('-')[1];
+    var newValue = $(e).is(':checked');
+    var name = $(e).attr('name');
 
     if(_.isUndefined(_.get(modsInProgress, postId)))
         _.set(modsInProgress, postId, []);
 
-    modsInProgress[postId].push(_.set({}, completeId, $(e).is(':checked')));
+    modsInProgress[postId].push({
+        name: name,
+        value: newValue,
+        group: groupName
+    });
 };
 
 
@@ -124,8 +144,14 @@ function renderCheckboxes(qualitative, postId) {
         _.each(bools, function(checkbox, cboxnumber) {
             var isChecked = checkbox.value ? 'checked' : '';
             var cboxhtml = [
-                '<input onclick="reportClick(this);" id="'+[postId,gname,cboxnumber].join('-')+'"type="checkbox" '+isChecked+'>',
-                    checkbox.field,
+                '<input onclick="reportClick(this);" id="' +
+                    [ postId, gname, cboxnumber ].join('-') +
+                    '" name="' + 
+                    checkbox.field +
+                    '" type="checkbox" ' + 
+                    isChecked +
+                '>',
+                checkbox.field,
                 '</input><br>'
             ];
             lista.push( cboxhtml.join('') );
