@@ -59,6 +59,7 @@ function c3statsGenerate(blob) {
     };
     blob.point = { r: 1 };
 
+    console.log(blob);
     c3.generate(blob);
 };
 
