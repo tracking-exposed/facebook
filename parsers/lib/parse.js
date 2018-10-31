@@ -28,7 +28,7 @@ function snippetAvailable(config, what) {
     /* if since or until are specify, use the command, 
      * otherwise use keep the default: last hour */
     if( nconf.get('since') || nconf.get('until') ) {
-        debug("Remind: if you specify only one 'since' or 'until', the default is from the config");
+        // debug("Remind: if you specify only one 'since' or 'until', the default is from the config");
         requestpayload.since = nconf.get('since') ? nconf.get('since') : config.since;
         requestpayload.until = nconf.get('until') ? nconf.get('until') : config.until;
     }
@@ -41,8 +41,8 @@ function snippetAvailable(config, what) {
         requestpayload.requirements = { id : nconf.get('id') };
     }
 
-    debug("Connecting to %s", url);
-    debug("⭐ %s", JSON.stringify(requestpayload, undefined, 2));
+    // debug("Connecting to %s", url);
+    // debug("⭐ %s", JSON.stringify(requestpayload, undefined, 2));
 
     var begin = moment();
     return request
@@ -59,20 +59,23 @@ function snippetAvailable(config, what) {
             throw new Error(error);
         })
         .tap(function() {
-            debug("Execution completed in %d seconds",
-                moment.duration(moment() - begin).asSeconds());
+            if(!_.isUndefined(nconf.get('verbose')))
+                debug("Execution completed in %d seconds",
+                    moment.duration(moment() - begin).asSeconds());
         });
 };
 
 function commitResult(config, newmeta, snippet) {
-    debug("html [%s] [%s] +[%s]",
-        moment.duration(moment(snippet.savingTime) - moment() ).humanize(true),
-        _.keys(
-            _.omit(snippet, [
-                '_id', 'savingTime', 'id', 'userId',
-                'impressionId', 'timelineId', 'html' ])),
-        _.keys(newmeta)
-    );
+
+    if(!_.isUndefined(nconf.get('verbose')))
+        debug("html [%s] [%s] +[%s]",
+            moment.duration(moment(snippet.savingTime) - moment() ).humanize(true),
+            _.keys(
+                _.omit(snippet, [
+                    '_id', 'savingTime', 'id', 'userId',
+                    'impressionId', 'timelineId', 'html' ])),
+            _.keys(newmeta)
+        );
 
     var update = {
         htmlId: snippet.id,
