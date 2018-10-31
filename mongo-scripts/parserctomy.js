@@ -26,7 +26,7 @@ if(!nconf.get('KEYS') && !nconf.get('since')) {
     return 0;
 }
 var keys = importKeys(nconf.get('KEYS'));
-var timew = _.parseInt('timew') || 14;
+var timew = _.parseInt(nconf.get('timew')) || 14;
 var since = nconf.get('since');
 var total = 0;
 
@@ -42,7 +42,7 @@ var start = moment();
 return Promise
     .map(slots, cleanABlock, { concurrency: 1} )
     .tap(function(completed) {
-        debug("operation complete after %s, %d html updated", moment.duration( moment() - start).humanize(), total );
+        debug("operation complete after %s: %d html updated", moment.duration( moment() - start).humanize(), total );
     });
 
 
@@ -51,7 +51,7 @@ function cleanABlock(shift) {
     var endM  = moment(nconf.get('since')).add( timew * shift, 'h');
 
     if(nconf.get('until') && moment(nconf.get('until')).isAfter(startM)) {
-        debug("until date trigger: %s isAfter %s", nconf.get('until'), startM.format() );
+        debug("until date matched: %s isAfter %s", nconf.get('until'), startM.format() );
         process.exit();
     }
 
@@ -72,7 +72,7 @@ function cleanABlock(shift) {
         })
         .then(function(htelems) {
             if(_.size(htelems)) {
-                debug("1st among %d, %s of %s starts with %d fields",
+                debug("1st element (of %d) %s since %s, updated with %d fields",
                     _.size(htelems),
                     htelems[0].id, moment(htelems[0].savingTime).format("YYYY-MM-DD"),
                     _.size(htelems[0]));

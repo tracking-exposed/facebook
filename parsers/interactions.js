@@ -6,11 +6,10 @@ var debug = require('debug')('interactions');
 var parse = require('./lib/parse');
 var nconf = require('nconf');
 
-nconf.argv()
-     .env()
-     .file('users', { file: "config/italy-2018.json" });
+nconf.argv().env();
+     // .file('users', { file: "config/italy-2018.json" });
 
-var stats = { processed: 0, success: 0, failure: 0, bugs: {} };
+var stats = { first: null, skipped: 0, processed: 0, success: 0, failure: 0, bugs: {} };
 
 function extendStats(label) {
 
@@ -28,16 +27,25 @@ function extendStats(label) {
 
 function getInteractions(snippet) {
 
+    /* can be used snippet.savingTime to keep track of the analyzed time window */
+    if(_.isNull(stats.first))
+        stats.first = snippet.savingTime;
+
+    var brusers = _.map([ 'TODO', new Error("TODO") ], _.parseInt);
+
+    if( brusers.indexOf(snippet.userId) === -1 ) {
+        stats.skipped += 1;
+        return { interactions: false };
+    }
+    /*
     if(!(_.reduce( nconf.get('users'), function(memo, u) {
         memo |= ( _.parseInt(u.id) === snippet.userId);
         return memo;
     }, false)))
         return { interactions: false };
+    */
 
     var $ = cheerio.load(snippet.html);
-
-    if(!stats.processed)
-        debug("process begin with ID %s %s", snippet.id, snippet.savingTime);
 
     stats.processed +=1;
 
@@ -146,9 +154,10 @@ function getInteractions(snippet) {
             shares: sn,
             comments: cn
         };
-        debug("%s %s",
-            moment.duration(moment() - moment(snippet.savingTime)).humanize(),
-            JSON.stringify(retv));
+        if(!_.isUndefined(nconf.get('verbose')))
+            debug("%s %s",
+                moment.duration(moment() - moment(snippet.savingTime)).humanize(),
+                JSON.stringify(retv));
 
         return retv;
 
@@ -170,5 +179,8 @@ var postInteractions = {
 return parse
     .please(postInteractions)
     .tap(function() {
-        console.log("getInteractions complete: %s", JSON.stringify(stats, undefined, 2));
+        var f = `${moment(stats.first).format("YY-MM-DD HH:mm")}`;
+        console.log(`${f}\t+ ${stats.processed}\tskip ${stats.skipped}\tsuccess ${stats.success}\tfail ${stats.failure}`);
+        if(_.size(stats.bugs))
+            debug("%s", JSON.stringify(stats.bugs, undefined, 2));
     });

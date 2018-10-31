@@ -20,6 +20,9 @@ var various = require('../lib/various');
 var cfgFile = "config/settings.json";
 nconf.argv().env().file({ file: cfgFile });
 
+// REMIND: brusers it is not correctly linked, should be exported globally :(
+
+/*
 var TRANSLATE = {
     'Destra': 'right',
     'Fascistoidi': 'far-right',
@@ -28,11 +31,11 @@ var TRANSLATE = {
     'non orientato': 'undecided',
     'M5S': 'M5S'
 };
+*/
 
 /* loading input options */
 var destCollection = nconf.get('dest');
-var campaignPath = nconf.get('campaignPath');
-var tagId = nconf.get('tagId');
+// var campaignPath = nconf.get('campaignPath');
 var beginSince = nconf.get('beginSince');
 var timeZone = _.parseInt(nconf.get('TZ'));
 
@@ -87,15 +90,16 @@ function processTheDay(direction, i) {
                     var produced = {
                         impressionOrder: impression.impressionOrder,
                         impressionTime: new Date(impression.impressionTime),
-                        profileName: _.find(direction.users, { id: _.toString(html.userId) }).name,
-                        profileAlign: TRANSLATE[_.find(direction.users, { id: _.toString(html.userId) }).orientamento],
+                        userId: html.userId,
+                        // profileName: _.find(direction.users, { id: _.toString(html.userId) }).name,
+                        // profileAlign: TRANSLATE[_.find(direction.users, { id: _.toString(html.userId) }).orientamento],
                         publicationTime: new Date(publicationMoment.toISOString()),
                         visualizationDiff: moment
                             .duration(moment(impression.impressionTime) - publicationMoment).asSeconds(),
                         postId: html.postId,
                         utype: html.hrefType,
                         displayName: html.source,
-                        externals: html.feedHref ? _.size(html.externalHref) : 0,
+                        externalsLinks: html.feedHref ? _.size(html.externalHref) : 0,
                         timelineId: html.timelineId,
                         permaLink: html.permaLink,
                         rtotal: html.rtotal,
@@ -108,15 +112,17 @@ function processTheDay(direction, i) {
                     var fbreference = html.permaLink.match(/permalink/) ?
                         html.permaLink.replace(/.*id=/, '') : html.permaLink.split('/')[1];
 
+                    /*
                     var pageInfo = _.find(direction.pages, function(p) { return _.endsWith(p.pageURL, fbreference); });
 
                     if(pageInfo) {
                         produced.publisherName = pageInfo.displayName;
                         produced.publisherOrientation = TRANSLATE[pageInfo.orientamento];
                     } else {
-                        debug("ID %s (%s) permaLink %s rejected", html.id, produced.profileName, html.permaLink);
+                        debug("Id %s (%s) permaLink %s rejected", html.id, produced.profileName, html.permaLink);
                         return null;
                     }
+                    */
                     return produced;
                 })
                 .catch(function(error) {
@@ -172,29 +178,23 @@ function processTheDay(direction, i) {
 };
 
 
-if(!destCollection || !campaignPath || !tagId || !timeZone) {
+// removed tagId, campaignPath
+if(!destCollection || _.isUndefined(timeZone)) {
     debug("Mandatory option miss:");
     console.log("dest\t\t\tmongodb dest collection");
-    console.log("tagId\t\t\tcontrol group");
-    console.log("campaignPath\t\t/home/storyteller/invi.sible.link/campaign/$name");
+    // console.log("campaignPath\t\t/home/storyteller/invi.sible.link/campaign/$name");
     console.log("TZ\t\t\tnumber of seconds to be -subtract from publicationUTime (GMT)");
     process.exit(1);
 }
 
-return Promise.all([
-        /* XXX note this is campaign dependent */
-        various.loadJSONfile(path.join(campaignPath, 'fonti', 'pagine-exp1.json')),
-        various.loadJSONfile(path.join(campaignPath, 'fonti', 'utenti-exp1.json')),
-        various.loadJSONfile(path.join('config', 'italy-2018.json')),
-        getTimelineCount({tagId: tagId})
-    ])
+return various
+    .loadJSONfile("config/brusers.json")
+    .then(brusers) {
+        getTimelineCount({userId: { "$in": brusers } })
+    })
     .then(function(mixed) {
         var info = _.last(mixed);
-        // TODO sistema i dati in modo che siano utili all'attribution dopo
-        if(mixed[2] && mixed[2].users) {
-            if( _.size(info.userList) !== _.size(mixed[2].users))
-                debug("Odd: the users declared are different from the users observe");
-        }
+        /*
         if(!(mixed[2] && mixed[2].users)) {
             debug("if the users shall be configured by a file or by users self-declaration: it depends!");
             console.log("At the moment having a campaign it is necessary!");
@@ -205,6 +205,8 @@ return Promise.all([
             return u;
         });
         info.pages = mixed[0];
+        */
+        info.users = brusers;
         return info;
     })
     .tap(function(info) {
@@ -228,7 +230,7 @@ return Promise.all([
                         '$lt': new Date(endStr)
                     },
                     'userId': {
-                        '$in': _.map(info.users, 'id').map(_.parseInt)
+                        '$in': info.users
                     },
                 },
                 'users': info.users,

@@ -259,7 +259,7 @@ app.get('/robots.txt', function(req, res) {
     res.sendFile(__dirname + '/dist/robots.txt');
 });
 
-/* RSS endpoint to glue legagy and new system */
+/* RSS endpoint to glue legacy and new system */
 app.get('/api/v1/exportText/:key/:seconds', function(req, res) {
     return dispatchPromise('exportText', req, res);
 });
