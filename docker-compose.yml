@@ -7,6 +7,15 @@ services:
       - "27017"
     networks:
       - backend
+  elastic:
+    ports:
+      - "9200"
+      - "9300"
+    networks:
+      - backend
+    build:
+      context: .
+      dockerfile: Dockerfile.elastic
   fbtrex:
     expose:
       - "8000"
@@ -14,6 +23,7 @@ services:
       - "8000:8000"
     links:
       - mongo
+      - elastic
     networks:
       - backend
     build:
