@@ -1,0 +1,5 @@
+FROM docker.elastic.co/elasticsearch/elasticsearch:6.4.2
+
+COPY --chown=elasticsearch:elasticsearch  support /support
+RUN ["bash", "support/elasticsearch/setup.sh"]
+
