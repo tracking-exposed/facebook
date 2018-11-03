@@ -1,5 +1,5 @@
 FROM docker.elastic.co/elasticsearch/elasticsearch:6.4.2
-
-COPY --chown=elasticsearch:elasticsearch  support /support
-RUN ["bash", "support/elasticsearch/setup.sh"]
-
+COPY support /support
+USER elasticsearch
+ENV ES_JAVA_OPTS="-Xms256m -Xmx256m"
+ENTRYPOINT "elasticsearch"
