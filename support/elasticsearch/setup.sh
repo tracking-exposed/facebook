@@ -1,4 +1,4 @@
-curl -X PUT "localhost:9200/fbtrex" -H 'Content-Type: application/json' -d'
+curl -X PUT "127.0.0.1:9200/fbtrex" -H 'Content-Type: application/json' -d'
 {
   "mappings" : {
     "doc" : {
