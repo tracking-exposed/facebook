@@ -16,6 +16,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.elastic
+    command:
+      - bash support/elastic/setup.sh
   fbtrex:
     expose:
       - "8000"
