@@ -13,6 +13,7 @@ WORKDIR /home/app/fbtrex
 
 RUN npm install 
 RUN npm run build
+ENV DOCKER="true"
 
 EXPOSE 8000
 
