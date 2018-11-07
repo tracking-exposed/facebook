@@ -112,8 +112,7 @@ DEBUG=* node app
 ```
 
 ### Docker support
-First, you need to install a mongodb docker image and run it as the basic dataset of your installation:
+Install docker and docker-compose on your local machine
 ```
-$ docker run -d --name mongo mongo
-$ docker run -d --name fbtrex -p 8000:8000 --link mongo:mongo fbtrex/fbtrex-app
+$ docker-compose up
 ```
