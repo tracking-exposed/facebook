@@ -17,5 +17,6 @@
   "htmlMaxAmount": 1000,
   "NOPERFORMA": true,
   "dandelion": "optional if you are using dandelion",
-  "password": "FbTREXadmin:youSHOULDnotUSEthis"
+  "password": "FbTREXadmin:youSHOULDnotUSEthis",
+  "echoes": {"elasticsearch": {"hosts": ["http://localhost:9200"]}}
 }
