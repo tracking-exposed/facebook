@@ -26,7 +26,6 @@ cp node_modules/c3/c3.min.js $V
 cp node_modules/moment/min/moment.min.js $V 
 cp node_modules/c3/c3.css dist/css && 
 cp node_modules/lodash/lodash.min.js $V 
-cp node_modules/cal-heatmap/cal-heatmap.min.js $V
 
 cp node_modules/reveal.js/js/reveal.js $V 
 cp node_modules/reveal.js/css/theme/solarized.css dist/css/reveal-solarized.css 
@@ -35,5 +34,3 @@ cp node_modules/reveal.js/lib/js/head.min.js $V/reveal-head.min.js
 cp node_modules/reveal.js/js/reveal.js $V/reveal.min.js 
 cp node_modules/reveal.js/lib/js/classList.js $V/classList.js 
 cp node_modules/reveal.js/lib/font/league-gothic/* dist/css/ 
-
-cp node_modules/cal-heatmap/cal-heatmap.css dist/css
