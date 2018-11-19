@@ -1,0 +1,13 @@
+{
+  "schema": { 
+      "impressions": "impressions2",
+      "supporters": "supporters2",
+      "timelines": "timelines2",
+      "accesses": "accesses2",
+      "htmls": "htmls2"
+  },
+  "mongodb": "mongodb://localhost/facebook",
+  "port": 8000,
+  "interface": "127.0.0.1",
+  "elastic": "http://localhost:9200"
+}
