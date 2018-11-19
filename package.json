@@ -4,6 +4,7 @@
   "description": "facebook.tracking.exposed → collaborative tool to investigate personalization algorithms",
   "main": "app.js",
   "scripts": {
+    "collector": "DEBUG=routes:*,lib:*,fbtrex:* node bin/collector",
     "build": "bin/copyToDist",
     "watch": "nodemon --config config/nodeamon.json app",
     "start": "DEBUG=lib:*,-fbtrex node app",
@@ -40,8 +41,8 @@
     "reveal.js": "^3.7.0",
     "stylus": "^0.54.5",
     "tweetnacl": "^0.14.3",
-    "elasticsearch":  "^15.2.0",
-    "harmony-reflect": "^1.6.1"  
+    "elasticsearch": "^15.2.0",
+    "harmony-reflect": "^1.6.1"
   },
   "devDependencies": {
     "mocha": "^5.2.0"
