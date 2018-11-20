@@ -5,18 +5,12 @@
       "timelines": "timelines2",
       "accesses": "accesses2",
       "htmls": "htmls2",
-      "alarms": "alarms",
-      "performa": "performa",
       "hourlyIO": "hourlyIO",
       "reality": "reality",
       "entities": "entitites"
   },
   "mongodb": "mongodb://localhost/facebook",
-  "port": 8000,
+  "port": 8300,
   "interface": "127.0.0.1",
-  "htmlMaxAmount": 1000,
-  "NOPERFORMA": true,
-  "dandelion": "optional if you are using dandelion",
-  "password": "FbTREXadmin:youSHOULDnotUSEthis",
-  "echoes": {"elasticsearch": {"hosts": ["http://localhost:9200"]}}
+  "elastic": "http://localhost:9200"
 }
