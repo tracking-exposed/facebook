@@ -5,6 +5,8 @@
   "main": "app.js",
   "scripts": {
     "collector": "DEBUG=routes:*,lib:*,fbtrex:* node bin/collector",
+    "api": "DEBUG=routes:*,lib:*,fbtrex:* node bin/api",
+    "static": "DEBUG=routes:*,lib:*,fbtrex:* node bin/static",
     "build": "bin/copyToDist",
     "watch": "nodemon --config config/nodeamon.json app",
     "start": "DEBUG=lib:*,-fbtrex node app",
