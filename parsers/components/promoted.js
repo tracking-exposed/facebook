@@ -1,9 +1,32 @@
 #!/usr/bin/env node
 var _ = require('lodash');
-var cheerio = require('cheerio');
 var moment = require('moment');
-var debug = require('debug')('parser:postType');
-var parse = require('./lib/parse');
+var debug = require('debug')('parsers:components:promoted');
+
+function promoted(envelop) {
+
+    var timestamped = envelop.dom.getElementsByClassName('timestampContent');
+    console.log(timestamped);
+    console.log(timestamped.length);
+
+    /*
+    if($(".timestampContent").length > 0) {
+        retO.type = 'feed';
+        retO.promotedType = true;
+        stats.feed += 1;
+    } else if($('[href="/ads/about"]')) {
+        retO.type = 'promoted';
+        retO.promotedType = true;
+        stats.promoted += 1;
+    } else {
+        retO.promotedType = false;
+        stats.error += 1;
+    }
+*/
+    debugger;
+    envelop.promoted = { timestamped : _.size(timestamped) };
+    return envelop;
+};
 
 /*
 function hasLike($) {
@@ -60,25 +83,13 @@ function promotedCheck($) {
 };
 */
 
+/*
 var stats = { 'feed': 0, 'promoted': 0, 'error': 0 };
 
 function getPostType(snippet) {
 
     var $ = cheerio.load(snippet.html);
     var retO = {};
-
-    if($(".timestampContent").length > 0) {
-        retO.type = 'feed';
-        retO.postType = true;
-        stats.feed += 1;
-    } else if($('[href="/ads/about"]')) {
-        retO.type = 'promoted';
-        retO.postType = true;
-        stats.promoted += 1;
-    } else {
-        retO.postType = false;
-        stats.error += 1;
-    }
 
     debug("%s %s [f %d p %d error %d]",
         snippet.id, retO.type, stats.feed,
@@ -87,12 +98,16 @@ function getPostType(snippet) {
     return retO;
 };
 
-var postType = {
-    'name': 'postType',
+var promotedType = {
+    'name': 'promotedType',
     'requirements': { },
     'implementation': getPostType,
     'since': "2016-11-13",
     'until': moment().toISOString(),
 };
 
-return parse.please(postType);
+return parse.please(promotedType);
+
+*/
+
+module.exports = promoted;

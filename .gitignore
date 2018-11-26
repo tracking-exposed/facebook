@@ -1,9 +1,7 @@
-config/users.json
-config/italy-2018.json
+config/groups/*.json
 
 dist/**
 node_modules/*
-parsers/*.json
 extension/yarn.lock
 vendor/*
 npm-debug.log
