@@ -4,7 +4,8 @@
       "supporters": "supporters2",
       "timelines": "timelines2",
       "accesses": "accesses2",
-      "htmls": "htmls2"
+      "htmls": "htmls2",
+      "metadata": "metadata"
   },
   "mongodb": "mongodb://localhost/facebook",
   "port": 8000,
