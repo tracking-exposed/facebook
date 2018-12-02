@@ -9,7 +9,7 @@ var mongo = require('../lib/mongo');
 
 nconf.argv().env().file({ file: "config/collector.json" });
 
-var url = ( nconf.get('server') || 'http://localhost:8000' ) + '/api/v1/glue/20';
+var url = ( nconf.get('server') || 'http://localhost:8000' ) + '/api/v1/glue/' + nconf.get('password') +'/20';
 const htmlCleanFields = ['_id', 'savingTime', 'id', 'userId', 'impressionId', 'timelineId', 'html' ];
 
 debug("Accessing to %s", url);
