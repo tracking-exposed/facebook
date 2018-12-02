@@ -254,7 +254,7 @@ app.get('/qualitative/:rname?', function(req, res) {
 });
 
 /* glue to the next version */
-app.get('/api/v1/glue/:sample?', function(req, res) {
+app.get('/api/v1/glue/:key/:sample?', function(req, res) {
     return dispatchPromise('glue', req, res);
 });
 
