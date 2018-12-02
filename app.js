@@ -253,6 +253,10 @@ app.get('/qualitative/:rname?', function(req, res) {
     return dispatchPromise('getPage', req, res);
 });
 
+/* glue to the next version */
+app.get('/api/v1/glue/:sample?', function(req, res) {
+    return dispatchPromise('glue', req, res);
+});
 
 /* reducer(s) */
 app.get('/api/v1/reducer/:reducerId/:authkey/:start/:end', function(req, res) {
