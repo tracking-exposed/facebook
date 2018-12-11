@@ -8,7 +8,7 @@
       "metadata": "metadata"
   },
   "mongodb": "mongodb://localhost/facebook",
-  "port": 8000,
+  "port": 8100,
   "interface": "127.0.0.1",
   "elastic": "http://localhost:9200"
 }

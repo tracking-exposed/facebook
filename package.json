@@ -5,11 +5,9 @@
   "main": "app.js",
   "scripts": {
     "collector": "DEBUG=routes:*,lib:*,fbtrex:* node bin/collector",
-    "api": "DEBUG=routes:*,lib:*,fbtrex:* node bin/api",
-    "static": "DEBUG=routes:*,lib:*,fbtrex:* node bin/static",
+    "content": "DEBUG=lib:*,fbtrex:* node bin/content",
     "build": "bin/copyToDist",
     "watch": "echo \"this should not work anymore, check docs\"",
-    "start": "DEBUG=lib:*,-fbtrex node app",
     "logging": "DEBUG=*,-body-parser:*,-express:*,-send,-fbtrex,-lib:parser,-lib:mongo:* node app >>/tmp/`date +%F`.log"
   },
   "author": "Claudio Agosti <claudio@tracking.exposed>, https://github.com/tracking-exposed/facebook/graphs/contributors",
@@ -32,7 +30,7 @@
     "food-words": "^1.1.0",
     "harmony-reflect": "^1.6.1",
     "jquery": "^3.0.0",
-    "jsdom": "^12.0.0",
+    "jsdom": "^13.0.0",
     "lodash": "^4.17.10",
     "moment": "^2.22.2",
     "mongodb": "^2.1.8",
@@ -44,7 +42,9 @@
     "request": "^2.88.0",
     "reveal.js": "^3.7.0",
     "stylus": "^0.54.5",
-    "tweetnacl": "^0.14.3"
+    "tweetnacl": "^0.14.3",
+    "xmldom": "^0.1.27",
+    "xpath": "0.0.27"
   },
   "devDependencies": {
     "mocha": "^5.2.0"
