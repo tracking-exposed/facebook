@@ -9,8 +9,12 @@ var mongo = require('../lib/mongo');
 
 nconf.argv().env().file({ file: "config/collector.json" });
 
-var url = ( nconf.get('server') || 'http://localhost:8000' ) + '/api/v1/glue/' + nconf.get('password') +'/20';
+if(!nconf.get('password'))
+    return console.log("--password required");
+
+var url = ( nconf.get('server') || 'http://localhost:8000' ) + '/api/v1/glue/' + nconf.get('password') +'/50';
 const htmlCleanFields = ['_id', 'savingTime', 'id', 'userId', 'impressionId', 'timelineId', 'html' ];
+
 
 debug("Accessing to %s", url);
 return request
@@ -42,16 +46,21 @@ return request
             return clean;
         });
 
+        if(!_.size(htmls)) {
+            debug("Found an empty timeline! (%s) nothing to save.", content[2].id);
+            return [];
+        }
+
         debug("Writing a timeline with %d impressions and %d htmls",
             _.size(impressions), _.size(htmls));
 
-        debugger;
         return Promise.all([
             mongo.writeOne(nconf.get('schema').timelines, timeline),
             mongo.writeMany(nconf.get('schema').impressions, impressions),
             mongo.writeMany(nconf.get('schema').htmls, htmls)
-        ]);
+        ])
+        .return(content[1]);
     })
-    .then(function(done)  {
-        debug("Success!");
+    .map(function(done)  {
+        console.log(done.id);
     });
