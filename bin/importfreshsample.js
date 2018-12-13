@@ -12,9 +12,10 @@ nconf.argv().env().file({ file: "config/collector.json" });
 if(!nconf.get('password'))
     return console.log("--password required");
 
-var url = ( nconf.get('server') || 'http://localhost:8000' ) + '/api/v1/glue/' + nconf.get('password') +'/50';
-const htmlCleanFields = ['_id', 'savingTime', 'id', 'userId', 'impressionId', 'timelineId', 'html' ];
+const amount = nconf.get('amount') || 50;
+const url = ( nconf.get('server') || 'http://localhost:8000' ) + '/api/v1/glue/' + nconf.get('password') +'/' + amount;
 
+const htmlCleanFields = ['_id', 'savingTime', 'id', 'userId', 'impressionId', 'timelineId', 'html' ];
 
 debug("Accessing to %s", url);
 return request
@@ -25,7 +26,8 @@ return request
     .then(JSON.parse)
     .then(function(content) {
 
-        debug("Returning the timeline of %s %s, impressions %d, htmls %d",
+        debug("Returning the timeline %s (%s %s), impressions %d, htmls %d",
+            content[2].id,
             content[2].startTime,
             moment.duration(moment(content[2].startTime) - moment()).humanize(),
             _.size(content[0]),
