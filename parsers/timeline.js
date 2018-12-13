@@ -1,31 +1,31 @@
 #!/usr/bin/env node
 var _ = require('lodash');
 var moment = require('moment');
-var debug = require('debug')('parser:precise');
+var debug = require('debug')('parser:timeline');
 var nconf = require('nconf');
 
 var walk = require('../lib/walk');
 var parse = require('../lib/parse');
 var mongo = require('../lib/mongo');
 
-var targetId = nconf.get('id');
-if(!targetId) {
-    console.log("Required id as parameter");
+var targetTmlnId = nconf.get('id');
+if(!targetTmlnId) {
+    console.log("Required a timelineId as parameter (--id)");
     return;
 }
 
 nconf.argv().env().file({ file: 'config/collector.json' });
-return precise(targetId);
+return bytimeline(targetTmlnId);
 
-function precise(targetId) {
+function bytimeline(targetTmlnId) {
 
-    debug("addressing %s", targetId);
+    debug("addressing timeline %s", targetTmlnId);
     return mongo
-        .readOne(nconf.get('schema').htmls, { id: targetId })
-        .then(function(html) {
-            if(!html || !html.impressionId)
-                return null;
-
+        .read(nconf.get('schema').htmls, { timelineId: targetTmlnId })
+        .tap(function(htmls) {
+            debug("Found %d htmls linked to the timeline", _.size(htmls));
+        })
+        .map(function(html) {
             return mongo
                 .readOne(nconf.get('schema').impressions, { id: html.impressionId })
                 .then(function(impression) {
@@ -33,20 +33,17 @@ function precise(targetId) {
                     _.unset(impression, 'htmlId');
                     return _.merge(html, impression);
                 });
-        })
-        .then(function(single) {
-            return [ single ];
-        })
+        }, { concurrency: 4 })
         .then(_.compact)
         .map(function(e) {
             return parse.impression(e, nconf.get('repeat') || false);
         })
-        .then(_.compact);
+        .then(_.compact)
         .then(parse.stats)
         .tap(parse.mark)
         .tap(parse.save);
 }
 
 module.exports = {
-    precise: precise
+    bytimeline: bytimeline
 };
