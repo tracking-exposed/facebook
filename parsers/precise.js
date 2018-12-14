@@ -41,7 +41,7 @@ function precise(targetId) {
         .map(function(e) {
             return parse.impression(e, nconf.get('repeat') || false);
         })
-        .then(_.compact);
+        .then(_.compact)
         .then(parse.stats)
         .tap(parse.mark)
         .tap(parse.save);
