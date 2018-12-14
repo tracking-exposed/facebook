@@ -41,17 +41,17 @@ return request
         var impressions = _.map(content[0], function(i) {
             i.impressionTime = new Date(i.impressionTime);
             return i;
-        }) || [];
+        });
 
         var htmls = _.map(content[1], function(h) {
             var clean = _.pick(h, htmlCleanFields);
             clean.savingTime = new Date(clean.savingTime);
             return clean;
-        }) || [];
+        });
 
-        if(!_.size(htmls)) {
+        if(!_.size(htmls) || !_.size(impressions)) {
             debug("Found an empty timeline! (%s) nothing to save.", content[2].id);
-            return [];
+            return [ null, [], [] ];
         }
 
         debug("Ready with a timeline with %d impressions and %d htmls",
@@ -64,16 +64,17 @@ return request
     .tap(writeTimeline)
     .tap(writeImpressions)
     .then(writeHtmls)
-    .then(_.compact)
     .map(function(done)  {
-        console.log(done.id);
+        if(_.get(done, 'id'))
+            console.log(done.id);
     });
 
 function writeTimeline(blob) { 
-    if(blob[0] && _.get(blob[0], 'id'))
+    if(blob[0] && _.get(blob[0], 'id')) {
         return mongo
             .writeOne(nconf.get('schema').timelines, blob[0])
             .catch(duplicatedError);
+    }
 }
 
 function writeImpressions(blob) {
