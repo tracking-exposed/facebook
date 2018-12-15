@@ -11,12 +11,20 @@ var parse = require('../lib/parse');
 nconf.argv().env().file({ file: 'config/collector.json' });
 const since = nconf.get('since') || "2018-11-01";
 
-debug("Checking new timelines since %s", since);
 return mongo
-    .read(nconf.get('schema').timelines, { startTime: { "$gt": new Date(since) } })
+    .read(nconf.get('schema').timelines, { startTime: { "$gt": new Date(since) } }, { startTime: -1})
+    .tap(function(timelines) {
+        debug("Retieved %d timelines since %s", _.size(timelines), since);
+    })
     .map(function(timeline) {
+
+        const repeat = nconf.get('repeat') || false;
+        const htmlfilter = repeat ?
+                { timelineId: timeline.id } :
+                { timelineId: timeline.id, processed: { $exists: false } }; 
+
         return parse
-            .bytimeline(timeline.id)
+            .processHTML(timeline.id, repeat)
             .then(function(done) {
                 debug("Done timeline %s (%s %s) %s: %d",
                     timeline.id,
@@ -26,7 +34,6 @@ return mongo
                 );
                 return _.size(done);
             });
-
     }, { concurrency: 1 })
     .then(function(done) {
         debug("Completed %d timelines!", _.size(done));
