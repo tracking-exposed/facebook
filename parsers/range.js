@@ -10,6 +10,7 @@ var parse = require('../lib/parse');
 
 nconf.argv().env().file({ file: 'config/collector.json' });
 const since = nconf.get('since') || "2018-11-01";
+const concur = _.isUndefined(nconf.get('concurrency') ) ? 1 : _.parseInt(nconf.get('concurrency') );
 
 return mongo
     .read(nconf.get('schema').timelines, { startTime: { "$gt": new Date(since) } }, { startTime: -1})
@@ -24,17 +25,24 @@ return mongo
                 { timelineId: timeline.id, processed: { $exists: false } }; 
 
         return parse
-            .processHTML(timeline.id, repeat)
+            .parseHTML(htmlfilter, repeat)
             .then(function(done) {
-                debug("Done timeline %s (%s %s) %s: %d",
-                    timeline.id,
-                    timeline.startTime,
-                    moment.duration(moment(timeline.startTime) - moment()).humanize(),
-                    timeline.geoip, _.size(done)
-                );
+                if(!done || !done.metadata) {
+                    debug("No effect on timeline %s (%s %s) %s",
+                        timeline.id,
+                        moment(timeline.startTime).format("YYYY-MM-DD"), 
+                        moment.duration(moment(timeline.startTime) - moment()).humanize(),
+                        timeline.geoip);
+                } else {
+                    debug("Done timeline %s (%s %s) %s: %d metadata, %d errors",
+                        timeline.id,
+                        moment(timeline.startTime).format("YYYY-MM-DD"), 
+                        moment.duration(moment(timeline.startTime) - moment()).humanize(),
+                        timeline.geoip, done.metadata, done.errors);
+                }
                 return _.size(done);
             });
-    }, { concurrency: 1 })
+    }, { concurrency: concur })
     .then(function(done) {
         debug("Completed %d timelines!", _.size(done));
     });
