@@ -6,7 +6,8 @@
       "accesses": "accesses2",
       "htmls": "htmls2",
       "metadata": "metadata",
-      "parserstats": "parserstats"
+      "parserstats": "parserstats",
+      "errors": "parsererrors"
   },
   "mongodb": "mongodb://localhost/facebook",
   "port": 8100,
