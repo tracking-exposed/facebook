@@ -25,17 +25,31 @@ html
         meta(property="og:image:height" content="400")
         title facebook tracking exposed - HTML revision page
 
-    body(onload="loadsnippet('#metadest', '#render');")
+        // remind - loadsnippet is the legacy, loadmetadata is the new one 
+    body(onload="loadsnippet('#metadest', '#render'); loadmetadata('#metadata', '#errors'); ")
 
         include header
         include navbar
 
         .container-fluid
             .col-md-1
-            .col-md-4.infoblock
-                h3
-                    a(id="bymeta") Metadata extracted
-                div.metadata(id='metadest')
+            .col-md-4
+                div.infoblock
+                    h3
+                        a Metadata extracted
+                    div.metadata(id='metadata')
+
+                div.infoblock
+                    h3
+                        a Error in extraction
+                    div.metadata(id='errors')
+
+                div.infoblock
+                    h3
+                        a(id="bymeta") (old) Metadata extracted
+                    div.metadata(id='metadest')
+
+
             .col-md-1
             .col-md-4.infoblock
                 h3

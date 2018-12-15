@@ -61,7 +61,6 @@ function cleanstyle(){
 function loadsnippet(metadataContainer, renderContainer) {
 
     var htmlId = document.location.pathname.split('/').pop();
-
     if(htmlId.length == 40) {
         var url = '/api/v1/html/' + htmlId;
     } else {
@@ -103,3 +102,18 @@ function loadsnippet(metadataContainer, renderContainer) {
 };
 
 
+function loadmetadata(metadataC, errorsC) {
+    var htmlId = document.location.pathname.split('/').pop();
+    if(htmlId.length !== 40) {
+        $(metadataC).html('<h1>URL error!?</h1>');
+        $(errorsC).html('<h3>check impressionId</h3>');
+        return;
+    }
+
+    var url = '/api/v1/metadata/' + htmlId;
+    console.log(url);
+
+    $.getJSON(url, function(something) {
+        // continue when you can
+    });
+};
