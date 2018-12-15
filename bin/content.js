@@ -250,7 +250,6 @@ app.get('/api/v1/exportText/:key/:seconds', function(req, res) {
     return dispatchPromise('exportText', req, res);
 });
 
-
 /* development: the local JS are pick w/out "npm run build" every time, and
  * our locally developed scripts stay in /js/local */
 if(nconf.get('development') === 'true') {
