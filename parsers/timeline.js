@@ -24,4 +24,8 @@ const htmlfilter = repeat ?
     { timelineId: targetTmlnId } :
     { timelineId: targetTmlnId, processed: { $exists: false } };
 
-return parse.parseHTML(htmlfilter, repeat);
+return parse
+    .parseHTML(htmlfilter, repeat)
+    .tap(function(results) {
+        debug("completed: %s", JSON.stringify(results, undefined, 2));
+    }); 

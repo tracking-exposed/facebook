@@ -21,4 +21,8 @@ const htmlfilter = repeat ?
     { id: targetId } :
     { id: targetId, processed: { $exists: false } };
 
-return parse.parseHTML(htmlfilter, repeat);
+return parse
+    .parseHTML(htmlfilter, repeat)
+    .tap(function(results) {
+        debug("completed: %s", JSON.stringify(results, undefined, 2));
+    });
