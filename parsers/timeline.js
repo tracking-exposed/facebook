@@ -17,5 +17,11 @@ if(!targetTmlnId) {
     console.log("Required a timelineId as parameter (--id)");
     return;
 }
-return parse.bytimeline(nconf.get('id'));
 
+debug("addressing timeline %s", targetTmlnId);
+const repeat = nconf.get('repeat') || false;
+const htmlfilter = repeat ?
+    { timelineId: targetTmlnId } :
+    { timelineId: targetTmlnId, processed: { $exists: false } };
+
+return parse.parseHTML(htmlfilter, repeat);
