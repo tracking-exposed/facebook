@@ -135,7 +135,8 @@ function promisifyInputs(body, geoinfo, supporter) {
     var functionList = [];
 
     if(_.size(processed.htmls))
-        functionList.push(mongo
+        functionList.push(
+                mongo
             .writeMany(nconf.get('schema').htmls, processed.htmls)
             .return({
                 'kind': 'htmls',
@@ -144,7 +145,8 @@ function promisifyInputs(body, geoinfo, supporter) {
         );
 
     if(_.size(processed.impressions))
-        functionList.push(mongo
+        functionList.push(
+                mongo
             .writeMany(nconf.get('schema').impressions,processed.impressions)
             .return({
                 'kind': 'impressions',
@@ -153,7 +155,8 @@ function promisifyInputs(body, geoinfo, supporter) {
         );
 
     if(_.size(processed.timelines))
-        functionList.push( mongo
+        functionList.push(
+                mongo
             .writeMany(nconf.get('schema').timelines, processed.timelines)
             .return({
                 'kind': 'timelines',
