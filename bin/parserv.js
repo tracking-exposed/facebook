@@ -2,7 +2,7 @@
 var Promise = require('bluebird');
 var _ = require('lodash');
 var moment = require('moment');
-var debug = require('debug')('bin:parserserv');
+var debug = require('debug')('bin:parserv');
 var nconf= require('nconf');
 
 var mongo = require('../lib/mongo');
