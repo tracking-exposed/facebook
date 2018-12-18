@@ -99,9 +99,7 @@ function writeHtmls(blob) {
 }
 
 function duplicatedError(error) { 
-    if(error.code === 11000)
-        debug("entry duplicated, copy continue in search of new impressions");
-    else {
+    if(error.code !== 11000) {
         debug("unexpected error?\n%s", error.message);
         process.exit(0);
     }
