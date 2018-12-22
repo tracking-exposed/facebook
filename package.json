@@ -8,7 +8,9 @@
     "content": "DEBUG=lib:*,fbtrex:* node bin/content",
     "build": "bin/copyToDist",
     "watch": "echo \"this should not work anymore, check docs\"",
-    "logging": "DEBUG=*,-body-parser:*,-express:*,-send,-fbtrex,-lib:parser,-lib:mongo:* node app >>/tmp/`date +%F`.log"
+    "logging": "DEBUG=*,-body-parser:*,-express:*,-send,-fbtrex,-lib:parser,-lib:mongo:* node app >>/tmp/`date +%F`.log",
+    "parserv": "DEBUG=*,-lib:* node bin/parserv.js"
+
   },
   "author": "Claudio Agosti <claudio@tracking.exposed>, https://github.com/tracking-exposed/facebook/graphs/contributors",
   "license": "(ISC OR GPL-3.0)",

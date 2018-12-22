@@ -7,7 +7,8 @@
       "htmls": "htmls2",
       "metadata": "metadata",
       "parserstats": "parserstats",
-      "errors": "parsererrors"
+      "errors": "parsererrors",
+      "summary": "summary"
   },
   "mongodb": "mongodb://localhost/facebook",
   "port": 8100,
