@@ -289,6 +289,11 @@ app.get('/revision/:htmlId', function(req, res) {
     return dispatchPromise('getPage', req, res);
 });
 
+app.get('/project/:projectPage', function(req, res) {
+    req.params.page = 'project/' + req.params.projectPage;
+    return dispatchPromise('getPage', req, res);
+});
+
 /* last one, page name catch-all */
 app.get('/:page*', function(req, res) {
     return dispatchPromise('getPage', req, res);
