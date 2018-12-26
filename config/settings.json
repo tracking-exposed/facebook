@@ -13,10 +13,10 @@
   },
   "mongodb": "mongodb://localhost/facebook",
   "port": 8000,
-  "interface": "127.0.0.1",
+  "interface": "0.0.0.0",
   "htmlMaxAmount": 1000,
   "NOPERFORMA": true,
   "dandelion": "optional if you are using dandelion",
-  "password": "FbTREXadmin:youSHOULDnotUSEthis",
+  "password": "",
   "echoes": {"elasticsearch": {"hosts": ["http://localhost:9200"]}}
 }
