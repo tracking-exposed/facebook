@@ -105,15 +105,16 @@ html
       .pageSection#dataSection.hidden
         p These are the data you sent us so far:
         div#contributionBlock
+    //-
         div#shiftContributionBlock(onclick="loadNextHTMLs('#contributionBlock');")
           b Load Next 100…
+    //
 
     .container-fluid
       .pageSection#csvSection.hidden
         include csv
 
     div.footer
-        small
-            a(href="https://github.com/tracking-exposed/facebook/blob/master/sections/webscripts/personal.js") This interface is generated without any design/UX skills, if you can, 
-                b please
-                |, contribute =)
+        small This interface is a work in progress. wants to show only the data actually analyzed in the meanwhile, would be improved. you are interested, feel welcome in 
+            a(href="https://github.com/tracking-exposed/facebook/blob/master/sections/webscripts/personal.js") contributing 
+            | =)
