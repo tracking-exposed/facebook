@@ -17,6 +17,6 @@
   "htmlMaxAmount": 1000,
   "NOPERFORMA": true,
   "dandelion": "optional if you are using dandelion",
-  "password": "",
+  "password": "haveanicevacationinbali",
   "echoes": {"elasticsearch": {"hosts": ["http://localhost:9200"]}}
 }
