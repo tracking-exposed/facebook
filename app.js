@@ -177,6 +177,9 @@ app.get('/api/v:version/html/:htmlId', function(req, res) {
 });
 
 /* APIs used in personal page */
+app.get('/api/v:version/htmls/:userToken/legacy/:amount', function(req, res) {
+    return dispatchPromise('metadataLegacy', req, res);
+});
 app.get('/api/v:version/htmls/:userToken/days/:days', function(req, res) {
     return dispatchPromise('metadataByTime', req, res);
 });
@@ -273,7 +276,7 @@ app.get('/robots.txt', function(req, res) {
     res.sendFile(__dirname + '/dist/robots.txt');
 });
 
-/* RSS endpoint to glue legagy and new system */
+/* RSS endpoint to glue legacy and new system */
 app.get('/api/v1/exportText/:key/:seconds', function(req, res) {
     return dispatchPromise('exportText', req, res);
 });
@@ -317,6 +320,12 @@ app.get('/revision/:htmlId', function(req, res) {
     return dispatchPromise('getPage', req, res);
 });
 
+/* project sub section */
+app.get('/project/:projectPage', function(req, res) {
+    req.params.page = 'project/' + req.params.projectPage;
+    return dispatchPromise('getPage', req, res);
+});
+
 /* last one, page name catch-all */
 app.get('/:page*', function(req, res) {
     return dispatchPromise('getPage', req, res);
@@ -327,17 +336,3 @@ app.get('/', function(req, res) {
 });
 
 
-function infiniteLoop() {
-    /* this will launch other scheduled tasks too */
-    return Promise
-        .resolve()
-        .delay(60 * 1000)
-        .then(function() {
-            if(_.size(performa.queue))
-                return mongo
-                    .cacheFlush(performa.queue, "performa")
-        })
-        .then(infiniteLoop);
-};
-
-infiniteLoop();
