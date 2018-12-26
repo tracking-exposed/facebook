@@ -66,6 +66,7 @@ function initialize() {
     var sectionName = _.get(pageMap, pinfo.pageName);
     console.log("loadpage → ", sectionName);
     var days = 30;
+    var amount = 300; // last 300 posts to begin with
 
     $(".switch").click(switchpage);
     $('li #' + pinfo.pageName).addClass('active');
@@ -86,7 +87,8 @@ function initialize() {
         loadHTMLs(pinfo.userToken, '#contributionBlock', _.reverse(firstBatch), 0);
 
         /* initialize CSV section */
-        renderSponsoredGraph(_.filter(firstBatch, { type: 'sponsored'}), '#sponsoredStats');
+        /* currently broken */
+        // renderSponsoredGraph(_.filter(firstBatch, { type: 'sponsored'}), '#sponsoredStats');
         renderNewsFeed(_.filter(firstBatch, { type: 'feed' }), '#newsFeedStats');
 
         $("#objectCount").text(_.size(firstBatch));
@@ -108,7 +110,7 @@ function initialize() {
 
         var repetition = _.map(data.byPostId, function(amount, pid) {
             var p = _.first(_.filter(data.info, { postId: pid }));
-            return{
+            return {
                 post: p,
                 amount: amount
             };
