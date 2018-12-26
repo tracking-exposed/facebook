@@ -73,15 +73,15 @@ function initialize() {
 
     initializeTriggers(); /* the few link which hide/show some helper */
 
-    var basicApi = "/api/v1/htmls/" + pinfo.userToken + "/days/" + days;
+    var basicApi = "/api/v1/htmls/" + pinfo.userToken + "/legacy/" + amount;
     console.log("Loading first batch of data from", basicApi);
 
     $.getJSON(basicApi, function(data) {
 
-        console.log("received `htmls` objects: ", _.size(data));
+        console.log("received `htmls` objects: ", _.size(data.info));
 
         /* remind: firstBatch is global because this is the logic for loadNextHTMLs function */
-        firstBatch = data;
+        firstBatch = data.info;
 
         /* initialize Raw data section */
         loadHTMLs(pinfo.userToken, '#contributionBlock', _.reverse(firstBatch), 0);
@@ -90,6 +90,7 @@ function initialize() {
         /* currently broken */
         // renderSponsoredGraph(_.filter(firstBatch, { type: 'sponsored'}), '#sponsoredStats');
         renderNewsFeed(_.filter(firstBatch, { type: 'feed' }), '#newsFeedStats');
+        // this build a bar graph
 
         $("#objectCount").text(_.size(firstBatch));
 
@@ -99,15 +100,10 @@ function initialize() {
         /* finally, render the page requested */
         $("#loader").addClass('hidden');
         showandhidesections(sectionName, pinfo.pageName);
-    });
 
-    /* initialize the two graph in `diet`
-     * this API should evolve with entities & keywords, or merged with the one above */
-    var dietURL = '/api/v1/personal/diet/' + pinfo.userToken + '/' + days;
-    $.getJSON(dietURL, function(data) {
+        /* initialize the two graph in `diet`
+         * this API should evolve with entities & keywords, or merged with the one above */
         var repetitionRanks = '#insist';
-        console.log("received `htmls` for `diet`", _.size(data.info));
-
         var repetition = _.map(data.byPostId, function(amount, pid) {
             var p = _.first(_.filter(data.info, { postId: pid }));
             return {
@@ -115,13 +111,16 @@ function initialize() {
                 amount: amount
             };
         });
+        // now we have post and the amount of time of appearances 
 
         var html = "";
         var last = null;
         _.each(_.reverse(_.orderBy(repetition, 'amount')), function(o) {
 
-            if(!o.post)
-                return console.log("error in", o);
+            if(!o.post || !o.post.source) {
+                return console.log("missing .post or .post.source in", o);
+                return html;
+            }
 
             if(last !== o.amount) {
                 last = o.amount;
@@ -156,11 +155,15 @@ function initialize() {
         html = "";
         _.each(_.reverse(_.orderBy(selected, 'amount')), function(o) {
 
+            if(o.name === "undefined")
+                return html;
+
             if(last !== o.amount) {
                 last = o.amount;
                 html = html + createAmount(o.name + ' ', o.amount);
             }
             var posts = _.filter(postref, { source: o.name });
+
             html = html + createBlockBySource(posts, o.name);
         });
         $(sourceRanks).html(html);
@@ -203,6 +206,9 @@ function createBlockBySource(posts, name) {
     var whole = _.map(posts, function(d) {
         var timeago = moment.duration( moment() - moment(d.publicationUTime) ).humanize() + ' ago';
         var kindology = getKindIcon(d.hrefType);
+
+        if(_.isUndefined(d.source))
+            return "";
 
         var content =
             '<div class="header"><span class="ours">from:</span> '+ d.source +  
