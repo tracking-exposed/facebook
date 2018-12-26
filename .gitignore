@@ -1,6 +1,6 @@
 config/users.json
+config/settings.json
 config/italy-2018.json
-
 dist/**
 node_modules/*
 parsers/*.json
