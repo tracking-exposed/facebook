@@ -117,6 +117,12 @@ app.get('/api/v:version/node/info', function(req, res) {
     return dispatchPromise('nodeInfo', req, res);
 });
 
+/* healthcheck */
+
+app.get('/fbtrex/health', function(req,res){
+    res.send({"status": "OK"});
+});
+
 /* byDay (impressions, users, metadata ) -- discontinued GUI */
 app.get('/api/v:version/daily/:what/:dayback', function(req, res) {
     return dispatchPromise('byDayStats', req, res);
@@ -171,6 +177,9 @@ app.get('/api/v:version/html/:htmlId', function(req, res) {
 });
 
 /* APIs used in personal page */
+app.get('/api/v:version/htmls/:userToken/legacy/:amount', function(req, res) {
+    return dispatchPromise('metadataLegacy', req, res);
+});
 app.get('/api/v:version/htmls/:userToken/days/:days', function(req, res) {
     return dispatchPromise('metadataByTime', req, res);
 });
@@ -247,6 +256,10 @@ app.get('/qualitative/:rname?', function(req, res) {
     return dispatchPromise('getPage', req, res);
 });
 
+/* glue to the next version */
+app.get('/api/v1/glue/:key/:sample?', function(req, res) {
+    return dispatchPromise('glue', req, res);
+});
 
 /* reducer(s) */
 app.get('/api/v1/reducer/:reducerId/:authkey/:start/:end', function(req, res) {
@@ -307,6 +320,12 @@ app.get('/revision/:htmlId', function(req, res) {
     return dispatchPromise('getPage', req, res);
 });
 
+/* project sub section */
+app.get('/project/:projectPage', function(req, res) {
+    req.params.page = 'project/' + req.params.projectPage;
+    return dispatchPromise('getPage', req, res);
+});
+
 /* last one, page name catch-all */
 app.get('/:page*', function(req, res) {
     return dispatchPromise('getPage', req, res);
@@ -317,17 +336,3 @@ app.get('/', function(req, res) {
 });
 
 
-function infiniteLoop() {
-    /* this will launch other scheduled tasks too */
-    return Promise
-        .resolve()
-        .delay(60 * 1000)
-        .then(function() {
-            if(_.size(performa.queue))
-                return mongo
-                    .cacheFlush(performa.queue, "performa")
-        })
-        .then(infiniteLoop);
-};
-
-infiniteLoop();
