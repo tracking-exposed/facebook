@@ -1,0 +1,73 @@
+doctype html
+html
+    head
+        link(rel='stylesheet', href='/css/bootstrap.css')
+        link(rel='stylesheet', href='/css/index.css')
+        script(type='text/javascript', src='/js/lodash.min.js')
+        script(type='text/javascript', src='/js/jquery.js')
+        script(type='text/javascript', src='/js/collapse.js')
+        script(type='text/javascript', src='/js/bootstrap.min.js')
+        meta(charset="utf-8")
+        meta(http-equiv="X-UA-Compatible" content="IE=edge")
+        meta(name="viewport" content="width=device-width, initial-scale=1")
+        meta(name="keywords" content="facebook tracking exposed")
+        meta(property="og:title" content="facebook.tracking.exposed")
+        meta(property="og:type" content="website")
+        meta(property="og:description" content="Facebook Tracking Exposed is a web browser addon that collects the stories visible in your Facebook News feed and a website that aggregates that data from all the users who have the addon installed. Our vision is to increase transparency behind personalization algorithms")
+        meta(property="og:url" content="https://facebook.tracking.exposed/project")
+        meta(property="og:image" content="https://facebook.tracking.exposed/images/fbtrex_logo-400x400.png")
+        meta(property="og:image:width" content="400")
+        meta(property="og:image:height" content="400")
+        title facebook tracking exposed, the project
+
+    body
+  
+        .container
+            .topheader
+                .col-xs-8.col-sm-8.col-md-8.col-lg-8
+                    span < 
+                        img.githublogo(src="/images/github-256.png")
+                        a(href="https://github.com/tracking-exposed/web-extension") browser extension
+                        |, 
+                        a(href="https://github.com/tracking-exposed/facebook") backend
+                        |  /> 
+  
+                .col-xs-4.col-sm-4.col-md-4.col-lg-4.pull-right
+                    img.fbtrexlogo(alt="logo of fbtrex" src="/images/fbtrex_logo.svg")
+
+                .col-xs-12.col-sm-8.col-md-8.col-lg-8
+                    h2
+                        a(href="/")
+                            span.blue facebook
+                            |.
+                            span.orange tracking
+                            |.
+                            span.green exposed
+                        |  project plan
+ 
+ 
+        nav.navbar.navbar-default.navbar-static-top
+            .container
+                .navbar-header
+                    button.navbar-toggle.collapsed(type="button" data-toggle="collapse" data-target="#thenavbar" aria-expanded="false")
+                        span(id="sr-only") Toggle navigation
+                        span.icon-bar
+                        span.icon-bar
+                        span.icon-bar
+  
+                .collapse.navbar-collapse(id="thenavbar")
+                    ul.nav.navbar-nav
+                        li
+                            a(href='/project') start 
+                        li
+                            a(href='/project/glossary') Glossary
+                    //-
+                        li
+                            a(href='/project/summaries') Summaries
+                        li
+                            a(href='/project/problem') Problem
+                        li
+                            a(href='/project/solution') Solution
+                        li
+                            a(href='/project/details') Details
+                    // 
