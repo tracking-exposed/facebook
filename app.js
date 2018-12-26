@@ -320,6 +320,12 @@ app.get('/revision/:htmlId', function(req, res) {
     return dispatchPromise('getPage', req, res);
 });
 
+/* project sub section */
+app.get('/project/:projectPage', function(req, res) {
+    req.params.page = 'project/' + req.params.projectPage;
+    return dispatchPromise('getPage', req, res);
+});
+
 /* last one, page name catch-all */
 app.get('/:page*', function(req, res) {
     return dispatchPromise('getPage', req, res);
@@ -330,17 +336,3 @@ app.get('/', function(req, res) {
 });
 
 
-function infiniteLoop() {
-    /* this will launch other scheduled tasks too */
-    return Promise
-        .resolve()
-        .delay(60 * 1000)
-        .then(function() {
-            if(_.size(performa.queue))
-                return mongo
-                    .cacheFlush(performa.queue, "performa")
-        })
-        .then(infiniteLoop);
-};
-
-infiniteLoop();
