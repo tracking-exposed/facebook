@@ -215,7 +215,7 @@ function promisifyInputs(body, geoinfo, supporter) {
         impressions: processed_impressions,
         htmls: processed_html
     });
-    
+
     if(_.size(processed.impressions))
         debug(" * impressionOrder 1st %d last %d",
             _.first(processed.impressions).impressionOrder,

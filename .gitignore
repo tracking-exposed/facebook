@@ -1,6 +1,8 @@
 config/groups/*.json
+config/settings.json
 dist/**
 node_modules/*
 extension/yarn.lock
 npm-debug.log
+package-lock.json
 parsers/components/*
