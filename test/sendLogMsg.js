@@ -10,6 +10,10 @@ const fieldValue = nconf.get('field') || "random-value-" + _.random(0, 0xffff);
 
 function sendMessage() {
     debug("Sending message with `id` %s and `field` %s", id, fieldValue);
+
+    echoes.addEcho("elasticsearch");
+    echoes.setDefaultEcho("elasticsearch");
+
     var r = echoes.echo({
         id: id,
         index: "tester_sender",

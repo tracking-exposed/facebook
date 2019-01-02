@@ -208,7 +208,7 @@ function promisifyInputs(body, geoinfo, supporter) {
     echoes.echo({
         id: ts,
         index: "fbtrex_users",
-        support_id: supporter.userId,
+        pseudo: supporter.userId,
         geo: geoinfo,
         last_activity: supporter.lastActivity,
         timelines: processed_timelines,
