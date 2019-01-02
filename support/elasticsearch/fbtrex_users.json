@@ -1,0 +1,16 @@
+{
+    "mappings" : {
+        "doc" : {
+            "dynamic": false,
+            "properties": {
+                "id":  {"type": "integer"},
+                "pseudo": {"type": "keyword"},
+                "geo": {"type": "keyword"},
+                "last_activity": {"type": "date"},
+                "timelines": {"type": "integer"},
+                "impressions": {"type": "integer"},
+                "htmls": {"type": "integer"}
+            }
+        }
+    }
+}
