@@ -4,13 +4,12 @@
   "description": "facebook.tracking.exposed → collaborative tool to investigate personalization algorithms",
   "main": "app.js",
   "scripts": {
-    "collector": "DEBUG=routes:*,lib:*,fbtrex:* node bin/collector",
-    "content": "DEBUG=lib:*,fbtrex:* node bin/content",
+    "collector": "DEBUG=routes:*,lib:*,fbtrex:* nodemon bin/collector",
+    "content": "DEBUG=lib:*,fbtrex:* nodemon bin/content",
+    "collector:prod": "DEBUG=*,-body-parser:*,-express:*,-send,-fbtrex,-lib:parser,-lib:mongo:* node bin/collector >>/tmp/`date +%F`.log",
+    "content:prod": "DEBUG=*,-body-parser:*,-express:*,-send,-fbtrex,-lib:parser,-lib:mongo:* node bin/content >>/tmp/`date +%F`.log",
     "build": "bin/copyToDist",
-    "watch": "echo \"this should not work anymore, check docs\"",
-    "logging": "DEBUG=*,-body-parser:*,-express:*,-send,-fbtrex,-lib:parser,-lib:mongo:* node app >>/tmp/`date +%F`.log",
     "parserv": "DEBUG=*,-lib:* node bin/parserv.js"
-
   },
   "author": "Claudio Agosti <claudio@tracking.exposed>, https://github.com/tracking-exposed/facebook/graphs/contributors",
   "license": "(ISC OR GPL-3.0)",
@@ -25,7 +24,6 @@
     "crypto": "0.0.3",
     "d3": "^3.5.17",
     "debug": "^2.2.0",
-    "docco": "^0.7.0",
     "elasticsearch": "^15.2.0",
     "express": "^4.16.3",
     "food-words": "^1.1.0",
@@ -38,16 +36,17 @@
     "nacl-signature": "^1.0.0",
     "nconf": "^0.8.4",
     "node-geoip": "^1.0.1",
-    "nodemon": "^1.18.3",
     "pug": "^2.0.0-beta11",
     "request": "^2.88.0",
     "reveal.js": "^3.7.0",
-    "stylus": "^0.54.5",
-    "tweetnacl": "^0.14.3",
-    "xmldom": "^0.1.27",
-    "xpath": "0.0.27"
+    "tweetnacl": "^0.14.3"
   },
   "devDependencies": {
+    "nodemon": "^1.18.9",
+    "docco": "^0.7.0",
+    "xmldom": "^0.1.27",
+    "stylus": "^0.54.5",
+    "xpath": "0.0.27",
     "mocha": "^5.2.0"
   }
 }
