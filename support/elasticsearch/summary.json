@@ -1,0 +1,23 @@
+{
+    "mappings" : {
+        "doc" : {
+            "dynamic": false,
+            "properties": {
+
+                "errors": { "type": ??? List ??? },
+                "type": {"type": "keyword"},
+                "publicationTime": {"type": "date"},
+                "postId": {"type": "keyword"},
+                "permaLink": {"type": "keyword"},
+                "author": {"type": "keyword"},
+                "authorLink": {"type": "keyword"},
+                "text": { "trype": ??? Collection ??? },
+                "textlength": {"type": "integer"},
+                "impressionTime": {"type": "date"},
+                "impressionOrder": {"type": "integer"},
+                "pseudo": {"type": "keyword"},
+                "timeline": {"type": "keyword"}
+            }
+        }
+    }
+}
