@@ -3,6 +3,7 @@ var _ = require('lodash');
 var moment = require('moment');
 var Promise = require('bluebird');
 var debug = require('debug')('bin:importfreshsample');
+var reportDuplicate = require('debug')('bin:importfreshsample:duplicate!');
 var request = Promise.promisifyAll(require('request'));
 var nconf = require('nconf');
 var mongo = require('../lib/mongo');
@@ -86,7 +87,12 @@ function writeImpressions(blob) {
             .catch(duplicatedError);
     }, { concurrency: 1} )
     .tap(function() {
-        debug("Written %d impressions", counter);
+        if(_.size(blob[1])) {
+            if(!counter)
+                reportDuplicate("timeline already saved");
+            else 
+                debug("Written %d impressions", counter);
+        }
     });
 }
 
