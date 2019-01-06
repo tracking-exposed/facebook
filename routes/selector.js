@@ -7,6 +7,7 @@ const nconf = require('nconf');
 const utils = require('../lib/utils');
 const mongo = require('../lib/mongo');
 const adopters = require('../lib/adopters');
+const echoes = require('../lib/echoes');
 
 /* this file contains getSelector and userInfo,
  *                        GET /api/v1/selector
@@ -53,6 +54,14 @@ function userInfo(req) {
             }
             debug("userInfo %s (%s) returning token and selctor",
                 supporter.pseudo, req.headers['x-fbtrex-version']);
+
+            echoes.echo({
+                id: Math.round((new Date()).getTime() / 1000),
+                pseudo: supporter.pseudo,
+                version: supporter.version
+            });
+            // trivia: the version update happen at the submission, not here
+
             return {
                 'json': {
                     token: supporter.userSecret,
@@ -64,6 +73,12 @@ function userInfo(req) {
             debug("userInfo (%s): error [%s] returning (dummy)token [%s]",
                 req.headers['x-fbtrex-version'],
                 error.message, req.headers['x-fbtrex-userid']);
+
+            echoes.echo({
+                id: Math.round((new Date()).getTime() / 1000),
+                pseudo: "undefined",
+                version: supporter.version
+            });
 
             return {
                 'json': {
@@ -80,6 +95,13 @@ function getSelector(req) {
      */
     debug("LEGACY getSelector %s from %s",
         req.headers['x-fbtrex-version'], req.headers['x-fbtrex-userid']);
+
+    echoes.echo({
+        id: Math.round((new Date()).getTime() / 1000),
+        pseudo: "unsupported",
+        version: req.headers['x-fbtrex-version']
+    });
+
     return {
         'json': {
             'selector': CURRENT_SELECTOR
