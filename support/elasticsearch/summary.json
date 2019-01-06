@@ -3,20 +3,20 @@
         "doc" : {
             "dynamic": false,
             "properties": {
-
+                "id": { "type": "integer" },
                 "errors": { "type": ??? List ??? },
-                "type": {"type": "keyword"},
-                "publicationTime": {"type": "date"},
-                "postId": {"type": "keyword"},
-                "permaLink": {"type": "keyword"},
-                "author": {"type": "keyword"},
-                "authorLink": {"type": "keyword"},
+                "type": { "type": "keyword" },
+                "publicationTime": { "type": "date" },
+                "postId": { "type": "keyword" },
+                "permaLink": { "type": "keyword" },
+                "author": { "type": "keyword" },
+                "authorLink": { "type": "keyword" },
                 "text": { "trype": ??? Collection ??? },
-                "textlength": {"type": "integer"},
-                "impressionTime": {"type": "date"},
-                "impressionOrder": {"type": "integer"},
-                "pseudo": {"type": "keyword"},
-                "timeline": {"type": "keyword"}
+                "textlength": { "type": "integer" },
+                "impressionTime": { "type": "date" },
+                "impressionOrder": { "type": "integer" },
+                "pseudo": { "type": "keyword" },
+                "timeline": { "type": "keyword" }
             }
         }
     }
