@@ -5,7 +5,11 @@
       "timelines": "timelines2",
       "accesses": "accesses2",
       "htmls": "htmls2",
-      "metadata": "metadata"
+      "metadata": "metadata",
+      "parserstats": "parserstats",
+      "errors": "parsererrors",
+      "summary": "summary",
+      "anomalies": "anomalies"
   },
   "mongodb": "mongodb://localhost/facebook",
   "port": 8000,
