@@ -1,0 +1,13 @@
+{
+    "mappings" : {
+        "doc" : {
+            "dynamic": false,
+            "properties": {
+                "id": { "type": "integer" },
+                "timelineId": { "type": "keyword" },
+                "recordedAt": { "type": "date" },
+                "version": { "type": "keyword" }
+            }
+        }
+    }
+}
