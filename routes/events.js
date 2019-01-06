@@ -99,6 +99,7 @@ function parseEvents(memo, evnt) {
             impressionCounter: evnt.impressionCounter,
             userId: memo.sessionInfo.numId,
             geoip: memo.sessionInfo.geoip,
+            version: memo.sessionInfo.version,
             previous: evnt.previous,
             current: evnt.current,
             when: new Date(), // a mongodb TTL is set on `when`, 
@@ -107,6 +108,15 @@ function parseEvents(memo, evnt) {
         anomaly.timelineId = utils.hash({
             'uuid': evnt.timelineId,
             'user': memo.sessionInfo.numId
+        });
+
+        /* if an anomaly is found, is logged directly in the ELK */
+        echoes.echo({
+            id: Math.round((new Date()).getTime() / 1000),
+            index: "anomaly",
+            timelineId: supporter.userId,
+            recordedAt: new Date(),
+            version: memo.sessionInfo.version,
         });
 
         debug("anomaly from [%s], timelineId %s",
