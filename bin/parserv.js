@@ -65,6 +65,7 @@ function logActivity(results) {
         "errors": 0
        } ]                                         */
     echoes.echo({
+        index: "parserv",
         id: Math.round((new Date()).getTime() / 1000),
         success: _.first(results).metadata,
         errors: _.first(results).errors,
