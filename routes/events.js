@@ -12,10 +12,6 @@ var mongo = require('../lib/mongo');
 var utils = require('../lib/utils');
 var echoes = require('../lib/echoes');
 
-function hasError(retDict) {
-    return (!_.isUndefined(_.get(retDict, 'error')));
-};
-
 function processHeaders(received, required) {
     var ret = {};
     var errs = _.map(required, function(destkey, headerName) {
@@ -27,11 +23,7 @@ function processHeaders(received, required) {
         return null;
     });
     errs = _.compact(errs);
-    if(_.size(errs)) {
-        debug("Error in processHeaders: %j", errs);
-        return { 'errors': errs };
-    }
-    return ret;
+    return _.size(errs) ? { errors: errs } : ret;
 };
 
 function parseEvents(memo, evnt) {
@@ -101,14 +93,30 @@ function parseEvents(memo, evnt) {
         return memo;
     }
 
-    debug("Unexpected type: %s, abort", evnt.type);
+    if (evnt.type === 'anomaly') {
+        var anomaly = {
+            impressionCounter: evnt.impressionCounter,
+            userId: memo.sessionInfo.numId,
+            geoip: memo.sessionInfo.geoip,
+            previous: evnt.previous,
+            current: evnt.current,
+            when: new Date(), // a mongodb TTL is set on `when`, 
+                              // making this info object after a while
+        };
+        anomaly.timelineId = utils.hash({
+            'uuid': evnt.timelineId,
+            'user': memo.sessionInfo.numId
+        });
 
-    if (typeof memo.error === 'undefined') {
-        memo.error = [];
+        debug("anomaly from [%s], timelineId %s",
+            memo.sessionInfo.geoip, anomaly.timelineId);
+        memo.anomalies.push(anomaly);
+        return memo;
     }
 
-    memo.error.push(JSON.stringify({
-        'kind': "invalid type",
+    debug("Error! unexpected event type: [%s]", evnt.type);
+    memo.errors.push(JSON.stringify({
+        'kind': "unexpected type",
         'event': evnt
     }));
     return memo;
@@ -120,6 +128,7 @@ function promisifyInputs(body, geoinfo, supporter) {
         'timelines': [],
         'impressions': [],
         'htmls': [],
+        'anomalies': [],
         'errors': [],
         'sessionInfo': {
             'geoip': geoinfo,
@@ -129,14 +138,13 @@ function promisifyInputs(body, geoinfo, supporter) {
         }
     });
 
-    if(hasError(processed))
-        return debug("Error in processing event: %s", processed.error);
+    if(_.size(processed.errors))
+        return debug("Error in processing event: %j", processed.errors);
 
     var functionList = [];
 
     if(_.size(processed.htmls))
-        functionList.push(
-                mongo
+        functionList.push(mongo
             .writeMany(nconf.get('schema').htmls, processed.htmls)
             .return({
                 'kind': 'htmls',
@@ -145,8 +153,7 @@ function promisifyInputs(body, geoinfo, supporter) {
         );
 
     if(_.size(processed.impressions))
-        functionList.push(
-                mongo
+        functionList.push(mongo
             .writeMany(nconf.get('schema').impressions,processed.impressions)
             .return({
                 'kind': 'impressions',
@@ -155,8 +162,7 @@ function promisifyInputs(body, geoinfo, supporter) {
         );
 
     if(_.size(processed.timelines))
-        functionList.push(
-                mongo
+        functionList.push(mongo
             .writeMany(nconf.get('schema').timelines, processed.timelines)
             .return({
                 'kind': 'timelines',
@@ -164,15 +170,20 @@ function promisifyInputs(body, geoinfo, supporter) {
             })
         );
 
-    functionList.push(
-        mongo
-            .updateOne(nconf.get('schema').supporters, {
-                    publicKey: supporter.publicKey,
-                    userId: _.parseInt(supporter.userId)
-                },
-                _.set(supporter, 'lastActivity',
-                    new Date(moment().toISOString()))
-             )
+    if(_.size(processed.anomalies))
+        functionList.push(mongo
+            .writeMany(nconf.get('schema').anomalies, processed.anomalies)
+            .return({
+                'kind': 'anomalies',
+                'amount': _.size(processed.anomalies)
+            })
+        );
+
+    functionList.push(mongo
+        .updateOne(nconf.get('schema').supporters, {
+                publicKey: supporter.publicKey,
+                userId: _.parseInt(supporter.userId)
+            }, supporter)
     );
 
     var processed_timelines = 0
@@ -182,27 +193,19 @@ function promisifyInputs(body, geoinfo, supporter) {
     /* this big debug noise is handy on the server */
     if(processed.timelines && processed.timelines[0] && processed.timelines[0].nonfeed)
         debug(" * non-newsfeed navigation: no content received");
-    else{
-    processed_timelines = _.size(processed.timelines)
-    processed_impressions =  _.size(processed.impressions)
-    processed_html = _.size(processed.htmls)
+    else {
+        processed_timelines = _.size(processed.timelines)
+        processed_impressions =  _.size(processed.impressions)
+        processed_html = _.size(processed.htmls)
         
         debug(" * %d timelines %d impressions %d html %s",
-          processed_timelines,
-          processed_impressions,
-          processed_html,
+            processed_timelines, processed_impressions, processed_html,
             _.get(processed.timelines[0], 'tagId') ?
                 "tagId " + processed.timelines[0].tagId :
                 ""
             );
     }
-    
-    debug(" * user %d [%s] last activity %s (%s ago) %s",
-        supporter.userId, geoinfo,
-        moment(supporter.lastActivity).format("HH:mm DD/MM"),
-        moment.duration(moment.utc()-moment(supporter.lastActivity)).humanize(),
-          supporter.version);
-    
+
     var ts = Math.round((new Date()).getTime() / 1000);
 
     echoes.echo({
@@ -248,62 +251,70 @@ function processEvents(req) {
         'x-fbtrex-signature': 'signature'
     });
 
-    if(hasError(headers))
-        return debug("header parsing, missing: %s", headers.error);
+    if(_.size(headers.errors))
+        return debug("headers parsing error missing: %j", headers.errors);
+
+    /* first thing: verify signature integrity */
+    if (!utils.verifyRequestSignature(req)) {
+        debug("Event ignored: invalid signature, body of %d bytes, headers: %j",
+            _.size(req.body), req.headers);
+        return { 'json': {
+            'status': 'error',
+            'info': "Invalid signature"
+        }};
+    }
 
     return mongo
         .read(nconf.get('schema').supporters, {
             userId: _.parseInt(headers.supporterId),
             publicKey: headers.publickey
         })
-        // TODO: we can remove the next `.tap` by delegating the uniqueness
-        // check to MongoDB. We can achieve this by creating a compound key
-        // db.supporters.createIndex( { "userId": 1, "publicKey": 1 } )
         .then(function(supporterL) {
             if(!_.size(supporterL)) {
-                var content = {
-                    userId: _.parseInt(headers.supporterId),
+
+                if(_.isNaN(_.parseInt(headers.supporterId)))
+                    throw new Error("Invalid supporterId in headers");
+
+                var supporter = {
                     publicKey: headers.publickey,
-                    userSecret: utils.hash({
-                        publicKey: headers.publicKey,
-                        userId: headers.supporterId,
-                        when: moment().toISOString()
-                    }),
                     keyTime: new Date(),
                     lastActivity: new Date(),
-                    tofu: true
+                    version: headers.version
                 };
-                debug("missing supporter %j: TOFU!", content);
+                supporter.userId =  _.parseInt(headers.supporterId);
+                supporter.pseudo = utils.pseudonymizeUser(supporter.userId);
+                supporter.userSecret = utils.hash({
+                    publicKey: supporter.publicKey,
+                    random: _.random(0, supporter.userId),
+                    when: moment().toISOString()
+                });
+                debug("Creating by TOFU %s (%d)", supporter.pseudo, supporter.userId);
                 return mongo
-                    .writeOne(nconf.get('schema').supporters, content)
-                    .return( [ content ] )
-            }
-            return supporterL;
-        })
-        .tap(function(supporterL) {
-            if(_.size(supporterL) > 1)
-                debug("Error: report this error %j -- duplicated supporter", supporterL);
-        })
-        .then(_.first)
-        .then(function(supporter) {
-            if(!_.every([ headers.signature, supporter.publicKey], _.size)) {
-                debug("Validation fail: signed %s retrieved pubkey %s",
-                    headers.signature, supporter.publicKey);
-                throw new Error("Signature can't be verify");
-            }
-            if (!utils.verifyRequestSignature(req)) {
-                debug("Verification fail: signed %s pubkey %s user %d",
-                    headers.signature, supporter.publicKey, supporter.userId);
-                throw new Error('Signature does not match request body');
-            }
-            /* verification went well! */
+                    .writeOne(nconf.get('schema').supporters, supporter)
+                    .return(supporter);
+            } else {
+                if(_.size(supporterL) > 1)
+                    // TODO: we can delegate the uniqueness check to MongoDB. 
+                    // We can achieve this by creating a compound key
+                    // db.supporters.createIndex( { "userId": 1, "publicKey": 1 } )
+                    debug("Error: %j -- duplicated supporter", supporterL);
 
-            if(supporter.version !== headers.version) {
-                debug("Supporter %d version upgrade %s to %s",
-                    supporter.userId, supporter.version, headers.version);
+                var supporter = _.first(supporterL);
+
+                if(supporter.version !== headers.version)
+                    debug(" * Supporter %s version upgrade %s to %s",
+                        supporter.pseudo, supporter.version, headers.version);
+
+                debug(" * Supporter %s [%s] last activity %s (%s ago) %s",
+                    supporter.pseudo, geoinfo,
+                    moment(supporter.lastActivity).format("HH:mm DD/MM"),
+                    moment.duration(moment.utc()-moment(supporter.lastActivity)).humanize(),
+                    supporter.version);
+
+                supporter.version = headers.version;
+                _.set(supporter, 'lastActivity', new Date());
+                return supporter;
             }
-            supporter.version = headers.version;
-            return supporter;
         })
         .then(function(supporter) {
             return promisifyInputs(req.body, geoinfo, supporter);
