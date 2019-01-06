@@ -1,0 +1,13 @@
+{
+    "mappings" : {
+        "doc" : {
+            "dynamic": false,
+            "properties": {
+                "id":  {"type": "integer"},
+                "success": {"type": "integer"},
+                "errors": {"type": "integer"},
+                "completedAt": { "type": "date" }
+            }
+        }
+    }
+}
