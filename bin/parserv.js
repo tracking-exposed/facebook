@@ -1,18 +1,22 @@
 #!/usr/bin/env node
-var Promise = require('bluebird');
-var _ = require('lodash');
-var moment = require('moment');
-var debug = require('debug')('bin:parserv');
-var nconf= require('nconf');
+const Promise = require('bluebird');
+const _ = require('lodash');
+const moment = require('moment');
+const debug = require('debug')('bin:parserv');
+const nconf= require('nconf');
 
-var mongo = require('../lib/mongo');
-var parse = require('../lib/parse');
+const mongo = require('../lib/mongo');
+const parse = require('../lib/parse');
 
 nconf.argv().env().file({ file: 'config/collector.json' });
 
 const concur = _.isUndefined(nconf.get('concurrency') ) ? 1 : _.parseInt(nconf.get('concurrency') );
 const FREQUENCY = 2; // seconds
-var lastExecution = moment().subtract(10, 'minutes').toISOString();
+
+const backInTime = _.parseInt(nconf.get('minutesago')) ? _.parseInt(nconf.get('minutesago')) : 10;
+console.log(`considering the product since ${backInTime} minutes ago, [minutesago] overrides`);
+
+var lastExecution = moment().subtract(backInTime, 'minutes').toISOString();
 var lastCycleActive = false;
 
 function getLastActive() {
