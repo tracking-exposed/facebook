@@ -1,10 +1,12 @@
-var _ = require('lodash');
-var moment = require('moment');
-var Promise = require('bluebird');
-var debug = require('debug')('route:selector');
-var nconf = require('nconf');
- 
-var mongo = require('../lib/mongo');
+const _ = require('lodash');
+const moment = require('moment');
+const Promise = require('bluebird');
+const debug = require('debug')('routes:selector');
+const nconf = require('nconf');
+
+const utils = require('../lib/utils');
+const mongo = require('../lib/mongo');
+const adopters = require('../lib/adopters');
 
 /* this file contains getSelector and userInfo,
  *                        GET /api/v1/selector
@@ -19,35 +21,50 @@ function userInfo(req) {
     /* the POST function returns:
      * - the W3C CSS selector currently used to spot posts
      * - the personal tokenId of the user
-     *   */
+     */
+
+    if (!utils.verifyRequestSignature(req)) {
+        debug("request dropped: invalid signature, body of %d bytes, headers: %j",
+            _.size(req.body), req.headers);
+        return { 'json': {
+            'status': 'error',
+            'info': "Invalid signature"
+        }};
+    }
+
     return mongo
         .read(nconf.get('schema').supporters, {
             publicKey: req.body.publicKey,
             userId: _.parseInt(req.body.userId)
         })
-        .then(_.first)
-        .then(function(user) {
-            if(user.optin !== req.body.optin)
-                debug("we should do an optin update: %j", user.optin);
+        .then(function(supporterL) {
+            if(!_.size(supporterL))
+                return adopters.create(headers);
 
-            var token = "unavailable";
+            if(_.size(supporterL) > 1)
+                debug("Error: %j -- duplicated supporter", supporterL);
 
-            if(!user || !user.userSecret)
-                debug("Odd race condition, token not available for %s", req.body.userId);
-            else
-                token = user.userSecret;
-
-            debug("userInfo (%s): Success, returning token and the selctor", req.headers['x-fbtrex-version']);
+            return _.first(supporterL);
+        })
+        .then(function(supporter) {
+            if(supporter.optin !== req.body.optin) {
+                // debug("we should do an optin update: %j != %j", user.optin, req.body.optin);
+                // deal with this when we have a situation of multiple opt-in
+            }
+            debug("userInfo %s (%s) returning token and selctor",
+                supporter.pseudo, req.headers['x-fbtrex-version']);
             return {
                 'json': {
-                    token: token,
-                    selector: '.userContentWrapper'
+                    token: supporter.userSecret,
+                    selector: CURRENT_SELECTOR
                 }
             };
         })
         .catch(function(error) {
-            debug("userInfo (%s): Failure, returning (dummy)token and the selctor", req.headers['x-fbtrex-version']);
-            // TODO manage this token in the static page
+            debug("userInfo (%s): error [%s] returning (dummy)token [%s]",
+                req.headers['x-fbtrex-version'],
+                error.message, req.headers['x-fbtrex-userid']);
+
             return {
                 'json': {
                     token: 'error',
@@ -61,7 +78,8 @@ function getSelector(req) {
     /* the GET function returns:
      * - the W3C CSS selector currently used to spot posts
      */
-    debug("LEGACY getSelector %s", req.headers['x-fbtrex-version']);
+    debug("LEGACY getSelector %s from %s",
+        req.headers['x-fbtrex-version'], req.headers['x-fbtrex-userid']);
     return {
         'json': {
             'selector': CURRENT_SELECTOR
