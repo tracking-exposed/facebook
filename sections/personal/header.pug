@@ -1,22 +1,20 @@
-block header
-  
-  div.container
+div.container
     div.topheader
-      div.col-xs-8.col-sm-8.col-md-8.col-lg-8
-        span < 
-          img.githublogo(src="/images/github-256.png")
-          a(href="https://github.com/tracking-exposed/web-extension") browser extension
-          |, 
-          a(href="https://github.com/tracking-exposed/facebook") backend
-          |  /> 
+        div.col-sm-5.right
+            span Here's are the data you submit
+                br
+                | This is a work in progress, check our 
+                a(href="/roadmap")
+                    b roadmap
+                |  to know more.
 
-      div.col-xs-1.col-sm-1.col-md-1.col-lg-1.pull-left.logocontainer
-        img.fbtrexlogo(alt="logo of fbtrex" src="/images/fbtrex_logo.svg")
+        div.col-sm-2.center
+            img.fbtrexlogo(alt="logo of fbtrex" src="/images/fbtrex_logo.svg")
 
-      div.col-xs-8.col-sm-8.col-md-8.col-lg-8
-        p.title   
-          span.blue facebook
-          |.
-          span.orange tracking
-          |.
-          span.green exposed
+        div.col-sm-5
+            p
+                span.blue facebook
+                |.
+                span.orange tracking
+                |.
+                span.green exposed

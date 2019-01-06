@@ -165,6 +165,7 @@ app.get('/api/v:version/html/:htmlId', function(req, res) {
 });
 
 /* APIs used in personal page */
+// ALL TO BE REVIEWED --------------------------------------------------o\
 app.get('/api/v:version/htmls/:userToken/legacy/:amount', function(req, res) {
     return dispatchPromise('metadataLegacy', req, res);
 });
@@ -180,6 +181,12 @@ app.get('/api/v:version/personal/csv/:userToken/:kind', function(req, res) {
 app.get('/api/v:version/personal/diet/:userToken/:days', function(req, res) {
     return dispatchPromise('dietBasic', req, res);
 });
+// ALL TO BE REVIEWED --------------------------------------------------o/
+// THE NEW ONE BELOW ---       -----------------------------------------o\
+app.get('/api/v:version/summary/:userToken/:offset', function(req, res) {
+    return dispatchPromise('getSummaryData', req, res);
+});
+// TO BE DOCUMENTED ----------------------------------------------------o/
 
 /* Alarm listing  API */
 app.get('/api/v1/alarms/:auth', function(req, res) {
@@ -290,6 +297,10 @@ app.get('/realitycheck/:userId?/:detail?', function(req, res) {
 app.get('/personal/unset/:stuff', function(req, res) {
     req.params.page = 'unset';
     return dispatchPromise('getPage', req, res);
+});
+/* this is the new summary page */
+app.get('/summary/:userToken', function(req, res) {
+    return dispatchPromise('getSummaryPage', req, res);
 });
 
 /* special pages: the parameters are acquired by JS client side */
