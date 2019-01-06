@@ -11,6 +11,7 @@ var bs58 = require('bs58');
 var mongo = require('../lib/mongo');
 var utils = require('../lib/utils');
 var echoes = require('../lib/echoes');
+var adopters = require('../lib/adopters');
 
 function processHeaders(received, required) {
     var ret = {};
@@ -256,7 +257,7 @@ function processEvents(req) {
 
     /* first thing: verify signature integrity */
     if (!utils.verifyRequestSignature(req)) {
-        debug("Event ignored: invalid signature, body of %d bytes, headers: %j",
+        debug("event ignored: invalid signature, body of %d bytes, headers: %j",
             _.size(req.body), req.headers);
         return { 'json': {
             'status': 'error',
@@ -270,51 +271,32 @@ function processEvents(req) {
             publicKey: headers.publickey
         })
         .then(function(supporterL) {
-            if(!_.size(supporterL)) {
 
-                if(_.isNaN(_.parseInt(headers.supporterId)))
-                    throw new Error("Invalid supporterId in headers");
+            if(!_.size(supporterL))
+                return adopters.create(headers);
 
-                var supporter = {
-                    publicKey: headers.publickey,
-                    keyTime: new Date(),
-                    lastActivity: new Date(),
-                    version: headers.version
-                };
-                supporter.userId =  _.parseInt(headers.supporterId);
-                supporter.pseudo = utils.pseudonymizeUser(supporter.userId);
-                supporter.userSecret = utils.hash({
-                    publicKey: supporter.publicKey,
-                    random: _.random(0, supporter.userId),
-                    when: moment().toISOString()
-                });
-                debug("Creating by TOFU %s (%d)", supporter.pseudo, supporter.userId);
-                return mongo
-                    .writeOne(nconf.get('schema').supporters, supporter)
-                    .return(supporter);
-            } else {
-                if(_.size(supporterL) > 1)
-                    // TODO: we can delegate the uniqueness check to MongoDB. 
-                    // We can achieve this by creating a compound key
-                    // db.supporters.createIndex( { "userId": 1, "publicKey": 1 } )
-                    debug("Error: %j -- duplicated supporter", supporterL);
-
-                var supporter = _.first(supporterL);
-
-                if(supporter.version !== headers.version)
-                    debug(" * Supporter %s version upgrade %s to %s",
-                        supporter.pseudo, supporter.version, headers.version);
-
-                debug(" * Supporter %s [%s] last activity %s (%s ago) %s",
-                    supporter.pseudo, geoinfo,
-                    moment(supporter.lastActivity).format("HH:mm DD/MM"),
-                    moment.duration(moment.utc()-moment(supporter.lastActivity)).humanize(),
-                    supporter.version);
-
-                supporter.version = headers.version;
-                _.set(supporter, 'lastActivity', new Date());
-                return supporter;
+            if(_.size(supporterL) > 1) {
+                // TODO: we can delegate the uniqueness check to MongoDB. 
+                // We can achieve this by creating a compound key
+                // db.supporters.createIndex( { "userId": 1, "publicKey": 1 } )
+                debug("Error: %j -- duplicated supporter", supporterL);
             }
+
+            var supporter = _.first(supporterL);
+
+            if(supporter.version !== headers.version)
+                debug(" * Supporter %s version upgrade %s to %s",
+                    supporter.pseudo, supporter.version, headers.version);
+
+            debug(" * Supporter %s [%s] last activity %s (%s ago) %s",
+                supporter.pseudo, geoinfo,
+                moment(supporter.lastActivity).format("HH:mm DD/MM"),
+                moment.duration(moment.utc()-moment(supporter.lastActivity)).humanize(),
+                supporter.version);
+
+            supporter.version = headers.version;
+            _.set(supporter, 'lastActivity', new Date());
+            return supporter;
         })
         .then(function(supporter) {
             return promisifyInputs(req.body, geoinfo, supporter);
@@ -336,5 +318,5 @@ function processEvents(req) {
 };
 
 module.exports = {
-  processEvents: processEvents
+    processEvents: processEvents
 };
