@@ -7,6 +7,7 @@ const nconf= require('nconf');
 
 const mongo = require('../lib/mongo');
 const parse = require('../lib/parse');
+const echoes = require('../lib/echoes');
 
 nconf.argv().env().file({ file: 'config/collector.json' });
 
@@ -49,11 +50,26 @@ function infiniteLoop() {
                     lastExecution, JSON.stringify(results)
                 );
                 lastCycleActive = true;
+                logActivity(results);
             } else {
                 lastCycleActive = false;
             }
         })
         .then(infiniteLoop);
+};
+
+function logActivity(results) {
+    /* results contain an aggregated sum, such as:
+       [ {
+        "metadata": 8,
+        "errors": 0
+       } ]                                         */
+    echoes.echo({
+        id: Math.round((new Date()).getTime() / 1000),
+        success: _.first(results).metadata,
+        errors: _.first(results).errors,
+        completedAt: new Date()
+    });
 };
 
 infiniteLoop();
