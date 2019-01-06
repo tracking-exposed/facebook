@@ -1,18 +1,18 @@
 {
   "name": "facebook-tracking-exposed",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "facebook.tracking.exposed → collaborative tool to investigate personalization algorithms",
   "main": "app.js",
   "scripts": {
     "collector": "DEBUG=routes:*,lib:*,fbtrex:* nodemon bin/collector",
-    "content": "DEBUG=lib:*,fbtrex:* nodemon bin/content",
-    "collector:prod": "DEBUG=*,-body-parser:*,-express:*,-send,-fbtrex,-lib:parser,-lib:mongo:* node bin/collector >>/tmp/`date +%F`.log",
-    "content:prod": "DEBUG=*,-body-parser:*,-express:*,-send,-fbtrex,-lib:parser,-lib:mongo:* node bin/content >>/tmp/`date +%F`.log",
-    "build": "bin/copyToDist",
-    "parserv": "DEBUG=*,-lib:* node bin/parserv.js"
+    "collector:prod": "DEBUG=lib:*,fbtrex:*,routes:*,-lib:mongo:read node bin/collector >>/tmp/`date +%F`.log",
+    "content": "DEBUG=lib:*,fbtrex:*,routes:* nodemon bin/content",
+    "content:prod": "DEBUG=lib:*,fbtrex:*,routes:*,-lib:mongo:read node bin/content >>/tmp/`date +%F`.log",
+    "build": "bin/install-script.sh",
+    "parserv": "DEBUG=*,-lib:parse,-lib:mongo:read node bin/parserv.js"
   },
   "author": "Claudio Agosti <claudio@tracking.exposed>, https://github.com/tracking-exposed/facebook/graphs/contributors",
-  "license": "(ISC OR GPL-3.0)",
+  "license": "AGPL-3.0",
   "dependencies": {
     "bluebird": "^3.4.1",
     "body-parser": "^1.18.3",
@@ -29,7 +29,6 @@
     "food-words": "^1.1.0",
     "harmony-reflect": "^1.6.1",
     "jquery": "^3.0.0",
-    "jsdom": "^13.0.0",
     "lodash": "^4.17.10",
     "moment": "^2.22.2",
     "mongodb": "^2.1.8",
@@ -38,8 +37,9 @@
     "node-geoip": "^1.0.1",
     "pug": "^2.0.0-beta11",
     "request": "^2.88.0",
-    "reveal.js": "^3.7.0",
-    "tweetnacl": "^0.14.3"
+    "tweetnacl": "^0.14.5",
+    "tweetnacl-util": "^0.15.0",
+    "reveal.js": "^3.7.0"
   },
   "devDependencies": {
     "nodemon": "^1.18.9",
@@ -47,6 +47,7 @@
     "xmldom": "^0.1.27",
     "stylus": "^0.54.5",
     "xpath": "0.0.27",
+    "jsdom": "^13.0.0",
     "mocha": "^5.2.0"
   }
 }

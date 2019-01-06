@@ -8,7 +8,8 @@
       "metadata": "metadata",
       "parserstats": "parserstats",
       "errors": "parsererrors",
-      "summary": "summary"
+      "summary": "summary",
+      "anomalies": "anomalies"
   },
   "mongodb": "mongodb://localhost/facebook",
   "port": 8100,
