@@ -1,0 +1,12 @@
+{
+    "mappings" : {
+        "doc" : {
+            "dynamic": false,
+            "properties": {
+                "id": { "type": "integer" },
+                "pseudo": { "type": "keyword" },
+                "version": { "type": "keyword" }
+            }
+        }
+    }
+}
