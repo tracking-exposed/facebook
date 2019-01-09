@@ -1,0 +1,122 @@
+doctype html
+html
+  head
+    link(rel='stylesheet', type='text/css', href='/css/bootstrap.css')
+    link(rel='stylesheet', href='/css/index.css')
+    link(rel='stylesheet', href='/css/personal.css')
+
+    script(type='text/javascript', src='/js/jquery.js')
+    script(type='text/javascript', src='/js/collapse.js')
+    script(type='text/javascript', src='/js/bootstrap.min.js')
+    script(type='text/javascript', src='/js/lodash.min.js')
+    script(type='text/javascript', src='/js/d3.min.js')
+    script(type='text/javascript', src='/js/c3.min.js')
+    script(type='text/javascript', src='/js/moment.min.js')
+
+    script(type='text/javascript', charset='utf8', src='/js/local/personal.js')
+
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    meta(name="keywords" content="facebook tracking exposed")
+    meta(property="og:title" content="Your information diet - facebook.tracking.exposed")
+    meta(property="og:type" content="website")
+    meta(property="og:description" content="This page is mean to be shared only to people you trust, is the personal page where users can see their information diet, download CSV, know more about the project")
+    meta(property="og:url" content="https://facebook.tracking.exposed")
+    meta(property="og:image" content="https://facebook.tracking.exposed/images/fbtrex_logo-400x400.png")
+    meta(property="og:image:width" content="400")
+    meta(property="og:image:height" content="400")
+
+    title FbTREX, Information diet - facebook.tracking.exposed 
+
+  body(onload="initialize();")
+
+    include header
+
+    div.container
+      div.navbar-header
+        button.navbar-toggle.collapsed(type="button" data-toggle="collapse" data-target="#thenavbar" aria-expanded="false")
+          span(id="sr-only") Toggle navigation
+          span.icon-bar
+          span.icon-bar
+          span.icon-bar
+
+      div.collapse.navbar-collapse(id="thenavbar")
+        ul.nav.navbar-nav.navbar-left
+          li.presentation
+            a.switch#data.click
+              span.glyphicon.glyphicon-user
+              |  Your data
+          li.presentation
+            a.switch#diet.click
+              span.glyphicon.glyphicon-grain
+              |  Information diet
+          li.presentation
+            a.switch#csv.click
+              span.glyphicon.glyphicon-cog
+              |  Export and reuse
+        ul.nav.navbar-nav.navbar-right.black
+          li
+            a(href='/' alt='return to project homepage').click
+              span.glyphicon.glyphicon-home
+              | 
+              span.glyphicon.glyphicon-log-out
+
+    .container-fluid
+      #loader
+        h3 Loading…
+        img(class="logo-background" src="/images/fbtrex_logo.svg")
+
+    .container-fluid.whitebehind
+      .pageSection#dietSection.hidden
+
+        .container-fluid
+          div.col-sm-4.infoblock.description
+            p How much Facebook insists on you?
+            small this is based on the last 20 days, address "
+                a.trigger(id="repetitionInfo") repetition
+                |"
+          div.col-sm-4.infoblock.description
+            p Details
+            small know more on 
+                a.trigger(id="metadataInfo") metadata attribution 
+          div.col-sm-4.infoblock.description
+            p Facebook guess what you like?
+            small Do you agree with their prioritisation? 
+                a.trigger(id="candymetaphor") what if...
+
+        .container-fluid
+          include repetitionInfo
+          include metadataInfo
+          include candymetaphor
+
+        .container-fluid
+          div.col-sm-4.infoblock
+            div#insist
+          div.col-sm-4.infoblock
+            div#middle-loader.hidden
+                h3 Loading evidence…
+                img(class="logo-background" src="/images/fbtrex_logo.svg")
+            div#details
+          div.col-sm-4.infoblock
+            div#sources
+
+    .container-fluid
+      .pageSection#dataSection.hidden
+        h1 This page is going to be discontinued
+        h3 the technology used to extract the metadata is changing and also the interface, something might not look OK
+        p These are the data you sent us so far:
+        div#contributionBlock
+    //-
+        div#shiftContributionBlock(onclick="loadNextHTMLs('#contributionBlock');")
+          b Load Next 100…
+    //
+
+    .container-fluid
+      .pageSection#csvSection.hidden
+        include csv
+
+    div.footer
+        small This interface is a work in progress. At the moment can only show few metadata extracted by the timeline you submit. improve UX and functionalities is out goal for 2019. If you want to contribute to the free software project,  
+            a(href="https://github.com/tracking-exposed/facebook/blob/master/sections/webscripts/personal.js") feel welcomed
+            |.
