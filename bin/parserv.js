@@ -26,6 +26,9 @@ function getLastActive() {
         .read(nconf.get('schema').supporters, { lastActivity: { $gt: new Date(lastExecution) }})
         .map(function(user) {
             return user.userId;
+        })
+        .tap(function(users) {
+            debug("%d active users by lastActivity", _.size(users));
         });
 }
 
