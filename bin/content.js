@@ -105,7 +105,7 @@ function dispatchPromise(name, req, res) {
 
 /* everything begin here, welcome */
 server.listen(nconf.get('port'), nconf.get('interface'));
-console.log(" Listening on http://" + nconf.get('interface') + ":" + nconf.get('port'));
+debug(" Listening on http://%s:%s", nconf.get('interface'), nconf.get('port'));
 /* configuration of express4 */
 app.use(cors());
 app.use(bodyParser.json({limit: '30kb'}));
@@ -183,8 +183,11 @@ app.get('/api/v:version/personal/diet/:userToken/:days', function(req, res) {
 });
 // ALL TO BE REVIEWED --------------------------------------------------o/
 // THE NEW ONE BELOW ---       -----------------------------------------o\
-app.get('/api/v:version/summary/:userToken/:offset', function(req, res) {
+app.get('/api/v:version/summary/:userToken/:amount?', function(req, res) {
     return dispatchPromise('getSummaryData', req, res);
+});
+app.get('/api/v:version/metadata/:userToken/:amount?', function(req, res) {
+    return dispatchPromise('getMetadataData', req, res);
 });
 // TO BE DOCUMENTED ----------------------------------------------------o/
 
