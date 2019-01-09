@@ -15,20 +15,24 @@ const concur = _.isUndefined(nconf.get('concurrency') ) ? 1 : _.parseInt(nconf.g
 const FREQUENCY = 2; // seconds
 
 const backInTime = _.parseInt(nconf.get('minutesago')) ? _.parseInt(nconf.get('minutesago')) : 10;
-console.log(`considering the product since ${backInTime} minutes ago, [minutesago] overrides`);
 
 var lastExecution = moment().subtract(backInTime, 'minutes').toISOString();
 var lastCycleActive = false;
 
+console.log(`considering the lastActivities since ${backInTime} minutes ago, [minutesago] overrides (${lastExecution})`);
+
 function getLastActive() {
 
     return mongo
-        .read(nconf.get('schema').supporters, { lastActivity: { $gt: new Date(lastExecution) }})
+        .read(nconf.get('schema').supporters, { lastActivity: {
+            $gt: new Date(lastExecution) 
+        }})
         .map(function(user) {
             return user.userId;
         })
         .tap(function(users) {
-            debug("%d active users by lastActivity", _.size(users));
+            if(_.size(users))
+                debug("%d active users by lastActivity", _.size(users));
         });
 }
 
@@ -41,7 +45,13 @@ function infiniteLoop() {
         .map(function(userId) {
             if(lastCycleActive)
                 debug("Last successful execution was at %s", lastExecution);
-            let htmlFilter = { userId: userId, savingTime: { $gt: new Date(lastExecution) }};
+
+            let htmlFilter = {
+                userId: userId,
+                savingTime: {
+                    $gt: new Date(lastExecution)
+                }
+            };
             return parse
                 .parseHTML(htmlFilter, false);
         }, { concurrency: 1})
