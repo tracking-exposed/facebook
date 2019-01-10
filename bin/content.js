@@ -288,7 +288,7 @@ app.use('/css', express.static( path.join(dist, 'css') ));
 app.use('/images', express.static( path.join(dist, 'images') ));
 app.use('/fonts', express.static( path.join(dist, 'fonts') ));
 
-app.use('/autoscroll.user.js', express.static(__dirname + '/I/autoscroll.user.js'));
+app.use('/autoscroll.user.js', express.static( path.join(dist, 'autoscroll.user.js')));
 
 /* legacy for realitycheck */
 app.get('/realitycheck/:userId?/:detail?', function(req, res) {
