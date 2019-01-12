@@ -5,9 +5,9 @@
   "main": "app.js",
   "scripts": {
     "collector": "elastic=disabled DEBUG=routes:*,lib:*,fbtrex:* nodemon bin/collector",
-    "collector:prod": "elastic=disabled DEBUG=lib:*,fbtrex:*,routes:*,-lib:mongo:read node bin/collector 2>&1 >&/tmp/collector-`date +%F`.log",
+    "collector:prod": "elastic=disabled DEBUG=lib:*,fbtrex:*,routes:*,-lib:mongo:read node bin/collector",
     "content": "elastic=disabled DEBUG=lib:*,fbtrex:*,routes:* nodemon bin/content",
-    "content:prod": "elastic=disabled DEBUG=lib:*,fbtrex:*,routes:*,-lib:mongo:read node bin/content 2>&1 >&/tmp/content-`date +%F`.log",
+    "content:prod": "elastic=disabled DEBUG=lib:*,fbtrex:*,routes:*,-lib:mongo:read node bin/content",
     "build": "bin/install-script.sh",
     "parserv": "DEBUG=*,-lib:parse,-lib:mongo:read node bin/parserv.js"
   },
