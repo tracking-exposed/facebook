@@ -27,62 +27,68 @@ html
         meta(property="og:image:height" content="400")
         title Adoption trends, metadata extraction and open statistics
 
-    body(onload="fillUsersGraphs('#goldmine', '#users'); fillMetadataGraph('#metadata');")
+    body
     
-    include header
-    include navbar
+        include header
+        include navbar
 
-    .container-fluid
-        .simpletext
-            h2 Adoption statistics
-            p Since the mid of December 2016, facebook.tracking.exposed is in ß release. below some graph of the data collected. As part of the stable delivery, we'll define how third party can download the dataset and how we might integrate third party analysis in our APIs.
-            p We know to be in a slippery terrain: in one side, enabling users to assess Personalisation Algorithm is our goal, in the other, we value Privacy and Identity rights much more than the corporations we criticize. 
-                a(href="https://responsibledata.io/social-media-intelligence-the-wayward-child-of-open-source-intelligence/") Aware of the risks posed by social media intelligence
-                |, we aim to enable users awareness, but prevent abuses.
+        .container-fluid
+            .simpletext
+                h2 Adoption statistics
+                p Since the mid of December 2016, facebook.tracking.exposed is in ß release. below some graph of the data collected. As part of the stable delivery, we'll define how third party can download the dataset and how we might integrate third party analysis in our APIs.
+                p We know to be in a slippery terrain: in one side, enabling users to assess Personalisation Algorithm is our goal, in the other, we value Privacy and Identity rights much more than the corporations we criticize. 
+                    a(href="https://responsibledata.io/social-media-intelligence-the-wayward-child-of-open-source-intelligence/") Aware of the risks posed by social media intelligence
+                    |, we aim to enable users awareness, but prevent abuses.
 
-        .simpletext
-            p Raw numbers
-            table
-                thead
-                    tr 
-                        th.col-sm-1 supporters
-                        th.col-sm-1 timelines
-                        th.col-sm-1 impressions
-                        th.col-sm-1 htmls
-                        th.col-sm-1 accesses
-                tbody
-                    tr 
-                        th.col-sm-1 #{supporters}
-                        th.col-sm-1 #{timelines}
-                        th.col-sm-1 #{impressions}
-                        th.col-sm-1 #{htmls}
-                        th.col-sm-1 #{accesses}
+            .simpletext
+                p Raw numbers
+                table
+                    thead
+                        tr 
+                            th.col-sm-1 supporters
+                            th.col-sm-1 timelines
+                            th.col-sm-1 impressions
+                            th.col-sm-1 htmls
+                            th.col-sm-1 accesses
+                    tbody
+                        tr 
+                            th.col-sm-1 #{supporters}
+                            th.col-sm-1 #{timelines}
+                            th.col-sm-1 #{impressions}
+                            th.col-sm-1 #{htmls}
+                            th.col-sm-1 #{accesses}
 
-    .container-fluid
-        .simpletext
-            h2 Supporters, Page views
-        div(id="users")
+        .container-fluid
+            .simpletext
+                h2 Tools in refactoring/renovation: no stats available at the moment
+                smaller --- 12 January 2019
+        //-
+            .container-fluid
+                .simpletext
+                    h2 Supporters, Page views
+                div(id="users")
 
-        .simpletext
-            h2 Views by Country
-        div(id="viewscountries")
+                .simpletext
+                    h2 Views by Country
+                div(id="viewscountries")
 
-        .simpletext
-            h2 Timelines by Country
-        div(id="contribcountries")
+                .simpletext
+                    h2 Timelines by Country
+                div(id="contribcountries")
 
-        .simpletext
-            h2 Impressions collected
-        div(id="goldmine")
+                .simpletext
+                    h2 Impressions collected
+                div(id="goldmine")
 
-        .simpletext
-            h2 Metadata available
-            p The analysis is made by the parser, 
-                a(href="https://github.com/tracking-exposed/facebook/issues/44") try to see how they works
-        div(id="metadata")
+                .simpletext
+                    h2 Metadata available
+                    p The analysis is made by the parser, 
+                        a(href="https://github.com/tracking-exposed/facebook/issues/44") try to see how they works
+                div(id="metadata")
 
-        .simpletext
-            h2 How much an user keep using the extension?
-        div(id="engagement")
+                .simpletext
+                    h2 How much an user keep using the extension?
+                div(id="engagement")
+        //-
 
-    div.footer
+        div.footer
