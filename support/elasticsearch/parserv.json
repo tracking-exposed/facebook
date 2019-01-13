@@ -6,7 +6,7 @@
                 "id":  {"type": "integer"},
                 "success": {"type": "integer"},
                 "errors": {"type": "integer"},
-                "completedAt": { "type": "date" }
+                "when": { "type": "date" }
             }
         }
     }

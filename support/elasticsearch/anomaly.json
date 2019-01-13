@@ -5,7 +5,7 @@
             "properties": {
                 "id": { "type": "integer" },
                 "timelineId": { "type": "keyword" },
-                "recordedAt": { "type": "date" },
+                "when": { "type": "date" },
                 "version": { "type": "keyword" }
             }
         }

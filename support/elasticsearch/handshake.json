@@ -5,7 +5,8 @@
             "properties": {
                 "id": { "type": "integer" },
                 "pseudo": { "type": "keyword" },
-                "version": { "type": "keyword" }
+                "version": { "type": "keyword" },
+                "when": { "type": "date" }
             }
         }
     }
