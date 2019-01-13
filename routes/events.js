@@ -110,12 +110,11 @@ function parseEvents(memo, evnt) {
             'user': memo.sessionInfo.numId
         });
 
-        /* if an anomaly is found, is logged directly in the ELK */
+        /* if an anomaly is found, is logged directly in the ELK, from the
+         * timelineId we can retrieve the anomaly from the mongoDB */
         echoes.echo({
-            id: Math.round((new Date()).getTime() / 1000),
             index: "anomaly",
             timelineId: supporter.userId,
-            recordedAt: new Date(),
             version: memo.sessionInfo.version,
         });
 
@@ -217,10 +216,7 @@ function promisifyInputs(body, geoinfo, supporter) {
             );
     }
 
-    var ts = Math.round((new Date()).getTime() / 1000);
-
     echoes.echo({
-        id: ts,
         index: "fbtrex_users",
         pseudo: supporter.userId,
         geo: geoinfo,

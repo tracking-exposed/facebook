@@ -13,10 +13,6 @@ var cfgFile = "config/collector.json";
 var redOn = "\033[31m";
 var redOff = "\033[0m";
 
-var echoes = require("../lib/echoes")
-echoes.addEcho("elasticsearch")
-echoes.setDefaultEcho("elasticsearch")
-
 nconf.argv().env().file({ file: cfgFile });
 console.log(redOn + "ઉ nconf loaded, using " + cfgFile + redOff);
 
