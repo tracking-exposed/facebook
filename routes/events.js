@@ -220,7 +220,7 @@ function promisifyInputs(body, geoinfo, supporter) {
         index: "fbtrex_users",
         pseudo: supporter.userId,
         geo: geoinfo,
-        last_activity: supporter.lastActivity,
+        lastActivity: supporter.lastActivity,
         timelines: processed_timelines,
         impressions: processed_impressions,
         htmls: processed_html
