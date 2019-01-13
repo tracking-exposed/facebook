@@ -16,7 +16,8 @@
                 "impressionTime": { "type": "date" },
                 "impressionOrder": { "type": "integer" },
                 "pseudo": { "type": "keyword" },
-                "timeline": { "type": "keyword" }
+                "timeline": { "type": "keyword" },
+                "when": { "type": "date" }
             }
         }
     }

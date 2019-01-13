@@ -6,10 +6,11 @@
                 "id":  {"type": "integer"},
                 "pseudo": {"type": "keyword"},
                 "geo": {"type": "keyword"},
-                "last_activity": {"type": "date"},
+                "lastActivity": {"type": "date"},
                 "timelines": {"type": "integer"},
                 "impressions": {"type": "integer"},
-                "htmls": {"type": "integer"}
+                "htmls": {"type": "integer"},
+                "when": {"type": "date"}
             }
         }
     }
