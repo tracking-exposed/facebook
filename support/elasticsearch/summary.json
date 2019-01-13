@@ -4,7 +4,7 @@
             "dynamic": false,
             "properties": {
                 "id": { "type": "integer" },
-                "errors": { "type": ??? List ??? },
+                "errors": { "type": "text" },
                 "type": { "type": "keyword" },
                 "publicationTime": { "type": "date" },
                 "postId": { "type": "keyword" },
