@@ -56,7 +56,7 @@ function userInfo(req) {
                 supporter.pseudo, req.headers['x-fbtrex-version']);
 
             echoes.echo({
-                id: Math.round((new Date()).getTime() / 1000),
+                index: 'handshake',
                 pseudo: supporter.pseudo,
                 version: supporter.version
             });
@@ -75,7 +75,7 @@ function userInfo(req) {
                 error.message, req.headers['x-fbtrex-userid']);
 
             echoes.echo({
-                id: Math.round((new Date()).getTime() / 1000),
+                index: 'handshake',
                 pseudo: "undefined",
                 version: supporter.version
             });
@@ -97,7 +97,7 @@ function getSelector(req) {
         req.headers['x-fbtrex-version'], req.headers['x-fbtrex-userid']);
 
     echoes.echo({
-        id: Math.round((new Date()).getTime() / 1000),
+        index: 'handshake',
         pseudo: "unsupported",
         version: req.headers['x-fbtrex-version']
     });
