@@ -10,8 +10,6 @@
                 "postId": { "type": "keyword" },
                 "permaLink": { "type": "keyword" },
                 "author": { "type": "keyword" },
-                "authorLink": { "type": "keyword" },
-                "text": { "trype": ??? Collection ??? },
                 "textlength": { "type": "integer" },
                 "impressionTime": { "type": "date" },
                 "impressionOrder": { "type": "integer" },

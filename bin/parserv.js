@@ -59,9 +59,7 @@ function infiniteLoop() {
             lastExecution = moment().toISOString();
 
             if(_.size(results)) {
-                debug("updated lastExection: %s, results: %s",
-                    lastExecution, JSON.stringify(results)
-                );
+                debug("updated lastExection: %s, results: %s", lastExecution, JSON.stringify(results));
                 lastCycleActive = true;
                 logActivity(results);
             } else {
