@@ -35,6 +35,10 @@ var returnHTTPError = function(req, res, funcName, where) {
     return false;
 };
 
+/* configuration for elasticsearch */
+const echoes = require('../lib/echoes');
+echoes.addEcho("elasticsearch");
+echoes.setDefaultEcho("elasticsearch");
 
 /* This function wraps all the API call, checking the verionNumber
  * managing error in 4XX/5XX messages and making all these asyncronous
