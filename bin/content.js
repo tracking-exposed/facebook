@@ -159,6 +159,10 @@ app.post('/api/v:version/snippet/result', function(req, res) {
 app.get('/api/v:version/html/:htmlId', function(req, res) {
     return dispatchPromise('unitById', req, res);
 });
+/* timeline snippet */
+app.get('/api/v:version/verify/:timelineId', function(req, res) {
+    return dispatchPromise('verifyTimeline', req, res);
+});
 
 /* APIs used in personal page */
 // ALL TO BE REVIEWED --------------------------------------------------o\
@@ -309,6 +313,10 @@ app.get('/personal/:userId/:detail', function(req, res) {
 });
 app.get('/revision/:htmlId', function(req, res) {
     req.params.page = 'revision';
+    return dispatchPromise('getPage', req, res);
+});
+app.get('/verify/:timelineId', function(req, res) {
+    req.params.page = 'verify';
     return dispatchPromise('getPage', req, res);
 });
 
