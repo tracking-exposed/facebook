@@ -3,7 +3,7 @@
         "doc" : {
             "dynamic": false,
             "properties": {
-                "id":  {"type": "integer"},
+                "id":  {"type": "long"},
                 "pseudo": {"type": "keyword"},
                 "geo": {"type": "keyword"},
                 "lastActivity": {"type": "date"},

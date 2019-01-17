@@ -25,7 +25,9 @@ return various.loadJSONfile(fname)
 		return request
             .putAsync({
                 url: endPointName,
-                'content-type': 'application/json',
+		headers: {
+			'Content-Type': 'application/json'
+	        },
                 body: JSON.stringify(content)
             });
     })
