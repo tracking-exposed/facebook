@@ -3,7 +3,7 @@
         "doc" : {
             "dynamic": false,
             "properties": {
-                "id": { "type": "integer" },
+                "id": { "type": "long" },
                 "errors": { "type": "text" },
                 "type": { "type": "keyword" },
                 "publicationTime": { "type": "date" },
