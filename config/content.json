@@ -6,7 +6,6 @@
       "accesses": "accesses2",
       "htmls": "htmls2",
       "metadata": "metadata",
-      "parserstats": "parserstats",
       "errors": "parsererrors",
       "summary": "summary",
       "anomalies": "anomalies"
