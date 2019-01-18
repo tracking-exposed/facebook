@@ -4,10 +4,10 @@
   "description": "facebook.tracking.exposed → collaborative tool to investigate personalization algorithms",
   "main": "app.js",
   "scripts": {
-    "collector": "elastic=disabled DEBUG=routes:*,lib:*,fbtrex:* nodemon --config config/nodemon.json bin/collector",
-    "collector:prod": "elastic=disabled DEBUG=lib:*,fbtrex:*,routes:*,-lib:mongo:read node bin/collector",
-    "content": "elastic=disabled DEBUG=lib:*,fbtrex:*,routes:* nodemon --config config/nodemon.json bin/content",
-    "content:prod": "elastic=disabled DEBUG=lib:*,fbtrex:*,routes:*,-lib:mongo:read node bin/content",
+    "collector": "DEBUG=routes:*,lib:*,fbtrex:* nodemon bin/collector",
+    "collector:prod": "DEBUG=lib:*,fbtrex:*,routes:*,-lib:mongo:read node bin/collector",
+    "content": "DEBUG=lib:*,fbtrex:*,routes:* nodemon bin/content",
+    "content:prod": "DEBUG=lib:*,fbtrex:*,routes:*,-lib:mongo:read node bin/content",
     "build": "bin/install-script.sh",
     "parserv": "DEBUG=*,-lib:parse,-lib:mongo:read node bin/parserv.js"
   },
