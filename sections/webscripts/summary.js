@@ -4,4 +4,7 @@ function initializeSummary() {
     });
     const url = `${window.location.origin}/api/v1/summary/${token}`;
     $('#summary').html(`<a href="${url}">${url}</a>`);
+    $.getJSON(url, function(data) {
+      console.log(data);
+    });
 };
