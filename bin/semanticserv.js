@@ -44,6 +44,7 @@ function infiniteLoop() {
                 debug("First execution at %s (%d entries)", moment().format(), _.size(entries) );
 
             lastExecution = moment();
+            logSemanticServer(_.size(entries));
         })
         /* TODO dividi in chunk of rischi di avere milioni di roba e mai un update su metadata */
         .map(semantic.buildText)
@@ -65,7 +66,15 @@ function process(entry) {
         .then(function(analyzed) {
 
             if(!analyzed)
-                return;
+                throw new Error();
+
+            if(analyzed.headers['x-dl-units-left'] === 0) {
+                debug("Units finished!");
+                process.exit(1);
+            }
+
+            if(_.isUndefined(analyzed.lang))
+                return semantic.updateMetadata(_.extend(entry, { semantic: null }) );
 
             return Promise.all([
                 elasticLog(entry, analyzed),
@@ -80,7 +89,19 @@ function process(entry) {
         });
 };
 
+function logSemanticServer(amount) {
+    echoes.echo({
+        index: 'semanticserv',
+        amount: amount
+    });
+}
+
 function elasticLog(entry, analyzed) {
-    // debug("logga");
-    // echoes.echo({ });
+    echoes.echo({
+        index: 'semantics',
+        semanticId: entry.semanticId,
+        textsize: _.size(entry.dandelion.fulltext),
+        annotations: _.size(analyzed.semantics),
+        lang: analyzed.lang
+    });
 };
