@@ -9,7 +9,8 @@
     "content": "DEBUG=lib:*,fbtrex:*,routes:* nodemon bin/content",
     "content:prod": "DEBUG=lib:*,fbtrex:*,routes:*,-lib:mongo:read node bin/content",
     "build": "bin/install-script.sh",
-    "parserv": "DEBUG=*,-lib:parse,-lib:mongo:read node bin/parserv.js"
+    "parserv": "DEBUG=*,-lib:parse,-lib:mongo:read node bin/parserv.js",
+    "semanticserv": "DEBUG=*,-lib:parse,-lib:mongo:read node bin/semanticserv.js"
   },
   "author": "Claudio Agosti <claudio@tracking.exposed>, https://github.com/tracking-exposed/facebook/graphs/contributors",
   "license": "AGPL-3.0",
