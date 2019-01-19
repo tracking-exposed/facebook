@@ -1,0 +1,15 @@
+{
+    "mappings" : {
+        "doc" : {
+            "dynamic": false,
+            "properties": {
+                "id": { "type": "long" },
+                "when": { "type": "date" },
+                "semanticId": { "type": "text" },
+                "textsize": { "type": "integer" },
+                "annotations": { "type": "integer" },
+                "lang": { "type": "keyword" }
+            }
+        }
+    }
+}

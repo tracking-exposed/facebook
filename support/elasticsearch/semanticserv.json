@@ -1,0 +1,12 @@
+{
+    "mappings" : {
+        "doc" : {
+            "dynamic": false,
+            "properties": {
+                "id":  {"type": "long"},
+                "amount": {"type": "integer"},
+                "when": { "type": "date" }
+            }
+        }
+    }
+}
