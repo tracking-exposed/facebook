@@ -11,8 +11,5 @@
   ],
   "verbose": true,
   "exitcrash": false,
-  "env": {
-    "DEBUG": "lib:*,-lib:mongo:read"
-  },
   "ext": "js css pug"
 }
