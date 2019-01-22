@@ -1,5 +1,6 @@
 {
   "watch": [
+    "bin/*.js",
     "lib/*.js",
     "sections/*.pug",
     "sections/*/*.pug",
@@ -11,8 +12,5 @@
   ],
   "verbose": true,
   "exitcrash": false,
-  "env": {
-    "DEBUG": "lib:*,-lib:mongo:read"
-  },
   "ext": "js css pug styl"
 }

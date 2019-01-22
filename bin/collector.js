@@ -23,6 +23,10 @@ var returnHTTPError = function(req, res, funcName, where) {
     return false;
 };
 
+/* configuration for elasticsearch */
+const echoes = require('../lib/echoes');
+echoes.addEcho("elasticsearch");
+echoes.setDefaultEcho("elasticsearch");
 
 const collectorImplementations = {
     processEvents:    require('../routes/events').processEvents,

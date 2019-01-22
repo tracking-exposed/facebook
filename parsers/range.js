@@ -8,6 +8,11 @@ var nconf= require('nconf');
 var mongo = require('../lib/mongo');
 var parse = require('../lib/parse');
 
+/* configuration for elasticsearch */
+const echoes = require('../lib/echoes');
+echoes.addEcho("elasticsearch");
+echoes.setDefaultEcho("elasticsearch");
+
 nconf.argv().env().file({ file: 'config/collector.json' });
 const since = nconf.get('since') || "2018-11-01";
 const until = nconf.get('until') || moment().add(1, 'd').format("YYYY-MM-DD");

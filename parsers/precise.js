@@ -23,6 +23,9 @@ const htmlfilter = repeat ?
 
 return parse
     .parseHTML(htmlfilter, repeat)
-    .tap(function(results) {
-        debug("completed: %s", JSON.stringify(results, undefined, 2));
+    .then(function(done) {
+        if(!done || !done.metadata)
+            debug("No effect on targetId")
+        else
+            debug("Done targetId! %d metadata, %d errors", done.metadata, done.errors);
     });
