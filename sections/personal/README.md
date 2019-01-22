@@ -15,6 +15,12 @@ brew services start mongodb
 development=true npm run content
 ```
 
+To watch stylus files
+
+```
+node_modules/.bin/stylus -w styles/summary.styl -o dist/css/
+```
+
 ## files
 
 This directory is `section/personal`, you can find in `section/personal/index.pug` the rendered page when you access to the personal page for the adopters.
