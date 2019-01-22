@@ -17,7 +17,8 @@ function initializeSummary() {
         continue;
       }
 
-      const readableDate = moment(item.publicationTime, moment.ISO_8601).format('MMMM Do YYYY, hh:mm a');
+      const readableDate = moment(item.publicationTime, moment.ISO_8601).format('MMMM Do YYYY, hh:mm a'),
+        unixTimestamp = moment(item.publicationTime, moment.ISO_8601).format('x');
 
       let bgColorClass,
           entryType,
@@ -52,15 +53,15 @@ function initializeSummary() {
           <article class="content ${bgColorClass} d-flex flex-column">
             <header>${entryType || ''}</header>
             <section class="body">
-              <span class="small post-date">${readableDate}</span>
-              <p><b class="post-author">${item.author}</b>
+              <span class="small date" data-date="${unixTimestamp}">${readableDate}</span>
+              <p><b class="author">${item.author}</b>
                 ${isPost
                   ? '<a href="https://facebook.com' + item.permaLink + '" title="Go to post" target="_blank" class="text-link">'+ teaserText +'</a>'
                   : ''}
               </p>
             </section>
             <footer>
-              <span class="small ${item.postId ? 'post-id' : ''}">
+              <span class="small ${item.postId ? 'post-id' : ''}" data-post-id="${item.postId}">
                 ${item.postId ? 'Post ID: #'+item.postId : '#'}
               </span>
             </footer>
@@ -81,6 +82,11 @@ function initIsotope() {
     masonry: {
       // use element for option
       columnWidth: '.grid-sizer'
+    },
+    getSortData: {
+      postId: '[data-post-id parseInt]',
+      date: '[data-date parseInt]',
+      author: '.author',
     }
   });
 }
@@ -88,4 +94,8 @@ function initIsotope() {
 function filterBy(filter = '*') {
   console.log(filter)
   $grid.isotope({ filter });
+}
+
+function sortBy(value = 'original-order') {
+  $grid.isotope({ sortBy: value });
 }

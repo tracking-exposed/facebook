@@ -45,6 +45,16 @@ html
           | Videos
         button(id="btn-filter-groups" type="button" class="btn btn-warning" onclick="filterBy('.groups')")
           | Groups
+
+      div(class="btn-group" role="group")
+        button(id="btn-sort-" type="button" class="btn btn-light" onclick="sortBy()")
+          | Original order
+        button(id="btn-sort-date" type="button" class="btn btn-light" onclick="sortBy('date')")
+          | Date
+        button(id="btn-sort-author" type="button" class="btn btn-light" onclick="sortBy('author')")
+          | Author
+        button(id="btn-sort-id" type="button" class="btn btn-light" onclick="sortBy('postId')")
+          | Post ID
     #summary.grid
       // width of .grid-sizer used for columnWidth
       .grid-sizer
