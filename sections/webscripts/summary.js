@@ -13,18 +13,18 @@ function initializeSummary() {
         if (item.errors.length) {
           continue;
         }
-
+        const readableDate = moment(item.publicationTime, moment.ISO_8601).format('MMMM Do YYYY, hh:mm a');
         const gridItem = `
           <article class="col-sm-6 col-md-4 col-lg-2 grid-item ${item.type || ''}">
-            <header>
-              <span class="small ${item.postId ? 'post-id' : ''}">${item.postId || '#'}</span>
-            </header>
+            <header class="row ${item.type || ''}">${item.type || ''}</header>
             <section class="body">
+              <span class="small ${item.postId ? 'post-id' : ''}">${item.postId || '#'}</span>
               <p><b>${item.author}</b></p>
               ${item.permaLink
                 ? '<a href="https://facebook.com' + item.permaLink + '" title="Go to post" target="_blank">'+ item.permaLink +'</a>'
                 : ''}
             </section>
+            <footer class="small">${readableDate}</footer>
           </article>
         `;
         $('#summary').append(gridItem);
