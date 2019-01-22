@@ -14,22 +14,45 @@ $color-grey-medium = #8C8C8C
 $color-grey-dark = #4C4C4C
 $color-white = #fefefe
 
+$before(text)
+  content: text
+  color: $color-grey-medium
+  font-weight: lighter
+  position: absolute
+  top: -30px
+  width: 100%
+  text-align: center
+  text-transform: uppercase
+  letter-spacing: 1px
+
 .btn-groups
-  margin-top: 24px
+  margin-top: 48px
   margin-bottom: 24px
 
-/* clear fix */
-.grid:after
-  content: ''
-  display: block
-  clear: both
+  > .btn-group:first-child
+    &::before
+      $before('Filter results')
+    &::after
+      content: ''
+      display: inline-block
+      border-right: 1px solid $color-grey-light
+      width: 16px
+  > .btn-group:not(:first-child)
+    padding-left: 16px
+    &::before
+      $before('Sort by')
+.grid
+  margin-bottom: 32px
+
+  /* clear fix */
+  &::after
+    content: ''
+    display: block
+    clear: both
 
 /* fluid 5 columns */
 .grid-item, .grid-sizer
   width: 20%
-/* 2 columns */
-.grid-item--width2
-  width: 40%
 
 .grid-item
   float: left
@@ -62,7 +85,9 @@ $color-white = #fefefe
       margin: 0 auto
       width: calc(100% - 2px)
 
-      .post-author, .post-date
+      .date
+        color: $color-grey-medium
+      .author, .date
         margin-bottom: 4px
 
       p
