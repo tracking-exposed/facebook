@@ -168,6 +168,12 @@ app.get('/api/v:version/verify/:timelineId', function(req, res) {
     return dispatchPromise('verifyTimeline', req, res);
 });
 
+
+/* RSS special */
+app.get('/feeds/:query', function(req, res) {
+    return dispatchPromise('feeds', req, res);
+});
+
 /* APIs used in personal page */
 // ALL TO BE REVIEWED --------------------------------------------------o\
 app.get('/api/v:version/htmls/:userToken/legacy/:amount', function(req, res) {
