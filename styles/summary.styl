@@ -3,9 +3,55 @@
  */
 $color-yellow-light = #ffffe0
 $color-red = #fd5308
+$color-red-light = #FD8854
 $color-green = #66b032
+$color-green-light = #A2F24C
 $color-blue = #3c5a99
+$color-blue-light = #5A87E5
 $color-grey = #ccc
+$color-grey-light = #e6e6e6
+$color-white = #fefefe
+
+.grid
+  align-items: stretch
 
 .grid-item
-  background-color: $color-yellow-light
+  background-color: $color-grey-light
+  padding-top: 16px;
+  padding-bottom: 16px;
+  min-height: 100px
+  margin: 4px
+
+  &.posts
+    background-color: $color-yellow-light
+  &.videos
+    background-color: $color-blue-light
+    color: $color-grey-light
+    a
+      color: white
+  &.photo
+    background-color: $color-green-light
+  &.groups
+    background-color: $color-red-light
+    color: $color-grey-light
+
+  .small
+    display: block
+    font-size: 10px
+
+  header
+    span:not(.post-id)
+      color: $color-grey-light
+    .post-id::before
+      content: '#'
+
+  .body
+    a
+      display: block
+      font-size: 80%
+      line-height: 1.2
+      word-break: break-all
+      max-width: 100%
+      white-space: nowrap
+      overflow: hidden
+      text-overflow: ellipsis
