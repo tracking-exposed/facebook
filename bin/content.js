@@ -35,6 +35,10 @@ var returnHTTPError = function(req, res, funcName, where) {
     return false;
 };
 
+/* configuration for elasticsearch */
+const echoes = require('../lib/echoes');
+echoes.addEcho("elasticsearch");
+echoes.setDefaultEcho("elasticsearch");
 
 /* This function wraps all the API call, checking the verionNumber
  * managing error in 4XX/5XX messages and making all these asyncronous
@@ -158,6 +162,10 @@ app.post('/api/v:version/snippet/result', function(req, res) {
 /* HTML single snippet */
 app.get('/api/v:version/html/:htmlId', function(req, res) {
     return dispatchPromise('unitById', req, res);
+});
+/* timeline snippet */
+app.get('/api/v:version/verify/:timelineId', function(req, res) {
+    return dispatchPromise('verifyTimeline', req, res);
 });
 
 /* APIs used in personal page */
@@ -309,6 +317,10 @@ app.get('/personal/:userId/:detail', function(req, res) {
 });
 app.get('/revision/:htmlId', function(req, res) {
     req.params.page = 'revision';
+    return dispatchPromise('getPage', req, res);
+});
+app.get('/verify/:timelineId', function(req, res) {
+    req.params.page = 'verify';
     return dispatchPromise('getPage', req, res);
 });
 

@@ -7,7 +7,11 @@ const nconf= require('nconf');
 
 const mongo = require('../lib/mongo');
 const parse = require('../lib/parse');
+
+/* configuration for elasticsearch */
 const echoes = require('../lib/echoes');
+echoes.addEcho("elasticsearch");
+echoes.setDefaultEcho("elasticsearch");
 
 nconf.argv().env().file({ file: 'config/collector.json' });
 

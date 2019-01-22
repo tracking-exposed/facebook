@@ -6,10 +6,12 @@
       "accesses": "accesses2",
       "htmls": "htmls2",
       "metadata": "metadata",
-      "parserstats": "parserstats",
       "errors": "parsererrors",
       "summary": "summary",
-      "anomalies": "anomalies"
+      "anomalies": "anomalies",
+      "semantics": "semantics",
+      "labels": "labels",
+      "feeds": "feeds"
   },
   "mongodb": "mongodb://localhost/facebook",
   "port": 8000,
