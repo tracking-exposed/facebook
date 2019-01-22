@@ -19,7 +19,6 @@ cp -r sections/images/* dist/images
 cp -r sections/webscripts/* dist/js/local/ 
 cp -r node_modules/bootstrap/dist/* dist/
 cp -r support/tampermonkey/autoscroll.user.js dist/
-cp html/* dist/
 
 cp ./node_modules/bootstrap/js/collapse.js $V
 cp node_modules/jquery/dist/jquery.js $V 
@@ -36,6 +35,6 @@ cp node_modules/reveal.js/lib/js/head.min.js $V/reveal-head.min.js
 cp node_modules/reveal.js/js/reveal.js $V/reveal.min.js 
 cp node_modules/reveal.js/lib/js/classList.js $V/classList.js 
 cp node_modules/reveal.js/lib/font/league-gothic/* dist/css/ 
-cd $V
-wget https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js 
-cd ../..
+# cd $V
+# wget https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js 
+# cd ../..
