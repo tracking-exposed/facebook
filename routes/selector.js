@@ -77,7 +77,7 @@ function userInfo(req) {
             echoes.echo({
                 index: 'handshake',
                 pseudo: "undefined",
-                version: supporter.version
+                version: req.headers['x-fbtrex-userid']
             });
 
             return {
