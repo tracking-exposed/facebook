@@ -92,7 +92,6 @@ function initIsotope() {
 }
 
 function filterBy(filter = '*') {
-  console.log(filter)
   $grid.isotope({ filter });
 }
 
