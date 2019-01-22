@@ -13,9 +13,10 @@ nconf.argv().env().file({ file: 'config/content.json' });
 echoes.addEcho("elasticsearch");
 echoes.setDefaultEcho("elasticsearch");
 
-/* this is just for logging */
-var lastExecution = null;
+/* this software executes every $FREQUENCY seconds + the time it took */
 const FREQUENCY = 5;
+/* this is just for logging when has been the last exectuion, it might take hours */
+var lastExecution = null;
 
 /*
  * this tool look at the `metadata` for object with { semantic: true },
@@ -23,7 +24,7 @@ const FREQUENCY = 5;
  * If success, mark the semantic with a new date, if fail, mark it with "false".
  */
 
-console.log(`Starting periodic check, every ${FREQUENCY} seconds`);
+console.log(`Checking periodically every ${FREQUENCY} seconds...`);
 infiniteLoop();
 
 function infiniteLoop() {
@@ -32,21 +33,29 @@ function infiniteLoop() {
         .resolve()
         .delay(FREQUENCY * 1000)
         .then(semantic.getSemantic)
-        .tap(function(entries) {
+        .then(function(entries) {
 
             if(!_.size(entries))
                 return [];
 
             if(lastExecution)
-                debug("New iteration after %s (%d entries)",
+                debug("New iteration after %s, processing %d entries",
                     moment.duration(moment() - lastExecution).humanize(), _.size(entries) );
             else
-                debug("First execution at %s (%d entries)", moment().format(), _.size(entries) );
+                debug("First execution at %s, processing %d entries", moment().format(), _.size(entries) );
 
             lastExecution = moment();
+            const limit = _.parseInt(nconf.get('limit'));
+
+            if(!_.isNaN(limit) && limit < _.size(entries)) {
+                debug("Process cap to %d requests, we had %d entries, cutting off %d",
+                    limit, _.size(entries), _.size(entries) - limit);
+                entries = _.slice(entries, 0, limit);
+                debugger;
+            }
             logSemanticServer(_.size(entries));
+            return entries;
         })
-        /* TODO dividi in chunk of rischi di avere milioni di roba e mai un update su metadata */
         .map(semantic.buildText)
         .map(process, { concurrency: 1 })
         .then(_.compact)
@@ -80,7 +89,7 @@ function process(entry) {
                 elasticLog(entry, analyzed),
                 semantic.updateMetadata(_.extend(entry, { semantic: new Date() }) ),
                 semantic.saveSemantic(analyzed.semantics),
-                semantic.saveLabels(analyzed.labels)
+                semantic.saveLabel(analyzed.label)
             ]);
         })
         .catch(function(error) {
