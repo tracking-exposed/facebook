@@ -10,7 +10,8 @@
       "summary": "summary",
       "anomalies": "anomalies",
       "semantics": "semantics",
-      "labels": "labels"
+      "labels": "labels",
+      "feeds": "feeds"
   },
   "mongodb": "mongodb://localhost/facebook",
   "port": 8000,
