@@ -14,62 +14,77 @@ $color-grey-medium = #8C8C8C
 $color-grey-dark = #4C4C4C
 $color-white = #fefefe
 
-.container
-  min-height: 100%
-  padding-bottom: 5%
+.btn-groups
+  margin-top: 24px
+  margin-bottom: 24px
+
+/* clear fix */
+.grid:after
+  content: ''
+  display: block
+  clear: both
+
+/* fluid 5 columns */
+.grid-item, .grid-sizer
+  width: 20%
+/* 2 columns */
+.grid-item--width2
+  width: 40%
 
 .grid-item
-  background-color: $color-yellow-light
-  min-height: 100px
-  margin: 4px
-  padding-bottom: 8px
+  float: left
+  padding: 12px
 
-  .small
-    display: block
-    font-size: 10px
-
-  header
+  .content
     border-top-left-radius: 5px
     border-top-right-radius: 5px
-    color: $color-grey-medium
-    display: block
-    font-size: 90%
-    font-weight: light
-    letter-spacing: 2px
-    padding: 4px 8px
-    text-align: center
-    text-transform: uppercase
+    min-height: 158px
 
-    &.posts
-      background-color: $color-grey-light
-    &.videos
-      background-color: $color-blue-light
-      color: $color-grey-light
-    &.photo
-      background-color: $color-green-light
-    &.groups
-      background-color: $color-red-light
-      color: $color-grey-light
-
-  .body
-    padding-top: 16px;
-    padding-bottom: 16px;
-
-    span:not(.post-id)
-      color: $color-grey-light
-    .post-id::before
-      content: '#'
-
-    p
-      word-wrap: break-word
-      hyphens: auto
-      font-size: 1.2em
-    a
+    .small
       display: block
-      font-size: 80%
-      line-height: 1.2
-      word-break: break-all
-      max-width: 100%
-      white-space: nowrap
-      overflow: hidden
-      text-overflow: ellipsis
+      font-size: 10px
+
+    header
+      background-color: transparent
+      color: $color-grey-medium
+      display: block
+      font-size: 90%
+      font-weight: light
+      letter-spacing: 2px
+      padding: 4px 8px
+      text-align: center
+      text-transform: uppercase
+
+    .body
+      background-color: $color-white
+      flex-grow: 1
+      padding: 8px 16px
+      margin: 0 auto
+      width: calc(100% - 2px)
+
+      .post-author, .post-date
+        margin-bottom: 4px
+
+      p
+        word-wrap: break-word
+        hyphens: auto
+        font-size: 1.1em
+        line-height: 1.2
+
+      a.text-link
+        color: currentColor
+        display: block
+        font-size: 80%
+        line-height: 1.2
+
+    footer
+      padding: 4px 16px
+      color: $color-grey-medium
+
+      span:not(.post-id)
+        color: $color-grey-light
+
+.grid-item--width2
+  width: 40%
+.grid-item--height2
+  height: 400px
