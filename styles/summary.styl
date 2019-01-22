@@ -32,13 +32,7 @@ $before(text)
   > .btn-group:first-child
     &::before
       $before('Filter results')
-    &::after
-      content: ''
-      display: inline-block
-      border-right: 1px solid $color-grey-light
-      width: 16px
   > .btn-group:not(:first-child)
-    padding-left: 16px
     &::before
       $before('Sort by')
 .grid
