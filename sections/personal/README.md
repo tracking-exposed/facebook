@@ -18,7 +18,7 @@ development=true npm run content
 To watch stylus files
 
 ```
-node_modules/.bin/stylus -w styles/summary.styl -o dist/css/
+node_modules/.bin/stylus -w styles/summary.styl styles/index.styl -o dist/css/
 ```
 
 ## files
