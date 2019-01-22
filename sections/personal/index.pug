@@ -1,42 +1,40 @@
 doctype html
 html
-    head
-        link(rel='stylesheet', type='text/css', href='/css/bootstrap.css')
-        link(rel='stylesheet', href='/css/index.css')
-        link(rel='stylesheet', href='/css/summary.css')
+  head
+    title fbTREX, data summary 
 
-        script(type='text/javascript', src='/js/jquery.js')
-        script(type='text/javascript', src='/js/collapse.js')
-        script(type='text/javascript', src='/js/bootstrap.min.js')
-        script(type='text/javascript', src='/js/lodash.min.js')
-        //- script(type='text/javascript', src='/js/isotope.pkgd.min.js')
-        script(type='text/javascript', src='https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js')
-        script(type='text/javascript', src='/js/moment.min.js')
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    meta(name="keywords" content="facebook tracking exposed")
+    meta(property="og:title" content="fbTREX, your submitted data")
+    meta(property="og:type" content="website")
+    meta(property="og:description" content="Invidual page, your information diet is here. filter, sort, download the data Facebook sent to you")
+    meta(property="og:url" content="https://facebook.tracking.exposed")
+    meta(property="og:image" content="https://facebook.tracking.exposed/images/fbtrex_logo-400x400.png")
+    meta(property="og:image:width" content="400")
+    meta(property="og:image:height" content="400")
 
-        script(type='text/javascript', charset='utf8', src='/js/local/summary.js')
+    link(rel='stylesheet', type='text/css', href='/css/bootstrap.css')
+    link(rel='stylesheet', href='/css/index.css')
+    link(rel='stylesheet', href='/css/summary.css')
 
-        meta(charset="utf-8")
-        meta(http-equiv="X-UA-Compatible" content="IE=edge")
-        meta(name="viewport" content="width=device-width, initial-scale=1")
-        meta(name="keywords" content="facebook tracking exposed")
-        meta(property="og:title" content="fbTREX, your submitted data")
-        meta(property="og:type" content="website")
-        meta(property="og:description" content="Invidual page, your information diet is here. filter, sort, download the data Facebook sent to you")
-        meta(property="og:url" content="https://facebook.tracking.exposed")
-        meta(property="og:image" content="https://facebook.tracking.exposed/images/fbtrex_logo-400x400.png")
-        meta(property="og:image:width" content="400")
-        meta(property="og:image:height" content="400")
+    script(type='text/javascript', src='/js/jquery.js')
+    script(type='text/javascript', src='/js/collapse.js')
+    script(type='text/javascript', src='/js/bootstrap.min.js')
+    script(type='text/javascript', src='/js/lodash.min.js')
+    //- script(type='text/javascript', src='/js/isotope.pkgd.min.js')
+    script(type='text/javascript', src='https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js')
+    script(type='text/javascript', src='/js/moment.min.js')
 
-        title fbTREX, data summary 
+    script(type='text/javascript', charset='utf8', src='/js/local/summary.js')
 
-    body(onload="initializeSummary();")
+  body(onload="initializeSummary();")
 
-        include header
+    include header
 
-        .containter-fluid
-            h1.mainstyle Your data summary??! (coming soon)
-            h3.mainstyle The page you saw until the 8th of January is discontinued. A better UX would be implemented in the next days; you can access to your metadata from this API:
-                p#summary
-                | To know more about the roadmap, get in touch with the 
-                a(href="/about") contact
-                |  page.
+    .container
+    
+      h1.mainstyle Your data summary
+      ul#summary.row
+
