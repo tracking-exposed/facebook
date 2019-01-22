@@ -33,27 +33,27 @@ html
     include header
 
     h1.center Your data summary
-    .d-flex.justify-content-center.btn-groups
+    .d-flex.justify-content-around.btn-groups
       div(class="btn-group" role="group")
-        button(id="btn-filter-reset" type="button" class="btn btn-light" onclick="filterBy()")
+        button(type="button" class="btn btn-light" onclick="filterBy()")
           | Show all
-        button(id="btn-filter-posts" type="button" class="btn btn-secondary" onclick="filterBy('.posts')")
+        button(type="button" class="btn btn-secondary" onclick="filterBy('.posts')")
           | Posts
-        button(id="btn-filter-photos" type="button" class="btn btn-success" onclick="filterBy('.photo')")
+        button(type="button" class="btn btn-success" onclick="filterBy('.photo')")
           | Photos
-        button(id="btn-filter-videos" type="button" class="btn btn-primary" onclick="filterBy('.videos')")
+        button(type="button" class="btn btn-primary" onclick="filterBy('.videos')")
           | Videos
-        button(id="btn-filter-groups" type="button" class="btn btn-warning" onclick="filterBy('.groups')")
+        button(type="button" class="btn btn-warning" onclick="filterBy('.groups')")
           | Groups
 
       div(class="btn-group" role="group")
-        button(id="btn-sort-" type="button" class="btn btn-light" onclick="sortBy()")
+        button(type="button" class="btn btn-light" onclick="sortBy()")
           | Original order
-        button(id="btn-sort-date" type="button" class="btn btn-light" onclick="sortBy('date')")
+        button(type="button" class="btn btn-light" onclick="sortBy('date')")
           | Date
-        button(id="btn-sort-author" type="button" class="btn btn-light" onclick="sortBy('author')")
+        button(type="button" class="btn btn-light" onclick="sortBy('author')")
           | Author
-        button(id="btn-sort-id" type="button" class="btn btn-light" onclick="sortBy('postId')")
+        button(type="button" class="btn btn-light" onclick="sortBy('postId')")
           | Post ID
     #summary.grid
       // width of .grid-sizer used for columnWidth
