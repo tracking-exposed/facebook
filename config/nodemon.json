@@ -1,9 +1,9 @@
 {
   "watch": [
     "lib/*.js",
-    "app.js",
     "sections/*.pug",
     "sections/*/*.pug",
+    "styles/*.styl",
     "dist/**"
   ],
   "ignore": [
@@ -14,5 +14,5 @@
   "env": {
     "DEBUG": "lib:*,-lib:mongo:read"
   },
-  "ext": "js css pug"
+  "ext": "js css pug styl"
 }
