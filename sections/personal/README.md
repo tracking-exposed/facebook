@@ -19,6 +19,9 @@ development=true npm run content
 
 This directory is `section/personal`, you can find in `section/personal/index.pug` the rendered page when you access to the personal page for the adopters.
 
+Development of the ui will be made for
+http://127.0.0.1:8000/personal/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
 This access is possible only with a valid token:
 https://facebook.tracking.exposed/api/v1/summary/TOKENTOKENTOKEN
 
