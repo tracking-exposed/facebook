@@ -17,13 +17,11 @@ function initializeSummary() {
         continue;
       }
 
-      const readableDate = moment(item.publicationTime, moment.ISO_8601).format('MMMM Do YYYY, hh:mm a'),
-        unixTimestamp = moment(item.publicationTime, moment.ISO_8601).format('x');
+      const date = moment(item.publicationTime, moment.ISO_8601),
+        readableDate = date.format('MMMM Do YYYY, hh:mm a'),
+        unixTimestamp = date.format('x');
 
-      let bgColorClass,
-          entryType,
-          isPost,
-          teaserText;
+      let bgColorClass, entryType, isPost, message, messageTeaser;
       switch (item.type) {
         case 'photo':
           bgColorClass = 'alert-success';
@@ -41,10 +39,13 @@ function initializeSummary() {
           bgColorClass = 'alert-secondary'
           entryType = 'post';
           isPost = true;
-          const maxStringLength = 50;
-          teaserText = item.texts[0].text.length > maxStringLength
-            ? item.texts[0].text.substring(0, maxStringLength) + '…'
-            : item.texts[0].text;
+          const maxStringLength = 280;
+          message = item.texts.find(text => {
+            return text.info === 'message';
+          }).text;
+          messageTeaser = message.length > maxStringLength
+            ? message.substring(0, maxStringLength) + '…'
+            : message;
           break;
       }
 
@@ -54,9 +55,10 @@ function initializeSummary() {
             <header>${entryType || ''}</header>
             <section class="body">
               <span class="small date" data-date="${unixTimestamp}">${readableDate}</span>
-              <p><b class="author">${item.author}</b>
+              <p>
+                <b class="author">${item.author}</b><br>
                 ${isPost
-                  ? '<a href="https://facebook.com' + item.permaLink + '" title="Go to post" target="_blank" class="text-link">'+ teaserText +'</a>'
+                  ? '<span class="teaser">' + messageTeaser + '</span>'
                   : ''}
               </p>
             </section>
