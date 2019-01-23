@@ -8,14 +8,15 @@ function initializeSummary() {
   const url = `${window.location.origin}/api/v1/summary/${token}`;
   // $('#summary').html(`<a href="${url}">${url}</a>`);
 
-  $.getJSON(url, function(data) {
-    var x = _.groupBy(data, 'timeline');
-    console.log(x);
+  $.getJSON(url, (data) => {
     // research in progress, to split the post by timeline 
-    _.each(data, function(item) {
+    var x = _.groupBy(data, 'timeline');
+    console.log('x: ', x);
 
-      if(_.size(item.texts))
-          console.log(item);
+    _.each(data, (item) => {
+      if(_.size(item.texts)) {
+        console.log('has texts: ', item);
+      }
 
       // Don't display entries that have errors
       if (item.errors.length) {
@@ -27,7 +28,7 @@ function initializeSummary() {
         readableDate = date.format('MMMM Do YYYY, hh:mm a'),
         unixTimestamp = date.format('x');
 
-      let bgColorClass, entryType, isPost, message, messageTeaser;
+      let bgColorClass, entryType, selectedText, teaserText, hasText = false;
       switch (item.type) {
         case 'photo':
           bgColorClass = 'alert-success';
@@ -50,30 +51,20 @@ function initializeSummary() {
           entryType = 'post';
           break;
         default:
-          console.log("unmanaged type", item.type);
+          console.log("unmanaged type: ", item.type);
           break;
       }
 
-      /* every kind of entry might contain some text */
-      console.log(_.size(item.texts));
-      let hasText = false;
-
       if(_.size(item.texts) && _.some(item.texts, _.size)) {
-          const maxStringLength = 50;
+        const maxStringLength = 150;
 
-          /* are sure the texts[].text is order by the longest */
-          selectedText = _.first(_.orderBy(item.texts, _.size)).text;
+        /* are sure the texts[].text is order by the longest */
+        selectedText = _.first(_.orderBy(item.texts, _.size)).text;
 
-          /*
-          message = item.texts.find(text => {
-            return text.info === 'message';
-          }).text;
-           */
-
-          teaserText = selectedText.length > maxStringLength
-            ? selectedText.substring(0, maxStringLength) + '…'
-            : selectedText;
-          hasText = true;
+        teaserText = selectedText.length > maxStringLength
+          ? selectedText.substring(0, maxStringLength) + '…'
+          : selectedText;
+        hasText = true;
       }
 
       const gridItem = `
