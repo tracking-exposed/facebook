@@ -1,9 +1,10 @@
 {
   "watch": [
+    "bin/*.js",
     "lib/*.js",
-    "app.js",
     "sections/*.pug",
     "sections/*/*.pug",
+    "styles/*.styl",
     "dist/**"
   ],
   "ignore": [
@@ -11,5 +12,5 @@
   ],
   "verbose": true,
   "exitcrash": false,
-  "ext": "js css pug"
+  "ext": "js css pug styl"
 }
