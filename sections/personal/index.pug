@@ -32,31 +32,35 @@ html
 
     include header
 
-    h1.center Your data summary
+    h1.center data summary
     .d-flex.justify-content-around.btn-groups
-      div(class="btn-group" role="group")
-        button(type="button" class="btn btn-light" onclick="filterBy()")
-          | Show all
-        button(type="button" class="btn btn-secondary" onclick="filterBy('.posts')")
-          | Posts
-        button(type="button" class="btn btn-success" onclick="filterBy('.photo')")
-          | Photos
-        button(type="button" class="btn btn-primary" onclick="filterBy('.videos')")
-          | Videos
-        button(type="button" class="btn btn-warning" onclick="filterBy('.groups')")
-          | Groups
-        button(type="button" class="btn btn-info" onclick="filterBy('.events')")
-          | Events
+      .center
+        div(class="btn-group" role="group")
+          button(type="button" class="btn btn-light" onclick="filterBy()")
+            | Show all
 
-      div(class="btn-group" role="group")
-        button(type="button" class="btn btn-light" onclick="sortBy()")
-          | Original order
-        button(type="button" class="btn btn-light" onclick="sortBy('date')")
-          | Date
-        button(type="button" class="btn btn-light" onclick="sortBy('author')")
-          | Author
-        button(type="button" class="btn btn-light" onclick="sortBy('postId')")
-          | Post ID
+        div(class="btn-group" role="group")
+          button(type="button" class="btn btn-secondary" onclick="filterBy('.posts')")
+            | Posts
+          button(type="button" class="btn btn-success" onclick="filterBy('.photo')")
+            | Photos
+          button(type="button" class="btn btn-primary" onclick="filterBy('.videos')")
+            | Videos
+          button(type="button" class="btn btn-warning" onclick="filterBy('.groups')")
+            | Groups
+          button(type="button" class="btn btn-info" onclick="filterBy('.events')")
+            | Events
+
+        div(class="btn-group" role="group")
+          button(type="button" class="btn btn-light" onclick="sortBy('date')")
+            | Date
+          button(type="button" class="btn btn-light" onclick="sortBy('author')")
+            | Author
+          button(type="button" class="btn btn-light" onclick="sortBy('type')")
+            | Type
+          button(type="button" class="btn btn-light" onclick="sortBy()")
+            | Original
+
     #summary.grid
       // width of .grid-sizer used for columnWidth
       .grid-sizer
