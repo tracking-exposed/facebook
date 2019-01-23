@@ -4,17 +4,23 @@ function initializeSummary() {
   const token = _.find(window.location.pathname.split('/'), function(e) {
     return _.size(e) == 40;
   });
+
   const url = `${window.location.origin}/api/v1/summary/${token}`;
   // $('#summary').html(`<a href="${url}">${url}</a>`);
 
   $.getJSON(url, function(data) {
-    console.log(data);
-    for (let i = 0; i < 20; i++) {
-      const item = data[i];
+    // research in progress, to split the post by timeline 
+    var x = _.groupBy(data, 'timeline');
+    console.log(x);
+    _.each(data, function(item) {
+
+      if(_.size(item.texts))
+          console.log(item);
 
       // Don't display entries that have errors
       if (item.errors.length) {
-        continue;
+        console.log("suppressing the object because of errors in:", item.errors);
+        return;
       }
 
       const readableDate = moment(item.publicationTime, moment.ISO_8601).format('MMMM Do YYYY, hh:mm a');
@@ -26,7 +32,7 @@ function initializeSummary() {
       switch (item.type) {
         case 'photo':
           bgColorClass = 'alert-success';
-          entryType = item.type;
+          entryType = 'picture';
           break;
         case 'videos':
           bgColorClass = 'alert-primary';
@@ -36,15 +42,33 @@ function initializeSummary() {
           bgColorClass = 'alert-warning';
           entryType = 'group';
           break;
-        default:
-          bgColorClass = 'alert-secondary'
-          entryType = 'post';
-          isPost = true;
-          const maxStringLength = 50;
-          teaserText = item.texts[0].text.length > maxStringLength
-            ? item.texts[0].text.substring(0, maxStringLength) + '…'
-            : item.texts[0].text;
+        case 'events':
+          bgColorClass = 'alert-info';
+          entryType = 'event';
           break;
+        case 'posts':
+          bgColorClass = 'alert-secondary';
+          entryType = 'post';
+          break;
+        default:
+          console.log("unmanaged type", item.type);
+          break;
+      }
+
+      /* every kind of entry might contain some text */
+      console.log(_.size(item.texts));
+      let hasText = false;
+
+      if(_.size(item.texts) && _.some(item.texts, _.size)) {
+          const maxStringLength = 50;
+
+          /* are sure the texts[].text is order by the longest */
+          selectedText = _.first(_.orderBy(item.texts, _.size)).text;
+
+          teaserText = selectedText.length > maxStringLength
+            ? selectedText.substring(0, maxStringLength) + '…'
+            : selectedText;
+          hasText = true;
       }
 
       const gridItem = `
@@ -54,7 +78,7 @@ function initializeSummary() {
             <section class="body">
               <span class="small post-date">${readableDate}</span>
               <p><b class="post-author">${item.author}</b>
-                ${isPost
+                ${hasText
                   ? '<a href="https://facebook.com' + item.permaLink + '" title="Go to post" target="_blank" class="text-link">'+ teaserText +'</a>'
                   : ''}
               </p>
@@ -68,7 +92,7 @@ function initializeSummary() {
         </div>
       `;
       $('#summary').append(gridItem);
-    }
+    });
     initIsotope();
   });
 };
