@@ -9,9 +9,9 @@ function initializeSummary() {
   // $('#summary').html(`<a href="${url}">${url}</a>`);
 
   $.getJSON(url, function(data) {
-    // research in progress, to split the post by timeline 
     var x = _.groupBy(data, 'timeline');
     console.log(x);
+    // research in progress, to split the post by timeline 
     _.each(data, function(item) {
 
       if(_.size(item.texts))
@@ -23,12 +23,11 @@ function initializeSummary() {
         return;
       }
 
-      const readableDate = moment(item.publicationTime, moment.ISO_8601).format('MMMM Do YYYY, hh:mm a');
+      const date = moment(item.publicationTime, moment.ISO_8601),
+        readableDate = date.format('MMMM Do YYYY, hh:mm a'),
+        unixTimestamp = date.format('x');
 
-      let bgColorClass,
-          entryType,
-          isPost,
-          teaserText;
+      let bgColorClass, entryType, isPost, message, messageTeaser;
       switch (item.type) {
         case 'photo':
           bgColorClass = 'alert-success';
@@ -65,6 +64,12 @@ function initializeSummary() {
           /* are sure the texts[].text is order by the longest */
           selectedText = _.first(_.orderBy(item.texts, _.size)).text;
 
+          /*
+          message = item.texts.find(text => {
+            return text.info === 'message';
+          }).text;
+           */
+
           teaserText = selectedText.length > maxStringLength
             ? selectedText.substring(0, maxStringLength) + '…'
             : selectedText;
@@ -76,7 +81,7 @@ function initializeSummary() {
           <article class="content ${bgColorClass} d-flex flex-column">
             <header>${entryType || ''}</header>
             <section class="body">
-              <span class="small post-date">${readableDate}</span>
+              <span class="small date" data-date="${unixTimestamp}">${readableDate}</span>
               <p><b class="post-author">${item.author}</b>
                 ${hasText
                   ? '<a href="https://facebook.com' + item.permaLink + '" title="Go to post" target="_blank" class="text-link">'+ teaserText +'</a>'
@@ -84,7 +89,7 @@ function initializeSummary() {
               </p>
             </section>
             <footer>
-              <span class="small ${item.postId ? 'post-id' : ''}">
+              <span class="small ${item.postId ? 'post-id' : ''}" data-post-id="${item.postId}">
                 ${item.postId ? 'Post ID: #'+item.postId : '#'}
               </span>
             </footer>
@@ -105,11 +110,19 @@ function initIsotope() {
     masonry: {
       // use element for option
       columnWidth: '.grid-sizer'
+    },
+    getSortData: {
+      postId: '[data-post-id parseInt]',
+      date: '[data-date parseInt]',
+      author: '.author',
     }
   });
 }
 
 function filterBy(filter = '*') {
-  console.log(filter)
   $grid.isotope({ filter });
+}
+
+function sortBy(value = 'original-order') {
+  $grid.isotope({ sortBy: value });
 }
