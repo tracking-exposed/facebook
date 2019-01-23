@@ -33,18 +33,21 @@ html
     include header
 
     h1.center Your data summary
-    .d-flex.justify-content-center.btn-groups
-      div(class="btn-group" role="group")
-        button(id="btn-filter-reset" type="button" class="btn btn-light" onclick="filterBy()")
-          | Show all
-        button(id="btn-filter-posts" type="button" class="btn btn-secondary" onclick="filterBy('.posts')")
-          | Posts
-        button(id="btn-filter-photos" type="button" class="btn btn-success" onclick="filterBy('.photo')")
-          | Photos
-        button(id="btn-filter-videos" type="button" class="btn btn-primary" onclick="filterBy('.videos')")
-          | Videos
-        button(id="btn-filter-groups" type="button" class="btn btn-warning" onclick="filterBy('.groups')")
-          | Groups
+    .center
+      .d-flex.justify-content-center.btn-groups
+        div(class="btn-group" role="group")
+          button(id="btn-filter-reset" type="button" class="btn btn-outline-dark" onclick="filterBy()")
+            | Show all
+          button(id="btn-filter-photos" type="button" class="btn btn-success" onclick="filterBy('.photo')")
+            | Photos
+          button(id="btn-filter-posts" type="button" class="btn btn-secondary" onclick="filterBy('.posts')")
+            | Posts
+          button(id="btn-filter-videos" type="button" class="btn btn-primary" onclick="filterBy('.videos')")
+            | Videos
+          button(id="btn-filter-groups" type="button" class="btn btn-warning" onclick="filterBy('.groups')")
+            | Groups
+          button(id="btn-filter-events" type="button" class="btn btn-info" onclick="filterBy('.events')")
+            | Events
     #summary.grid
       // width of .grid-sizer used for columnWidth
       .grid-sizer
