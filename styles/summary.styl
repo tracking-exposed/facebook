@@ -1,0 +1,115 @@
+/*
+ *  V A R I A B L E S
+ */
+$color-yellow-light = #ffffe0
+$color-red = #fd5308
+$color-red-light = #FD8854
+$color-green = #66b032
+$color-green-light = #A2F24C
+$color-blue = #3c5a99
+$color-blue-light = #5A87E5
+$color-grey = #ccc
+$color-grey-light = #e6e6e6
+$color-grey-medium = #8C8C8C
+$color-grey-dark = #4C4C4C
+$color-white = #fefefe
+
+$before(text)
+  content: text
+  color: $color-grey-medium
+  font-weight: lighter
+  position: absolute
+  top: -30px
+  width: 100%
+  text-align: center
+  text-transform: uppercase
+  letter-spacing: 1px
+
+.btn-groups
+  margin-top: 48px
+  margin-bottom: 24px
+
+  > .btn-group:first-child
+    &::before
+      $before('Filter results')
+  > .btn-group:not(:first-child)
+    &::before
+      $before('Sort by')
+.grid
+  display: block
+  margin: 0 auto 32px
+  width: 97.5%
+
+  /* clear fix */
+  &::after
+    content: ''
+    display: block
+    clear: both
+
+/* fluid 5 columns */
+.grid-item, .grid-sizer
+  width: 20%
+
+.grid-item
+  float: left
+  padding: 12px
+
+  .content
+    border-top-left-radius: 5px
+    border-top-right-radius: 5px
+    min-height: 158px
+
+    .small
+      display: block
+      font-size: 10px
+
+    header
+      background-color: transparent
+      color: $color-grey-medium
+      display: block
+      font-size: 90%
+      font-weight: light
+      letter-spacing: 2px
+      padding: 4px 8px
+      text-align: center
+      text-transform: uppercase
+
+    .body
+      background-color: $color-white
+      flex-grow: 1
+      padding: 8px 16px
+      margin: 0 auto
+      width: calc(100% - 2px)
+
+      .date
+        color: $color-grey-medium
+      .author, .date
+        margin-bottom: 4px
+
+      p
+        color: $color-grey-dark
+        hyphens: auto
+        font-size: 1.1em
+        line-height: 1.2
+        word-wrap: break-word
+
+        .teaser
+          font-size: .9em
+
+      a.text-link
+        color: currentColor
+        display: block
+        font-size: 80%
+        line-height: 1.2
+
+    footer
+      padding: 4px 16px
+      color: $color-grey-medium
+
+      span:not(.post-id)
+        color: $color-grey-light
+
+.grid-item--width2
+  width: 40%
+.grid-item--height2
+  height: 400px

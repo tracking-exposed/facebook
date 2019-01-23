@@ -13,6 +13,7 @@ echo "User-agent: *\nAllow: /\nDisallow: /personal/\n" >> dist/robots.txt
 node_modules/.bin/stylus styles/index.styl -o dist/css
 node_modules/.bin/stylus styles/pages.styl -o dist/css
 node_modules/.bin/stylus styles/personal.styl -o dist/css
+node_modules/.bin/stylus styles/summary.styl -o dist/css
 
 cp styles/favicon.ico dist/
 cp -r sections/images/* dist/images
