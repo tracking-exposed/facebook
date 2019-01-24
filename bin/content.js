@@ -43,7 +43,7 @@ echoes.setDefaultEcho("elasticsearch");
 /* This function wraps all the API call, checking the verionNumber
  * managing error in 4XX/5XX messages and making all these asyncronous
  * I/O with DB, inside this Bluebird */
-var inc = 0;
+var inc = 1;
 function dispatchPromise(name, req, res) {
 
     var apiV = _.parseInt(_.get(req.params, 'version'));
@@ -57,7 +57,7 @@ function dispatchPromise(name, req, res) {
         inc += 1;
     }
 
-    debug("%s %s API v%d name %s (%s)", req.randomUnicode,
+    debug("%d\t%s APIv%d [%s] (%s)", req.randomUnicode,
         moment().format("HH:mm:ss"), apiV, name, req.url);
 
     var func = _.get(escviAPI.implementations, name, null);
@@ -81,7 +81,7 @@ function dispatchPromise(name, req, res) {
                   _.size(JSON.stringify(httpresult.json)) );
               res.json(httpresult.json)
           } else if(httpresult.text) {
-              debug("%s API %s success, returning text (size %d)",
+              debug("%d\tAPI %s success, returning text (size %d)",
                   req.randomUnicode, name, _.size(httpresult.text));
               res.send(httpresult.text)
           } else if(httpresult.file) {
