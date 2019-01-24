@@ -29,12 +29,14 @@ $before(text)
   margin-top: 48px
   margin-bottom: 24px
 
-  > .btn-group:first-child
+  > .btn-group:nth-child(2)
+    margin: 0 16px
     &::before
       $before('Filter results')
-  > .btn-group:not(:first-child)
+  > .btn-group:last-child
     &::before
       $before('Sort by')
+
 .grid
   display: block
   margin: 0 auto 32px
