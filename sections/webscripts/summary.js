@@ -70,10 +70,7 @@ function initializeSummary() {
             <section class="body">
               <span class="small date" data-date="${unixTimestamp}">${readableDate}</span>
               <h4 class="author">${item.author}</h4>
-              <p>${hasText
-                ? `<span class="teaser">${teaserText}</span>`
-                : ''}
-              </p>
+              ${hasText ? `<p class="teaser">${teaserText}</p>` : ''}
             </section>
             <footer>
               <span class="small ${item.postId ? 'post-id' : ''}" data-post-id="${item.postId}">
