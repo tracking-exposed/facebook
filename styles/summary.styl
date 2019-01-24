@@ -55,6 +55,7 @@ $before(text)
 .grid-item
   float: left
   padding: 12px
+  transition: height .2s ease-out
 
   .content
     border-top-left-radius: 5px
@@ -62,7 +63,7 @@ $before(text)
     min-height: 158px
 
     .small
-      display: block
+      display: inline-block
       font-size: 10px
 
     header
@@ -84,19 +85,23 @@ $before(text)
       width: calc(100% - 2px)
 
       .date
+        display: block
         color: $color-grey-medium
-      .author, .date
-        margin-bottom: 4px
+        margin-bottom: 8px
 
-      p
+      .author
         color: $color-grey-dark
         hyphens: auto
         font-size: 1.1em
+        font-weight: bold
         line-height: 1.2
+        margin-bottom: 6px
         word-wrap: break-word
 
-        .teaser
-          font-size: .9em
+      p
+        display: inline-block
+        font-size: 15px
+        line-height: 1.3
 
       a.text-link
         color: currentColor
@@ -105,6 +110,8 @@ $before(text)
         line-height: 1.2
 
     footer
+      display: flex
+      justify-content: space-between
       padding: 4px 16px
       color: $color-grey-medium
 
@@ -115,3 +122,5 @@ $before(text)
   width: 40%
 .grid-item--height2
   height: 400px
+.grid-item--height-auto
+  height: auto
