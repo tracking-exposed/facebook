@@ -3,30 +3,23 @@ const _ = require('lodash');
 const moment = require('moment');
 const debug = require('debug')('bin:buildrsserv');
 const nconf= require('nconf');
-
-const echoes = require('../lib/echoes');
-
+const RSS = require('rss');
+const path = require('path');
+const fs = Promise.promisifyAll(require('fs'));
 nconf.argv().env().file({ file: 'config/content.json' });
+
+const utils = require('../lib/utils');
+const echoes = require('../lib/echoes');
+const mongo = require('../lib/mongo');
+const fbtrexRSSdescription = require('../lib/rss').fbtrexRSSdescription;
 
 /* configuration for elasticsearch */
 echoes.addEcho("elasticsearch");
 echoes.setDefaultEcho("elasticsearch");
 
-const FREQUENCY = 5;
-/*
- * This tool look at the `feeds` for object with { created: false },
- * and creates a populated XML newsfeed with the last days of matching 
- * keywords.
- * If success, mark the semantic with a new date, if fail, mark it with "false".
- */
-
+const FREQUENCY = 10;
 const timeWindow = _.parseInt(nconf.get('window')) || 5; // minutes
 var lastExecution = null;
-/*
- * It looks at all the `labels` added since the lastExecution (and, if null
- * uses the default of the env variable "window", look if any feed match
- * with them, and update them if they do
- */
 
 console.log(`Starting periodic check, every ${FREQUENCY} seconds`);
 infiniteLoop();
@@ -36,95 +29,172 @@ function infiniteLoop() {
     return Promise
         .resolve()
         .delay(FREQUENCY * 1000)
-        .then(getNewFeeds)
-        .tap(logNewFeeds)
-        .map(createNewFeed)
+        /*
+         * This tool look at the `feeds` for object with { created: false },
+         * and creates a populated XML newsfeed with the last days of matching 
+         * keywords.
+         * If success, mark the semantic with a new date, if fail, mark it with "false".
+         */
+        .then(getFreshlySubscribed)
+        .map(composeXMLfromFeed, { concurrency: 1 })
+        .tap(logCreations)
         .delay(FREQUENCY * 1000)
+        /*
+         * It looks at all the `labels` added since the lastExecution (and, if null
+         * uses the default of the env variable "window", look if any feed match
+         * with them, and update them if they do
+         */
         .then(function() {
 
-            if(lastExecution) {
-                debug("Looking at labels updated in the last %s", moment.duration(moment() - lastExecution).humanize() );
-            } else {
-                debug("First execution! looking at labels since at %s, processing %d entries", moment().format(), _.size(entries) );
+            if(!lastExecution) {
+                debug("First execution, looking at %d minutes back", timeWindow);
                 lastExecution = moment().subtract(timeWindow, 'm');
             }
-
+            debug("Looking at labels updated in the last %s", moment.duration(moment() - lastExecution).humanize() );
             return mongo
-                .read(nconf.get('schema').labels, { when: { "$lt": new Date( lastExecution.format() ) }})
-
-            lastExecution = moment();
-            const limit = _.parseInt(nconf.get('limit'));
-
-            if(!_.isNaN(limit) && limit < _.size(entries)) {
-                debug("Process cap to %d requests, we had %d entries, cutting off %d",
-                    limit, _.size(entries), _.size(entries) - limit);
-                entries = _.slice(entries, 0, limit);
-                debugger;
-            }
-            logSemanticServer(_.size(entries));
-            return entries;
-        })
-        .map(semantic.buildText)
-        .map(process, { concurrency: 1 })
-        .then(_.compact)
-        .tap(function(entries) {
-            if(_.size(entries)) {
-                debug("Completed %d entries succesfull", _.size(entries));
-                lastExecution = moment();
-            }
+                .read(nconf.get('schema').semantics, { when: { "$gt": new Date( lastExecution.format() ) }})
+                .tap(function(total) {
+                    debug("we have %d semantics updated freshly", _.size(total));
+                })
+                .map(function(found) {
+                    // debug("Found [%s] among the freshly updated semantics, looking for some feeds matching them", found.label);
+                    return mongo
+                        .read(nconf.get('schema').feeds, { labels: found.label });
+                }, { concurrency: 1 })
+                .then(_.flatten)
+                .tap(function(total) {
+                    debug("we have %d feed which should be updated now", _.size(total));
+                })
+                .map(composeXMLfromFeed, { concurrency: 1 });
         })
         .then(infiniteLoop);
 };
 
-
-function getNewFeeds() {
-    return mongo
-        .read(nconf.get('schema').feeds, { created: false });
-        
-};
-
-function logNewFeeds(feeds) {
-    debug("I should log %d new feeds", _.size(feeds));
+function composeXMLfromFeed(feed) {
+    /* 5 days is the window to create a newsfeed going back in time */
+    const timelimit = new Date(moment().subtract(5, 'd'));
+    return retrieveNewData(feed, timelimit)
+        .then(function(blob) {
+            return _.reduce(blob, function(memo, semanticBlock) {
+                memo.counter++;
+                memo.metadata.push(semanticBlock[0]);
+                memo.label.push(semanticBlock[1]);
+                return memo;
+            }, { feed, counter: 0, metadata: [], label: [] });
+        })
+        .then(composeXML);
 }
 
-function createNewFeed(feed) {
+function composeXML(material) {
 
-    /* this function create the XML rss based on feed.labels */
-    debug("%j", feed);
+    if(!material.counter)
+        return;
 
-    mongo.readLimit(
+    const title = `fbTREX ⏩ ${material.feed.labels.join(', ')}`;
+    let composed = new RSS({
+        title,
+        description: fbtrexRSSdescription,
+        feed_url: 'https://facebook.tracking.exposed/feeds',
+        ttl: 60
+    });
 
-};
+    _.times(_.size(material.label), function(i) {
+        let info = buildMetainfo(material.metadata[i], _.size(material.label[i].l), material.label[i].textsize );
+        let content = buildContent(material.metadata[i].texts, material.label[i].l );
+        composed.item({
+            title: info.title,
+            description: content,
+            url: info.permaLink,
+            guid: info.guid,
+            date: info.publicationTime,
+        });
+    });
 
-function process(entry) {
-    const token = nconf.get('token');
-    return semantic
-        .dandelion(token, entry.dandelion, entry.semanticId)
-        .then(function(analyzed) {
+    const rssOutput = composed.xml();
+    material.feed.created = true;
+    material.feed.xmlpath = path.join(material.feed.id[0], material.feed.id[1], `${material.feed.id}.xml`);
+    const outFile = path.join(__dirname, '..', 'rss', material.feed.xmlpath);
 
-            if(!analyzed)
-                throw new Error();
-
-            if(analyzed.headers['x-dl-units-left'] === 0) {
-                debug("Units finished!");
-                process.exit(1);
-            }
-
-            if(_.isUndefined(analyzed.lang))
-                return semantic.updateMetadata(_.extend(entry, { semantic: null }) );
-
-            return Promise.all([
-                elasticLog(entry, analyzed),
-                semantic.updateMetadata(_.extend(entry, { semantic: new Date() }) ),
-                semantic.saveSemantic(analyzed.semantics),
-                semantic.saveLabel(analyzed.label)
+    debug("Writing file %s about feed %j: %d chars", outFile, material.feed.labels, _.size(rssOutput));
+    return fs
+        .mkdirAsync( path.join(__dirname, '..', 'rss', material.feed.id[0]) )
+        .catch(function() {})
+        .then(function() {
+            return fs
+                .mkdirAsync( path.join(__dirname, '..', 'rss', material.feed.id[0], material.feed.id[1]) );
+        })
+        .catch(function() {})
+        .then(function() {
+            Promise.all([
+                mongo.updateOne(nconf.get('schema').feeds, { id: material.feed.id }, material.feed),
+                fs.writeFileAsync(outFile, rssOutput, { options: 'w'})
             ]);
         })
-        .catch(function(error) {
-            debug("Error with semanticId %s: %s", entry.semanticId, error);
-            return semantic.updateMetadata(_.extend(entry, { semantic: false }) );
+        .return({
+            matches: _.size(material.label),
+            chars: _.size(rssOutput)
         });
 };
+
+function getFreshlySubscribed() {
+    return mongo
+        .read(nconf.get('schema').feeds, { created: false });
+};
+
+function retrieveNewData(feed, timelimit) {
+    /* this function create the XML rss based on feed. labels */
+
+    debug("retrieveNewData which is this: %j using labels %s going back until %s", feed, feed.labels, timelimit);
+    
+    // the goal here is to find the semanticId and then look at them in `labels` */
+    return Promise.map(feed.labels, function(l) {
+        return mongo
+            .read(nconf.get('schema').semantics, { label: l }) // , when: { "$gt": timelimit } })
+            .map(function(entry) {
+                return entry.semanticId;
+            })
+            .tap(function(entries) {
+                debug("Label %s found %d entries, timelimit %s ignored",
+                    l, _.size(entries), timelimit);
+            });
+    }, { concurrency: 2 })
+    .then(function(mixed) {
+        let selected;
+
+        if(_.size(mixed) > 1) {
+            /* merge time! if we've more than one label request, 
+             * only the semanticId of both would be kept */
+            selected = _.intersection.apply(_, mixed);
+            debug("%d labels found: %j semanticId, shared among them %d",
+                _.size(mixed), _.map(mixed, _.size), _.size(selected));
+        }
+        else
+            selected = _.first(mixed);
+
+        return _.uniq(selected);
+    })
+    .map(function(semanticId) {
+        /* 
+         * TODO improve the selection and intersection, having the metadata, we can 
+         * filter by size of texts too */
+        return Promise.all([
+            mongo.readOne(nconf.get('schema').metadata, {
+                semanticId: semanticId,
+                semantic: {
+                    "$gt": new Date("2018-01-01")
+                }
+            }),
+            mongo.readOne(nconf.get('schema').labels, {
+                semanticId: semanticId
+            }),
+            semanticId
+        ])
+    }, { concurrency: 1});
+};
+
+function logCreations(infos) {
+    debug("Log %j", infos);
+}
 
 function logSemanticServer(amount) {
     echoes.echo({
@@ -141,4 +211,33 @@ function elasticLog(entry, analyzed) {
         annotations: _.size(analyzed.semantics),
         lang: analyzed.lang
     });
+};
+
+function buildMetainfo(metadata, concepts, size) {
+
+    let attr = _.first(_.get(metadata, 'attributions')) || {};
+    let details = _.get(metadata, 'linkedtime') || {};
+    let pics = _.size(_.get(metadata, 'alt'));
+    let date = moment(details.publicationTime);
+
+    return {
+        title: `[${details.fblinktype ? details.fblinktype : "error"}] ${attr.content ? "from [" : ""}${attr.content ? attr.content + ']' : "error]"} with ${concepts} concepts in ${size} chars`,
+        permaLink: `${details.fblink ? 'https://facebook.com' : 'https://facebook.tracking.exposed'}${details.fblink ? details.fblink : "/issues"}`,
+        guid: metadata.semanticId,
+        publicationTime: date.isAfter( moment({ year: 2000 }) ) ? date.toISOString() : moment().toISOString()
+    };
+}
+
+/*
+        let content = buildContent(material.metadata[i].texts, material.label[i].l );
+*/
+function buildContent(texts, labels) {
+
+    let ret = _.reduce(texts, function(memo, o) {
+        memo += "→  " + o.text + "\n";
+        return memo;
+    }, "");
+
+    ret += "⇉ concepts found:\n⇉ " + labels.join(', ');
+    return ret;
 };
