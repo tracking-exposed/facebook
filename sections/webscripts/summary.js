@@ -17,13 +17,14 @@ function initializeSummary() {
 
       // Don't display entries that have errors
       if (item.errors.length) {
-        console.log("suppressing the object because of errors in:", item.errors);
+        console.warn("suppressing the object because of errors in:", item.errors);
         return;
       }
 
       const date = moment(item.publicationTime, moment.ISO_8601),
         readableDate = date.format('MMMM Do YYYY, hh:mm a'),
-        unixTimestamp = date.format('x');
+        unixTimestamp = date.format('x'),
+        maxStringLength = 150;
 
       let bgColorClass, entryType, selectedText, teaserText, hasText = false;
       switch (item.type) {
@@ -53,14 +54,12 @@ function initializeSummary() {
       }
 
       if(_.size(item.texts) && _.some(item.texts, _.size)) {
-        const maxStringLength = 150;
 
         /* are sure the texts[].text is order by the longest */
         selectedText = _.first(_.orderBy(item.texts, _.size)).text;
-
         teaserText = selectedText.length > maxStringLength
           ? selectedText.substring(0, maxStringLength) + '…'
-          : selectedText;
+          : selectedText
         hasText = true;
       }
 
@@ -70,16 +69,17 @@ function initializeSummary() {
             <header>${entryType || ''}</header>
             <section class="body">
               <span class="small date" data-date="${unixTimestamp}">${readableDate}</span>
-              <p><b class="post-author">${item.author}</b>
-                ${hasText
-                  ? '<a href="https://facebook.com' + item.permaLink + '" title="Go to post" target="_blank" class="text-link">'+ teaserText +'</a>'
-                  : ''}
+              <h4 class="author">${item.author}</h4>
+              <p>${hasText
+                ? `<span class="teaser">${teaserText}</span>`
+                : ''}
               </p>
             </section>
             <footer>
               <span class="small ${item.postId ? 'post-id' : ''}" data-post-id="${item.postId}">
                 ${item.postId ? 'Post ID: #'+item.postId : '#'}
               </span>
+              <a href="https://facebook.com${item.permaLink}" title="Go to post" target="_blank" class="small text-link">Go to post</a>
             </footer>
           </article>
         </div>
