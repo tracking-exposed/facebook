@@ -38,6 +38,5 @@ cp node_modules/reveal.js/lib/js/classList.js $V/classList.js
 cp node_modules/reveal.js/lib/font/league-gothic/* dist/css/ 
 
 cd $V
-# wget https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js 
-curl -o isotope.pkgd.min.js https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js
+curl -O -J -L https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js
 cd ../..
