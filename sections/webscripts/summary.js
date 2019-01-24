@@ -14,9 +14,6 @@ function initializeSummary() {
     console.log('x: ', x);
 
     _.each(data, (item) => {
-      if(_.size(item.texts)) {
-        console.log('has texts: ', item);
-      }
 
       // Don't display entries that have errors
       if (item.errors.length) {
