@@ -185,9 +185,6 @@ app.get('/api/v:version/htmls/:userToken/days/:days', function(req, res) {
 app.get('/api/v:version/htmls/:userToken/n/:skip/:amount', function(req, res) {
     return dispatchPromise('metadataByAmount', req, res);
 });
-app.get('/api/v:version/personal/csv/:userToken/:kind', function(req, res) {
-    return dispatchPromise('personalCSV', req, res);
-});
 app.get('/api/v:version/personal/diet/:userToken/:days', function(req, res) {
     return dispatchPromise('dietBasic', req, res);
 });
@@ -195,6 +192,9 @@ app.get('/api/v:version/personal/diet/:userToken/:days', function(req, res) {
 // THE NEW ONE BELOW ---       -----------------------------------------o\
 app.get('/api/v:version/summary/:userToken/:amount?', function(req, res) {
     return dispatchPromise('getSummaryData', req, res);
+});
+app.get('/api/v:version/csv/:userToken', function(req, res) {
+    return dispatchPromise('getSummaryCSV', req, res);
 });
 app.get('/api/v:version/metadata/:userToken/:amount?', function(req, res) {
     return dispatchPromise('getMetadataData', req, res);
