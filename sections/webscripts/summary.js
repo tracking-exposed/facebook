@@ -115,7 +115,7 @@ function sortBy(value = 'original-order') {
 
 function downloadCSV() {
   const token = getToken();
-  const url = "/api/v1/csv/" + pinfo.userToken;
+  const url = "/api/v1/csv/" + token;
   console.log("downloadCSV from: ", url);
   window.open(url);
 }
