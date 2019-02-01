@@ -1,17 +1,18 @@
 let $grid;
 
-function initializeSummary() {
-  const token = _.find(window.location.pathname.split('/'), function(e) {
+function getToken() {
+  return _.find(window.location.pathname.split('/'), function(e) {
     return _.size(e) == 40;
   });
+}
 
+function initializeSummary() {
+
+  const token = getToken();
   const url = `${window.location.origin}/api/v1/summary/${token}`;
   // $('#summary').html(`<a href="${url}">${url}</a>`);
 
   $.getJSON(url, (data) => {
-    // research in progress, to split the post by timeline 
-    var x = _.groupBy(data, 'timeline');
-    console.log('x: ', x);
 
     _.each(data, (item) => {
 
@@ -110,4 +111,11 @@ function filterBy(filter = '*') {
 
 function sortBy(value = 'original-order') {
   $grid.isotope({ sortBy: value });
+}
+
+function downloadCSV() {
+  const token = getToken();
+  const url = "/api/v1/csv/" + pinfo.userToken;
+  console.log("downloadCSV from: ", url);
+  window.open(url);
 }

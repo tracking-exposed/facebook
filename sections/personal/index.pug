@@ -28,7 +28,7 @@ html
 
     script(type='text/javascript', charset='utf8', src='/js/local/summary.js')
 
-  body(onload="initializeSummary();")
+  body(onload="initializeSummary()")
 
     include header
 
@@ -58,6 +58,9 @@ html
             | Type
           button(type="button" class="btn btn-light" onclick="sortBy()")
             | Original
+
+        div(class="btn-group" role="group")
+          button(type="button" class="btn btn-default" onclick="downloadCSV()") download .csv
 
     #summary.grid
       // width of .grid-sizer used for columnWidth
