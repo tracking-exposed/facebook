@@ -13,17 +13,15 @@ html
 
     body
     
-    include header
-    include navbar
+        .container-fluid
+            include navbar
+            .simpletext
+                h2 Alarms
 
-    .container-fluid
-        .simpletext
-            h2 Alarms
+                form.center Password: 
+                    input(id="password" name="password")
+                    a(onclick="loadAlarms('#alarms');") Load
 
-            form.center Password: 
-                input(id="password" name="password")
-                a(onclick="loadAlarms('#alarms');") Load
+                div(id="alarms")
 
-            div(id="alarms")
-
-    div.footer
+        div.footer
