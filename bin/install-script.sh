@@ -21,7 +21,6 @@ cp -r sections/webscripts/* dist/js/local/
 cp -r node_modules/bootstrap/dist/* dist/
 cp -r support/tampermonkey/autoscroll.user.js dist/
 
-cp ./node_modules/bootstrap/js/collapse.js $V
 cp node_modules/jquery/dist/jquery.js $V 
 cp node_modules/d3/d3.min.js $V 
 cp node_modules/c3/c3.min.js $V 
