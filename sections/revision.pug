@@ -27,10 +27,8 @@ html
         // remind - loadsnippet is the legacy, loadmetadata is the new one 
     body(onload="loadsnippet('#metadest', '#render'); loadmetadata('#metadata', '#errors'); ")
 
-        include header
-        include navbar
-
         .container-fluid
+            include navbar
             .col-md-1
             .col-md-4
                 div.infoblock
