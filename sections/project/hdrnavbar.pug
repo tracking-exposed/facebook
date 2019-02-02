@@ -5,7 +5,6 @@ html
         link(rel='stylesheet', href='/css/index.css')
         script(type='text/javascript', src='/js/lodash.min.js')
         script(type='text/javascript', src='/js/jquery.js')
-        script(type='text/javascript', src='/js/collapse.js')
         script(type='text/javascript', src='/js/bootstrap.min.js')
         meta(charset="utf-8")
         meta(http-equiv="X-UA-Compatible" content="IE=edge")
@@ -21,53 +20,23 @@ html
         title facebook tracking exposed, the project
 
     body
-  
-        .container
-            .topheader
-                .col-xs-8.col-sm-8.col-md-8.col-lg-8
-                    span < 
-                        img.githublogo(src="/images/github-256.png")
-                        a(href="https://github.com/tracking-exposed/web-extension") browser extension
-                        |, 
-                        a(href="https://github.com/tracking-exposed/facebook") backend
-                        |  /> 
-  
-                .col-xs-4.col-sm-4.col-md-4.col-lg-4.pull-right
-                    img.fbtrexlogo(alt="logo of fbtrex" src="/images/fbtrex_logo.svg")
 
-                .col-xs-12.col-sm-8.col-md-8.col-lg-8
-                    h2
-                        a(href="/")
-                            span.blue facebook
-                            |.
-                            span.orange tracking
-                            |.
-                            span.green exposed
-                        |  project plan
- 
- 
-        nav.navbar.navbar-default.navbar-static-top
-            .container
-                .navbar-header
-                    button.navbar-toggle.collapsed(type="button" data-toggle="collapse" data-target="#thenavbar" aria-expanded="false")
-                        span(id="sr-only") Toggle navigation
-                        span.icon-bar
-                        span.icon-bar
-                        span.icon-bar
-  
-                .collapse.navbar-collapse(id="thenavbar")
-                    ul.nav.navbar-nav
-                        li
-                            a(href='/') Back to home
-                        li
-                            a(href='/project') Info & Download
-                        li
-                            a(href='/project/glossary') Glossary
-                        li
-                            a(href='/project/summaries') Summaries
-                        li
-                            a(href='/project/problem') Problem
-                        li
-                            a(href='/project/solution') Solution
-                        li
-                            a(href='/project/details') Details
+        nav.navbar.navbar-expand-lg.navbar-light.bg-light
+            a.navbar-brand(href='/project/') Project status
+            button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarNav', aria-controls='navbarNav', aria-expanded='false', aria-label='Toggle navigation')
+                span.navbar-toggler-icon
+
+            #navbarNav.collapse.navbar-collapse
+                ul.navbar-nav
+                    li.nav-item
+                        a.nav-link(href='/project/glossary') Glossary
+                    li.nav-item
+                        a.nav-link(href='/project/summaries') Summaries
+                    li.nav-item
+                        a.nav-link(href='/project/problem') Problem
+                    li.nav-item
+                        a.nav-link(href='/project/solution') Solution
+                    li.nav-item
+                        a.nav-link(href='/project/details') Details
+                    li.nav-item
+                        a.nav-link(href='/') Back to home
