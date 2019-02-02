@@ -40,7 +40,7 @@ include hdrnavbar
     p An additional issue we faced was to figure out what a fair algorithm is. As a society, we do not yet have metrics and values, but with our tests, we can begin to develop such language.  We have no way to measure it, judge it, or understand to what extent the algorithm's agenda matters more than our personal choices. 
 
     h2 The problems with conducting and maintaining fbTREX
-    Facebook keeps changing the HTML needed to allow the client (the user providing the data) to access their data.
+    p Facebook keeps changing the HTML needed to allow the client (the user providing the data) to access their data.
      
     p fbTREX privacy is tricky: although we are collecting only public posts, the knowledge of users' timeline could leak how Facebook profiled those users, and this can reveal private information or let third parties attribute characteristics to a fbTREX user. Aware of this risk, we do not make the users' contribution public at all. Only the users submitting their data have access to the data and it is their decision to opt-in and share their data with third parties. Because we can't solve all the trust problems with technology, it is important to define precisely the security and privacy property of this component. Log  access to the database and build within it privacy-by-design.
 
@@ -65,11 +65,15 @@ include hdrnavbar
     p
       b First limitation
       |: we observe only the timelines, not individual profiles or pages. This is the difference between self assessment and enabling social media intelligence, which could be an abusive practice and we do not want to enable that kind of practice carelessly. We consider timeline of public post something linked to your individual profile, therefore is for us a PII to protect.
+    p
       b Second limitation
       |: we  only store public posts on our server 
+    p
       b Third limitation
       |: Users who install the extension have full control over their data; they can delete what they submit whenever they want.
+    p
       b Fourth limitation
       |: Nobody has access to an individual's data unless the owner grants them access.This means: users can opt-in to every possible third-party they might want to include or interact with.
+    p
       b Fifth limitation
       |: if we, fbTREX, run analysis on the dataset, the analysis would be developed to understand the social phenomenon of information served up in an algorithmic timeline, not specific information about the individual profiles we are studying. This can't be formally verified, therefore during the ALEX development we would like to formulate and publish updates on the safeguards we are implementing in that research.
