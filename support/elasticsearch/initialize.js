@@ -14,9 +14,10 @@ if(!nconf.get('server') || !nconf.get('name'))
     return console.log('--server and --name required');
 
 const name = nconf.get('name');
+const environment = nconf.get("FBTREX_ENV") || "development"
 const fname = 'support/elasticsearch/' + name + '.json';
 debug("Initializeding with name %s, looking for %s", name, fname);
-const endPointName = 'http://' + nconf.get('server') + '/' + name;
+const endPointName = 'http://' + nconf.get('server') + '/' + name+"."+environment;
 
 return various.loadJSONfile(fname)
 	.then(function(content) {
