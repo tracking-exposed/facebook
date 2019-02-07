@@ -1,14 +1,14 @@
 const _ = require('lodash');
 const moment = require('moment');
 const Promise = require('bluebird');
-const debug = require('debug')('lib:rss');
+const debug = require('debug')('routes:rss');
 const nconf = require('nconf');
 const RSS = require('rss');
 const fs = Promise.promisifyAll(require('fs'));
 const path = require('path');
  
-const mongo = require('./mongo');
-const utils = require('./utils');
+const mongo = require('../lib/mongo');
+const utils = require('../lib/utils');
 
 const CR = '<![CDATA[<br/>]]>';
 const fbtrexRSSplaceholder = "Welcome, you should wait 10 minutes circa to get this newsfeed populated, now the subscription is taken in account. " + CR + "fbTREX would stop to populate this feed if no request is seen in 5 days. updates would be automatic. You can find more specifics about the RSS settings in [here todo doc]";

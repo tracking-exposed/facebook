@@ -1,14 +1,13 @@
 const _ = require('lodash');
 const moment = require('moment');
 const Promise = require('bluebird');
-const debug = require('debug')('lib:summary');
+const debug = require('debug')('routes:summary');
 const pug = require('pug');
 const nconf = require('nconf');
 
-const mongo = require('./mongo');
-const utils = require('./utils');
-const opendata = require('./opendata');
-const adopters = require('./adopters');
+const mongo = require('../lib/mongo');
+const utils = require('../lib/utils');
+const adopters = require('../lib/adopters');
 
 
 function optionParsing(amountString) {
@@ -181,10 +180,20 @@ function metadata(req) {
         });
 };
 
+function extended(req) {
+    debugger;
+};
+
+
+function semantics(req) {
+    debugger;
+};
 
 module.exports = {
     page: page,
     data: data,
     metadata: metadata,
-    csv: csv
+    csv: csv,
+    extended: extended,
+    semantics: semantics
 };
