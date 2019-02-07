@@ -1,11 +1,11 @@
 var _ = require('lodash');
 var moment = require('moment');
 var Promise = require('bluebird');
-var debug = require('debug')('lib:htmlunit');
+var debug = require('debug')('routes:htmlunit');
 var nconf = require('nconf');
  
-var mongo = require('./mongo');
-var utils = require('./utils');
+var mongo = require('../lib/mongo');
+var utils = require('../lib/utils');
 
 
 function unitById(req) {

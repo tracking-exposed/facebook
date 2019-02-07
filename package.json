@@ -45,7 +45,6 @@
   },
   "devDependencies": {
     "nodemon": "^1.18.9",
-    "docco": "^0.7.0",
     "xmldom": "^0.1.27",
     "stylus": "^0.54.5",
     "xpath": "0.0.27",
