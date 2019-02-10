@@ -10,7 +10,8 @@
     "build": "bin/install-script.sh",
     "parserv": "DEBUG=*,-lib:parse,-lib:mongo:read node bin/parserv.js",
     "semanticserv": "DEBUG=*,-lib:mongo:read node bin/semanticserv.js",
-    "buildrsserv": "DEBUG=*,-lib:mongo:read node bin/buildrsserv.js"
+    "buildrsserv": "DEBUG=*,-lib:mongo:read node bin/buildrsserv.js",
+    "test": "./node_modules/.bin/mocha"
   },
   "author": "Claudio Agosti <claudio@tracking.exposed>, https://github.com/tracking-exposed/facebook/graphs/contributors",
   "license": "AGPL-3.0",
@@ -49,6 +50,7 @@
     "stylus": "^0.54.5",
     "xpath": "0.0.27",
     "jsdom": "^13.0.0",
+    "chai": "^4.2.0",
     "mocha": "^5.2.0"
   }
 }
