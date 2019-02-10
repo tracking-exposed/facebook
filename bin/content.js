@@ -50,12 +50,12 @@ app.use(bodyParser.urlencoded({limit: '1kb', extended: true}));
 const getAPI = [
     /* debug API, not authenticated, not necessarly reserved */
     { 
-        desc: "individual parser verification (select by htmls.id)",
+        desc: "individual parser verification",
         route: '/api/debug/html/:htmlId',
         func: require('../routes/htmlunit').unitById
     },
     {
-        desc: "full timeline verification (select by timelines.id)",
+        desc: "full timeline verification",
         route: '/api/debug/:timelineId',
         func: require('../routes/htmlunit').verifyTimeline
     },
@@ -63,7 +63,7 @@ const getAPI = [
     {
         desc: "RSS feed fetcher",
         route: '/feeds/:query',
-        func: require('../routes/rss').feeds,
+        func: require('../routes/feeds').feeds,
     },
     /* health check */
     {
@@ -113,7 +113,6 @@ const getAPI = [
 ];
 
 _.each(getAPI, function(o) {
-
     app.get(o.route, function(req, res) {
         return common.serveRequest(o.desc, o.func, req, res);
     });
