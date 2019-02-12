@@ -51,12 +51,12 @@ const getAPI = [
     /* debug API, not authenticated, not necessarly reserved */
     { 
         desc: "individual parser verification",
-        route: '/api/debug/html/:htmlId',
+        route: '/api/v2/debug/html/:htmlId',
         func: require('../routes/htmlunit').unitById
     },
     {
         desc: "full timeline verification",
-        route: '/api/debug/:timelineId',
+        route: '/api/v2/debug/:timelineId',
         func: require('../routes/htmlunit').verifyTimeline
     },
     /* RSS feed */
@@ -74,39 +74,39 @@ const getAPI = [
     /* services status */
     {
         desc: "Service stats",
-        route: '/api/services',
+        route: '/api/v2/services',
         func: require('../routes/status').databaseStatus,
     },
     /* https://github.com/tracking-exposed/facebook/wiki/Personal-API-documentation */
     {
         desc: "Personal summary",
-        route: '/api/personal/:userToken/summary/:paging?',
+        route: '/api/v2/personal/:userToken/summary/:paging?',
         func: require('../routes/summary').data,
     },
     {
         desc: "Personal summary (extended)",
-        route: '/api/personal/:userToken/extended/:paging?',
+        route: '/api/v2/personal/:userToken/extended/:paging?',
         func: require('../routes/summary').extended,
     },
     {
         desc: "Personal CSV",
-        route: '/api/personal/:userToken/csv/:dayrange?',
+        route: '/api/v2/personal/:userToken/csv/:dayrange?',
         func: require('../routes/summary').csv,
     },
     {
         desc: "Personal Semantics",
-        route: '/api/personal/:userToken/semantics/:dayrange?',
+        route: '/api/v2/personal/:userToken/semantics/:dayrange?',
         func: require('../routes/summary').semantics,
     },
     /* Collective API 
     {
         desc: "Collective stats",
-        route: '/api/collective/:groupLabel/stats/:dayrange?',
+        route: '/api/v2/collective/:groupLabel/stats/:dayrange?',
         func: require('./collective').stats,
     },
     {
         desc: "Collective summary",
-        route: '/api/collective/:groupLabel/download/:dayrange?',
+        route: '/api/v2/collective/:groupLabel/download/:dayrange?',
         func: require('./collective').download,
     },
     */
