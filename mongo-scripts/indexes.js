@@ -1,14 +1,19 @@
-db.feeds.createIndex({id: 1}, {unique: true });
+ret = db.feeds.createIndex({id: 1}, {unique: true }); checkret('feeds id', ret);
 
-db.labels.createIndex({ "semanticId" : 1 }, { unique: true });
-db.labels.createIndex({ "when" : 1 });
+ret = db.labels.createIndex({ "semanticId" : 1 }, { unique: true }); checkret('labels semanticId', ret);
+ret = db.labels.createIndex({ "when" : 1 }); checkret('labels when', ret);
 
-db.metadata.createIndex({ "semanticId" : 1 });
-db.metadata.createIndex({ "userId" : 1 });
-db.metadata.createIndex({ "semantic" : 1 });
-db.metadata.createIndex({ "id" : 1 }, { unique : true });
+ret = db.metadata.createIndex({ "semanticId" : 1 }); checkret('metadata semanticId', ret);
+ret = db.metadata.createIndex({ "userId" : 1 }); checkret('metadata userId', ret);
+ret = db.metadata.createIndex({ "semantic" : 1 }); checkret('metadata semantic', ret);
+ret = db.metadata.createIndex({ "id" : 1 }, { unique : true }); checkret('metadata id', ret);
 
-db.semantics.createIndex({ "label" : 1 });
-db.semantics.createIndex({ "when" : 1 });
-db.semantics.createIndex({ "semanticId" : 1 });
+ret = db.semantics.createIndex({ "label" : 1 });
+ret = db.semantics.createIndex({ "when" : 1 });
+ret = db.semantics.createIndex({ "semanticId" : 1 });
 
+
+function checkret(info, retval) {
+    retval.info = info;
+    printjson(retval);
+};
