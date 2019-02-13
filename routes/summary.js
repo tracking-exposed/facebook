@@ -189,11 +189,18 @@ function semantics(req) {
     debugger;
 };
 
+function stats(req) {
+    /* this should return the same of summary, but with some lodhash hits
+     * generate this:
+     * https://github.com/tracking-exposed/facebook/issues/117 */
+};
+
 module.exports = {
     page: page,
     data: data,
     metadata: metadata,
     csv: csv,
     extended: extended,
-    semantics: semantics
+    semantics: semantics,
+    stats: stats
 };
