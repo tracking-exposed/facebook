@@ -98,6 +98,11 @@ const getAPI = [
         route: '/api/v2/personal/:userToken/semantics/:dayrange?',
         func: require('../routes/summary').semantics,
     },
+    {
+        desc: "Personal Stats",
+        route: '/api/v2/personal/:userToken/stats/:dayrange?',
+        func: require('../routes/summary').stats,
+    },
     /* Collective API 
     {
         desc: "Collective stats",
