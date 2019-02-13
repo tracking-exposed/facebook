@@ -1,7 +1,12 @@
 const expect    = require("chai").expect;
+const _ = require('lodash');
 const rss = require("../lib/rss");
+const utils = require('../lib/utils');
+const debug = require('debug')('test:rss');
+const nconf = require('nconf');
 
-describe("RSS feed generation (calls made by bin/buildrsserv.js)", testBuildRSServ());
+nconf.argv().env().file({ file: 'config/content.json' });
+nconf.set('mongodb', 'mongodb://localhost/fbtest');
 
 /*
  * components to be tested
@@ -10,85 +15,47 @@ describe("RSS feed generation (calls made by bin/buildrsserv.js)", testBuildRSSe
  *    getFreshlySubscribed - db dependent - returns the new feeds users subscribed at
  *
  *    composeXMLfromFeed
- *        retrieveNewData - db dependent - returns the new post matching with the feed, within the timelimit
+ *        retrieveNewData - db dependent - returns the new post matching with the feed,
+ *                                         within the timelimit
  *        composeXML
  */
 
-function testBuildRSServ() {
+describe("RSS feed generation (calls made by bin/buildrsserv.js)", function() {
+    const labels = ['dummy1', 'dummy2' ];
+    const feedId = utils.hashList(labels);
 
-    describe("getFreshlySubscribed", function() {
-        it("retrieve data", function() {
+    describe("data utility", function() {
+        debug(nconf.get('schema').feeds);
+        debug("%j", nconf.get('schema'));
+        expect(1).to.equal(1);
+    });
 
-            
+    describe("composeXMLfromFeed", function() {
+        it("Compose an empty feed with a defult welcome message", function() {
+            let produced = rss.produceDefault(labels, feedId);
+            expect(produced).to.match(/This\ newsfeed\ is/);
+        });
+    });
+
+    describe("created on first call", function() {
+
+        it("Create correctly a feedId", function() {
+            expect(feedId).to.be.a('string').equal("01d0cf1897ae79ed531acfeb76a053ae1047a68b");
         });
 
-    });
+        it("Would create a new entry in `feeds` collection", function() {
+            rss
+                .rssRetriveOrCreate(['dummy1', 'dummy2'], feedId)
+                .catch(function(err) {
+                    expect(err.message).to.equal(rss.QUEUED_STRING);
+                    return null;
+                })
+                .then(function(anything) {
+                    expect(anything).to.equal(null);
+                });
+        });
 
-};
-
-
-describe("Color Code Converter", function() {
-  describe("RGB to Hex conversion", function() {
-    it("converts the basic colors", function() {
-      var redHex   = converter.rgbToHex(255, 0, 0);
-      var greenHex = converter.rgbToHex(0, 255, 0);
-      var blueHex  = converter.rgbToHex(0, 0, 255);
-
-      expect(redHex).to.equal("ff0000");
-      expect(greenHex).to.equal("00ff00");
-      expect(blueHex).to.equal("0000ff");
-    });
-  });
-
-  describe("Hex to RGB conversion", function() {
-    it("converts the basic colors", function() {
-      var red   = converter.hexToRgb("ff0000");
-      var green = converter.hexToRgb("00ff00");
-      var blue  = converter.hexToRgb("0000ff");
-
-      expect(red).to.deep.equal([255, 0, 0]);
-      expect(green).to.deep.equal([0, 255, 0]);
-      expect(blue).to.deep.equal([0, 0, 255]);
-    });
-  });
-
-});
-
-const assert = require('assert');
-const nacl = require('tweetnacl');
-const bs58 = require('bs58');
-const encodeToBase58 = require('../lib/utils').encodeToBase58;
-const stringToArray = require('../lib/utils').stringToArray;
-
-
-function generateRequestFromBody(body) {
-    const keypair = nacl.sign.keyPair();
-    const signature = nacl.sign.detached(stringToArray(body), keypair.secretKey);
-
-    return {
-        headers: {
-            'x-fbtrex-userid': 31337, // eh eh eh
-            'x-fbtrex-publickey': encodeToBase58(keypair.publicKey),
-            'x-fbtrex-signature': encodeToBase58(signature)
-        },
-
-        body: body
-    };
-}
-
-describe('Signature validation', function () {
-    it('accepts a valid payloads signature', function () {
-        const verifyRequestSignature = require('../lib/utils').verifyRequestSignature;
-        const req = generateRequestFromBody('hurr durr hello internets');
-
-        assert.equal(verifyRequestSignature(req), true);
-    });
-
-    it('rejects invalid payload signature', function () {
-        const verifyRequestSignature = require('../lib/utils').verifyRequestSignature;
-        const req = generateRequestFromBody('hurr durr hello internets');
-        req.body = 'hurr durr hello internet'; // removing the last 's'
-
-        assert.equal(verifyRequestSignature(req), false);
+        //it("Would create a new entry in `feeds` collection", function() {
+        //});
     });
 });

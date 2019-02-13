@@ -10,8 +10,6 @@ const path = require('path');
 const mongo = require('../lib/mongo');
 const utils = require('../lib/utils');
 
-const QUEUED_STRING = "queued";
-
 /*
  * logic:
  * compute a feedId using the hash function
@@ -48,7 +46,7 @@ function feeds(req) {
         .catch(function(error) {
             /* this error message is fired by rssRetrieveOrCreate, happens
              * when a XML file do not exists yet, but would be in few minutes */
-            if(error.message === QUEUED_STRING) {
+            if(error.message === rss.QUEUED_STRING) {
                 debug("Returning default message for %s", labels);
                 return { 'text': rss.produceDefault(labels, feedId) };
             }
