@@ -12,23 +12,39 @@ const l = require('../parsers/components/linkontime');
 const cfgFile = "config/content.json";
 nconf.argv().env().file({ file: cfgFile });
 
-const total = 8759508;
-const CHUNK = 100;
 const cName = 'finalized';
-let last = new Date("2016-01-01");
+const max = new Date("2018-11-30");
+const CHUNK = 100;
+
+const since = nconf.get('since');
+if(!since) {
+    console.log("`since` variable is required");
+    process.exit(1);
+}
+let last = new Date(since);
+let total = null;
 
 return mongo
     .readLimit(cName, {}, { impressionTime: -1 }, 1, 0)
     .then(_.first)
     .then(function(lastSaved) {
         if(lastSaved) {
-            debug("Last reference set to %s", lastSaved.impressionTime);
+            debug("Last reference found to %s", lastSaved.impressionTime);
             last = new Date(lastSaved.impressionTime);
         }
         else {
-            debug("Using default %s", last);
+            debug("Starting `since` %s", last);
         }
         return last;
+    })
+    .tap(function(last) {
+        return mongo.count(nconf.get('schema').htmls, {
+                savingTime: { $gt: last, $lte: max }
+        })
+        .tap(function(amount) {
+            debug("The amount of htmls between %s and %s is: %d", last, max, amount);
+            total = amount;
+        });
     })
     .then(infiniteLoop);
 
@@ -39,9 +55,15 @@ function infiniteLoop(last) {
         .map(enhanceRedact)
         .tap(massSave)
         .then(function(elements) {
+            if(!_.size(elements)) {
+                console.log("0 elements found");
+                process.exit(1);
+            }
             let end = moment();
             var secs = moment.duration(end - start).asSeconds();
-            debug("%d seconds, est %d", secs, _.round( ((secs * ( total / CHUNK )  ) / 3600), 1)  );
+            debug("%d seconds, Hours to do %d = %d",
+                secs, total, _.round( ((secs * ( total / CHUNK )  ) / 3600), 1)
+            );
             return new Date(_.last(elements).impressionTime);
         })
         .then(infiniteLoop)
@@ -86,7 +108,7 @@ function mongoPipeline(lastSaved) {
         /* I use savingTime despite we use the impressionTime, because
          * savingTime is indexes, impressionTime ensure differencies */
             $match: {
-                savingTime: { $gt: lastSaved }
+                savingTime: { $gt: lastSaved, $lte: max }
             }},
             { $sort: {
                 savingTime: 1
