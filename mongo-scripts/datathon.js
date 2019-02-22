@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /*
 https://github.com/tracking-exposed/experiments-data/tree/master/e18
 
@@ -26,6 +25,8 @@ const moment = require('moment');
 
 const utils = require('../lib/utils');
 const mongo = require('../lib/mongo');
+const l = require('../parsers/components/linkontime');
+
 
 const cfgFile = "config/content.json";
 nconf.argv().env().file({ file: cfgFile });
@@ -93,6 +94,7 @@ function datathonTransform(e) {
     e.pseudo = utils.pseudonymizeUser(e.userId);
     const jsdom = new JSDOM(e.html).window.document;
     e.attributions = attributeOffsets(jsdom, e.html);
+    e.details = l({jsdom});
     _.unset(e, 'html');
     return e;
 };
