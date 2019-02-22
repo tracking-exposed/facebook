@@ -27,7 +27,6 @@ const utils = require('../lib/utils');
 const mongo = require('../lib/mongo');
 const l = require('../parsers/components/linkontime');
 
-
 const cfgFile = "config/content.json";
 nconf.argv().env().file({ file: cfgFile });
 
@@ -71,7 +70,9 @@ function infiniteLoop(last) {
 };
 
 function massSave(elements) {
+    debugger;
     let copyable = new Object(elements);
+    debugger;
     return Promise.map(elements, function(e) {
         return mongo
             .count(cName, { id: e.id })
@@ -94,7 +95,7 @@ function datathonTransform(e) {
     e.pseudo = utils.pseudonymizeUser(e.userId);
     const jsdom = new JSDOM(e.html).window.document;
     e.attributions = attributeOffsets(jsdom, e.html);
-    e.details = l({jsdom});
+    e.details = l({jsdom}).linkedtime;
     _.unset(e, 'html');
     return e;
 };
