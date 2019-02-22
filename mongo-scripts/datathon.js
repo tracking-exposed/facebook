@@ -1,21 +1,3 @@
-/*
-https://github.com/tracking-exposed/experiments-data/tree/master/e18
-
-    "impressionOrder" : 42,
-    "impressionTime" : ISODate("2018-01-10T19:07:34.000Z"),
-    "profileName" : <Pseudo Anonymous String>
-    "publicationTime" : ISODate("2018-01-10T17:55:00.000Z"),
-    "visualizationDiff" : 4354,
-    "postId" : "10156069251662459",
-    "utype" : "post",
-    "publisherName" : "Il Giornale",
-    "externals" : 1,
-    "id" : "27acd5e4caaa123301115e9e10e4547e15acc578",
-    "timelineId" : "38bf77cb13909f633fb2de38d7ec9ca0ead2a91b",
-    "permaLink" : "/ilGiornale/posts/10156069251662459"
-
- */
-
 const _ = require('lodash');
 const nconf = require('nconf');
 const Promise = require('bluebird');
@@ -40,7 +22,7 @@ return mongo
     .then(_.first)
     .then(function(lastSaved) {
         if(lastSaved) {
-            debug("last reference set to %s", lastSaved.impressionTime);
+            debug("Last reference set to %s", lastSaved.impressionTime);
             last = new Date(lastSaved.impressionTime);
         }
         else {
@@ -54,7 +36,7 @@ return mongo
 function infiniteLoop(last) {
     let start = moment();
     return mongoPipeline(last)
-        .map(datathonTransform)
+        .map(enhanceRedact)
         .tap(massSave)
         .then(function(elements) {
             let end = moment();
@@ -70,9 +52,7 @@ function infiniteLoop(last) {
 };
 
 function massSave(elements) {
-    debugger;
     let copyable = new Object(elements);
-    debugger;
     return Promise.map(elements, function(e) {
         return mongo
             .count(cName, { id: e.id })
@@ -88,7 +68,7 @@ function massSave(elements) {
     });
 };
 
-function datathonTransform(e) {
+function enhanceRedact(e) {
     _.unset(e, '_id');
     e.impressionOrder = _.first(e.impressionOrder);
     e.impressionTime = new Date( _.first(e.impressionTime) );
