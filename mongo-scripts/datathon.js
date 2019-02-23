@@ -120,8 +120,9 @@ function massSave(elements) {
         const pps = _.round(progressive / runfor, 0)
         const estim = (total - progressive) / pps;
         const stillwaitfor = moment.duration({ seconds: estim }).humanize();
-        debug("Saving %d objects, total %d (still TBD %d) run since %s (%d secs) PPS %d ETA %s",
-            _.size(copyable), progressive, total - progressive,
+        const successString = _.size(copyable) ? `+saving ${_.size(copyable)} objects` : "_____";
+        debug("%s, total %d (still TBD %d) run since %s (%d secs) PPS %d ETA %s",
+            successString, progressive, total - progressive,
             moment.duration(executedAt - moment()).humanize(),
             runfor, pps, stillwaitfor
         );
