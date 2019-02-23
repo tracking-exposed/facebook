@@ -13,7 +13,7 @@ const cfgFile = "config/content.json";
 nconf.argv().env().file({ file: cfgFile });
 
 const cName = 'finalized';
-const CHUNK = 100;
+const CHUNK = nconf.get('amount') ? _.parseInt(nconf.get('amount')) : 500;
 
 let max = null;
 const until = nconf.get('unti');
@@ -33,14 +33,17 @@ if(!since) {
 }
 let last = new Date(since);
 let total = null;
+let progressive = 0;
+let initial = 0;
+const executedAt = moment();
 
 return mongo
-    .readLimit(cName, {}, { impressionTime: -1 }, 1, 0)
+    .readLimit(cName, {}, { savingTime: -1 }, 1, 0)
     .then(_.first)
     .then(function(lastSaved) {
         if(lastSaved) {
-            debug("Last reference found to %s", lastSaved.impressionTime);
-            last = new Date(lastSaved.impressionTime);
+            debug("Last reference found to %s", lastSaved.savingTime);
+            last = new Date(lastSaved.savingTime);
         }
         else {
             debug("Starting `since` %s", last);
@@ -48,12 +51,20 @@ return mongo
         return last;
     })
     .tap(function(last) {
+        return mongo.count(cName, {})
+            .tap(function(before) {
+                debug("previously found %d, chunk size configured (with `amount`) is %d", before, CHUNK);
+                initial = before;
+            });
+    })
+    .tap(function(last) {
         return mongo.count(nconf.get('schema').htmls, {
                 savingTime: { $gt: last, $lte: max }
         })
         .tap(function(amount) {
-            debug("The amount of htmls between %s and %s is: %d", last, max, amount);
-            total = amount;
+            total = (amount - initial);
+            debug("The amount of htmls between %s and %s is: %d, still TODO %d",
+                last, max, amount, total);
         });
     })
     .then(infiniteLoop);
@@ -72,10 +83,12 @@ function infiniteLoop(last) {
             }
             let end = moment();
             var secs = moment.duration(end - start).asSeconds();
-            debug("%d seconds, Hours to do %d = %d",
-                secs, total, _.round( ((secs * ( total / CHUNK )  ) / 3600), 1)
+            debug("exec %d secs 1st [%s] last [%s]",
+                secs, 
+                _.first(elements) ? moment(_.first(elements).savingTime).format() : "NONE",
+                _.last(elements) ? moment(_.last(elements).savingTime).format() : "NONE"
             );
-            return new Date(_.last(elements).impressionTime);
+            return new Date(_.last(elements).savingTime);
         })
         .then(infiniteLoop)
         .catch(function(error) {
@@ -95,7 +108,16 @@ function massSave(elements) {
             });
     }, { concurrency: 5 })
     .then(function() {
-        debug("Saving %d objects", _.size(copyable));
+        progressive += _.size(copyable);
+        const runfor = moment.duration(moment() - executedAt).asSeconds();
+        const pps = _.round(progressive / runfor, 0)
+        const estim = (total - progressive) / pps;
+        const stillwaitfor = moment.duration({ seconds: estim }).humanize();
+        debug("Saving %d objects, total %d (still TODO %d) run since %s (%d secs) PPS %d ETA %s",
+            _.size(copyable), progressive, total - progressive,
+            moment.duration(executedAt - moment()).humanize(),
+            runfor, pps, stillwaitfor
+        );
         if(_.size(copyable))
             return mongo.writeMany(cName, copyable);
     });
@@ -105,12 +127,13 @@ function enhanceRedact(e) {
     try {
         _.unset(e, '_id');
         e.impressionOrder = _.first(e.impressionOrder);
-        e.impressionTime = new Date( _.first(e.impressionTime) );
+        e.impressionTime = _.first(e.impressionTime);
         e.pseudo = utils.pseudonymizeUser(e.userId);
         const jsdom = new JSDOM(e.html).window.document;
         e.attributions = attributeOffsets(jsdom, e.html);
         e.details = l({jsdom}).linkedtime;
         _.unset(e, 'html');
+        _.unset(e, 'userId');
     } catch(error) {
         console.error(error);
         return null;
@@ -120,11 +143,16 @@ function enhanceRedact(e) {
 
 function mongoPipeline(lastSaved) {
 
+    if(moment(lastSaved).isAfter(max)) {
+        debug("Execution completed, reach %s", max);
+        process.exit(1);
+    }
+
     return mongo.aggregate(nconf.get('schema').htmls, [{
         /* I use savingTime despite we use the impressionTime, because
          * savingTime is indexes, impressionTime ensure differencies */
             $match: {
-                savingTime: { $gt: lastSaved, $lte: max }
+                savingTime: { $gt: lastSaved }
             }},
             { $sort: {
                 savingTime: 1
