@@ -19,18 +19,14 @@ let max = null;
 const until = nconf.get('unti');
 if(!until) {
     max = new Date("2018-11-30");
-    debug("Using the default, running until %s", max);
+    debug("`until` not set: using the default %s", max);
 }
 else {
     max = new Date(until);
-    debug("Using the requested date, running until %s", max);
+    debug("`until` set, it will stop when reach %s", max);
 }
 
 const since = nconf.get('since');
-if(!since) {
-    console.log("`since` variable is required");
-    process.exit(1);
-}
 let last = new Date(since);
 let total = null;
 let progressive = 0;
@@ -42,10 +38,21 @@ return mongo
     .then(_.first)
     .then(function(lastSaved) {
         if(lastSaved) {
-            debug("Last reference found to %s", lastSaved.savingTime);
-            last = new Date(lastSaved.savingTime);
+            if(since) {
+                debug("Last reference found to %s but since %s request overrides",
+                    lastSaved.savingTime, since);
+                last = new Date(since);
+            } else {
+                debug("Last reference found to %s, and since not configured", lastSaved.savingTime);
+                last = new Date(lastSaved.savingTime);
+            }
+        }
+        else if(!since) {
+            debug("When last reference don't exist, `since` is mandatory");
+            process.exit(1);
         }
         else {
+            last = new Date(since);
             debug("Starting `since` %s", last);
         }
         return last;
@@ -63,8 +70,8 @@ return mongo
         })
         .tap(function(amount) {
             total = (amount - initial);
-            debug("The amount of htmls between %s and %s is: %d, still TODO %d",
-                last, max, amount, total);
+            debug("The # of htmls between %s and %s is: %d, still TBD %d",
+                moment(last).format(), moment(max).format(), amount, total);
         });
     })
     .then(infiniteLoop);
@@ -113,7 +120,7 @@ function massSave(elements) {
         const pps = _.round(progressive / runfor, 0)
         const estim = (total - progressive) / pps;
         const stillwaitfor = moment.duration({ seconds: estim }).humanize();
-        debug("Saving %d objects, total %d (still TODO %d) run since %s (%d secs) PPS %d ETA %s",
+        debug("Saving %d objects, total %d (still TBD %d) run since %s (%d secs) PPS %d ETA %s",
             _.size(copyable), progressive, total - progressive,
             moment.duration(executedAt - moment()).humanize(),
             runfor, pps, stillwaitfor
