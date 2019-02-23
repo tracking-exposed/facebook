@@ -13,8 +13,18 @@ const cfgFile = "config/content.json";
 nconf.argv().env().file({ file: cfgFile });
 
 const cName = 'finalized';
-const max = new Date("2018-11-30");
 const CHUNK = 100;
+
+let max = null;
+const until = nconf.get('unti');
+if(!until) {
+    max = new Date("2018-11-30");
+    debug("Using the default, running until %s", max);
+}
+else {
+    max = new Date(until);
+    debug("Using the requested date, running until %s", max);
+}
 
 const since = nconf.get('since');
 if(!since) {
