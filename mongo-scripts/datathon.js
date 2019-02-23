@@ -16,7 +16,7 @@ const cName = 'finalized';
 const CHUNK = nconf.get('amount') ? _.parseInt(nconf.get('amount')) : 500;
 
 let max = null;
-const until = nconf.get('unti');
+const until = nconf.get('until');
 if(!until) {
     max = new Date("2018-11-30");
     debug("`until` not set: using the default %s", max);
