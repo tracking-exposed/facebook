@@ -1,21 +1,3 @@
-/*
-https://github.com/tracking-exposed/experiments-data/tree/master/e18
-
-    "impressionOrder" : 42,
-    "impressionTime" : ISODate("2018-01-10T19:07:34.000Z"),
-    "profileName" : <Pseudo Anonymous String>
-    "publicationTime" : ISODate("2018-01-10T17:55:00.000Z"),
-    "visualizationDiff" : 4354,
-    "postId" : "10156069251662459",
-    "utype" : "post",
-    "publisherName" : "Il Giornale",
-    "externals" : 1,
-    "id" : "27acd5e4caaa123301115e9e10e4547e15acc578",
-    "timelineId" : "38bf77cb13909f633fb2de38d7ec9ca0ead2a91b",
-    "permaLink" : "/ilGiornale/posts/10156069251662459"
-
- */
-
 const _ = require('lodash');
 const nconf = require('nconf');
 const Promise = require('bluebird');
@@ -30,23 +12,67 @@ const l = require('../parsers/components/linkontime');
 const cfgFile = "config/content.json";
 nconf.argv().env().file({ file: cfgFile });
 
-const total = 8759508;
-const CHUNK = 100;
 const cName = 'finalized';
-let last = new Date("2016-01-01");
+const CHUNK = nconf.get('amount') ? _.parseInt(nconf.get('amount')) : 500;
+
+let max = null;
+const until = nconf.get('until');
+if(!until) {
+    max = new Date("2018-11-30");
+    debug("`until` not set: using the default %s", max);
+}
+else {
+    max = new Date(until);
+    debug("`until` set, it will stop when reach %s", max);
+}
+
+const since = nconf.get('since');
+let last = new Date(since);
+let total = null;
+let progressive = 0;
+let initial = 0;
+const executedAt = moment();
 
 return mongo
-    .readLimit(cName, {}, { impressionTime: -1 }, 1, 0)
+    .readLimit(cName, {}, { savingTime: -1 }, 1, 0)
     .then(_.first)
     .then(function(lastSaved) {
         if(lastSaved) {
-            debug("last reference set to %s", lastSaved.impressionTime);
-            last = new Date(lastSaved.impressionTime);
+            if(since) {
+                debug("Last reference found to %s but since %s request overrides",
+                    lastSaved.savingTime, since);
+                last = new Date(since);
+            } else {
+                debug("Last reference found to %s, and since not configured", lastSaved.savingTime);
+                last = new Date(lastSaved.savingTime);
+            }
+        }
+        else if(!since) {
+            debug("When last reference don't exist, `since` is mandatory");
+            process.exit(1);
         }
         else {
-            debug("Using default %s", last);
+            last = new Date(since);
+            debug("Starting `since` %s", last);
         }
         return last;
+    })
+    .tap(function(last) {
+        return mongo.count(cName, {})
+            .tap(function(before) {
+                debug("previously found %d, chunk size configured (with `amount`) is %d", before, CHUNK);
+                initial = before;
+            });
+    })
+    .tap(function(last) {
+        return mongo.count(nconf.get('schema').htmls, {
+                savingTime: { $gt: last, $lte: max }
+        })
+        .tap(function(amount) {
+            total = (amount - initial);
+            debug("The # of htmls between %s and %s is: %d, still TBD %d",
+                moment(last).format(), moment(max).format(), amount, total);
+        });
     })
     .then(infiniteLoop);
 
@@ -54,13 +80,22 @@ return mongo
 function infiniteLoop(last) {
     let start = moment();
     return mongoPipeline(last)
-        .map(datathonTransform)
+        .map(enhanceRedact)
+        .then(_.compact)
         .tap(massSave)
         .then(function(elements) {
+            if(!_.size(elements)) {
+                console.log("0 elements found");
+                process.exit(1);
+            }
             let end = moment();
             var secs = moment.duration(end - start).asSeconds();
-            debug("%d seconds, est %d", secs, _.round( ((secs * ( total / CHUNK )  ) / 3600), 1)  );
-            return new Date(_.last(elements).impressionTime);
+            debug("exec %d secs 1st [%s] last [%s]",
+                secs, 
+                _.first(elements) ? moment(_.first(elements).savingTime).format() : "NONE",
+                _.last(elements) ? moment(_.last(elements).savingTime).format() : "NONE"
+            );
+            return new Date(_.last(elements).savingTime);
         })
         .then(infiniteLoop)
         .catch(function(error) {
@@ -70,9 +105,7 @@ function infiniteLoop(last) {
 };
 
 function massSave(elements) {
-    debugger;
     let copyable = new Object(elements);
-    debugger;
     return Promise.map(elements, function(e) {
         return mongo
             .count(cName, { id: e.id })
@@ -82,25 +115,46 @@ function massSave(elements) {
             });
     }, { concurrency: 5 })
     .then(function() {
-        debug("Saving %d objects", _.size(copyable));
+        progressive += _.size(copyable);
+        const runfor = moment.duration(moment() - executedAt).asSeconds();
+        const pps = _.round(progressive / runfor, 0)
+        const estim = (total - progressive) / pps;
+        const stillwaitfor = moment.duration({ seconds: estim }).humanize();
+        const successString = _.size(copyable) ? `+saving ${_.size(copyable)} objects` : "_____";
+        debug("%s, total %d (still TBD %d) run since %s (%d secs) PPS %d ETA %s",
+            successString, progressive, total - progressive,
+            moment.duration(executedAt - moment()).humanize(),
+            runfor, pps, stillwaitfor
+        );
         if(_.size(copyable))
             return mongo.writeMany(cName, copyable);
     });
 };
 
-function datathonTransform(e) {
-    _.unset(e, '_id');
-    e.impressionOrder = _.first(e.impressionOrder);
-    e.impressionTime = new Date( _.first(e.impressionTime) );
-    e.pseudo = utils.pseudonymizeUser(e.userId);
-    const jsdom = new JSDOM(e.html).window.document;
-    e.attributions = attributeOffsets(jsdom, e.html);
-    e.details = l({jsdom}).linkedtime;
-    _.unset(e, 'html');
+function enhanceRedact(e) {
+    try {
+        _.unset(e, '_id');
+        e.impressionOrder = _.first(e.impressionOrder);
+        e.impressionTime = _.first(e.impressionTime);
+        e.pseudo = utils.pseudonymizeUser(e.userId);
+        const jsdom = new JSDOM(e.html).window.document;
+        e.attributions = attributeOffsets(jsdom, e.html);
+        e.details = l({jsdom}).linkedtime;
+        _.unset(e, 'html');
+        _.unset(e, 'userId');
+    } catch(error) {
+        console.error(error);
+        return null;
+    }
     return e;
 };
 
 function mongoPipeline(lastSaved) {
+
+    if(moment(lastSaved).isAfter(max)) {
+        debug("Execution completed, reach %s", max);
+        process.exit(1);
+    }
 
     return mongo.aggregate(nconf.get('schema').htmls, [{
         /* I use savingTime despite we use the impressionTime, because
