@@ -53,6 +53,7 @@ function infiniteLoop(last) {
     let start = moment();
     return mongoPipeline(last)
         .map(enhanceRedact)
+        .then(_.compact)
         .tap(massSave)
         .then(function(elements) {
             if(!_.size(elements)) {
@@ -91,14 +92,19 @@ function massSave(elements) {
 };
 
 function enhanceRedact(e) {
-    _.unset(e, '_id');
-    e.impressionOrder = _.first(e.impressionOrder);
-    e.impressionTime = new Date( _.first(e.impressionTime) );
-    e.pseudo = utils.pseudonymizeUser(e.userId);
-    const jsdom = new JSDOM(e.html).window.document;
-    e.attributions = attributeOffsets(jsdom, e.html);
-    e.details = l({jsdom}).linkedtime;
-    _.unset(e, 'html');
+    try {
+        _.unset(e, '_id');
+        e.impressionOrder = _.first(e.impressionOrder);
+        e.impressionTime = new Date( _.first(e.impressionTime) );
+        e.pseudo = utils.pseudonymizeUser(e.userId);
+        const jsdom = new JSDOM(e.html).window.document;
+        e.attributions = attributeOffsets(jsdom, e.html);
+        e.details = l({jsdom}).linkedtime;
+        _.unset(e, 'html');
+    } catch(error) {
+        console.error(error);
+        return null;
+    }
     return e;
 };
 
