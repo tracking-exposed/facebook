@@ -1,6 +1,6 @@
 {
-  "name": "facebook-tracking-exposed",
-  "version": "1.0.2",
+  "name": "fbTREX",
+  "version": "1.0.3",
   "description": "facebook.tracking.exposed → collaborative tool to investigate personalization algorithms",
   "scripts": {
     "collector": "DEBUG=routes:*,lib:*,fbtrex:* nodemon bin/collector.js --config config/nodemon.json",
@@ -23,7 +23,6 @@
     "c3": "^0.4.11",
     "cookie": "^0.3.1",
     "cors": "^2.8.1",
-    "crypto": "0.0.3",
     "d3": "^3.5.17",
     "debug": "^2.2.0",
     "elasticsearch": "^15.2.0",
