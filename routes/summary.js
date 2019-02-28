@@ -29,6 +29,7 @@ function optionParsing(amountString) {
 
 function page(req) {
 
+    // not used atm
     const { amount, skip } = optionParsing(null);
     debug("page request, amount %d skip %d", amount, skip);
     return adopters
