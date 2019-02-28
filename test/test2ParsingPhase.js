@@ -98,7 +98,7 @@ describe("Parsing the HTMLs", function() {
   });
 
   it("Save summary", function() {
-    let summary = _.map(analyzed, parse.finishSummary);
+    summary = _.map(analyzed, parse.finishSummary);
     const nowadays = new Date();
     summary = _.map(summary, function(e) {
       e.savingTime = nowadays;
@@ -113,6 +113,12 @@ describe("Parsing the HTMLs", function() {
       .tap(function(found) {
         expect(found.savingTime.toTimeString()).to.be.equal(nowadays.toTimeString());
       });
+  });
+
+  it(`Ensure nothing is lost in the tranfromation`, function() {
+    expect(_.size(merged)).to.be.at.least(2);
+    expect(_.size(merged)).to.be.equal(_.size(summary));
+    console.log("\tsummarized metadata", _.size(summary));
   });
 
 });

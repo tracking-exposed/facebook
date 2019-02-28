@@ -89,7 +89,7 @@ function data(req) {
         })
         .catch(function(e) {
             debug("data (error): %s", e);
-            return { 'text':  `error: ${e}` };
+            return { 'text': `error: ${e}` };
         });
 };
 
@@ -128,8 +128,7 @@ function csv(req) {
                             _.get(entry, 'texts', []),
                             'text'
                         )
-                        , " ↑ ");
-                    debugger;
+                        , " ‖▩‖ ");
                 } else {
                     swap = _.get(entry, k, "");
                     swap = _.replace(swap, /"/g, '〃');
