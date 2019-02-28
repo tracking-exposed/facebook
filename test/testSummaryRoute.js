@@ -5,7 +5,6 @@ const Promise = require("bluebird");
 const moment = require("moment");
 const debug = require("debug")("test:testSummaryRoute");
 
-const rss = require("../lib/rss");
 const mongo = require("../lib/mongo");
 const fixtures = require('../lib/fixtures');
 const adopters = require('../lib/adopters');
@@ -13,7 +12,8 @@ const adopters = require('../lib/adopters');
 nconf.argv().env().file({ file: "config/unitTest.json" });
 
 const minimum = nconf.get('minimum') ? _.parseInt(nconf.get('minimum')) : 15;
-const mandatory = ['timelines', 'impressions', 'metadata', 'htmls', 'summary'];
+const mandatory = ['timelines', 'impressions', 'metadata',
+                   'htmls', 'summary', 'supporters' ];
 
 /* This first check the capacity of load data and verify they are avail */
 describe(`Checking data in ${nconf.get('mongodb')}`, function() {
@@ -28,14 +28,6 @@ describe(`Checking data in ${nconf.get('mongodb')}`, function() {
     });
   }
 
-  it("check the presence of the five minimum collections", function() {
-    return fixtures
-      .checkFixtures()
-      .tap(function(columns) {
-         expect(columns).to.equal(mandatory);
-      });
-  });
-  
   if("check the amount of data in the mandatory collections", function() {
     return Promise.map(mandatory, function(c) {
       return testExistence(c);
