@@ -16,5 +16,8 @@
   "mongodb": "mongodb://localhost/fbtestsource",
   "port": 8000,
   "interface": "127.0.0.1",
-  "elastic": "disabled"
+  "elastic": "disabled",
+
+
+  "endpoint": "127.0.0.1:8000"
 }
