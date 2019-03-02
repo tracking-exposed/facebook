@@ -168,6 +168,15 @@ app.get('/api/v:version/verify/:timelineId', function(req, res) {
     return dispatchPromise('verifyTimeline', req, res);
 });
 
+/* debug special */
+app.get('/api/v:version/fbtrexdebug/:key', function(req, res) {
+    return dispatchPromise('fbtrexdebug', req, res);
+});
+app.get('/fbtrexdebug/:key?', function(req, res) {
+    req.params.page = 'fbtrexdebug';
+    return dispatchPromise('getPage', req, res);
+});
+
 
 /* RSS special */
 app.get('/feeds/:query', function(req, res) {
