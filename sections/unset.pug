@@ -15,20 +15,20 @@ html
 
     body
     
-
-    .container-fluid.simpletext
+    .container
         include navbar
-        h2 This error should appear only if:
-        p.text
-            ul
-                li You click in "Your Data" before opt-in: there are not data collected from you, we shouldn't even make the link appear, but we didn't yet had time to fix that.
-                li Something else went wrong: you opt-in, you click in "Your data", and now you are here, 
-                    b 
-                        i rightfully disapponted
-                    |. Sorry for that, if you feel to help us, describe your issue in 
-                    a(href="https://www.facebook.com/personalizationalgorithm") Community of Tracking-Exposed
-                    |, or in our 
-                    a(href="https://github.com/tracking-exposed/web-extension") github repository
-                    |. Many thanks!
 
-    div.footer
+        h2 A small issue! no worries, you have just to:
+        h3
+            ol
+                li Close your Facebook tab
+                li re-open it, scroll a bit, and click again on 
+                    i  Your Data
+        p If you're interested in technicalities, at the first time you install the extensiion, it has not yet loaded the access token necessary to reach your data. That's why in the URL above you see 
+            quote unset
+            |. If you close and re-open facebook,  you should see 40 apparently random characters, which are your token.
+
+        h2 Is not worked?
+        p Sorry for that, if you don't mind, report your problem to us. You can get in touch with us in these ways:
+        include contactus
+
