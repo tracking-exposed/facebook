@@ -8,7 +8,9 @@ var request = Promise.promisifyAll(require('request'));
 var nconf = require('nconf');
 var mongo = require('../lib/mongo');
 
-nconf.argv().env().file({ file: "config/collector.json" });
+nconf.argv().env();
+const cfgFile = nconf.get('config') ? nconf.get('config') : "config/content.json";
+nconf.file({ file: cfgFile });
 
 if(!nconf.get('password'))
     return console.log("--password required");
