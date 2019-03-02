@@ -25,9 +25,11 @@ if(nconf.get('FBTREX') !== 'production') {
     nconf.stores.env.readOnly = false;
     nconf.set('FBTREX', 'development');
     nconf.stores.env.readOnly = true;
-    nconf.set('FBTREX')
+} else {
+    debug("Production execution!");
 }
-debug("using file: %s FBTREX mode [%s]", cfgFile, nconf.get('FBTREX'));
+
+debug("using file: %s | FBTREX mode [%s]", cfgFile, nconf.get('FBTREX'));
 
 if(!nconf.get('interface') || !nconf.get('port') ||  !nconf.get('schema') ) {
     console.log("Missing configuration essential (interface, post, schema)");
@@ -61,8 +63,8 @@ const getAPI = [
     },
     /* RSS feed */
     {
-        desc: "RSS feed fetcher",
-        route: '/feeds/:query',
+        desc: "RSS v2 feed fetcher",
+        route: '/2/feeds/:query',
         func: require('../routes/feeds').feeds,
     },
     /* health check */
