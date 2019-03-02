@@ -51,24 +51,11 @@ function infiniteLoop() {
                 debug("First execution, looking at %d minutes back", timeWindow);
                 lastExecution = moment().subtract(timeWindow, 'm').add(moment().utcOffset, 'm');
             }
-            return mongo
-                .read(nconf.get('schema').semantics, { when: { "$gt": new Date( lastExecution.format() ) }})
-                .tap(function(total) {
-                    if(_.size(total)) {
-                        debug("Looking at labels updated in the last %s: found %d",
-                            moment.duration(moment() - lastExecution).humanize(), _.size(total));
-                    }
-                })
-                .map(function(found) {
-                    return mongo
-                        .read(nconf.get('schema').feeds, { labels: found.label });
-                }, { concurrency: 1 })
-                .then(_.flatten)
-                .tap(function(total) {
-                    if(_.size(total))
-                        debug("Found %d feeds matching with the updated `semantics`. Running update...", _.size(total));
-                })
-                .map(rss.composeXMLfromFeed, { concurrency: 1 });
+
+            return rss.findMatchingFeeds(lastExecution)
+                .map(rss.composeXMLfromFeed, { concurrency: 1 })
+                .map(rss.saveRSSfile, { concurrency: 1 });
+
         })
         .tap(function() {
            debug("news+updates processed in %s", moment.duration(moment() - lastExecution).humanize() );
@@ -79,16 +66,15 @@ function infiniteLoop() {
 
 infiniteLoop();
 
-
 function logCreations(infos) {
 }
 
 /*
 function logSemanticServer(amount) {
-    echoes.echo({
-        index: 'semanticserv',
-        amount: amount
-    });
+echoes.echo({
+index: 'semanticserv',
+amount: amount
+});
 }
 
 function elasticLog(entry, analyzed) {
