@@ -1,6 +1,10 @@
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this
 project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.3] - 2019-03-03
+### Added
+- Admin debug-pourposed interface
+
 ## [1.0.2] - 2019-01-07
 ### Added
 - New simple visualization based on isotope, for the personal page
