@@ -33,16 +33,6 @@ describe("Parsing the HTMLs", function() {
       });
   });
 
-  it("Check the initalization do not work because metadata exists", function() {
-    return Promise.map(merged, function(e) {
-      return parse.initialize(e, false);
-    })
-    .then(function(results) {
-      let empty = _.first(results);
-      expect(empty).to.be.equal(null);
-    });
-  });
-
   it("Do the initalization [repeat=true]", function() {
     return Promise.map(merged, function(e) {
       return parse.initialize(e, true);
@@ -121,4 +111,33 @@ describe("Parsing the HTMLs", function() {
     console.log("\tsummarized metadata", _.size(summary));
   });
 
+  it(`Save the metadata as described in /lib/parse`, function() {
+    return parse.save(merged)
+      .then(function(results) {
+        debug("saved: %j", results);
+      });
+  });
+
+  it(`Fail to salve Save the same metadata if 'repeat' is set`, function() {
+
+  });
+
+  it("Check checkMetadata (repeat=false)", function() {
+    return Promise.map(merged, function(e) {
+      return parse.checkMetadata(e, false);
+    })
+    .then(function(results) {
+      let empty = _.first(results);
+      expect(empty).to.be.equal(null);
+    });
+  });
+
+  it("Check checkMetadata (repeat=true)", function() {
+    return Promise.map(merged, function(e) {
+      return parse.checkMetadata(e, true);
+    })
+    .then(function(results) {
+      expect(results).to.be.equal(merged);
+    });
+  });
 });

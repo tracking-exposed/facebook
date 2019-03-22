@@ -21,6 +21,10 @@ const htmlfilter = repeat ?
     { id: targetId } :
     { id: targetId, processed: { $exists: false } };
 
+nconf.stores.env.readOnly = false;
+nconf.set('fulldump', true);
+nconf.stores.env.readOnly = true;
+
 return parse
     .parseHTML(htmlfilter, repeat)
     .then(function(done) {

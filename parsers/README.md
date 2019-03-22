@@ -15,6 +15,7 @@ an option can be specify as an environment variable or as an --option
 
   * `id`: specify an html.id (which become a metadata.id) 
 
-## timeline.js
+## selected.js
 
-  * `id`: specify a timeline.id, it processed all the snippet belongin to
+  * `id`: specify a timeline.id, it processed all the impressions belongin to
+  * `override`: specify a JSON object to be used as filter for impressions
