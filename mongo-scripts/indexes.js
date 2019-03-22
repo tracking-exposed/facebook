@@ -12,6 +12,8 @@ ret = db.semantics.createIndex({ "label" : 1 });
 ret = db.semantics.createIndex({ "when" : 1 });
 ret = db.semantics.createIndex({ "semanticId" : 1 });
 
+ret = db.parsererrors.createIndex({ "id": 1 }); checkret('parsererror id', ret);
+
 
 function checkret(info, retval) {
     retval.info = info;

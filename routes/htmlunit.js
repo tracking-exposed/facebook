@@ -20,6 +20,26 @@ function unitById(req) {
         });
 };
 
+function unitByDate(req) {
+    // '/api/v2/debug/:key/date/:savingTime'
+    const reft = new Date(req.params.savingTime);
+    if(nconf.get('password') != req.params.dey)
+        return { json: "wrong key" };
+
+    return mongo.readLimit(nconf.get('schema').htmls, {
+        savingTime: {}
+    }, { savingTime: 1 }, 1, 0)
+        .then(_.first)
+        .then(function(x) {
+            return {
+                'html': x.html,
+                'metadata': _.omit(x, [
+                    '_id', 'timelineId',
+                    'userId', 'impressionId', 'html' ])
+            };
+        });
+}
+
 function jsonifyImpression(mongoFilter, increment) {
     increment = (increment > 0) ? increment : 0;
 
@@ -66,5 +86,6 @@ function verifyTimeline(req) {
 
 module.exports = {
     unitById :unitById,
-    verifyTimeline: verifyTimeline
+    verifyTimeline: verifyTimeline,
+    unitByDate: unitByDate,
 };
