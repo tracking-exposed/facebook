@@ -12,17 +12,25 @@ var parse = require('../lib/parse');
 nconf.argv().env().file({ file: 'config/collector.json' });
 
 const targetTmlnId = nconf.get('id');
+const override = nconf.get('override');
+let htmlfilter = {};
 
-if(!targetTmlnId) {
+if( _.size(override) > 3 ) {
+    console.log("`override` present, using", override);
+    htmlfilter = JSON.parse(override);
+} else if(!targetTmlnId) {
     console.log("Required a timelineId as parameter (--id)");
     return;
+} else {
+    debug("addressing timeline %s", targetTmlnId);
+    htmlfilter = { timelineId: targetTmlnId };
 }
 
-debug("addressing timeline %s", targetTmlnId);
 const repeat = nconf.get('repeat') || false;
-const htmlfilter = repeat ?
-    { timelineId: targetTmlnId } :
-    { timelineId: targetTmlnId, processed: { $exists: false } };
+if(repeat)
+    htmlfilter = _.extend(htmlfilter, { processed: { $exists: false } });
+
+htmlfilter = _.extend(htmlfilter, { savingTime: { "$gt": new Date("2019-02-15") } });
 
 return parse
     .parseHTML(htmlfilter, repeat)

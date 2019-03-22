@@ -62,7 +62,7 @@ function loadsnippet(metadataContainer, renderContainer) {
 
     var htmlId = document.location.pathname.split('/').pop();
     if(htmlId.length == 40) {
-        var url = '/api/v1/html/' + htmlId;
+        var url = '/api/v2/debug/html/' + htmlId;
     } else {
         console.error("htmlId not found");
         console.log(document.location);
@@ -117,3 +117,46 @@ function loadmetadata(metadataC, errorsC) {
         // continue when you can
     });
 };
+
+// --------------------------
+
+function bydate(metadataContainer, renderContainer, datecontainer) {
+
+
+    const x = document.location.pathname.split('/');
+
+    console.log(x);
+
+    $.getJSON(url, function(something) {
+        console.log("Metadata[s] " + JSON.stringify(something.metadata));
+         
+        var content= something.html;
+        
+       //qui lo fa giusto ma mi manca una regexp per finire
+       // content = content.replace('width="'+ +'"', '');
+        
+        $(renderContainer).html(content);
+        $(metadataContainer).html(
+            '<ul class="fb--icon-list">' +
+            doHTMLentries(something.metadata) +
+            '</ul>'
+        );
+        $('#bymeta').attr('href', '/revision/' + something.metadata.id);
+        $('#bysnippet').attr('href', '/revision/' + something.metadata.id);
+
+        /*
+         * test seguendo https://highlightjs.org/usage/ non è funzionato, ppfff
+         * ma potrebbe starci bene avere l'HTML formattato da un plugin
+         * a fine pagina.
+        $('pre code').each(function(i, block) {
+            block.innerText = content;
+            hljs.highlightBlock(block);
+        });
+        */
+    
+        //qui lo fa però su tutta la pagina :(
+        cleanstyle();
+    });
+};
+
+
