@@ -8,7 +8,7 @@ var walk = require('../lib/walk');
 var parse = require('../lib/parse');
 var mongo = require('../lib/mongo');
 
-nconf.argv().env().file({ file: 'config/collector.json' });
+nconf.argv().env().file({ file: 'config/content.json' });
 
 const targetId = nconf.get('id');
 if(!targetId) {

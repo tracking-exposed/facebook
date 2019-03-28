@@ -9,7 +9,7 @@ var parse = require('../lib/parse');
 var mongo = require('../lib/mongo');
 var parse = require('../lib/parse');
 
-nconf.argv().env().file({ file: 'config/collector.json' });
+nconf.argv().env().file({ file: 'config/content.json' });
 
 const targetTmlnId = nconf.get('id');
 const override = nconf.get('override');
