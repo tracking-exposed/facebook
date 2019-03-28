@@ -11,7 +11,7 @@ html
         script(type='text/javascript', src='/js/d3.min.js')
         script(type='text/javascript', src='/js/c3.min.js')
         script(type='text/javascript', src='/js/moment.min.js')
-        script(type='text/javascript', src='/js/local/stats.js')
+        script(type='text/javascript', src='/js/local/aggregated.js')
 
         meta(charset="utf-8")
         meta(http-equiv="X-UA-Compatible" content="IE=edge")
@@ -33,29 +33,58 @@ html
 
         .container-fluid
             .simpletext
-                h2 Adoption statistics
-                p Since the mid of December 2016, facebook.tracking.exposed is in ß release. below some graph of the data collected. As part of the stable delivery, we'll define how third party can download the dataset and how we might integrate third party analysis in our APIs.
-                p We know to be in a slippery terrain: in one side, enabling users to assess Personalisation Algorithm is our goal, in the other, we value Privacy and Identity rights much more than the corporations we criticize. 
-                    a(href="https://responsibledata.io/social-media-intelligence-the-wayward-child-of-open-source-intelligence/") Aware of the risks posed by social media intelligence
-                    |, we aim to enable users awareness, but prevent abuses.
+                h2 usage trackers
+                    span#funky we build a technology to observe Facebook and algorithm phenomenon: we do not track people
+                p This is also the reason why the data collected are not fully accessible, but protected to preserve digital rights, human rights, and in general don't support abusive scenario such as the 
+                    a(href="https://responsibledata.io/social-media-intelligence-the-wayward-child-of-open-source-intelligence/") social media intelligence
+                    |.
+                p The inception of fbTREX was in Summer 2016; Since the mid of December 2016 we are in R&D-release, the tool have been used to produce research papers and test functionalities for individual; Since January 2019, after the publication of the project status, we entered in ß version.
 
-            .simpletext
-                p Raw numbers
+                h2 data activities 
                 table
                     thead
                         tr 
+                            th.col-sm-1 ✍
                             th.col-sm-1 supporters
                             th.col-sm-1 timelines
                             th.col-sm-1 impressions
                             th.col-sm-1 htmls
                             th.col-sm-1 accesses
+                            th.col-sm-1 summaries
                     tbody
                         tr 
-                            th.col-sm-1 #{supporters}
-                            th.col-sm-1 #{timelines}
-                            th.col-sm-1 #{impressions}
-                            th.col-sm-1 #{htmls}
-                            th.col-sm-1 #{accesses}
+                            th.col-sm-1 total
+                            th.col-sm-1
+                                span#supporters
+                            th.col-sm-1
+                                span#timelines
+                            th.col-sm-1
+                                span#impressions
+                            th.col-sm-1
+                                span#htmls
+                            th.col-sm-1
+                                span#accesses
+                            th.col-sm-1
+                                span#summaries
+                    tfoot
+                        tr 
+                            th.col-sm-1 last week
+                            th.col-sm-1
+                                span#supporters_lw
+                            th.col-sm-1
+                                span#timelines_lw
+                            th.col-sm-1
+                                span#impressions_lw
+                            th.col-sm-1
+                                span#htmls_lw
+                            th.col-sm-1
+                                span#accesses_lw
+                            th.col-sm-1
+                                span#summaries_lw
+
+
+
+
 
         .container-fluid
             .simpletext
