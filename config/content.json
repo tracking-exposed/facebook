@@ -12,7 +12,7 @@
       "semantics": "semantics",
       "labels": "labels",
       "feeds": "feeds",
-      "stats": "stats",
+      "aggregated": "aggregated",
       "parsers": "parsers"
   },
   "mongodb": "mongodb://localhost/facebook",
