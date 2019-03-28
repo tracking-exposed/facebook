@@ -14,7 +14,7 @@ ret = db.semantics.createIndex({ "semanticId" : 1 });
 
 ret = db.parsererrors.createIndex({ "id": 1 }); checkret('parsererror id', ret);
 
-ret = db.stats.createIndex({ "hourId": 1 }, {unique: true}); checkret('stats hourId id', ret);
+ret = db.aggregated.createIndex({ "hourId": 1 }, {unique: true}); checkret('aggregated hourId id', ret);
 
 function checkret(info, retval) {
     retval.info = info;
