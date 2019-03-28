@@ -8,7 +8,7 @@ var nconf= require('nconf');
 var mongo = require('../lib/mongo');
 var parse = require('../lib/parse');
 
-nconf.argv().env().file({ file: 'config/collector.json' });
+nconf.argv().env().file({ file: 'config/content.json' });
 const since = nconf.get('since') || "2018-11-01";
 const until = nconf.get('until') || moment().add(1, 'd').format("YYYY-MM-DD");
 const concur = _.isUndefined(nconf.get('concurrency') ) ? 1 : _.parseInt(nconf.get('concurrency') );
