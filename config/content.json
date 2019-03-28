@@ -11,7 +11,9 @@
       "anomalies": "anomalies",
       "semantics": "semantics",
       "labels": "labels",
-      "feeds": "feeds"
+      "feeds": "feeds",
+      "stats": "stats",
+      "parsers": "parsers"
   },
   "mongodb": "mongodb://localhost/facebook",
   "port": 8000,
