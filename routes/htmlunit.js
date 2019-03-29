@@ -9,19 +9,34 @@ var utils = require('../lib/utils');
 
 
 function unitById(req) {
+    // '/api/v2/debug/html/:htmlId'
     var htmlId = req.params.htmlId;
 
     debug("%s unitById %s", req.randomUnicode, htmlId);
-    return jsonifyImpression({ id: htmlId})
-        .catch(function(error) {
-            debug("%s error with html.id %s: %s",
-                    req.randomUnicode, htmlId, error);
-            return { json: 'Error' };
-        });
+    return Promise.all([
+        mongo.readOne(nconf.get('schema').htmls, { id: htmlId }),
+        mongo.readOne(nconf.get('schema').metadata, { id: htmlId }),
+        mongo.readOne(nconf.get('schema').summary, { id: htmlId }),
+        mongo.readOne(nconf.get('schema').errors, { id: htmlId }),
+    ])
+    .then(function(c) {
+        return { json: {
+            html: _.omit(c[0], ['_id']),
+            metadata: _.omit(c[1], ['_id']),
+            summary: _.omit(c[2], ['_id']),
+            errors: _.omit(c[3], ['_id'])
+        }};
+    })
+    .catch(function(error) {
+        debug("error with html.id %s: %s", htmlId, error);
+        return { json: 'Error' };
+    });
 };
 
 function unitByDate(req) {
-    // '/api/v2/debug/:key/date/:savingTime'
+    // '/api/v2/debug/:key/date/:savingDay/:savingMinutes'
+    // expected format is YYYY-MM-DD / HH:mm
+    // this return a list of all the metadata recorded in a due period of 60 seconds
     const reft = new Date(req.params.savingTime);
     if(nconf.get('password') != req.params.dey)
         return { json: "wrong key" };
@@ -38,27 +53,6 @@ function unitByDate(req) {
                     'userId', 'impressionId', 'html' ])
             };
         });
-}
-
-function jsonifyImpression(mongoFilter, increment) {
-    increment = (increment > 0) ? increment : 0;
-
-    /* TODO talk with some security expert to get proper insight 
-     * on how to handle this pandora's box */
-    return mongo
-        .readLimit(nconf.get('schema').htmls, mongoFilter, { savingTime: -1 }, 1, increment)
-        .then(_.first)
-        .then(function(fullc) {
-            return {
-                'html': fullc.html,
-                'metadata': _.omit(fullc, [
-                    '_id', 'timelineId',
-                    'userId', 'impressionId', 'html' ])
-            };
-        })
-        .then(function(c) {
-            return { json: c };
-        }); 
 }
 
 function verifyTimeline(req) {

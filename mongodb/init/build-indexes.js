@@ -7,6 +7,7 @@ ret = db.metadata.createIndex({ "semanticId" : 1 }); checkret('metadata semantic
 ret = db.metadata.createIndex({ "userId" : 1 }); checkret('metadata userId', ret);
 ret = db.metadata.createIndex({ "semantic" : 1 }); checkret('metadata semantic', ret);
 ret = db.metadata.createIndex({ "id" : 1 }, { unique : true }); checkret('metadata id', ret);
+ret = db.metadata.createIndex({ "impressionTime" : -1 }); checkret('metadata impressionTime', ret);
 
 ret = db.semantics.createIndex({ "label" : 1 });
 ret = db.semantics.createIndex({ "when" : 1 });
