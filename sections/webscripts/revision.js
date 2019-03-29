@@ -1,4 +1,4 @@
-
+/*
 var parsers = [
     'postType',
     'feedBasicInfo',
@@ -40,7 +40,6 @@ function doHTMLentries(dictionary) {
         if(_.isBoolean(value)) {
             return [ '<li>', failOrSuccess(value), getParserByBool(key) + '</li>' ];
         }
-        /* TODO manage all the dates in the same way */
         if(key === 'savingTime') {
             var D = moment.duration(
                         moment() - moment(value, moment.ISO_8601)
@@ -86,23 +85,13 @@ function loadsnippet(metadataContainer, renderContainer) {
         $('#bymeta').attr('href', '/revision/' + something.metadata.id);
         $('#bysnippet').attr('href', '/revision/' + something.metadata.id);
 
-        /*
-         * test seguendo https://highlightjs.org/usage/ non è funzionato, ppfff
-         * ma potrebbe starci bene avere l'HTML formattato da un plugin
-         * a fine pagina.
-        $('pre code').each(function(i, block) {
-            block.innerText = content;
-            hljs.highlightBlock(block);
-        });
-        */
-    
         //qui lo fa però su tutta la pagina :(
         cleanstyle();
     });
 };
+*/
 
-
-function loadmetadata(metadataC, errorsC) {
+function loadmetadata(metadataC, errorsC, renderC) {
     var htmlId = document.location.pathname.split('/').pop();
     if(htmlId.length !== 40) {
         $(metadataC).html('<h1>URL error!?</h1>');
@@ -110,16 +99,15 @@ function loadmetadata(metadataC, errorsC) {
         return;
     }
 
-    var url = '/api/v1/metadata/' + htmlId;
+    var url = `/api/v2/debug/html/${htmlId}`;
     console.log(url);
 
-    $.getJSON(url, function(something) {
-        // continue when you can
+    $.getJSON(url, function(data) {
+        console.log(data);
     });
 };
 
-// --------------------------
-
+/*
 function bydate(metadataContainer, renderContainer, datecontainer) {
 
 
@@ -144,19 +132,9 @@ function bydate(metadataContainer, renderContainer, datecontainer) {
         $('#bymeta').attr('href', '/revision/' + something.metadata.id);
         $('#bysnippet').attr('href', '/revision/' + something.metadata.id);
 
-        /*
-         * test seguendo https://highlightjs.org/usage/ non è funzionato, ppfff
-         * ma potrebbe starci bene avere l'HTML formattato da un plugin
-         * a fine pagina.
-        $('pre code').each(function(i, block) {
-            block.innerText = content;
-            hljs.highlightBlock(block);
-        });
-        */
-    
         //qui lo fa però su tutta la pagina :(
         cleanstyle();
     });
 };
 
-
+*/
