@@ -3,17 +3,17 @@ const Promise = require('bluebird');
 const _ = require('lodash');
 const moment = require('moment');
 const debug = require('debug')('bin:parserv');
-const nconf= require('nconf');
+const nconf = require('nconf');
 
 const mongo = require('../lib/mongo');
 const parse = require('../lib/parse');
 
 /* configuration for elasticsearch */
 const echoes = require('../lib/echoes');
+nconf.argv().env().file({ file: 'config/content.json' });
+
 echoes.addEcho("elasticsearch");
 echoes.setDefaultEcho("elasticsearch");
-
-nconf.argv().env().file({ file: 'config/collector.json' });
 
 const concur = _.isUndefined(nconf.get('concurrency') ) ? 1 : _.parseInt(nconf.get('concurrency') );
 const FREQUENCY = 2; // seconds

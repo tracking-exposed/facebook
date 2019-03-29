@@ -66,6 +66,7 @@ return request
     })
     .tap(writeTimeline)
     .tap(writeImpressions)
+    .tap(updateSupporter)
     .then(writeHtmls)
     .map(function(done)  {
         if(_.get(done, 'id'))
@@ -100,6 +101,8 @@ function writeImpressions(blob) {
 
 function writeHtmls(blob) { 
     return Promise.map(blob[2], function(html) {
+        /* this and updateSupporter, permits to run the test with bin/parserv.js */
+        html.savingTime = new Date();
         return mongo
             .writeOne(nconf.get('schema').htmls, html)
             .catch(duplicatedError);
@@ -112,3 +115,19 @@ function duplicatedError(error) {
         process.exit(0);
     }
 }
+
+function updateSupporter(blob) {
+    if(blob[0]) {
+        var userId = blob[0].userId;
+        return mongo
+            .readOne(nconf.get('schema').supporters, { userId: userId })
+            .then(function(found) {
+                if(!found) found = { userId };
+                return _.set(found, 'lastActivity', new Date());
+            })
+            .then(function(updated) {
+                return mongo
+                    .upsertOne(nconf.get('schema').supporters, { userId: updated.userId }, updated);
+            });
+    };
+};
