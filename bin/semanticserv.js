@@ -56,7 +56,6 @@ function infiniteLoop() {
             logSemanticServer(_.size(entries));
             return entries;
         })
-        .map(semantic.buildText)
         .map(process, { concurrency: 1 })
         .then(_.compact)
         .tap(function(entries) {
@@ -71,10 +70,10 @@ function infiniteLoop() {
 function process(entry) {
     const token = nconf.get('token');
     return semantic
-        .dandelion(token, entry.dandelion, entry.semanticId)
+        .dandelion(token, entry.fulltext, entry.semanticId)
         .then(function(analyzed) {
 
-            if(!analyzed)
+            if(!analyzed || !analyzed.semanticId)
                 throw new Error();
 
             if(analyzed.headers['x-dl-units-left'] === 0) {
