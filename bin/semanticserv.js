@@ -70,7 +70,7 @@ function infiniteLoop() {
 function process(entry) {
     const token = nconf.get('token');
     return semantic
-        .dandelion(token, entry.fulltext, entry.semanticId)
+        .dandelion(token, entry.fullText, entry.semanticId)
         .then(function(analyzed) {
 
             if(!analyzed || !analyzed.semanticId)
@@ -108,7 +108,7 @@ function elasticLog(entry, analyzed) {
     echoes.echo({
         index: 'semantics',
         semanticId: entry.semanticId,
-        textsize: _.size(entry.dandelion.fulltext),
+        textsize: _.size(entry.fullText),
         annotations: _.size(analyzed.semantics),
         lang: analyzed.lang
     });
