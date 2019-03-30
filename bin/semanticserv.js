@@ -71,17 +71,22 @@ function process(entry) {
     const token = nconf.get('token');
     return semantic
         .dandelion(token, entry.fullText, entry.semanticId)
+        .then(semantic.composeObjects)
+        .catch(function(error) {
+            debug("Error in composeObject: %s", error);
+            return null;
+        })
         .then(function(analyzed) {
 
-            if(!analyzed || !analyzed.semanticId)
-                throw new Error();
-
-            if(analyzed.headers['x-dl-units-left'] === 0) {
+            if(analyzed && analyzed.headers && analyzed.headers['x-dl-units-left'] === 0) {
                 debug("Units finished!");
                 process.exit(1);
             }
 
-            if(_.isUndefined(analyzed.lang))
+            if(analyzed.skip)
+                return semantic.updateMetadata(_.extend(entry, { semantic: false }) )
+
+            if(!analyzed || !analyzed.semanticId || _.isUndefined(analyzed.lang))
                 return semantic.updateMetadata(_.extend(entry, { semantic: null }) );
 
             return Promise.all([
@@ -92,8 +97,7 @@ function process(entry) {
             ]);
         })
         .catch(function(error) {
-            debug("Error with semanticId %s: %s", entry.semanticId, error);
-            return semantic.updateMetadata(_.extend(entry, { semantic: false }) );
+            debug("Impossible to commit changes: %s", error);
         });
 };
 
