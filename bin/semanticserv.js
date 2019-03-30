@@ -28,11 +28,18 @@ console.log(`Checking periodically every ${FREQUENCY} seconds...`);
 infiniteLoop();
 
 function infiniteLoop() {
+
+    const timewindow = nconf.get('daysago') ?
+        moment().subtract( _.parseInt(nconf.get('daysago')), 'days').format() :
+        moment().subtract(5, 'days').format();
+
     /* this will launch other scheduled tasks too */
     return Promise
         .resolve()
         .delay(FREQUENCY * 1000)
-        .then(semantic.getSemantic)
+        .then(function() {
+            return semantic.getSemantic({ semantic: true, when: { "$gte": new Date(timewindow) }});
+        })
         .then(function(entries) {
 
             if(!_.size(entries))
