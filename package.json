@@ -9,7 +9,7 @@
     "content:prod": "DEBUG=lib:*,fbtrex:*,routes:*,-lib:mongo:read node bin/content",
     "build": "bin/install-script.sh",
     "parserv": "DEBUG=*,-lib:parse,-lib:mongo:* node bin/parserv.js",
-    "semanticserv": "DEBUG=*,-lib:mongo:*,-lib:semantic:v node bin/semanticserv.js",
+    "semanticserv": "DEBUG=*,-lib:mongo*,-lib:semantic:v node bin/semanticserv.js",
     "buildrsserv": "DEBUG=*,-lib:mongo:* node bin/buildrsserv.js",
     "test": "./node_modules/.bin/mocha"
   },
