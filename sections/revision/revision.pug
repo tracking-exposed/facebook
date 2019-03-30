@@ -24,30 +24,35 @@ html
         meta(property="og:image:height" content="400")
         title facebook tracking exposed - HTML revision page
 
-    body(onload="loadmetadata('#metadata', '#errors', '#render'); ")
+    body(onload="loadmetadata(); ")
 
         .container-fluid
             include ../navbar
-            .col-md-1
-            .col-md-4
-                div.infoblock
-                    h3
-                        a Error (if any)
-                    div.metadata(id='errors')
-                div.infoblock
-                    h3
-                        a Summary 
-                    div.metadata(id='summary')
-                div.infoblock
-                    h3
-                        a Metadata 
-                    div.metadata(id='metadata')
 
+        .container-fluid
+            table
+                thead
+                    tr
+                        td
+                            h3 Summary
+                        td
+                            h3 Metadata
+                        td
+                            h3 Errors
+                        td
+                            h3 Notes
+                tbody
+                    tr
+                        td
+                            div#summary
+                        td
+                            div#metadata
+                        td
+                            div#error
+                        td
+                            div#notes
 
-
-            .col-md-1
-            .col-md-4.infoblock
-                h3
-                    a(id="bysnippet") The user saw this
-                div.snippet(id='render')
+        .container-fluid#rendered
+            p.center Original HTML snippet
+            div.infoblock(id='html')
 
