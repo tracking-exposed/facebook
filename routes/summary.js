@@ -27,52 +27,6 @@ function optionParsing(amountString) {
     };
 };
 
-function page(req) {
-
-    // not used atm
-    const { amount, skip } = optionParsing(null);
-    debug("page request, amount %d skip %d", amount, skip);
-    return adopters
-        .validateToken(req.params.userToken)
-        .tap(function(supporter) {
-            if(!supporter)
-                throw new Error("authentication fail");
-        })
-        .then(function(supporter) {
-            debug("Composing summary page for supporter %s", supporter.pseudo);
-            return mongo
-                .readLimit(nconf.get('schema').summary, { user: supporter.pseudo },
-                    { impressionTime: -1}, amount, skip)
-                .then(function(summary) {
-                    debug("retrived %d objects, with amount %d skip %d", _.size(summary), amount, skip);
-                    return {
-                        summary,
-                        supporter,
-                    };
-                });
-        })
-        .then(function(data) {
-            // TODO echoes
-            debug("Data here, %d %d", _.size(data.summary), _.size(data.supporter));
-            return { 
-                'text': pug.compileFile( __dirname + '/../sections/personal/summary.pug', {
-                    pretty: true,
-                    debug: false
-                })({
-                    supporter: data.supporter,
-                    summary: data.summary
-                })
-            };
-        })
-        .catch(function(e) {
-            debug("page (error): %s", e);
-            return {
-                'text': 'Authentication Error!'
-            };
-        });
-
-};
-
 function data(req) {
     const { amount, skip } = optionParsing(req.params.amount);
     debug("data request, amount %d skip %d", amount, skip);
@@ -82,6 +36,9 @@ function data(req) {
             return mongo
                 .readLimit(nconf.get('schema').summary, { user: supporter.pseudo },
                     { impressionTime: -1}, amount, skip);
+        })
+        .map(function(e) {
+            return _.omit(e, ['_id', 'id' ]);
         })
         .then(function(data) {
             debug("retrived %d objects, with amount %d skip %d", _.size(data), amount, skip);
@@ -96,7 +53,7 @@ function data(req) {
 function csv(req) {
     debug("CSV request, amount forced to 1000, skip 0");
 
-    var keys = [ "type", "publicationTime", "postId", "permaLink", "author", "authorLink", "texts", "textlength", "impressionTime", "impressionOrder", "user", "timeline", "errors" ];
+    var keys = [ "nature", "publicationTime", "postId", "permaLink", "fblinktype", "source", "sourceLink", "displaySource", "textsize", "texts", "impressionTime", "impressionOrder", "user", "timeline", "semanticId" ];
 
     return adopters
         .validateToken(req.params.userToken)
@@ -118,9 +75,6 @@ function csv(req) {
                 var swap;
                 if(k === 'impressionTime' || k === 'publicationTime' ) {
                     swap = _.get(entry, k);
-                    if(!(cnt % 30)) {
-                        debug("sample %d: %s", cnt, moment(swap).toISOString());
-                    }
                     swap = moment(swap).toISOString();
                 } else if(k === 'texts') {
                     swap = _.join(
@@ -155,14 +109,14 @@ function csv(req) {
         })
         .catch(function(e) {
             debug("csv (error): %s", e);
-            return { text:  `error: ${e}` };
+            return { text: `error: ${e}` };
         });
 }
 
 function metadata(req) {
 
     const { amount, skip } = optionParsing(req.params.amount);
-    debug("metadata request, amount %d skip %d", amount, skip);
+    debug("metadata request: %d skip %d", amount, skip);
     return adopters
         .validateToken(req.params.userToken)
         .then(function(supporter) {
@@ -180,27 +134,45 @@ function metadata(req) {
         });
 };
 
-function extended(req) {
-    debugger;
-};
-
-
 function semantics(req) {
-    debugger;
+    const { amount, skip } = optionParsing(req.params.amount);
+    debug("extended request: %d, skip %d", amount, skip);
+    return adopters
+        .validateToken(req.params.userToken)
+        .then(function(supporter) {
+            let ma = { $match: { user: supporter.pseudo } };
+            let li = { $limit: (amount * 2) };
+            let so = { $sort: { impressionTime: -1 } };
+            let lo = { $lookup: {
+                from: 'labels',
+                localField: 'semanticId',
+                foreignField: 'semanticId',
+                as: 'labelcopy'
+            } };
+            return mongo
+                .aggregate(nconf.get('schema').summary, [ ma, li, so, lo ])
+        })
+        .map(function(e) {
+            if(_.size(e.labelcopy)) {
+                e.labels = _.get(e.labelcopy[0], 'l');
+                e.lang = _.get(e.labelcopy[0], 'lang');
+            }
+            return _.omit(e, ['_id', 'id', 'labelcopy' ]);
+        })
+        .then(function(prod) {
+            return { json: prod };
+        });
 };
 
 function personStats(req) {
-    /* this should return the same of summary, but with some lodhash hits
-     * generate this:
+    /* this should return the same of summary, but generate this:
      * https://github.com/tracking-exposed/facebook/issues/117 */
 };
 
 module.exports = {
-    page: page,
     data: data,
     metadata: metadata,
     csv: csv,
-    extended: extended,
     semantics: semantics,
     personStats: personStats
 };
