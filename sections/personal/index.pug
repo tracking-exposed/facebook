@@ -30,12 +30,9 @@ html
   body(onload="initializeSummary()")
 
     include header
+    include navbar
 
-    h1.center data summary
     .d-flex.justify-content-center.btn-groups
-
-        div(class="btn-group" role="group")
-          button(type="button" class="btn btn-default" onclick="downloadCSV()") download .csv
 
         button(type="button" class="btn btn-light" onclick="filterBy()")
           | Show all
