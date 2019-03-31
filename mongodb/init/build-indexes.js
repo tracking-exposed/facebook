@@ -17,6 +17,9 @@ ret = db.parsererrors.createIndex({ "id": 1 }); checkret('parsererror id', ret);
 
 ret = db.aggregated.createIndex({ "hourId": 1 }, {unique: true}); checkret('aggregated hourId id', ret);
 
+ret = db.summary.createIndex({ "id": 1 }, { unique: true }); checkret('summary id', ret);
+ret = db.summary.createIndex({ "impressionTime": -1 }); checkret('summary id', ret);
+
 function checkret(info, retval) {
     retval.info = info;
     printjson(retval);
