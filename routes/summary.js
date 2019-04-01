@@ -15,11 +15,12 @@ function optionParsing(amountString) {
     try {
         const amount = _.parseInt(_.first(amountString.split('-')));
         const skip = _.parseInt(_.last(amountString.split('-')));
-        if(!_.isNaN(amount) && !_.isNaN(skip))
-            return {
-                amount,
-                skip
-            };
+        if(_.isNaN(amount) || _.isNaN(skip))
+            throw new Error;
+        return {
+            amount,
+            skip
+        };
     } catch(error) { }
     return {
         amount: MAXOBJS,
@@ -27,9 +28,9 @@ function optionParsing(amountString) {
     };
 };
 
-function data(req) {
-    const { amount, skip } = optionParsing(req.params.amount);
-    debug("data request, amount %d skip %d", amount, skip);
+function summary(req) {
+    const { amount, skip } = optionParsing(req.params.paging);
+    debug("summary request, amount %d skip %d", amount, skip);
     return adopters
         .validateToken(req.params.userToken)
         .then(function(supporter) {
@@ -114,8 +115,8 @@ function csv(req) {
 }
 
 function metadata(req) {
-
-    const { amount, skip } = optionParsing(req.params.amount);
+    // not implemented an endpoint, at the moment
+    const { amount, skip } = optionParsing(req.params.paging);
     debug("metadata request: %d skip %d", amount, skip);
     return adopters
         .validateToken(req.params.userToken)
@@ -135,7 +136,7 @@ function metadata(req) {
 };
 
 function semantics(req) {
-    const { amount, skip } = optionParsing(req.params.amount);
+    const { amount, skip } = optionParsing(req.params.paging);
     debug("extended request: %d, skip %d", amount, skip);
     return adopters
         .validateToken(req.params.userToken)
@@ -170,7 +171,7 @@ function personStats(req) {
 };
 
 module.exports = {
-    data: data,
+    summary: summary,
     metadata: metadata,
     csv: csv,
     semantics: semantics,
