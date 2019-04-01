@@ -1,0 +1,38 @@
+doctype html
+html
+  head
+    title fbTREX, debug
+
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    meta(name="keywords" content="facebook tracking exposed")
+
+    link(rel='stylesheet', type='text/css', href='/css/bootstrap.css')
+    link(rel='stylesheet', href='/css/index.css')
+    link(rel='stylesheet', href='/css/summary.css')
+
+    script(type='text/javascript', src='/js/jquery.js')
+    script(type='text/javascript', src='/js/bootstrap.min.js')
+    script(type='text/javascript', src='/js/lodash.min.js')
+    script(type='text/javascript', src='/js/moment.min.js')
+
+    script(type='text/javascript', charset='utf8', src='/js/local/debug.js')
+
+  body(onload="initialize()")
+
+    .container
+        h3 impressions
+        pre#impressions.debugpre
+
+        h3 timelines
+        pre#timelines.debugpre
+
+        h3 metadata
+        pre#metadata.debugpre
+
+        h3 summary
+        pre#summary.debugpre
+
+        h3 labels
+        pre#labels.debugpre

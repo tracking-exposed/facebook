@@ -1,9 +1,11 @@
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this
 project adheres to [Semantic Versioning](http://semver.org/).
 
-## [1.0.3] - 2019-02-28
+## [1.0.3] - 2019-04-01
 ### Added
 - Unit testing
+- Admin debug-pourposed interface
+- New API v2
 
 ## [1.0.2] - 2019-01-07
 ### Added
