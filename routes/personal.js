@@ -166,6 +166,8 @@ function semantics(req) {
 };
 
 function personStats(req) {
+    debug("stats NOT YET IMPLEMENMTED");
+    return { json: "not yet implemented"};
     /* this should return the same of summary, but generate this:
      * https://github.com/tracking-exposed/facebook/issues/117 */
 };
