@@ -46,8 +46,8 @@ server.listen(nconf.get('port'), nconf.get('interface'));
 debug("Listening on http://%s:%s", nconf.get('interface'), nconf.get('port'));
 /* configuration of express4 */
 app.use(cors());
-app.use(bodyParser.json({limit: '1kb'}));
-app.use(bodyParser.urlencoded({limit: '1kb', extended: true}));
+app.use(bodyParser.json({limit: '30kb'}));
+app.use(bodyParser.urlencoded({limit: '30kb', extended: true}));
 
 const getAPI = require('../lib/contentAPI');
 
