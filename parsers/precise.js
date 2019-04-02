@@ -1,12 +1,13 @@
 #!/usr/bin/env node
-var _ = require('lodash');
-var moment = require('moment');
-var debug = require('debug')('parser:precise');
-var nconf = require('nconf');
+const _ = require('lodash');
+const moment = require('moment');
+const debug = require('debug')('parser:precise');
+const nconf = require('nconf');
 
-var walk = require('../lib/walk');
-var parse = require('../lib/parse');
-var mongo = require('../lib/mongo');
+const walk = require('../lib/walk');
+const parse = require('../lib/parse');
+const mongo = require('../lib/mongo');
+const glue = require('../lib/glue');
 
 nconf.argv().env().file({ file: 'config/content.json' });
 
@@ -23,6 +24,7 @@ const htmlfilter = repeat ?
 
 nconf.stores.env.readOnly = false;
 nconf.set('fulldump', true);
+nconf.set('retrive', true);
 nconf.stores.env.readOnly = true;
 
 return parse

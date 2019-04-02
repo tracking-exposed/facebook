@@ -13,24 +13,35 @@ function unitById(req) {
     var htmlId = req.params.htmlId;
 
     debug("%s unitById %s", req.randomUnicode, htmlId);
-    return Promise.all([
-        mongo.readOne(nconf.get('schema').htmls, { id: htmlId }),
-        mongo.readOne(nconf.get('schema').metadata, { id: htmlId }),
-        mongo.readOne(nconf.get('schema').summary, { id: htmlId }),
-        mongo.readOne(nconf.get('schema').errors, { id: htmlId }),
-    ])
-    .then(function(c) {
-        return { json: {
-            html: _.omit(c[0], ['_id']),
-            metadata: _.omit(c[1], ['_id']),
-            summary: _.omit(c[2], ['_id']),
-            errors: _.omit(c[3], ['_id'])
-        }};
-    })
-    .catch(function(error) {
-        debug("error with html.id %s: %s", htmlId, error);
-        return { json: 'Error' };
-    });
+    return mongo
+        .readOne(nconf.get('schema').htmls, { id: htmlId })
+        .then(function(html) {
+            if(!html || !html.id)
+                return { json: { error: `unable to retrive ${htmlId}` }};
+
+            return Promise.all([
+                html,
+                mongo.readOne(nconf.get('schema').metadata, { id: htmlId }),
+                mongo.readOne(nconf.get('schema').summary, { id: htmlId }),
+                mongo.readOne(nconf.get('schema').errors, { id: htmlId }),
+                mongo.readOne(nconf.get('schema').impressions, { htmlId: html.id }),
+                mongo.readOne(nconf.get('schema').timelines, { id: html.timelineId })
+            ])
+            .then(function(cont) {
+                return { json: {
+                    html: _.omit(cont[0], ['_id']),
+                    metadata: _.omit(cont[1], ['_id']),
+                    summary: _.omit(cont[2], ['_id']),
+                    errors: _.omit(cont[3], ['_id']),
+                    impression: _.omit(cont[4], ['_id']),
+                    timeline: _.omit(cont[5], ['_id'])
+                }};
+            });
+        })
+        .catch(function(error) {
+            debug("error with html.id %s: %s", htmlId, error.stack);
+            return { json: { error: error.message }};
+        });
 };
 
 function unitByDate(req) {
