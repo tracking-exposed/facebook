@@ -96,16 +96,25 @@ app.get('/personal/error/:stuff', function(req, res) {
     return common.dispatchPromise('getPage', req, res);
 });
 
-/* this is the new summary page */
-app.get('/personal/:userToken', function(req, res) {
-    return common.dispatchPromise('getSummaryPage', req, res);
-});
-
-/* special pages: the parameters are acquired by JS client side */
-app.get('/personal/:userId/:detail', function(req, res) {
-    req.params.page = 'personal';
+/* this is the new summary page: the parameters are acquired by JS client side */
+app.get('/personal/:userToken/summary', function(req, res) {
+    req.params.page = 'summary';
     return common.dispatchPromise('getPage', req, res);
 });
+app.get('/personal/:userToken/specs', function(req, res) {
+    req.params.page = 'specs';
+    return common.dispatchPromise('getPage', req, res);
+});
+app.get('/personal/:userToken/gdpr', function(req, res) {
+    req.params.page = 'gdpr';
+    return common.dispatchPromise('getPage', req, res);
+});
+app.get('/personal/:userToken/stats', function(req, res) {
+    req.params.page = 'stats';
+    return common.dispatchPromise('getPage', req, res);
+});
+
+/* debug for admin and/or developers */
 app.get('/revision/:htmlId', function(req, res) {
     req.params.page = 'revision';
     return common.dispatchPromise('getPage', req, res);
