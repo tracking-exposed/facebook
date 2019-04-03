@@ -5,7 +5,6 @@ const _ = require('lodash');
 const moment = require('moment');
 const bodyParser = require('body-parser');
 const Promise = require('bluebird');
-const mongodb = Promise.promisifyAll(require('mongodb'));
 const debug = require('debug')('fbtrex:content');
 const nconf = require('nconf');
 const pug = require('pug');
@@ -85,7 +84,6 @@ app.use('/images', express.static( path.join(dist, 'images') ));
 app.use('/fonts', express.static( path.join(dist, 'fonts') ));
 app.use('/autoscroll.user.js', express.static( path.join(dist, 'autoscroll.user.js')));
 
-// TODO do conversion here too
 /* this if someone click on 'Your Data' before opt-in */
 app.get('/personal/unset/:stuff', function(req, res) {
     req.params.page = 'unset';
@@ -137,4 +135,16 @@ app.get('/:page*', function(req, res) {
 /* true last */
 app.get('/', function(req, res) {
     return common.dispatchPromise('getPage', req, res);
+});
+
+Promise.resolve().then(function() {
+  return mongo
+    .count(nconf.get('schema').supporters)
+    .then(function(amount) {
+       debug("mongodb is running, found %d supporters", amount);
+    })
+    .catch(function(error) {
+       console.log("mongodb is not running - check",cfgFile,"- quitting");
+       process.exit(1);
+    });
 });
