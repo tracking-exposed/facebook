@@ -9,6 +9,8 @@ var debug = require('debug')('fbtrex:collector');
 var nconf = require('nconf');
 var cors = require('cors');
 
+const mongo = require('../lib/mongo');
+
 var cfgFile = "config/collector.json";
 var redOn = "\033[31m";
 var redOff = "\033[0m";
@@ -98,4 +100,16 @@ app.post('/api/v1/userInfo', function(req, res) {
 /* should be discontinued -- under check if is still used */
 app.get('/api/v1/selector', function(req, res) {
     return dispatchPromise('getSelector', req, res);
+});
+
+Promise.resolve().then(function() {
+  return mongo
+    .count(nconf.get('schema').supporters)
+    .then(function(amount) {
+       debug("mongodb is running, found %d supporters", amount);
+    })
+    .catch(function(error) {
+       console.log("mongodb is not running - check",cfgFile,"- quitting");
+       process.exit(1);
+    });
 });
