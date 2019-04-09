@@ -26,10 +26,10 @@ html
         meta(property="og:image:height" content="400")
         title Adoption trends, metadata extraction and open statistics
 
-    body
+    body(onload="loadImpact()")
 
         .simpletext
-            include navbar
+            include ../navbar
 
         .container-fluid
             .simpletext
@@ -83,11 +83,6 @@ html
                                 span#summaries_lw
 
 
-
-
-
-        .container-fluid
-            .simpletext
                 h2 since 2019 start, this tool is in renovation: no stats available at the moment.
                 smaller --- 12 January 2019
         //-

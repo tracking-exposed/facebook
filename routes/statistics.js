@@ -1,11 +1,11 @@
-var _ = require('lodash');
-var moment = require('moment');
-var Promise = require('bluebird');
-var debug = require('debug')('lib:aggregated');
-var nconf = require('nconf');
- 
-var mongo = require('./mongo');
-var utils = require('./utils');
+const _ = require('lodash');
+const moment = require('moment');
+const Promise = require('bluebird');
+const debug = require('debug')('routes:statistics');
+const nconf = require('nconf');
+
+const mongo = require('../lib/mongo');
+const utils = require('../lib/utils');
 
 function getStats(req) {
     var what = _.get(req.params, 'what');
@@ -140,10 +140,19 @@ function updateCounter(start, addition) {
     return _.set(start, field, current);
 };
 
+/* 
 module.exports = {
     getStats: getStats,
     getEngagement: getEngagement,
     computeStats: computeStats,
     updateHourly: updateHourly,
     updateCounter: updateCounter,
+};
+
+*/
+
+module.exports = {
+    counter : function(req) { debug("not implemented: %j", req.params); },
+    aggregated : function(req) { debug("not implemented: %j", req.params); },
+    parsers : function(req) { debug("not implemented: %j", req.params); },
 };
