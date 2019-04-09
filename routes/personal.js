@@ -6,11 +6,11 @@ const pug = require('pug');
 const nconf = require('nconf');
 
 const mongo = require('../lib/mongo');
-const utils = require('../lib/utils');
+const params = require('../lib/params');
 const adopters = require('../lib/adopters');
 
 function summary(req) {
-    const { amount, skip } = utils.optionParsing(req.params.paging);
+    const { amount, skip } = params.optionParsing(req.params.paging, 200);
     debug("summary request, amount %d skip %d", amount, skip);
     return adopters
         .validateToken(req.params.userToken)
@@ -33,6 +33,7 @@ function summary(req) {
 };
 
 function csv(req) {
+    const { amount, skip } = params.optionParsing(req.params.paging, 1000);
     debug("CSV request, amount forced to 1000, skip 0");
 
     var keys = [ "nature", "publicationTime", "postId", "permaLink", "fblinktype", "source", "sourceLink", "displaySource", "textsize", "texts", "impressionTime", "impressionOrder", "user", "timeline", "semanticId" ];
@@ -42,10 +43,7 @@ function csv(req) {
         .then(function(supporter) {
             return mongo
                 .readLimit(nconf.get('schema').summary, { user: supporter.pseudo },
-                    { impressionTime: -1}, 1000, 0);
-        })
-        .tap(function(amount) {
-            debug("produced %d objects", _.size(amount));
+                    { impressionTime: -1}, amount, skip);
         })
         .reduce(function(memo, entry, cnt) {
             if(!memo.init) {
@@ -96,8 +94,11 @@ function csv(req) {
 }
 
 function metadata(req) {
+
+    throw new Error("NIATM");
     // not implemented an endpoint, at the moment
-    const { amount, skip } = utils.optionParsing(req.params.paging);
+
+    const { amount, skip } = params.optionParsing(req.params.paging);
     debug("metadata request: %d skip %d", amount, skip);
     return adopters
         .validateToken(req.params.userToken)
@@ -117,8 +118,8 @@ function metadata(req) {
 };
 
 function semantics(req) {
-    const { amount, skip } = utils.optionParsing(req.params.paging);
-    debug("extended request: %d, skip %d", amount, skip);
+    const { amount, skip } = params.optionParsing(req.params.paging);
+    debug("semantics request: %d, skip %d", amount, skip);
     return adopters
         .validateToken(req.params.userToken)
         .then(function(supporter) {
@@ -147,8 +148,9 @@ function semantics(req) {
 };
 
 function personStats(req) {
-    debug("stats NOT YET IMPLEMENMTED");
-    return { json: "not yet implemented"};
+    throw new Error("NIATM");
+    // not implemented an endpoint, at the moment
+
     /* this should return the same of summary, but generate this:
      * https://github.com/tracking-exposed/facebook/issues/117 */
 };
