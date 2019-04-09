@@ -9,27 +9,8 @@ const mongo = require('../lib/mongo');
 const utils = require('../lib/utils');
 const adopters = require('../lib/adopters');
 
-
-function optionParsing(amountString) {
-    const MAXOBJS = 200;
-    try {
-        const amount = _.parseInt(_.first(amountString.split('-')));
-        const skip = _.parseInt(_.last(amountString.split('-')));
-        if(_.isNaN(amount) || _.isNaN(skip))
-            throw new Error;
-        return {
-            amount,
-            skip
-        };
-    } catch(error) { }
-    return {
-        amount: MAXOBJS,
-        skip: 0
-    };
-};
-
 function summary(req) {
-    const { amount, skip } = optionParsing(req.params.paging);
+    const { amount, skip } = utils.optionParsing(req.params.paging);
     debug("summary request, amount %d skip %d", amount, skip);
     return adopters
         .validateToken(req.params.userToken)
@@ -116,7 +97,7 @@ function csv(req) {
 
 function metadata(req) {
     // not implemented an endpoint, at the moment
-    const { amount, skip } = optionParsing(req.params.paging);
+    const { amount, skip } = utils.optionParsing(req.params.paging);
     debug("metadata request: %d skip %d", amount, skip);
     return adopters
         .validateToken(req.params.userToken)
@@ -136,7 +117,7 @@ function metadata(req) {
 };
 
 function semantics(req) {
-    const { amount, skip } = optionParsing(req.params.paging);
+    const { amount, skip } = utils.optionParsing(req.params.paging);
     debug("extended request: %d, skip %d", amount, skip);
     return adopters
         .validateToken(req.params.userToken)
