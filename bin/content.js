@@ -122,6 +122,13 @@ app.get('/verify/:timelineId', function(req, res) {
     return common.dispatchPromise('getPage', req, res);
 });
 
+/* /impact and /aggregated are covered as static page, this 
+ * is the only one which needs a special treatment */
+app.get('/impact/parsers/:key?', function(req, res) {
+    req.params.page = 'parsers';
+    return common.dispatchPromise('getPage', req, res);
+});
+
 /* project sub section */
 app.get('/project/:projectPage', function(req, res) {
     req.params.page = 'project/' + req.params.projectPage;
