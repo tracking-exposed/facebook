@@ -3,10 +3,11 @@ var _ = require('lodash');
 var moment = require('moment');
 var Promise = require('bluebird');
 var debug = require('debug')('bin:importfreshsample');
-var reportDuplicate = require('debug')('bin:importfreshsample:duplicate!');
 var request = Promise.promisifyAll(require('request'));
 var nconf = require('nconf');
+
 var mongo = require('../lib/mongo');
+var glue = require('../lib/glue');
 
 nconf.argv().env();
 const cfgFile = nconf.get('config') ? nconf.get('config') : "config/content.json";
