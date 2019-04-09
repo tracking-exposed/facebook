@@ -1,3 +1,34 @@
+/*
+ * this file contain three function, loaded by accessing:
+ * 
+  'impact': pugCompiler('statistics/index'),           -> loadImpact()
+  'parsers': pugCompiler('statistics/details'),        -> loadParsers()
+  'aggregated': pugCompiler('statistics/aggregaged')   -> loadAggregated()
+
+  all the containers are hardcoded in this code and specify on top of the function 
+ */
+
+function loadImpact() {
+    const url="/api/v2/statistics/counter";
+    /* span#supporters span#timelines span#impressions span#htmls span#accesses span#summaries 
+     * and all the same, but _lw = last week
+     * */ 
+}
+
+function loadParsers() {
+    const url="/api/v2/statistics/aggregated"
+}
+
+function loadAggregated() {
+    const url="/api/v2/statistics/parsers/:key"; // TODO take key
+}
+
+// ---------------------------------------
+// ._..__ .  ..__..__ .___.     .         
+//  | [ __|\ ||  |[__)[__ |_  _ | _ .    ,
+// _|_[_./| \||__||  \[___[_)(/,|(_) \/\/ 
+// ---------------------------------------
+
 function aggregateTime(hourlychunks, timeattr, amount, unit) {
     /* 1st: result of .hourlyIO
      * 2nd: 'start', or 'savingTime'
