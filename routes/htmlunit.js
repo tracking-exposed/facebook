@@ -19,6 +19,7 @@ function unitById(req) {
             if(!html || !html.id)
                 return { json: { error: `unable to retrive ${htmlId}` }};
 
+            /* and this is compatible via routes/exporter */
             return Promise.all([
                 html,
                 mongo.readOne(nconf.get('schema').metadata, { id: htmlId }),
