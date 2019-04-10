@@ -7,22 +7,27 @@ const mongo = require('../lib/mongo');
 const params = require('../lib/params');
 const glue = require('../lib/glue');
 const adopters = require('../lib/adopters');
+const utils = require('../lib/utils');
 
 function pickByTimeline(timeline) {
+    const pseudoTimeline = utils.pseudonymizeTmln(timeline.id);
+    const pseudoUser = utils.pseudonymizeUser(timeline.userId);
     return Promise.all([
         mongo.read(nconf.get('schema').impressions, { timelineId: timeline.id }),
         mongo.read(nconf.get('schema').htmls, { timelineId: timeline.id }),
-        timeline
+        timeline,
+        mongo.read(nconf.get('schema').summary, { timeline: pseudoTimeline, user: pseudoUser }),
     ]);
 };
 
-/* this function returns a random sample pick from the last 20 timelines,
- * with htmls+impressions. This is intended to replicate some of the freshly 
- * submitted timelines and help parsing. 
- * By parameters the number 20 can be enlarged to 100. It returns one
- * timeline per time. duplication should be checked client side.
+/* this function returns a random sample pick from the last $paging timelines,
+ * with htmls+impressions. This is intended to give back some of the freshly 
+ * received timelines. handy when you are testing (or not trusting) parsers
+ * The 'sample' parameters is the number in which a random sample is pick 
+ * max is 1000, 
+ * It returns one timeline per time. duplication should be checked client side.
  *
- * the api is /api/v1/glue/$password/$samplesize                           */
+ * the api is /api/v2/glue/$password/$samplesize                           */
 
 function exporter(req) {
 
@@ -44,11 +49,12 @@ function exporter(req) {
         .then(_.sample)
         .then(pickByTimeline)
         .then(function(results) {
-            debug("Selected timeline of %s %s, impressions %d, htmls %d",
+            debug("Selected timeline of %s %s, impressions %d, htmls %d, summaries %d",
                 results[2].startTime,
                 moment.duration( moment(results[2].startTime) - moment() ).humanize(),
                 _.size(results[0]),
-                _.size(results[1])
+                _.size(results[1]),
+                _.size(results[3])
             );
             return { json: results };
         });
@@ -68,10 +74,11 @@ function personal(req) {
         })
         .map(pickByTimeline, { concurrency: 2 })
         .then(function(results) {
-            debug("Exporting %d timelines, impressions %d, htmls %d",
+            debug("Exporting %d timelines, impressions %d, htmls %d, summaries %d",
                 _.size(results),
                 _.sum(_.map(results, function(e) { return _.size(e[0]) } )),
-                _.sum(_.map(results, function(e) { return _.size(e[1]) } ))
+                _.sum(_.map(results, function(e) { return _.size(e[1]) } )),
+                _.sum(_.map(results, function(e) { return _.size(e[3]) } )),
             );
             return { json: results };
         });
