@@ -25,7 +25,7 @@ return mongo
         startTime: { "$gt": new Date(since), "$lt": new Date(until) }
     }, { startTime: -1})
     .tap(function(timelines) {
-        debug("Retieved %d timelines since %s", _.size(timelines), since);
+        debug("Retrived %d timelines since %s", _.size(timelines), since);
     })
     .map(function(timeline) {
 
