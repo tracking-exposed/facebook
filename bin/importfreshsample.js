@@ -16,10 +16,19 @@ nconf.file({ file: cfgFile });
 if(!nconf.get('password'))
     return console.log("--password required");
 
-const amount = nconf.get('amount') || 50;
-const url = ( nconf.get('server') || 'http://localhost:8000' ) + '/api/v1/glue/' + nconf.get('password') +'/' + amount;
+const samplesize = nconf.get('samplesize') || 500;
 
-debug("Accessing to %s", url);
+const version = 1;
+const server = nconf.get('server') || 'http://localhost:8000';
+let url = null;
+
+if(version == 1) {
+    url = `${server}/api/v1/glue/${nconf.get('password')}/${samplesize}`;
+} else {
+    url = `${server}/api/v2/debug/exporter/${nconf.get('password')}/${samplesize}`;
+}
+
+debug("API version %d: accessing to %s", version, url);
 return request
     .getAsync(url)
     .then(function(res) {
