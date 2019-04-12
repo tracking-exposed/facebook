@@ -8,7 +8,7 @@ const debug = require("debug")("test:testSummaryRoute");
 const mongo = require("../lib/mongo");
 const fixtures = require('../lib/fixtures');
 const adopters = require('../lib/adopters');
-const summary = require('../routes/summary');
+const summary = require('../routes/personal');
 
 nconf.argv().env().file({ file: "config/unitTest.json" });
 

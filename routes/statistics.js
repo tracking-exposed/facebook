@@ -50,16 +50,19 @@ function getEngagement(req) {
         });
 };
 
-/* 
-module.exports = {
-    getStats: getStats,
-    getEngagement: getEngagement,
+
+function counter(req) {
 };
 
-*/
+function aggregated(req) {
+};
+
+function parsers(req) {
+};
+
 
 module.exports = {
-    counter : function(req) { debug("not implemented: %j", req.params); },
-    aggregated : function(req) { debug("not implemented: %j", req.params); },
-    parsers : function(req) { debug("not implemented: %j", req.params); },
+    counter,
+    aggregated,
+    parsers,
 };
