@@ -6,7 +6,6 @@ var debug = require('debug')('bin:importfreshsample');
 var request = Promise.promisifyAll(require('request'));
 var nconf = require('nconf');
 
-var mongo = require('../lib/mongo');
 var glue = require('../lib/glue');
 
 nconf.argv().env();

@@ -144,14 +144,12 @@ app.get('/', function(req, res) {
     return common.dispatchPromise('getPage', req, res);
 });
 
+
 Promise.resolve().then(function() {
-  return mongo
-    .count(nconf.get('schema').supporters)
-    .then(function(amount) {
-       debug("mongodb is running, found %d supporters", amount);
-    })
-    .catch(function(error) {
-       console.log("mongodb is not running - check",cfgFile,"- quitting");
-       process.exit(1);
-    });
+    if(dbutils.checkMongoWorks()) {
+        debug("mongodb connection works");
+    } else {
+        console.log("mongodb is not running - check", cfgFile,"- quitting");
+        process.exit(1);
+    }
 });
