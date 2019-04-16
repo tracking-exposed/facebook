@@ -33,7 +33,7 @@ describe('test the pipeline functions', function() {
             }
         });
 
-        const written = await mongo.writeMany(mongoc, testC, d);
+        const written = await mongo.insertMany(mongoc, testC, d);
         expect(written.result.n).to.be.equal(200);
         await mongoc.close();
 
@@ -58,7 +58,7 @@ describe('test the pipeline functions', function() {
             }
         });
 
-        const written = await mongo.writeMany(mongoc, testC, d);
+        const written = await mongo.insertMany(mongoc, testC, d);
         expect(written.result.n).to.be.equal(size);
         await mongoc.close();
 

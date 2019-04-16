@@ -1,0 +1,7 @@
+{
+  "mongoHost": "localhost",
+  "mongoPort": "27017",
+  "mongoDb": "imported",
+  "collection": null,
+  "port": 8200
+}

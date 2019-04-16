@@ -95,7 +95,7 @@ describe("Parsing the HTMLs", function() {
       return e;
     });
     return mongo
-      .writeMany(nconf.get('schema').summary, summary)
+      .insertMany(nconf.get('schema').summary, summary)
       .then(function() {
         return mongo.readOne(nconf.get('schema').summary, {
           user: fixtures.mockExpectedPseudo })

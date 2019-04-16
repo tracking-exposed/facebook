@@ -50,7 +50,7 @@ describe('mongoDB connection', function () {
 });
 
 describe('mongoDB APIs', function () {
-    it('writeOne and writeMany', async function() {
+    it('writeOne and insertMany', async function() {
         const mongoc = await mongo.clientConnect({uri: mongoUri});
         const doc = getRandDoc();
         const r = await mongo.writeOne(mongoc, testC, doc);
@@ -59,7 +59,7 @@ describe('mongoDB APIs', function () {
 
         const many = 10;
         const docs = _.times(many, getRandDoc);
-        const s = await mongo.writeMany(mongoc, testC, docs);
+        const s = await mongo.insertMany(mongoc, testC, docs);
         expect(s.result.ok).to.be.equal(1);
         expect(s.result.n).to.be.equal(many);
 
