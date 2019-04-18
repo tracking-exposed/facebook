@@ -28,19 +28,20 @@ html
 
     body(onload="loadImpact()")
 
-        .simpletext
+        .container-fluid
             include ../navbar
 
         .container-fluid
-            .simpletext
-                h2 usage trackers
-                    span#funky we build a technology to observe Facebook and algorithm phenomenon: we do not track people
-                p This is also the reason why the data collected are not fully accessible, but protected to preserve digital rights, human rights, and in general don't support abusive scenario such as the 
-                    a(href="https://responsibledata.io/social-media-intelligence-the-wayward-child-of-open-source-intelligence/") social media intelligence
-                    |.
-                p The inception of fbTREX was in Summer 2016; Since the mid of December 2016 we are in R&D-release, the tool have been used to produce research papers and test functionalities for individual; Since January 2019, after the publication of the project status, we entered in ß version.
+            h2 usage trackers
+                span#funky we build a technology to observe Facebook and algorithm phenomenon: we do not track people
+            p This is also the reason why the data collected are not fully accessible, but protected to preserve digital rights, human rights, and in general don't support abusive scenario such as the 
+                a(href="https://responsibledata.io/social-media-intelligence-the-wayward-child-of-open-source-intelligence/") social media intelligence
+                |.
+            p The inception of fbTREX was in Summer 2016; Since the mid of December 2016 we are in R&D-release, the tool have been used to produce research papers and test functionalities for individual; Since January 2019, after the publication of the project status, we entered in ß version.
 
-                h2 data activities 
+        .container-fluid
+            h2 data activities 
+            .row
                 table
                     thead
                         tr 
@@ -51,6 +52,7 @@ html
                             th.col-sm-1 htmls
                             th.col-sm-1 accesses
                             th.col-sm-1 summaries
+                            th.col-sm-1 aggregated
                     tbody
                         tr 
                             th.col-sm-1 total
@@ -66,6 +68,8 @@ html
                                 span#accesses
                             th.col-sm-1
                                 span#summaries
+                            th.col-sm-1
+                                span#aggregated
                     tfoot
                         tr 
                             th.col-sm-1 last week
@@ -81,10 +85,9 @@ html
                                 span#accesses_lw
                             th.col-sm-1
                                 span#summaries_lw
+                            th.col-sm-1
+                                span#aggregated_lw
 
-
-                h2 since 2019 start, this tool is in renovation: no stats available at the moment.
-                smaller --- 12 January 2019
         //-
             .container-fluid
                 .simpletext

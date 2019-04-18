@@ -12,8 +12,7 @@
       "semantics": "semantics",
       "labels": "labels",
       "feeds": "feeds",
-      "aggregated": "aggregated",
-      "parsers": "parsers"
+      "aggregated": "aggregated"
   },
   "mongodb": "mongodb://localhost/facebook",
   "port": 8000,

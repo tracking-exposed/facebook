@@ -12,7 +12,20 @@ function loadImpact() {
     const url="/api/v2/statistics/counter";
     /* span#supporters span#timelines span#impressions span#htmls span#accesses span#summaries 
      * and all the same, but _lw = last week
-     * */ 
+     */ 
+    const t = [ "supporters", "timelines", "impressions",
+                "htmls", "accesses", "summaries", "aggregated" ];
+    d3.json(url, function(results) {
+        const data = results.content;
+        console.log(data);
+        _.each(t, function(name) {
+            const weekId = `${name}_lw`;
+
+            $('#' + name).text(data[name]);
+            $('#' + weekId).text(data[weekId]);
+        });
+    });
+
 }
 
 function loadParsers() {
