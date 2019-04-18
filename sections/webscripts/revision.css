@@ -1,40 +1,16 @@
 .infoblock {
-    border: 2px;
-    border-color: #fd5308; /* orange */
-    border-radius: 25px;
-    border-style: solid;
+    border: 1px solid purple;
 }
 
-.infoblock h3 {
-    text-align: center;
-    font-style: uppercase;
-    color: '#3c5a99';
-};
-
-.forms {
-    margin: 1em;
+.revisionList {
+    font-size: 10px;
 }
 
-.forms input {
+table {
     width: 100%;
+    table-layout: fixed;
 }
 
-.metadata {
-    padding: 1em;
-}
-
-.blue {
-    color '#3c5a99';
-}
-
-.orange {
-    color '#fd5308';
-}
-
-.green {
-    color '#66b032;'
-}
-
-.metaentry {
-    font-size: 12px;
+td {
+    vertical-align: top;
 }

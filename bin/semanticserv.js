@@ -28,11 +28,18 @@ console.log(`Checking periodically every ${FREQUENCY} seconds...`);
 infiniteLoop();
 
 function infiniteLoop() {
+
+    const timewindow = nconf.get('daysago') ?
+        moment().subtract( _.parseInt(nconf.get('daysago')), 'days').format() :
+        moment().subtract(5, 'days').format();
+
     /* this will launch other scheduled tasks too */
     return Promise
         .resolve()
         .delay(FREQUENCY * 1000)
-        .then(semantic.getSemantic)
+        .then(function() {
+            return semantic.getSemantic({ semantic: true, when: { "$gte": new Date(timewindow) }});
+        })
         .then(function(entries) {
 
             if(!_.size(entries))
@@ -56,7 +63,6 @@ function infiniteLoop() {
             logSemanticServer(_.size(entries));
             return entries;
         })
-        .map(semantic.buildText)
         .map(process, { concurrency: 1 })
         .then(_.compact)
         .tap(function(entries) {
@@ -71,18 +77,23 @@ function infiniteLoop() {
 function process(entry) {
     const token = nconf.get('token');
     return semantic
-        .dandelion(token, entry.dandelion, entry.semanticId)
+        .dandelion(token, entry.fullText, entry.semanticId)
+        .then(semantic.composeObjects)
+        .catch(function(error) {
+            debug("Error in composeObject: %s", error);
+            return null;
+        })
         .then(function(analyzed) {
 
-            if(!analyzed)
-                throw new Error();
-
-            if(analyzed.headers['x-dl-units-left'] === 0) {
+            if(analyzed && analyzed.headers && analyzed.headers['x-dl-units-left'] === 0) {
                 debug("Units finished!");
                 process.exit(1);
             }
 
-            if(_.isUndefined(analyzed.lang))
+            if(analyzed.skip)
+                return semantic.updateMetadata(_.extend(entry, { semantic: false }) )
+
+            if(!analyzed || !analyzed.semanticId || _.isUndefined(analyzed.lang))
                 return semantic.updateMetadata(_.extend(entry, { semantic: null }) );
 
             return Promise.all([
@@ -93,8 +104,7 @@ function process(entry) {
             ]);
         })
         .catch(function(error) {
-            debug("Error with semanticId %s: %s", entry.semanticId, error);
-            return semantic.updateMetadata(_.extend(entry, { semantic: false }) );
+            debug("Impossible to commit changes: %s", error);
         });
 };
 
@@ -109,7 +119,7 @@ function elasticLog(entry, analyzed) {
     echoes.echo({
         index: 'semantics',
         semanticId: entry.semanticId,
-        textsize: _.size(entry.dandelion.fulltext),
+        textsize: _.size(entry.fullText),
         annotations: _.size(analyzed.semantics),
         lang: analyzed.lang
     });

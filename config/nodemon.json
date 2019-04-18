@@ -2,6 +2,7 @@
   "watch": [
     "bin/*.js",
     "lib/*.js",
+    "routes/*.js",
     "sections/*.pug",
     "sections/*/*.pug",
     "styles/*.styl",
