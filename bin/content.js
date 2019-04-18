@@ -99,6 +99,10 @@ app.get('/personal/:userToken/summary', function(req, res) {
     req.params.page = 'summary';
     return common.dispatchPromise('getPage', req, res);
 });
+app.get('/personal/:userToken/data', function(req, res) {
+    req.params.page = 'data';
+    return common.dispatchPromise('getPage', req, res);
+});
 app.get('/personal/:userToken/specs', function(req, res) {
     req.params.page = 'specs';
     return common.dispatchPromise('getPage', req, res);
