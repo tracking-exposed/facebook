@@ -1,0 +1,23 @@
+{
+  "schema": { 
+      "impressions": "impressions2",
+      "supporters": "supporters2",
+      "timelines": "timelines2",
+      "accesses": "accesses2",
+      "htmls": "htmls2",
+      "metadata": "metadata",
+      "errors": "parsererrors",
+      "summary": "summary",
+      "anomalies": "anomalies",
+      "semantics": "semantics",
+      "labels": "labels",
+      "feeds": "feeds"
+  },
+  "mongodb": "mongodb://localhost/fbtestsource",
+  "port": 8000,
+  "interface": "127.0.0.1",
+  "elastic": "disabled",
+
+
+  "endpoint": "127.0.0.1:8000"
+}

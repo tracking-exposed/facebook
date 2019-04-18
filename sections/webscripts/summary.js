@@ -1,26 +1,21 @@
 let $grid;
 
 function getToken() {
-  return _.find(window.location.pathname.split('/'), function(e) {
+  let t = _.find(window.location.pathname.split('/'), function(e) {
     return _.size(e) == 40;
   });
+  if(!t) console.log("Wrong token length in the URL");
+  return t;
 }
 
 function initializeSummary() {
 
   const token = getToken();
-  const url = `${window.location.origin}/api/v1/summary/${token}`;
-  // $('#summary').html(`<a href="${url}">${url}</a>`);
+  const url = `${window.location.origin}/api/v2/personal/${token}/summary`;
 
   $.getJSON(url, (data) => {
-
+    console.log(`Retrived ${_.size(data)} objects`);
     _.each(data, (item) => {
-
-      // Don't display entries that have errors
-      if (item.errors.length) {
-        console.warn("suppressing the object because of errors in:", item.errors);
-        return;
-      }
 
       const date = moment(item.publicationTime, moment.ISO_8601),
         readableDate = date.format('MMMM Do YYYY, hh:mm a'),
@@ -28,7 +23,7 @@ function initializeSummary() {
         maxStringLength = 150;
 
       let bgColorClass, entryType, selectedText, teaserText, hasText = false;
-      switch (item.type) {
+      switch (item.fblinktype) {
         case 'photo':
           bgColorClass = 'alert-success';
           entryType = 'picture';
@@ -57,20 +52,20 @@ function initializeSummary() {
       if(_.size(item.texts) && _.some(item.texts, _.size)) {
 
         /* are sure the texts[].text is order by the longest */
-        selectedText = _.first(_.orderBy(item.texts, _.size)).text;
+        selectedText = _.first(_.orderBy(item.texts, _.size));
         teaserText = selectedText.length > maxStringLength
           ? selectedText.substring(0, maxStringLength) + '…'
-          : selectedText
+          : selectedText 
         hasText = true;
       }
 
       const gridItem = `
-        <div class="grid-item ${item.type || ''}">
+        <div class="grid-item ${item.fblinktype || ''}">
           <article class="content ${bgColorClass} d-flex flex-column">
             <header>${entryType || ''}</header>
             <section class="body">
               <span class="small date" data-date="${unixTimestamp}">${readableDate}</span>
-              <h4 class="author">${item.author}</h4>
+              <h4 class="author">${item.source}</h4>
               ${hasText ? `<p class="teaser">${teaserText}</p>` : ''}
             </section>
             <footer>

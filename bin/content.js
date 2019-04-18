@@ -1,279 +1,59 @@
-var express = require('express');
-var app = express();
-var server = require('http').Server(app);
-var _ = require('lodash');
-var moment = require('moment');
-var bodyParser = require('body-parser');
-var Promise = require('bluebird');
-var mongodb = Promise.promisifyAll(require('mongodb'));
-var debug = require('debug')('fbtrex:content');
-var nconf = require('nconf');
-var pug = require('pug');
-var cors = require('cors');
-var path = require('path');
+const express = require('express');
+const app = express();
+const server = require('http').Server(app);
+const _ = require('lodash');
+const moment = require('moment');
+const bodyParser = require('body-parser');
+const Promise = require('bluebird');
+const debug = require('debug')('fbtrex:content');
+const nconf = require('nconf');
+const pug = require('pug');
+const cors = require('cors');
+const path = require('path');
 
 /* this is the same struct of the previous version */
-var utils = require('../lib/utils');
-var escviAPI = require('../lib/allversions');
-var mongo = require('../lib/mongo');
-
-var redOn = "\033[31m";
-var redOff = "\033[0m";
+const utils = require('../lib/utils');
+const mongo = require('../lib/mongo');
+const common = require('../lib/common');
 
 var cfgFile = "config/content.json";
 nconf.argv().env().file({ file: cfgFile })
 
-console.log(redOn + "ઉ nconf loaded, using " + cfgFile + redOff);
+if(nconf.get('FBTREX') !== 'production') {
+    debug("Because $FBTREX is not 'production', it is assumed be 'development'");
+    nconf.stores.env.readOnly = false;
+    nconf.set('FBTREX', 'development');
+    nconf.stores.env.readOnly = true;
+} else {
+    debug("Production execution!");
+}
 
-if(!nconf.get('interface') || !nconf.get('port') )
-    throw new Error(`check ${cfgFile}: interface or port missing`);
+debug("using file: %s | FBTREX mode [%s]", cfgFile, nconf.get('FBTREX'));
 
-var returnHTTPError = function(req, res, funcName, where) {
-    debug("%s HTTP error 500 %s [%s]", req.randomUnicode, funcName, where);
-    res.status(500);
-    res.send();
-    return false;
-};
+if(!nconf.get('interface') || !nconf.get('port') ||  !nconf.get('schema') ) {
+    console.log("Missing configuration essential (interface, post, schema)");
+    process.exit(1);
+}
 
 /* configuration for elasticsearch */
 const echoes = require('../lib/echoes');
 echoes.addEcho("elasticsearch");
 echoes.setDefaultEcho("elasticsearch");
 
-/* This function wraps all the API call, checking the verionNumber
- * managing error in 4XX/5XX messages and making all these asyncronous
- * I/O with DB, inside this Bluebird */
-var inc = 1;
-function dispatchPromise(name, req, res) {
-
-    var apiV = _.parseInt(_.get(req.params, 'version'));
-
-    /* force version to the only supported version */
-    if(_.isNaN(apiV) || (apiV).constructor !== Number || apiV != 1)
-        apiV = 1;
-
-    if(_.isUndefined(req.randomUnicode)) {
-        req.randomUnicode = inc;
-        inc += 1;
-    }
-
-    debug("%d\t%s APIv%d [%s] (%s)", req.randomUnicode,
-        moment().format("HH:mm:ss"), apiV, name, req.url);
-
-    var func = _.get(escviAPI.implementations, name, null);
-
-    if(_.isNull(func))
-        return returnHTTPError(req, res, name, "function not found?");
-
-    /* in theory here we can keep track of time */
-    return new Promise.resolve(func(req))
-      .then(function(httpresult) {
-
-          if(_.isObject(httpresult.headers))
-              _.each(httpresult.headers, function(value, key) {
-                  debug("Setting header %s: %s", key, value);
-                  res.setHeader(key, value);
-              });
-
-          if(httpresult.json) {
-              debug("%s API %s success, returning JSON (%d bytes)",
-                  req.randomUnicode, name,
-                  _.size(JSON.stringify(httpresult.json)) );
-              res.json(httpresult.json)
-          } else if(httpresult.text) {
-              debug("%d\tAPI %s success, returning text (size %d)",
-                  req.randomUnicode, name, _.size(httpresult.text));
-              res.send(httpresult.text)
-          } else if(httpresult.file) {
-              /* this is used for special files, beside the css/js below */
-              debug("%s API %s success, returning file (%s)",
-                  req.randomUnicode, name, httpresult.file);
-              res.sendFile(__dirname + "/html/" + httpresult.file);
-          } else {
-              debug("Undetermined failure in API call, result →  %j", httpresult);
-              console.trace();
-              return returnHTTPError(req, res, name, "Undetermined failure");
-          }
-          return true;
-      })
-      .catch(function(error) {
-          debug("%s Trigger an Exception %s: %s",
-              req.randomUnicode, name, error);
-          return returnHTTPError(req, res, name, "Exception");
-      });
-};
-
-/* everything begin here, welcome */
+/* binding of express server */
 server.listen(nconf.get('port'), nconf.get('interface'));
-debug(" Listening on http://%s:%s", nconf.get('interface'), nconf.get('port'));
+debug("Listening on http://%s:%s", nconf.get('interface'), nconf.get('port'));
 /* configuration of express4 */
 app.use(cors());
 app.use(bodyParser.json({limit: '30kb'}));
 app.use(bodyParser.urlencoded({limit: '30kb', extended: true}));
 
-app.get('/api/v:version/node/info', function(req, res) {
-    return dispatchPromise('nodeInfo', req, res);
-});
+const getAPI = require('../lib/contentAPI');
 
-/* healthcheck */
-
-app.get('/fbtrex/health', function(req,res){
-    res.send({"status": "OK"});
-});
-
-/* byDay (impressions, users, metadata ) -- discontinued GUI */
-app.get('/api/v:version/daily/:what/:dayback', function(req, res) {
-    return dispatchPromise('byDayStats', req, res);
-});
-/* actually used APIs for stats/impact */
-app.get('/api/v:version/stats/:what/:months', function(req, res) {
-    return dispatchPromise('getStats', req, res);
-});
-app.get('/api/v:version/stats/engagement', function(req, res) {
-    return dispatchPromise('getEngagement', req, res);
-});
-
-/* column only - c3 */
-app.get('/api/v:version/node/countries/c3', function(req, res) {
-    return dispatchPromise('countriesStats', req, res);
-});
-
-app.get('/api/v:version/user/:kind/:CPN/:userId/:format', function(req, res){
-    return dispatchPromise('userAnalysis', req, res);
-});
-
-/* Querying API */
-app.post('/api/v:version/query', function(req, res) {
-    return dispatchPromise('queryContent', req, res);
-});
-
-/* Parser API */
-app.post('/api/v:version/snippet/status', function(req, res) {
-    return dispatchPromise('snippetAvailable', req, res);
-});
-app.post('/api/v:version/snippet/content', function(req, res) {
-    return dispatchPromise('snippetContent', req, res);
-});
-app.post('/api/v:version/snippet/result', function(req, res) {
-    return dispatchPromise('snippetResult', req, res);
-});
-
-
-/* HTML single snippet */
-app.get('/api/v:version/html/:htmlId', function(req, res) {
-    return dispatchPromise('unitById', req, res);
-});
-/* timeline snippet */
-app.get('/api/v:version/verify/:timelineId', function(req, res) {
-    return dispatchPromise('verifyTimeline', req, res);
-});
-
-/* debug special */
-app.get('/api/v:version/fbtrexdebug/:key', function(req, res) {
-    return dispatchPromise('fbtrexdebug', req, res);
-});
-app.get('/fbtrexdebug/:key?', function(req, res) {
-    req.params.page = 'fbtrexdebug';
-    return dispatchPromise('getPage', req, res);
-});
-
-
-/* RSS special */
-app.get('/feeds/:query', function(req, res) {
-    return dispatchPromise('feeds', req, res);
-});
-
-/* APIs used in personal page */
-// ALL TO BE REVIEWED --------------------------------------------------o\
-app.get('/api/v:version/htmls/:userToken/legacy/:amount', function(req, res) {
-    return dispatchPromise('metadataLegacy', req, res);
-});
-app.get('/api/v:version/htmls/:userToken/days/:days', function(req, res) {
-    return dispatchPromise('metadataByTime', req, res);
-});
-app.get('/api/v:version/htmls/:userToken/n/:skip/:amount', function(req, res) {
-    return dispatchPromise('metadataByAmount', req, res);
-});
-app.get('/api/v:version/personal/diet/:userToken/:days', function(req, res) {
-    return dispatchPromise('dietBasic', req, res);
-});
-// ALL TO BE REVIEWED --------------------------------------------------o/
-// THE NEW ONE BELOW ---       -----------------------------------------o\
-app.get('/api/v:version/summary/:userToken/:amount?', function(req, res) {
-    return dispatchPromise('getSummaryData', req, res);
-});
-app.get('/api/v:version/csv/:userToken', function(req, res) {
-    return dispatchPromise('getSummaryCSV', req, res);
-});
-app.get('/api/v:version/metadata/:userToken/:amount?', function(req, res) {
-    return dispatchPromise('getMetadataData', req, res);
-});
-// TO BE DOCUMENTED ----------------------------------------------------o/
-
-/* Alarm listing  API */
-app.get('/api/v1/alarms/:auth', function(req, res) {
-    return dispatchPromise('getAlarms', req, res);
-});
-
-/* realityMeter API(s) */
-app.get('/api/v1/posts/top', function(req, res) {
-    return dispatchPromise('getTopPosts', req, res);
-});
-app.get('/api/v1/realitymeter/:postId', function(req, res) {
-    return dispatchPromise('postReality', req, res);
-});
-
-/* opendata export reduced data */
-app.get('/api/v1/metaxpt/:selector/:type/:hoursago', function(req, res) {
-    return dispatchPromise('metaxpt', req, res);
-});
-
-/* stats */
-app.get('/impact', function(req, res) {
-    return dispatchPromise('getImpact', req, res);
-});
-
-/* researcher API interfaces */
-app.get('/api/v1/distinct/:authkey', function(req, res) {
-    return dispatchPromise('distinct', req, res);
-});
-app.get('/api/v1/research/stats/:requestList/:start?', function(req, res) {
-    return dispatchPromise('rstats', req, res);
-});
-app.get('/api/v1/research/data/:requestList/:start?', function(req, res) {
-    return dispatchPromise('rdata', req, res);
-});
-
-
-/* qualitative research APIs + static pages */
-app.get('/api/v1/qualitative/:rname/overview', function(req, res) {
-    return dispatchPromise('qualitativeOverview', req, res);
-});
-app.post('/api/v1/qualitative/:rname/update/:postId', function(req, res) {
-    return dispatchPromise('qualitativeUpdate', req, res);
-});
-app.get('/api/v1/qualitative/:rname/day/:date', function(req, res) {
-    return dispatchPromise('qualitativeGet', req, res);
-});
-app.get('/qualitative/:rname/day/:refday', function(req, res) {
-    req.params.page = 'qualitativeDaylist';
-    return dispatchPromise('getPage', req, res);
-});
-app.get('/qualitative/:rname?', function(req, res) {
-    req.params.page = 'qualitativeLanding';
-    return dispatchPromise('getPage', req, res);
-});
-
-/* glue to the next version */
-app.get('/api/v1/glue/:key/:sample?', function(req, res) {
-    return dispatchPromise('glue', req, res);
-});
-
-/* reducer(s) */
-app.get('/api/v1/reducer/:reducerId/:authkey/:start/:end', function(req, res) {
-    var rid = _.parseInt(req.params.reducerId);
-    if(rid && rid < 10)
-        return dispatchPromise('reducer' + rid, req, res);
+_.each(getAPI, function(o) {
+    app.get(o.route, function(req, res) {
+        return common.serveRequest(o.desc, o.func, req, res);
+    });
 });
 
 /* the directory from where we serve static contents */
@@ -287,15 +67,11 @@ app.get('/robots.txt', function(req, res) {
     res.sendFile( path.join(dist, 'robots.txt') );
 });
 
-/* RSS endpoint to glue legacy and new system */
-app.get('/api/v1/exportText/:key/:seconds', function(req, res) {
-    return dispatchPromise('exportText', req, res);
-});
-
 /* development: the local JS are pick w/out "npm run build" every time, and
  * our locally developed scripts stay in /js/local */
-if(nconf.get('development') === 'true') {
-    console.log(redOn + "ઉ DEVELOPMENT = serving JS from src" + redOff);
+if(nconf.get('FBTREX') === 'development') {
+    debug("serving /js/local from %s instead of dist",
+        path.join(__dirname, '..', 'sections/webscripts') );
     app.use('/js/local', express.static( path.join(__dirname, '..', 'sections/webscripts') ));
 } else {
     app.use('/js/local', express.static( path.join(dist, 'js', 'local') ));
@@ -306,50 +82,76 @@ app.use('/js', express.static( path.join(dist, 'js') ));
 app.use('/css', express.static( path.join(dist, 'css') ));
 app.use('/images', express.static( path.join(dist, 'images') ));
 app.use('/fonts', express.static( path.join(dist, 'fonts') ));
-
 app.use('/autoscroll.user.js', express.static( path.join(dist, 'autoscroll.user.js')));
-
-/* legacy for realitycheck */
-app.get('/realitycheck/:userId?/:detail?', function(req, res) {
-    req.params.page = 'realitycheck';
-    return dispatchPromise('getPage', req, res);
-});
 
 /* this if someone click on 'Your Data' before opt-in */
 app.get('/personal/unset/:stuff', function(req, res) {
     req.params.page = 'unset';
-    return dispatchPromise('getPage', req, res);
+    return common.dispatchPromise('getPage', req, res);
 });
-/* this is the new summary page */
-app.get('/summary/:userToken', function(req, res) {
-    return dispatchPromise('getSummaryPage', req, res);
+app.get('/personal/error/:stuff', function(req, res) {
+    req.params.page = 'error';
+    return common.dispatchPromise('getPage', req, res);
 });
 
-/* special pages: the parameters are acquired by JS client side */
-app.get('/personal/:userId/:detail', function(req, res) {
-    req.params.page = 'personal';
-    return dispatchPromise('getPage', req, res);
+/* this is the new summary page: the parameters are acquired by JS client side */
+app.get('/personal/:userToken/summary', function(req, res) {
+    req.params.page = 'summary';
+    return common.dispatchPromise('getPage', req, res);
 });
+app.get('/personal/:userToken/specs', function(req, res) {
+    req.params.page = 'specs';
+    return common.dispatchPromise('getPage', req, res);
+});
+app.get('/personal/:userToken/gdpr', function(req, res) {
+    req.params.page = 'gdpr';
+    return common.dispatchPromise('getPage', req, res);
+});
+app.get('/personal/:userToken/stats', function(req, res) {
+    req.params.page = 'stats';
+    return common.dispatchPromise('getPage', req, res);
+});
+
+/* debug for admin and/or developers */
 app.get('/revision/:htmlId', function(req, res) {
     req.params.page = 'revision';
-    return dispatchPromise('getPage', req, res);
+    return common.dispatchPromise('getPage', req, res);
 });
 app.get('/verify/:timelineId', function(req, res) {
     req.params.page = 'verify';
-    return dispatchPromise('getPage', req, res);
+    return common.dispatchPromise('getPage', req, res);
+});
+
+/* /impact and /aggregated are covered as static page, this 
+ * is the only one which needs a special treatment */
+app.get('/impact/parsers/:key?', function(req, res) {
+    req.params.page = 'parsers';
+    return common.dispatchPromise('getPage', req, res);
 });
 
 /* project sub section */
 app.get('/project/:projectPage', function(req, res) {
     req.params.page = 'project/' + req.params.projectPage;
-    return dispatchPromise('getPage', req, res);
+    return common.dispatchPromise('getPage', req, res);
 });
 
 /* last one, page name catch-all */
 app.get('/:page*', function(req, res) {
-    return dispatchPromise('getPage', req, res);
+    return common.dispatchPromise('getPage', req, res);
 });
 /* true last */
 app.get('/', function(req, res) {
-    return dispatchPromise('getPage', req, res);
+    return common.dispatchPromise('getPage', req, res);
+});
+
+Promise.resolve().then(function() {
+  return mongo
+    .count(nconf.get('schema').supporters)
+    .then(function(amount) {
+       debug("mongodb is running, found %d supporters", amount);
+    })
+    .catch(function(error) {
+       console.log("mongodb is not running - check",cfgFile,"- quitting");
+       process.exit(1);
+    });
 });

@@ -1,6 +1,6 @@
 {
-  "name": "facebook-tracking-exposed",
-  "version": "1.0.2",
+  "name": "fbTREX",
+  "version": "1.0.3",
   "description": "facebook.tracking.exposed → collaborative tool to investigate personalization algorithms",
   "scripts": {
     "collector": "DEBUG=routes:*,lib:*,fbtrex:* nodemon bin/collector.js --config config/nodemon.json",
@@ -8,21 +8,21 @@
     "content": "DEBUG=lib:*,fbtrex:*,routes:* nodemon bin/content.js --config config/nodemon.json",
     "content:prod": "DEBUG=lib:*,fbtrex:*,routes:*,-lib:mongo:read node bin/content",
     "build": "bin/install-script.sh",
-    "parserv": "DEBUG=*,-lib:parse,-lib:mongo:read node bin/parserv.js",
-    "semanticserv": "DEBUG=*,-lib:mongo:read node bin/semanticserv.js",
-    "buildrsserv": "DEBUG=*,-lib:mongo:read node bin/buildrsserv.js"
+    "parserv": "DEBUG=*,-lib:parse,-lib:mongo:* node bin/parserv.js",
+    "semanticserv": "DEBUG=*,-lib:mongo*,-lib:semantic:v node bin/semanticserv.js",
+    "buildrsserv": "DEBUG=*,-lib:mongo:* node bin/buildrsserv.js",
+    "test": "./node_modules/.bin/mocha"
   },
   "author": "Claudio Agosti <claudio@tracking.exposed>, https://github.com/tracking-exposed/facebook/graphs/contributors",
   "license": "AGPL-3.0",
   "dependencies": {
     "bluebird": "^3.4.1",
     "body-parser": "^1.18.3",
-    "bootstrap": "4.2.1",
+    "bootstrap": ">=4.3.1",
     "bs58": "^3.1.0",
     "c3": "^0.4.11",
     "cookie": "^0.3.1",
     "cors": "^2.8.1",
-    "crypto": "0.0.3",
     "d3": "^3.5.17",
     "debug": "^2.2.0",
     "elasticsearch": "^15.2.0",
@@ -45,11 +45,11 @@
   },
   "devDependencies": {
     "nodemon": "^1.18.9",
-    "docco": "^0.7.0",
     "xmldom": "^0.1.27",
     "stylus": "^0.54.5",
     "xpath": "0.0.27",
     "jsdom": "^13.0.0",
+    "chai": "^4.2.0",
     "mocha": "^5.2.0"
   }
 }
