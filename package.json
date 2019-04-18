@@ -36,7 +36,7 @@
     "nacl-signature": "^1.0.0",
     "nconf": "^0.8.4",
     "node-geoip": "^1.0.1",
-    "pug": "^2.0.0-beta11",
+    "pug": "^2.0.3",
     "request": "^2.88.0",
     "reveal.js": "^3.7.0",
     "rss": "^1.2.2",
