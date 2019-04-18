@@ -9,6 +9,8 @@ var debug = require('debug')('fbtrex:collector');
 var nconf = require('nconf');
 var cors = require('cors');
 
+const mongo = require('../lib/mongo');
+
 var cfgFile = "config/collector.json";
 var redOn = "\033[31m";
 var redOff = "\033[0m";
@@ -16,13 +18,7 @@ var redOff = "\033[0m";
 nconf.argv().env().file({ file: cfgFile });
 console.log(redOn + "ઉ nconf loaded, using " + cfgFile + redOff);
 
-var returnHTTPError = function(req, res, funcName, where) {
-    debug("HTTP error 500 %s [%s]", funcName, where);
-    res.status(500);
-    res.send();
-    return false;
-};
-
+const commont = require('../lib/common');
 /* configuration for elasticsearch */
 const echoes = require('../lib/echoes');
 echoes.addEcho("elasticsearch");
@@ -46,7 +42,7 @@ function dispatchPromise(name, req, res) {
     var func = _.get(collectorImplementations, name);
 
     if(!func)
-        return returnHTTPError(req, res, name, "Implementation error: function not found?");
+        return common.returnHTTPError(req, res, name, "Implementation error: function not found?");
 
     /* in theory here we can keep track of time */
     return new Promise.resolve(func(req))
@@ -75,14 +71,14 @@ function dispatchPromise(name, req, res) {
           } else {
               debug("Undetermined failure in API call, result →  %j", httpresult);
               console.trace();
-              return returnHTTPError(req, res, name, "Undetermined failure");
+              return common.returnHTTPError(req, res, name, "Undetermined failure");
           }
           return true;
       })
       .catch(function(error) {
           debug("Trigger an Exception %s: %s",
               name, error);
-          return returnHTTPError(req, res, name, "Exception");
+          return common.returnHTTPError(req, res, name, "Exception");
       });
 };
 
@@ -104,4 +100,16 @@ app.post('/api/v1/userInfo', function(req, res) {
 /* should be discontinued -- under check if is still used */
 app.get('/api/v1/selector', function(req, res) {
     return dispatchPromise('getSelector', req, res);
+});
+
+Promise.resolve().then(function() {
+  return mongo
+    .count(nconf.get('schema').supporters)
+    .then(function(amount) {
+       debug("mongodb is running, found %d supporters", amount);
+    })
+    .catch(function(error) {
+       console.log("mongodb is not running - check",cfgFile,"- quitting");
+       process.exit(1);
+    });
 });

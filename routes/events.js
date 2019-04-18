@@ -201,8 +201,9 @@ function promisifyInputs(body, geoinfo, supporter) {
     var processed_html = 0
     
     /* this big debug noise is handy on the server */
-    if(processed.timelines && processed.timelines[0] && processed.timelines[0].nonfeed)
+    if(processed.timelines[0] && processed.timelines[0].nonfeed) {
         debug(" * non-newsfeed navigation: no content received");
+    }
     else {
         processed_timelines = _.size(processed.timelines)
         processed_impressions =  _.size(processed.impressions)
