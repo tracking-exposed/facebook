@@ -78,7 +78,7 @@ function personal(req) {
                 _.size(results),
                 _.sum(_.map(results, function(e) { return _.size(e[0]) } )),
                 _.sum(_.map(results, function(e) { return _.size(e[1]) } )),
-                _.sum(_.map(results, function(e) { return _.size(e[3]) } )),
+                _.sum(_.map(results, function(e) { return _.size(e[3]) } ))
             );
             return { json: results };
         });
