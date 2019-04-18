@@ -59,6 +59,12 @@ function initializeSummary() {
         hasText = true;
       }
 
+      let linkslot ="";
+      if(_.startsWith(item.permaLink, '/')) 
+        linkslot = `<a href="https://facebook.com${item.permaLink}" title="Go to post" target="_blank" class="small text-link">Go to post</a>`;
+      else if(_.startsWith(item.permaLink, 'https://'))
+        linkslot = `<a href="${item.permaLink}" title="Go to post" target="_blank" class="small text-link">Go to post</a>`;
+
       const gridItem = `
         <div class="grid-item ${item.fblinktype || ''}">
           <article class="content ${bgColorClass} d-flex flex-column">
@@ -70,9 +76,9 @@ function initializeSummary() {
             </section>
             <footer>
               <span class="small ${item.postId ? 'post-id' : ''}" data-post-id="${item.postId}">
-                ${item.postId ? 'Post ID: #'+item.postId : '#'}
+                ${item.postId ? 'Post Id: #'+item.postId : '#'}
               </span>
-              <a href="https://facebook.com${item.permaLink}" title="Go to post" target="_blank" class="small text-link">Go to post</a>
+              ${linkslot}
             </footer>
           </article>
         </div>
