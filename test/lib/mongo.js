@@ -1,8 +1,9 @@
 const expect    = require("chai").expect;
-const mongo = require('../lib/mongo');
 const nconf = require('nconf');
 const _ = require('lodash');
-const debug = require('debug')('tests:testDB');
+const debug = require('debug')('test:lib:mongo');
+
+const mongo = require('../../lib/mongo');
 
 nconf.argv().env().file({ file: 'config/content.json' });
 
@@ -66,17 +67,17 @@ describe('mongoDB APIs', function () {
         await mongoc.close();
     });
 
-    it('remove, upsertOne, readOne, and updateOne', async function() {
+    it('deleteMany, upsertOne, readOne, and updateOne', async function() {
         const mongoc = await mongo.clientConnect({uri: mongoUri});
 
-        const i = await mongo.remove(mongoc, testC, {id: "ciao"});
+        await mongo.deleteMany(mongoc, testC, {id: "ciao"});
 
         let doc = getRandDoc('ciao');
 
         const r = await mongo.upsertOne(mongoc, testC, {id: "ciao"}, doc);
         expect(r.result.ok).to.be.equal(1);
         expect(r.result.n).to.be.equal(1);
-        expect(r.result.nModified).to.be.equal(1);
+        expect(r.result.nModified).to.be.equal(0);
 
         const nope = await mongo.upsertOne(mongoc, testC, {id: "ciao"}, doc);
         expect(nope.result.ok).to.be.equal(1);
@@ -89,11 +90,11 @@ describe('mongoDB APIs', function () {
         doc.value = "a";
         doc.plus = true;
 
-        const s = await mongo.upsertOne(mongoc, testC, {id: "ciao"}, doc);
-        debug("%j", s);
+        const s = await mongo.updateOne(mongoc, testC, {id: "ciao"}, doc);
         expect(s.result.ok).to.be.equal(1);
         expect(s.result.n).to.be.equal(1);
 
+        await mongoc.close();
     });
 
 });

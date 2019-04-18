@@ -1,10 +1,10 @@
 const expect    = require("chai").expect;
 const nconf = require('nconf');
 const _ = require('lodash');
-const debug = require('debug')('tests:testDButils');
+const debug = require('debug')('test:lib:dbutils');
 
-const dbutils = require('../lib/dbutils');
-const mongo = require('../lib/mongo');
+const dbutils = require('../../lib/dbutils');
+const mongo = require('../../lib/mongo');
 
 nconf.argv().env().file({ file: 'config/content.json' });
 
