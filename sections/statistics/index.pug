@@ -1,16 +1,19 @@
 doctype html
 html
     head
-        link(rel='stylesheet', href='/css/c3.css')
+
         link(rel='stylesheet', href='/css/bootstrap.css')
         link(rel='stylesheet', href='/css/index.css')
+        link(rel='stylesheet', href='/css/c3.css')
 
-        script(type='text/javascript', src='/js/lodash.min.js')
         script(type='text/javascript', src='/js/jquery.js')
         script(type='text/javascript', src='/js/bootstrap.min.js')
+        script(type='text/javascript', src='/js/lodash.min.js')
+
         script(type='text/javascript', src='/js/d3.min.js')
         script(type='text/javascript', src='/js/c3.min.js')
         script(type='text/javascript', src='/js/moment.min.js')
+
         script(type='text/javascript', src='/js/local/aggregated.js')
 
         meta(charset="utf-8")
@@ -28,18 +31,17 @@ html
 
     body(onload="loadImpact()")
 
-        .container-fluid
+        .container
             include ../navbar
 
-        .container-fluid
-            h2 usage trackers
-                span#funky we build a technology to observe Facebook and algorithm phenomenon: we do not track people
+        .container
+            h2 We build a technology to observe Facebook and algorithm phenomenon: we do not track people
             p This is also the reason why the data collected are not fully accessible, but protected to preserve digital rights, human rights, and in general don't support abusive scenario such as the 
                 a(href="https://responsibledata.io/social-media-intelligence-the-wayward-child-of-open-source-intelligence/") social media intelligence
                 |.
             p The inception of fbTREX was in Summer 2016; Since the mid of December 2016 we are in R&D-release, the tool have been used to produce research papers and test functionalities for individual; Since January 2019, after the publication of the project status, we entered in ß version.
 
-        .container-fluid
+        .container
             h2 data activities 
             .row
                 table
@@ -54,7 +56,7 @@ html
                             th.col-sm-1 summaries
                             th.col-sm-1 aggregated
                     tbody
-                        tr 
+                        tr(style='border-top: black 1px solid;')
                             th.col-sm-1 total
                             th.col-sm-1
                                 span#supporters
@@ -71,7 +73,7 @@ html
                             th.col-sm-1
                                 span#aggregated
                     tfoot
-                        tr 
+                        tr(style='border-top: black 1px solid;')
                             th.col-sm-1 last week
                             th.col-sm-1
                                 span#supporters_lw
