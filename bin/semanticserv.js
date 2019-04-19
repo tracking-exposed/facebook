@@ -31,7 +31,7 @@ function infiniteLoop() {
 
     const timewindow = nconf.get('daysago') ?
         moment().subtract( _.parseInt(nconf.get('daysago')), 'days').format() :
-        moment().subtract(5, 'days').format();
+        moment().subtract(1, 'days').format();
 
     /* this will launch other scheduled tasks too */
     return Promise
