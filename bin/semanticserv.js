@@ -45,6 +45,8 @@ function infiniteLoop() {
             if(!_.size(entries))
                 return [];
 
+            entries = _.uniqBy(entries, 'semanticId');
+
             if(lastExecution)
                 debug("New iteration after %s, processing %d entries",
                     moment.duration(moment() - lastExecution).humanize(), _.size(entries) );
