@@ -42,25 +42,39 @@ function infiniteLoop() {
         })
         .then(function(entries) {
 
+            resetLast = true;
+
             if(!_.size(entries))
                 return [];
 
-            if(lastExecution)
-                debug("New iteration after %s, processing %d entries",
-                    moment.duration(moment() - lastExecution).humanize(), _.size(entries) );
-            else
-                debug("First execution at %s, processing %d entries", moment().format(), _.size(entries) );
+            let uniqued = _.uniqBy(entries, 'semanticId');
 
-            lastExecution = moment();
+            if(_.size(uniqued) < _.size(entries))
+                resetLast = false;
+
+            if(lastExecution) {
+                debug("New iteration after %s, processing %d(%d) entries",
+                    moment.duration(moment() - lastExecution).humanize(),
+                    _.size(entries), _.size(uniqued) );
+            } else {
+                debug("First execution at %s, processing %d(%d) entries",
+                    moment().format(), _.size(entries), _.size(uniqued) );
+            }
+
             const limit = _.parseInt(nconf.get('limit')) || 100;
 
-            if(!_.isNaN(limit) && limit < _.size(entries)) {
+            if(!_.isNaN(limit) && limit < _.size(uniqued)) {
                 debug("Process cap to %d requests, we had %d entries, cutting off %d",
-                    limit, _.size(entries), _.size(entries) - limit);
-                entries = _.slice(entries, 0, limit);
+                    limit, _.size(uniqued), _.size(uniqued) - limit);
+                uniqued = _.slice(uniqued, 0, limit);
+                resetLast = false;
             }
-            logSemanticServer(_.size(entries));
-            return entries;
+
+            if(resetLast)
+                lastExecution = moment();
+
+            logSemanticServer(_.size(uniqued));
+            return uniqued;
         })
         .map(semantic.doubleCheck, { concurrency: 1 })
         .then(_.compact)
