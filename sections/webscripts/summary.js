@@ -8,6 +8,11 @@ function getToken() {
   return t;
 }
 
+function initializeToken() {
+  const token = getToken();
+  $('#token').text(token);
+}
+
 function initializeSummary() {
 
   const token = getToken();
