@@ -1,4 +1,4 @@
-# facebook.fracking.exposed
+# facebook.tracking.exposed
 
 Take a look at the [website](https://facebook.tracking.exposed), or at a [24 minutes](https://vimeo.com/322250610) video explainig the concept, or a [15 pages .pdf](https://github.com/tracking-exposed/presentation/raw/master/fbTREX%20-%20project%20status%20and%20analysis%20-%20December%202018.pdf) reporting the results achieved in two years.
 
