@@ -121,7 +121,7 @@ function sortBy(value = 'original-order') {
 
 function downloadCSV() {
   const token = getToken();
-  const url = "/api/v1/csv/" + token;
+  const url = `/api/v2/personal/${token}/csv`;
   console.log("downloadCSV from: ", url);
   window.open(url);
 }
