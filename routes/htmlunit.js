@@ -9,10 +9,9 @@ var utils = require('../lib/utils');
 
 
 function unitById(req) {
-    // '/api/v2/debug/html/:htmlId'
     var htmlId = req.params.htmlId;
 
-    debug("%s unitById %s", req.randomUnicode, htmlId);
+    debug("unitById /api/v2/debug/html/%s [would query in 6 collections]", htmlId);
     return mongo
         .readOne(nconf.get('schema').htmls, { id: htmlId })
         .then(function(html) {
