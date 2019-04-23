@@ -2,15 +2,12 @@ function unrollList(o) {
     return ('<ul class="revisionList">' +
             _.reduce(o, function(memo, v, k) {
                 var initial = '<li>' + '<code>' + k + '</code>: ';
-                if(typeof v == 'string') {
-                    memo += initial + v + "</li>";
+                if(typeof v == 'object') {
+                    memo += initial + '<pre>' + JSON.stringify(v, undefined, 2) + "</pre>";
+                } else{
+                    memo += initial + v;
                 }
-                else if(typeof v == 'object') {
-                    memo += initial + '<pre>' + JSON.stringify(v, undefined, 2) + "</pre></li>";
-                }
-                else {
-                    memo += typeof v + "</li>";
-                }
+                memo += "</li>";
                 return memo;
             }, "")
         + '</ul>');
