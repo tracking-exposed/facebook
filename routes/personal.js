@@ -21,7 +21,7 @@ function summary(req) {
                     { impressionTime: -1}, amount, skip);
         })
         .map(function(e) {
-            return _.omit(e, ['_id', 'id' ]);
+            return _.omit(e, ['_id' ]);
         })
         .then(function(data) {
             debug("retrived %d objects, with amount %d skip %d", _.size(data), amount, skip);
