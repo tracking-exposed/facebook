@@ -27,10 +27,20 @@ html
 
     script(type='text/javascript', charset='utf8', src='/js/local/summary.js')
 
-  body(onload="initializeSummary()")
+  body(onload="initializeStats()")
 
     include header
     include navbar
 
     .container
-        h2 Nope: work in progress
+        p Your timelines by the most recent
+        table.table
+          thead
+            tr
+              th Timeline
+              th nature
+              th source
+              th info
+          tbody#entries
+
+
