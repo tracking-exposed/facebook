@@ -125,3 +125,67 @@ function downloadCSV() {
   console.log("downloadCSV from: ", url);
   window.open(url);
 }
+
+/* stats page */
+function newTimelineRow(timeline, impressionNumbers, n) {
+    const rel = moment.duration(moment(timeline.impressionTime) - moment()).humanize();
+    const when = moment(timeline.impressionTime).format("YYYY-MM-DD HH:mm");
+    return `<tr class="timeline">
+        <td>${when} (${n})</td>
+        <td><a href="/api/v2/timeline/${timeline.timelineId}/csv">${rel} ago ↓csv</a></td>
+        <td>${impressionNumbers} impressions</td>
+        <td></td>
+        <td></td>
+    </tr>`;
+};
+
+function composeImpression(impression, n) {
+    if(!impression.htmlId) {
+        return `<tr class="private">
+            <td>${n}/${impression.impressionOrder}</td>
+            <td>private</td>
+            <td></td>
+            <td></td>
+        </tr>`;
+    }
+    if(!_.size(impression.summary)) {
+        return `<tr class="unprocessed">
+            <td>${n}/${impression.impressionOrder}</td>
+            <td>not processed?</td>
+            <td></td>
+            <td></td>
+        </tr>`;
+    }
+    return `<tr>
+        <td>${n}/${impression.impressionOrder}</td>
+        <td>${impression.summary[0].nature}</td>
+        <td>${impression.summary[0].source}</td>
+        <td><i>info/work in progress</i></td>
+    </tr>`;
+};
+
+function initializeStats() {
+  const token = getToken();
+  const url = `/api/v2/personal/${token}/stats`;
+  console.log("timeline stats from: ", url);
+  $.getJSON(url, (data) => {
+    console.log(`Retrived ${_.size(data.content)} impressions, from ${_.size(data.timelines)} timelines, ${JSON.stringify(data.served)}, total stored: ${data.storedTimelines}`);
+    let lastT = { id: null, counter: 0 };
+
+    _.each(data.content, (impression) => {
+      if(lastT.id != impression.timelineId) {
+        lastT.id = impression.timelineId;
+        lastT.counter += 1;
+        let newtmln = newTimelineRow(
+          _.omit(impression, ['summary']),
+          _.get(data.timelines, impression.timelineId),
+          lastT.counter);
+        $('#entries').append(newtmln);
+      }
+
+      let impre = composeImpression(impression, lastT.counter);
+      $('#entries').append(impre);
+    });
+
+  });
+};
