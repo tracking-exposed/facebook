@@ -61,11 +61,25 @@ function semantics(req) {
         });
 };
 
+function redactEnriched(enrich) {
+    _.unset(enrich, '_id');
+    let s = _.first(enrich.summary);
+    _.unset(s, '_id');
+    _.unset(s, 'id');
+    _.unset(s, 'user');
+    _.unset(s, 'timeline');
+    _.unset(s, 'impressionOrder');
+    _.unset(s, 'impressionTime');
+    enrich.summary = s;
+    // XXX maybe can be redacted the condition of the ❌ below
+    return enrich;
+}
+
 function enrich(req) {
     const DEFAULTAMOUNT = 13;
     const backintime = moment().subtract(2, 'd').toISOString();
     const { amount, skip } = params.optionParsing(req.params.paging, DEFAULTAMOUNT);
-    debug("loud request (lang: %s), amount %d skip %d",
+    debug("enrich request (lang: %s), amount %d skip %d",
         req.params.lang, amount, skip);
 
     if(!validLanguage(req.params.lang))
@@ -79,19 +93,7 @@ function enrich(req) {
             { $limit: amount },
             { $lookup: { from: 'summary', localField: 'semanticId', foreignField: 'semanticId', as: 'summary' }}
         ])
-        .map(function(enrich) {
-            _.unset(enrich, '_id');
-            let s = _.first(enrich.summary);
-            _.unset(s, '_id');
-            _.unset(s, 'id');
-            _.unset(s, 'user');
-            _.unset(s, 'timeline');
-            _.unset(s, 'impressionOrder');
-            _.unset(s, 'impressionTime');
-            enrich.summary = s;
-            // XXX maybe can be redacted the condition of the ❌ below
-            return enrich;
-        })
+        .map(redactEnriched)
         .then(function(enriched) {
             debug("return enrich, %d objects (%j)", _.size(enriched), _.map(enriched, function(e) {
                 if(!e.summary || !e.summary.source || !e.summary.nature)
@@ -99,6 +101,43 @@ function enrich(req) {
                 return [ e.summary.source, e.summary.nature ];
             }));
             return { json: enriched };
+        });
+};
+
+function noogle(req) {
+    const DEFAULTAMOUNT = 13;
+    const { amount, skip } = params.optionParsing(req.params.paging, DEFAULTAMOUNT);
+    debug("noogle request (lang: %s, label: %s), amount %d skip %d",
+        req.params.lang, req.params.label, amount, skip);
+
+    if(!validLanguage(req.params.lang))
+        return { json: LanguageError };
+
+    return mongo
+        .aggregate(nconf.get('schema').semantics, [
+            { $sort: { when: -1 }},
+            { $match: { lang: req.params.lang, label: req.params.label }},
+            { $group: { _id: "$semanticId" }},
+            { $skip: skip },
+            { $limit: amount },
+            { $lookup: { from: 'summary', localField: '_id', foreignField: 'semanticId', as: 'summary' }},
+            { $lookup: { from: 'labels', localField: '_id', foreignField: 'semanticId', as: 'labels' }}
+        ])
+        .map(function(dirty) {
+            let base = _.first(dirty.labels);
+            base.summary = dirty.summary;
+            base.when = moment(base.when);
+            return base;
+        })
+        .map(redactEnriched)
+        .then(function(results) {
+            debug("return noogle, %d objects (%j)", _.size(results), _.map(results, function(e) {
+                if(!e.summary || !e.summary.source || !e.summary.nature)
+                    return "❌";
+                return [ e.summary.source, e.summary.nature ];
+            }));
+            const ordered = _.orderBy(results, {when: -1 });
+            return { json: results };
         });
 };
 
@@ -129,9 +168,6 @@ function loud(req) {
         });
 
 };
-
-
-function noogle(req) { };
 
 
 module.exports = {
