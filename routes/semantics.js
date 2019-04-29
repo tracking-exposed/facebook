@@ -61,10 +61,52 @@ function semantics(req) {
         });
 };
 
-function enrich(req) { };
+function enrich(req) {
+    const DEFAULTAMOUNT = 13;
+    const backintime = moment().subtract(2, 'd').toISOString();
+    const { amount, skip } = params.optionParsing(req.params.paging, DEFAULTAMOUNT);
+    debug("loud request (lang: %s), amount %d skip %d",
+        req.params.lang, amount, skip);
+
+    if(!validLanguage(req.params.lang))
+        return { json: LanguageError };
+
+    return mongo
+        .aggregate(nconf.get('schema').labels, [
+            { $sort: { when: -1 }},
+            { $match: { lang: req.params.lang, when: { "$lt": new Date(backintime) }} },
+            { $skip: skip },
+            { $limit: amount },
+            { $lookup: { from: 'summary', localField: 'semanticId', foreignField: 'semanticId', as: 'summary' }}
+        ])
+        .map(function(enrich) {
+            _.unset(enrich, '_id');
+            let s = _.first(enrich.summary);
+            _.unset(s, '_id');
+            _.unset(s, 'id');
+            _.unset(s, 'user');
+            _.unset(s, 'timeline');
+            _.unset(s, 'impressionOrder');
+            _.unset(s, 'impressionTime');
+            enrich.summary = s;
+            // XXX maybe can be redacted the condition of the ❌ below
+            return enrich;
+        })
+        .then(function(enriched) {
+            debug("return enrich, %d objects (%j)", _.size(enriched), _.map(enriched, function(e) {
+                if(!e.summary || !e.summary.source || !e.summary.nature)
+                    return "❌";
+                return [ e.summary.source, e.summary.nature ];
+            }));
+            return { json: enriched };
+        });
+};
 
 function loud(req) { 
-    const { amount, skip } = params.optionParsing(req.params.paging, 13);
+    const MAXENTRIES = 2000;
+    const DEFAULTAMOUNT = 13;
+    const backintime = moment().subtract(2, 'd').toISOString();
+    const { amount, skip } = params.optionParsing(req.params.paging, DEFAULTAMOUNT);
     debug("loud request (lang: %s), amount %d skip %d",
         req.params.lang, amount, skip);
 
@@ -73,7 +115,8 @@ function loud(req) {
 
     return mongo
         .aggregate(nconf.get('schema').semantics, [
-            { $match: { lang: req.params.lang }},
+            { $match: { lang: req.params.lang, when: { "$lt": new Date(backintime) }} },
+            { $limit: MAXENTRIES },
             { $group: { _id: '$title', wp: { $first: '$wp'}, count: { $sum: 1 }}},
             { $sort: { "count": -1 }},
             { $skip: skip },
