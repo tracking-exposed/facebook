@@ -157,14 +157,13 @@ function byTimelineLookup(userId, amount, skipnum) {
         "impressionTime": "$impressions.impressionTime",
         "htmlId": "$impressions.htmlId",
         geoip: 1,
-        stareTime: 1,
+        startTime: 1,
         "timelineId": "$id"
     }};
     const summaryl = { $lookup: { from: 'summary', localField: 'htmlId', foreignField: 'id', as: 'summary'  }};
 
     return mongo
         .aggregate(nconf.get('schema').timelines, [ match, sort, skip, limit, lookup, unwind, project, summaryl ]);
-
 };
 
 function stats(req) {
@@ -185,11 +184,19 @@ function stats(req) {
             const timelines = _.countBy(result[1], 'timelineId')
             debug("Retrieved %d impressions in %d timelines, first %s, last %s",
                 _.size(result[1]), _.size(timelines), _.first(result[1]).impressionTime, _.last(result[1]).impressionTime);
+
+            /* order the timeline by startTime and impressionOrder */
+            const orderedTimelines = _.map(_.map(_.groupBy(result[1], 'timelineId'), _.first), 'startTime');
+            let sorted = [];
+            _.each(_.orderBy(orderedTimelines, new Date), function(sT) {
+                sorted = _.concat(sorted, _.orderBy(_.filter(result[1], { startTime: sT }), 'impressionOrder'));
+            });
+
             return {
                 json: {
                     storedTimelines: result[0],
                     served: { amount, skip },
-                    content: result[1],
+                    content: sorted,
                     timelines,
                 }
             };
