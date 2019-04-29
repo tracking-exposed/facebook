@@ -9,7 +9,7 @@ const mongo = require('../lib/mongo');
 const params = require('../lib/params');
 const utils = require('../lib/utils');
 const adopters = require('../lib/adopters');
-const produceCSV1 = require('../lib/CSV');
+const produceCSVv1 = require('../lib/CSV');
 
 function summary(req) {
     const { amount, skip } = params.optionParsing(req.params.paging, 200);
