@@ -127,40 +127,46 @@ function downloadCSV() {
 }
 
 /* stats page */
-function newTimelineRow(timeline, impressionNumbers, n) {
+function newTimelineRow(timeline, impressionNumbers, n, totalT) {
     const rel = moment.duration(moment(timeline.impressionTime) - moment()).humanize();
     const when = moment(timeline.impressionTime).format("YYYY-MM-DD HH:mm");
     return `<tr class="timeline">
-        <td>${when} (${n})</td>
-        <td><a href="/api/v2/timeline/${timeline.timelineId}/csv">${rel} ago ↓csv</a></td>
+        <td>${when}<br>#${n}/${totalT}</td>
+        <td><a href="/api/v2/timeline/${timeline.timelineId}/csv">${rel} ago <br>↓ link to .csv</a></td>
         <td>${impressionNumbers} impressions</td>
         <td></td>
         <td></td>
     </tr>`;
 };
 
-function composeImpression(impression, n) {
+function composeImpression(impression, n, totalI) {
+    /* PRIVATE IMPRESSION, NOT COLLECTED */
     if(!impression.htmlId) {
-        return `<tr class="private">
-            <td>${n}/${impression.impressionOrder}</td>
+        return `<tr class="private alert-warning">
+            <td>${impression.impressionOrder} of ${totalI}</td>
             <td>private</td>
             <td></td>
             <td></td>
         </tr>`;
     }
+    /* OUR PARSERS BROKEN */
     if(!_.size(impression.summary)) {
         return `<tr class="unprocessed">
-            <td>${n}/${impression.impressionOrder}</td>
+            <td>${impression.impressionOrder} of ${totalI}</td>
             <td>not processed?</td>
             <td></td>
             <td></td>
         </tr>`;
     }
+    
+    /* DEFAUT ROW */
+    let info = _.size(impression.summary[0].displaySource) ? impression.summary[0].displaySource : '❌';
+    console.log(info);
     return `<tr>
-        <td>${n}/${impression.impressionOrder}</td>
+        <td>${impression.impressionOrder} of ${totalI}</td>
         <td>${impression.summary[0].nature}</td>
         <td>${impression.summary[0].source}</td>
-        <td><i>info/work in progress</i></td>
+        <td>${info}</td>
     </tr>`;
 };
 
@@ -179,13 +185,18 @@ function initializeStats() {
         let newtmln = newTimelineRow(
           _.omit(impression, ['summary']),
           _.get(data.timelines, impression.timelineId),
-          lastT.counter);
+          lastT.counter, _.size(data.timelines) );
         $('#entries').append(newtmln);
       }
 
-      let impre = composeImpression(impression, lastT.counter);
+      let impre = composeImpression(impression, lastT.counter, _.get(data.timelines, impression.timelineId));
       $('#entries').append(impre);
-    });
 
+    });
+    $('#closing').append(shapeClosingMessage(_.size(data.timelines), data.storedTimelines));
   });
 };
+
+function shapeClosingMessage(avail, total) {
+    return `<p class="timeline">Load the remaining ${total-avail} timelines, of a total stored of ${total}<br><small>NO, NOT YET IMPLEMENMTED, CHECK THE APIs</small></p>`;
+}
