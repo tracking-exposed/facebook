@@ -20,6 +20,8 @@ ret = db.aggregated.createIndex({ "hourId": 1 }, {unique: true}); checkret('aggr
 
 ret = db.summary.createIndex({ "id": 1 }, { unique: true }); checkret('summary id', ret);
 ret = db.summary.createIndex({ "impressionTime": -1 }); checkret('summary impressionTime', ret);
+ret = db.summary.createIndex({semanticId: 1}); checkret('summary semanticId', ret);
+
 
 function checkret(info, retval) {
     retval.info = info;
