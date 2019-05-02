@@ -191,7 +191,7 @@ function formatReturn(lang, updated) {
     return {
         json: {
             content: cache[lang].content,
-            computedt: cache[lang].computedAt.toISOString(),
+            computedAt: cache[lang].computedAt.toISOString(),
             next: cache[lang].next.toISOString(),
         }
     };
