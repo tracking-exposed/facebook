@@ -228,7 +228,7 @@ function langinfo(req) {
             { $limit: MAXENTRIES },
             { $group: { _id: "$label" }},
             { $group: { _id: null, amount: { "$sum": 1 } }},
-        ]).then(function(o) { return (o && o[0] && o[0].amount) ? obj[0].amount : 0 }),
+        ]).then(function(o) { return (o && o[0] && o[0].amount) ? o[0].amount : 0 }),
         mongo.aggregate(nconf.get('schema').labels, [
             { $sort: { when: -1 }},
             { $match: { lang: lang, when: { "$gt": new Date(backintime) } }},
