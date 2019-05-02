@@ -18,7 +18,7 @@ const LanguageError = {
     reminder: 'the list of supported language comes from a mongodb.distinct call, should be updated'
 };
 function validLanguage(propl) {
-    return (_.size(propl) == 2 || supported.indexOf(propl) !== -1);
+    return (_.size(propl) == 2 && supported.indexOf(propl) !== -1);
 }
 
 function labels(req) {
@@ -209,7 +209,7 @@ function langinfo(req) {
     const amount = 13;
     const skip = 0;
     const lang = req.params.lang;
-    const cacheMinutes = 60 * 2;
+    const cacheMinutes = 60 * 12;
 
     if(!validLanguage(lang))
         return { json: LanguageError };
