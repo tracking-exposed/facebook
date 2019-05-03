@@ -163,7 +163,7 @@ function loud(req) {
 function loudKeywordsPipeline(maxentries, backintime, amount, skip, lang) {
     return mongo
         .aggregate(nconf.get('schema').semantics, [
-            { $match: { lang: lang, when: { "$lt": new Date(backintime) }} },
+            { $match: { lang: lang, when: { "$gt": new Date(backintime) }} },
             { $limit: maxentries },
             { $group: { _id: '$title', wp: { $first: '$wp'}, count: { $sum: 1 }}},
             { $sort: { "count": -1 }},
