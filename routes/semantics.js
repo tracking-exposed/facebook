@@ -7,9 +7,10 @@ const nconf = require('nconf');
 const mongo = require('../lib/mongo');
 const params = require('../lib/params');
 
-const supported = [ "it", "pl", "en", "fr", "es", "pt", "ru", "he", "nl", "de", "et", "hr",
-                    "ro", "uk", "fa", "fi", "hu", "no", "da", "ja", "lt", "id", "sv", "cs",
-                    "lv", "ar", "af", "ko", "sk", "el", "th", "tr", "bn", "bg", "sl", "hi", "tl" ];
+const supported = [ "en", "de", "fr", "pl", "pt", "it", "fa", "sv", "es", "ja", "uk", "cs",
+                    "sk", "bg", "nl", "ru", "ko", "hr", "el", "et", "ar", "no", "da", "he",
+                    "id", "ro", "hu", "bn", "lt", "ta", "fi", "tl", "ur", "tr", "mk", "th",
+                    "ml", "sl", "af", "lv", "vi", "hi" ];
 
 const LanguageError = {
     error: true,
