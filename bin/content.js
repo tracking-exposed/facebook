@@ -78,6 +78,7 @@ if(nconf.get('FBTREX') === 'development') {
 }
 
 /* catch the other 'vendor' script in /js */
+app.use('/js/jquery-ui', express.static( path.join(dist, 'js', 'jquery-ui') ));
 app.use('/js', express.static( path.join(dist, 'js') ));
 app.use('/css', express.static( path.join(dist, 'css') ));
 app.use('/images', express.static( path.join(dist, 'images') ));

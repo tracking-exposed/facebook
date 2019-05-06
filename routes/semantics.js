@@ -6,20 +6,18 @@ const nconf = require('nconf');
 
 const mongo = require('../lib/mongo');
 const params = require('../lib/params');
-
-const supported = [ "en", "de", "fr", "pl", "pt", "it", "fa", "sv", "es", "ja", "uk", "cs",
-                    "sk", "bg", "nl", "ru", "ko", "hr", "el", "et", "ar", "no", "da", "he",
-                    "id", "ro", "hu", "bn", "lt", "ta", "fi", "tl", "ur", "tr", "mk", "th",
-                    "ml", "sl", "af", "lv", "vi", "hi" ];
+const semantic = require('../lib/semantic');
+const various = require('../lib/various');
 
 const LanguageError = {
     error: true,
     message: 'missing language',
-    supported,
+    supported: semantic.langMap,
     reminder: 'the list of supported language comes from a mongodb.distinct call, should be updated'
 };
+
 function validLanguage(propl) {
-    return (_.size(propl) == 2 && supported.indexOf(propl) !== -1);
+    return (_.size(propl) == 2 && !_.isUndefined(_.get(semantic.langMap, propl)));
 }
 
 function labels(req) {
@@ -174,8 +172,9 @@ function loudKeywordsPipeline(maxentries, backintime, amount, skip, lang) {
         ]);
 }
 
-const cache = _.reduce(supported, function(memo, l) {
+const cache = _.reduce(semantics.langMap, function(memo, langName, l) {
     _.set(memo, l, {
+        langName,
         content: null,
         computedAt: null,
         next: null,
@@ -260,11 +259,42 @@ function langinfo(req) {
     });
 }
 
+function languages(req) {
+    return various
+        .loadJSONfile('rss/keywords/available.json')
+        .then(function(available) {
+            debug("Loaded %d available on %d potential",
+                _.size(available), _.size(semantic.langMap));
+            return {
+                json: {
+                    available,
+                    potential: semantic.langMap
+                }
+            };
+        });
+};
+
+function keywords(req) {
+    const lc = req.params.lang;
+    debug("keywords request for %s", lc);
+    if(!validLanguage(lc))
+        return { json: LanguageError };
+    return various
+        .loadJSONfile(`rss/keywords/${lc}.json`)
+        .then(function(kwds) {
+            debug("%d keywords returned as part of %s",
+                _.size(kwds), lc);
+            return { json: kwds };
+        });
+};
+
 module.exports = {
     labels,
     semantics,
     enrich,
     loud,
     noogle,
-    langinfo
+    langinfo,
+    languages,
+    keywords
 };
