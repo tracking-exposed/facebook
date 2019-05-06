@@ -29,7 +29,6 @@
     "express": "^4.16.3",
     "food-words": "^1.1.0",
     "harmony-reflect": "^1.6.1",
-    "jquery": "^3.0.0",
     "lodash": "^4.17.10",
     "moment": "^2.22.2",
     "mongodb": "^2.1.8",
