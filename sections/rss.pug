@@ -32,15 +32,25 @@ html
         include navbar
 
     .container
+        ol
+            li Select a language among the various available. They comes from the public post scraped from Facebook, processed via 
+                a(href="https://dandelion.eu") dandelion.eu
+                |.
+            li Select one of the wikipedia 
+                a(href="howdoesitworks") voices matched in the last 7 days
+                |.
+            li Copy-Paste the RSS feed and subscribe using one of the many RSS readers
+
+    .container
         div.col-md-12#available
 
     .container.center.hidden
         br
         span.labelt Language:
-        span#language
-        span.labelt Keywords:
-        span#counter
+        span.labelv#language
+        span.labelt Wikipedia voices:
+        span.labelv#counter
 
     .container.center.hidden
         div.labelt#status
-        input(type="text" class="form-control selector")
+        input(type="text" class="form-control" id="inputbar")
