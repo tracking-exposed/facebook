@@ -24,7 +24,7 @@ const utils = require('../lib/utils');
 function feeds(req) {
 
     if(!_.endsWith(req.params.query, '.xml'))
-        return { text: 'expected [*.xml]' };
+        return { text: 'Error, expected one of the valid keyword .xml' };
 
     const labels = req.params.query.replace(/\.xml$/, '').split('+').sort();
     debug("Requested RSS feed by [%s]", labels.join(', '));
