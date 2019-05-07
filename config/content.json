@@ -11,7 +11,7 @@
       "anomalies": "anomalies",
       "semantics": "semantics",
       "labels": "labels",
-      "feeds": "feeds",
+      "feeds": "feeds2",
       "aggregated": "aggregated"
   },
   "mongodb": "mongodb://localhost/facebook",

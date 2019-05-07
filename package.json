@@ -10,7 +10,6 @@
     "build": "bin/install-script.sh",
     "parserv": "DEBUG=*,-lib:parse,-lib:mongo:* node bin/parserv.js",
     "semanticserv": "DEBUG=*,-lib:mongo*,-lib:semantic:v node bin/semanticserv.js",
-    "buildrsserv": "DEBUG=*,-lib:mongo:* node bin/buildrsserv.js",
     "test": "./node_modules/.bin/mocha"
   },
   "author": "Claudio Agosti <claudio@tracking.exposed>, https://github.com/tracking-exposed/facebook/graphs/contributors",
