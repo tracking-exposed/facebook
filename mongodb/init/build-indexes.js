@@ -1,5 +1,3 @@
-ret = db.feeds.createIndex({id: 1}, {unique: true }); checkret('feeds id', ret);
-
 ret = db.labels.createIndex({ "semanticId" : 1 }, { unique: true }); checkret('labels semanticId', ret);
 ret = db.labels.createIndex({ "when" : 1 }); checkret('labels when', ret);
 
@@ -21,6 +19,9 @@ ret = db.aggregated.createIndex({ "hourId": 1 }, {unique: true}); checkret('aggr
 ret = db.summary.createIndex({ "id": 1 }, { unique: true }); checkret('summary id', ret);
 ret = db.summary.createIndex({ "impressionTime": -1 }); checkret('summary impressionTime', ret);
 ret = db.summary.createIndex({semanticId: 1}); checkret('summary semanticId', ret);
+
+ret = db.feeds2.createIndex({lang: 1, label: 1}, {unique: true }); checkret('feeds2 lang+label', ret);
+ret = db.feeds2.createIndex({createdAt: 1}, {expireAfterSeconds: 3600 / 2}); checkret('createdAt expiring after 30minutes', ret);
 
 
 function checkret(info, retval) {
