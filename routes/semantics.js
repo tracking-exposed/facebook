@@ -172,7 +172,8 @@ function loudKeywordsPipeline(maxentries, backintime, amount, skip, lang) {
         ]);
 }
 
-const cache = _.reduce(semantics.langMap, function(memo, langName, l) {
+/* This is the cache block used by langinfo */
+const cache = _.reduce(semantic.langMap, function(memo, langName, l) {
     _.set(memo, l, {
         langName,
         content: null,
@@ -182,6 +183,7 @@ const cache = _.reduce(semantics.langMap, function(memo, langName, l) {
     return memo;
 }, {} );
 
+/* This is part of the langinfo feature */
 function formatReturn(lang, updated) {
     if(updated) {
         cache[lang].content = updated.content;
