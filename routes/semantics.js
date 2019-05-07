@@ -130,11 +130,13 @@ function noogle(req) {
         })
         .map(redactEnriched)
         .then(function(results) {
+            /*
             debug("return noogle, %d objects (%j)", _.size(results), _.map(results, function(e) {
                 if(!e.summary || !e.summary.source || !e.summary.nature)
                     return "❌";
                 return [ e.summary.source, e.summary.nature ];
             }));
+            */
             const ordered = _.orderBy(results, {when: -1 });
             return { json: results };
         });
