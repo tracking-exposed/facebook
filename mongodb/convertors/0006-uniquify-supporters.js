@@ -5,9 +5,10 @@ var debug = require('debug')('0006-unique-supporters');
 var moment = require('moment');
 var nconf = require('nconf');
 
-var mongo = require('../lib/mongo');
+/* this file has been update because in the 'testing' box I found some duplicated supporters */
+var mongo = require('../../lib/mongo');
+var cfgFile = "config/content.json";
 
-var cfgFile = "config/settings.json";
 nconf.argv().env().file({ file: cfgFile });
 
 /* this script might run more than once, the point is

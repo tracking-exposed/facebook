@@ -12,10 +12,11 @@ const semantic = require('../../lib/semantic');
 const cfgFile = "config/content.json";
 nconf.argv().env().file({ file: cfgFile });
 
+const weeksago = _.parseInt(nconf.get('weeksago')) ? _.parseInt(nconf.get('weeksago')) : 1;
 const dpath = "rss/keywords";
 
 function languageFile(lc) {
-    let ref = new Date(moment().subtract(1, 'week').toISOString());
+    let ref = new Date(moment().subtract(weeksago, 'week').toISOString());
     return mongo
         .aggregate( nconf.get('schema').semantics, [
             { $match: { 'lang': lc, when: { $gt: ref }}},
