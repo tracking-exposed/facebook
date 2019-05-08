@@ -29,7 +29,7 @@ function feedsAlgorithm0(req) {
     const amount = req.params.amount ? _.parseInt(req.params.amount) : DEFAULTMAXAMOUNT;
 
     if(!(_.size(lang) == 2 && !_.isUndefined(_.get(semantic.langMap, lang))))
-        return { text: rss.produceError("Language not found") };
+        return { text: rss.produceError(null, null, "Language not found") };
 
     debug("feeds request (lang: %s, label: %s), max size %d",
         lang, label, amount);
