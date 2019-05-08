@@ -11,8 +11,6 @@ ret = db.metadata.createIndex({ "linkedtime.postId" : 1 }); checkret('metadata l
 ret = db.semantics.createIndex({ "label" : 1 });
 ret = db.semantics.createIndex({ "when" : 1 });
 ret = db.semantics.createIndex({ "semanticId" : 1 });
-ret = db.semantics.createIndex({ "timeline" : 1 });
-ret = db.semantics.createIndex({ "user" : 1 });
 
 ret = db.parsererrors.createIndex({ "id": 1 }); checkret('parsererror id', ret);
 
@@ -21,6 +19,8 @@ ret = db.aggregated.createIndex({ "hourId": 1 }, {unique: true}); checkret('aggr
 ret = db.summary.createIndex({ "id": 1 }, { unique: true }); checkret('summary id', ret);
 ret = db.summary.createIndex({ "impressionTime": -1 }); checkret('summary impressionTime', ret);
 ret = db.summary.createIndex({semanticId: 1}); checkret('summary semanticId', ret);
+ret = db.summary.createIndex({user: -1 }); checkret('summary user', ret);
+ret = db.summary.createIndex({timeline: 1}); checkret('summary timeline', ret);
 
 ret = db.feeds2.createIndex({lang: 1, label: 1}, {unique: true }); checkret('feeds2 lang+label', ret);
 ret = db.feeds2.createIndex({createdAt: 1}, {expireAfterSeconds: 3600 / 2}); checkret('createdAt expiring after 30minutes', ret);
