@@ -41,6 +41,11 @@ function feedsAlgorithm0(req) {
                 return rss.composeRSSfeed(lang, label, amount);
             else
                 return { text: f.content };
+        })
+        .then(function(textret) {
+            return _.extend(textret, {
+                headers: { "Content-Type": "application/rss+xml" }
+            });
         });
 };
 
