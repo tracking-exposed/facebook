@@ -18,11 +18,10 @@ if(!nconf.get('password'))
 
 const samplesize = nconf.get('samplesize') || 500;
 
-const version = 1;
 const server = nconf.get('server') || 'http://localhost:8000';
 const url = `${server}/api/v2/debug/exporter/${nconf.get('password')}/${samplesize}`;
 
-debug("API version %d: accessing to %s", version, url);
+debug("Fetching random sample via %s", url);
 return request
     .getAsync(url)
     .then(function(res) {
