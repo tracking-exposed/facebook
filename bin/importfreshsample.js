@@ -45,4 +45,7 @@ return request
     .map(function(done)  {
         if(_.get(done, 'id'))
             console.log(done.id);
+    })
+    .catch(function(error) {
+        debug("――― [E] %s", error.message);
     });
