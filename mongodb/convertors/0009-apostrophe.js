@@ -47,6 +47,7 @@ function convertSemantics(offset, slot) {
                 debug("semantics: %d/%d, %d%%", stats.done, stats.total, 
                     _.round(((100 / stats.total) * stats.done), 1));
             e.title = _.replace(e.title, "'", "’");
+            e.label = _.replace(e.label, "'", "’");
             return mongo
                 .updateOne(nconf.get('schema').semantics, { _id: e._id }, e);
         }, {concurrency: 1})
