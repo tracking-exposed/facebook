@@ -106,7 +106,7 @@ function enrich(req) {
 function noogle(req) {
     const DEFAULTAMOUNT = 13;
     const { amount, skip } = params.optionParsing(req.params.paging, DEFAULTAMOUNT);
-    debug("noogle request (lang: %s, label: %s), amount %d skip %d",
+    debug("noogle request (lang: %s, title: %s), amount %d skip %d",
         req.params.lang, req.params.label, amount, skip);
 
     if(!validLanguage(req.params.lang))
@@ -115,7 +115,7 @@ function noogle(req) {
     return mongo
         .aggregate(nconf.get('schema').semantics, [
             { $sort: { when: -1 }},
-            { $match: { lang: req.params.lang, label: req.params.label }},
+            { $match: { lang: req.params.lang, title: req.params.label }},
             { $group: { _id: "$semanticId" }},
             { $skip: skip },
             { $limit: amount },
