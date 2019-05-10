@@ -20,7 +20,7 @@ function languageFile(lc) {
     return mongo
         .aggregate( nconf.get('schema').semantics, [
             { $match: { 'lang': lc, when: { $gt: ref }}},
-            { $group: { _id: "$title", c: { $sum: 1 }}},
+            { $group: { _id: "$label", c: { $sum: 1 }}},
             { $match: { c: { $gt: 1 }}},
             { $project: { k: "$_id", _id: 0, c: true }}
         ])
