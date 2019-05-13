@@ -18,17 +18,26 @@ html
     .container
         include navbar
 
-        h2 A small issue! no worries, you have just to:
+        h3 Error! you should not be here and it is not your fault ;)
+            br
+        p this happen when you installed fbTREX extension for the 
+            b first time
+            |, don't worry, it is a known isse.
+
         h3
+            br
             ol
                 li Close your Facebook tab
                 li re-open it, scroll a bit, and click again on 
-                    i  Your Data
-        p If you're interested in technicalities, at the first time you install the extensiion, it has not yet loaded the access token necessary to reach your data. That's why in the URL above you see 
-            quote unset
-            |. If you close and re-open facebook,  you should see 40 apparently random characters, which are your token.
+                    i  Your Data 
+                li You should open a page named "personal summary", accessible only to you, because your browser has the secret access code.
+                li That page show you what you are collecting. To be sure the extension is working, this should appear on top of the post (in your NewsFeed)
+                    .container.center
+                        img(src="/images/recorded-post.png")
+                    | or this, in regards of post not explicitly Public:
+                    .container.center
+                        img(src="/images/protected-post.png")
+            br
+        h2 It is not working yet?
 
-        h2 Is not worked?
-        p Sorry for that, if you don't mind, report your problem to us. You can get in touch with us in these ways:
-        include contactus
-
+        p Apologies for any inconveniences, if you don't mind, report your problem to us support﹫tracking・exposed
