@@ -1,6 +1,6 @@
 {
   "name": "fbTREX",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "facebook.tracking.exposed → collaborative tool to investigate personalization algorithms",
   "scripts": {
     "collector": "DEBUG=routes:*,lib:*,fbtrex:* nodemon bin/collector.js --config config/nodemon.json",
@@ -34,7 +34,6 @@
     "nacl-signature": "^1.0.0",
     "nconf": "^0.8.4",
     "node-geoip": "^1.0.1",
-    "pug": "^2.0.3",
     "request": "^2.88.0",
     "reveal.js": "^3.7.0",
     "rss": "^1.2.2",
@@ -44,7 +43,6 @@
   "devDependencies": {
     "nodemon": "^1.18.9",
     "xmldom": "^0.1.27",
-    "stylus": "^0.54.5",
     "xpath": "0.0.27",
     "jsdom": "^13.0.0",
     "chai": "^4.2.0",
