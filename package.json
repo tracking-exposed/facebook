@@ -3,11 +3,10 @@
   "version": "1.1.0",
   "description": "facebook.tracking.exposed → collaborative tool to investigate personalization algorithms",
   "scripts": {
-    "collector": "DEBUG=routes:*,lib:*,fbtrex:* nodemon bin/collector.js --config config/nodemon.json",
+    "collector": "elastic=disabled DEBUG=routes:*,lib:*,fbtrex:* nodemon bin/collector.js --config config/nodemon.json",
     "collector:prod": "DEBUG=lib:*,fbtrex:*,routes:*,-lib:mongo:read node bin/collector",
-    "content": "DEBUG=lib:*,fbtrex:*,routes:* nodemon bin/content.js --config config/nodemon.json",
+    "content": "elastic=disabled DEBUG=lib:*,fbtrex:*,routes:* nodemon bin/content.js --config config/nodemon.json",
     "content:prod": "DEBUG=lib:*,fbtrex:*,routes:*,-lib:mongo:read node bin/content",
-    "build": "bin/install-script.sh",
     "parserv": "DEBUG=*,-lib:parse,-lib:mongo:* node bin/parserv.js",
     "semanticserv": "DEBUG=*,-lib:mongo*,-lib:semantic:v node bin/semanticserv.js",
     "test": "./node_modules/.bin/mocha"
