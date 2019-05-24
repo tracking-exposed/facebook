@@ -25,7 +25,7 @@ const DEFAULTMAXAMOUNT = 20;
 function feedsAlgorithm0(req) {
 
     const lang = req.params.lang;
-    const label = req.params.query;
+    const label = decodeURIComponent(req.params.query);
     const amount = req.params.amount ? _.parseInt(req.params.amount) : DEFAULTMAXAMOUNT;
 
     if(!(_.size(lang) == 2 && !_.isUndefined(_.get(semantic.langMap, lang))))
