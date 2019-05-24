@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const moment = require('moment');
 const Promise = require('bluebird');
-const debug = require('debug')('routes:summary');
+const debug = require('debug')('routes:personal');
 const pug = require('pug');
 const nconf = require('nconf');
 
@@ -174,7 +174,6 @@ function stats(req) {
     return adopters
         .validateToken(req.params.userToken)
         .then(function(supporter) {
-            debug("%j", supporter);
             return Promise.all([
                 mongo.count(nconf.get('schema').timelines, { userId: supporter.userId }),
                 byTimelineLookup(supporter.userId, amount, skip)
