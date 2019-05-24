@@ -1,0 +1,38 @@
+doctype html
+html
+  head
+    link(rel='stylesheet', href='/css/bootstrap.css')
+    link(rel='stylesheet', href='/css/index.css')
+    script(type='text/javascript', src='/js/jquery.js')
+    script(type='text/javascript', src='/js/bootstrap.min.js')
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    meta(name="keywords" content="facebook tracking exposed")
+    title 404
+
+  body
+    .container
+        include navbar
+
+    .container.center
+        h1 fbtrexRSS
+        p A very experimental feature!
+
+    .container
+        h2 How does it work and what might not properly function
+        ol
+            li All the supporters with the browser extension installed, observe public posts
+            li we pass the text observed to our partner: 
+                a(href="https://dandelion.eu") dandelion.eu
+            li Dandelion analyzed the text and try to discover which wikipedia pages are related to it. For example, if someone mention "we can talk on hangout" Dandelion would recognize "Google", because hangout chat is a Google product (you shouldn't use it!)
+            li These keywors are called "topics", and you can subscrive to said topics
+            li The RSS post is composed based on the metadata we sucessfully extract from Facebook posts, and this might have some problem, that's why you might see this page.
+
+    .container.center
+        h2 it is an experimental feature
+        h3 meant to turn upside down the algorithm and watch event horizonatally
+        p And we are working to improve it, as 
+            a(href="https://github.com/tracking-exposed/facebook") free software project
+            |!
+
