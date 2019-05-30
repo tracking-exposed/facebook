@@ -129,6 +129,9 @@ function semantics(req) {
             } };
             return mongo
                 .aggregate(nconf.get('schema').summary, [ ma, li, so, lo ])
+            // TODO remove the map below
+            // TODO match by semanticId 
+            // ensure the amount/skip pagin is respected
         })
         .map(function(e) {
             if(_.size(e.labelcopy)) {
