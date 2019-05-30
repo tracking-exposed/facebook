@@ -137,7 +137,7 @@ function noogle(req) {
                 return [ e.summary.source, e.summary.nature ];
             }));
             */
-            const ordered = _.orderBy(results, {when: -1 });
+            const ordered = _.orderBy(results, {when: 1 });
             return { json: results };
         });
 };
