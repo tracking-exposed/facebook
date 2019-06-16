@@ -60,6 +60,7 @@ Promise.resolve().then(function() {
        debug("mongodb is running, found %d supporters", amount);
     })
     .catch(function(error) {
+	console.error(error);
        console.log("mongodb is not running - check",cfgFile,"- quitting");
        process.exit(1);
     });

@@ -2,7 +2,6 @@ const _ = require('lodash');
 const moment = require('moment');
 const Promise = require('bluebird');
 const debug = require('debug')('routes:summary');
-const pug = require('pug');
 const nconf = require('nconf');
 
 const mongo = require('../lib/mongo');
