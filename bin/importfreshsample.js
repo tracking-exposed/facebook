@@ -3,11 +3,9 @@ const _ = require('lodash');
 const moment = require('moment');
 const Promise = require('bluebird');
 const debug = require('debug')('bin:importfreshsample');
-const reportDuplicate = require('debug')('bin:importfreshsample:duplicate!');
 const request = Promise.promisifyAll(require('request'));
 const nconf = require('nconf');
 
-const mongo = require('../lib/mongo');
 const glue = require('../lib/glue');
 
 nconf.argv().env();
@@ -19,15 +17,8 @@ if(!nconf.get('password'))
 
 const samplesize = nconf.get('samplesize') || 500;
 
-const version = 1;
 const server = nconf.get('server') || 'http://localhost:8000';
-let url = null;
-
-if(version == 1) {
-    url = `${server}/api/v1/glue/${nconf.get('password')}/${samplesize}`;
-} else {
-    url = `${server}/api/v2/debug/exporter/${nconf.get('password')}/${samplesize}`;
-}
+const url = `${server}/api/v2/debug/exporter/${nconf.get('password')}/${samplesize}`;
 
 debug("API version %d: accessing to %s sample size %d", version, url, samplesize);
 return request
@@ -53,4 +44,7 @@ return request
     .map(function(done)  {
         if(_.get(done, 'id'))
             console.log(done.id);
+    })
+    .catch(function(error) {
+        debug("――― [E] %s", error.message);
     });

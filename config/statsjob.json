@@ -1,0 +1,18 @@
+{
+	"daysback": 1,
+	"stats": [{
+		"column": "timelines2",
+		"name": "timelines",
+		"timevar": "startTime",
+		"kinds": [
+			{
+				"name": "ignored",
+				"selector": { "nonfeed": true}
+			},
+			{
+				"name": "newsfeed",
+				"selector": { "nonfeed": { "$exists": false }}
+			}
+		]
+	}]
+}

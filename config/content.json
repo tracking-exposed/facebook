@@ -11,9 +11,8 @@
       "anomalies": "anomalies",
       "semantics": "semantics",
       "labels": "labels",
-      "feeds": "feeds",
-      "aggregated": "aggregated",
-      "parsers": "parsers"
+      "feeds": "feeds2",
+      "aggregated": "aggregated"
   },
   "mongoHost": "localhost",
   "mongoPort": "27017",

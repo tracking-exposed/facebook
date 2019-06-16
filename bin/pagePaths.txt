@@ -1,0 +1,15 @@
+
+/personal/unset/(data|stats)
+/personal/error/(data|stats)
+
+/personal/:userToken/data
+/personal/:userToken/stats
+/personal/:userToken/specs
+/personal/:userToken/gdpr
+/personal/:userToken/summary
+
+
+/revision/:htmlId
+/verify/:timelineId
+
+/impact/parsers/:key

@@ -1,124 +1,23 @@
-# Facebook.Tracking.Exposed
+# facebook.tracking.exposed
 
-Take a look at the [website](https://facebook.tracking.exposed), install the chrome the [chrome extension](https://chrome.google.com/webstore/detail/facebooktrackingexposed/fnknflppefckhjhecbfigfhlcbmcnmmi?hl=en) or drop a comment in [HW](https://news.ycombinator.com/item?id=13161725).
+Take a look at the [website](https://facebook.tracking.exposed), or at a [24 minutes](https://vimeo.com/322250610) video explainig the concept, or a [15 pages .pdf](https://github.com/tracking-exposed/presentation/raw/master/fbTREX%20-%20project%20status%20and%20analysis%20-%20December%202018.pdf) reporting the results achieved in two years.
 
-
-## Contribute
-- Look at how to [run it locally](https://github.com/tracking-exposed/facebook#run-it-locally)
-- Write a parser
-- Write web interfaces
-- Design new analysis
-- More? It's open! just fork it!
 
 ## Architecture
-The project is designed to serve open data and distributed analysis of the data obtained from the users.
+The project is designed to serve open data and distributed analysis of the data obtained from the users.  The server  stores the user's data that receives raw from the [ extension](https://github.com/tracking-exposed/web-extension).
 
-- The server  stores the user's data that receives raw from the [ extension](https://github.com/tracking-exposed/web-extension).
-- The parsers extract metadata from the html snippets, some parsers are executed on the server ([here](https://github.com/tracking-exposed/facebook/tree/master/parsers)) or remotely trough [parser api]().
-- The data are exposed through [api](https://github.com/tracking-exposed/facebook/blob/master/API.md) and web interfaces like [reality check](https://facebook.tracking.exposed/realitycheck/100013962451936/data) and [reality meter](https://facebook.tracking.exposed/realitymeter/100013962451936).
+### Play with the collected data
 
-## Api
-*Endpoint*: https://facebook.tracking.exposed/api/v1
+This is the framework developed to help your analysis: [dashboard](tracking-exposed/dashboard). You need a personal access token to retrieve your data. You can find this token in the **personal summary page**. You have access to this page from the browser extension.
 
-### Get available HTML snippet
+# Know about us, join us, and enjoy our contribution code of conduct
 
-`POST /snippet/status`
+Yes. Wishful thinking.
+Very few people get in touch to collaborate with us. We start to improve the project communication and enlarge the opportunity to reach out (yep, this is our [mattermost channel](https://chat.securitywithoutborders.org/community/channels/trackingexposed)) , because one of the risk we should exclude ASAP, is that we are not really understood.
 
-```
-{
-  "since": "<ISO8601 DateTime>",
-  "until": "<ISO8601 DateTime>",
-  "parserName": "<string>",
-  "requirements": "<object>"
-}
-```
+We were using a [medium page](http://medium.com/@trackingexposed), but because medium is heavily tracking people, and keep asking them to login with Google|Facebook, then it sound better for us keep updates in out project website. As you can guess: _coming soon_ **\[-\_-\]**.
 
-*For example, if your parser is analyzing promoted posts, received in the last 48 hours:*
-```
-{
-  "requirements": { "postType" : true, Type:"feed" },
-  "since": "2016-11-08T21:15:13.511Z",
-  "until": "2016-11-10T21:15:13.516Z",
-  "parserName": "postType",
-}
-```
-
-The server checks the stored HTML pieces in the requested time range and
-answers:
-
-```
-{
-  "available": "<Int>",
-  "limit": "<Int>"
-}
-```
-
-The server checks the stored HTML pieces in the requested time range. It then
-returns the number of `available` HTML snippets that do not yet have a key named
-`parserName`, and the maximum amount of HTML snippets that would be
-returned when the endpoint content (below) is invoked.
-
-### Get HTML snippet
-
-`POST /snippet/content`
-
-Request:
-```
-{
-  "since": "<ISO8601 DateTime>",
-  "until": "<ISO8601 DateTime>",
-  "parserName": "<string>",
-  "requirements": "<object>"
-}
-```
-
-The request is the same as the previous.
-
-Answer:
-```
-[
-  {
-    "html": "<html snippet>",
-    "metadata-1": "<value>",
-    "metadata-2": "<value>",
-    "snippetId": "<hash of html snippet>"
-    },
-],
-```
-
-is a list of objects, each one containing the HTML section, the id, writingTime, and the previously added metadata.
-
-## Run it locally
-
-You need  to have `mongodb` on your machine in order to run the full project.
-
-```bash
-$ sudo apt-get install mongodb
-$ npm install
-$ npm run build
-$ npm run watch
-```
-
-At this point you should able to find your local version on your [localhost address (port 8000)](http://localhost:8000).
-
-Your server is empty, don't expect that connecting at localhost will show you something.
-You might mirror the public section of the database (TODO) and use it ad working data to develop new API/visualisation
-
-### Debug mode
-```bash
-DEBUG=* node app
-```
-
-### Docker support
-Install docker and docker-compose on your local machine
-```
-$ docker-compose up
-```
-
-
-# TREX, Contribution Code of Conduct
-
-TODO Contribution logic follow up with igni
+And below, there is what we ask to our contributors, and what we demand from us:
 
 ## Be friendly and patient
 

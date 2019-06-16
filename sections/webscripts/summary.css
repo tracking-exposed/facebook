@@ -1,0 +1,126 @@
+/*
+ *  V A R I A B L E S
+ */
+.btn-groups {
+  margin-top: 48px;
+  margin-bottom: 24px;
+}
+.btn-groups > .btn-group:nth-child(2) {
+  margin: 0 16px;
+}
+.btn-groups > .btn-group:nth-child(2)::before {
+  content: 'Filter results';
+  color: #8c8c8c;
+  font-weight: lighter;
+  position: absolute;
+  top: -30px;
+  width: 100%;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.btn-groups > .btn-group:last-child::before {
+  content: 'Sort by';
+  color: #8c8c8c;
+  font-weight: lighter;
+  position: absolute;
+  top: -30px;
+  width: 100%;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.grid {
+  display: block;
+  margin: 0 auto 32px;
+  width: 97.5%;
+/* clear fix */
+}
+.grid::after {
+  content: '';
+  display: block;
+  clear: both;
+}
+/* fluid 5 columns */
+.grid-item,
+.grid-sizer {
+  width: 20%;
+}
+.grid-item {
+  float: left;
+  padding: 12px;
+  transition: height 0.2s ease-out;
+}
+.grid-item .content {
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  min-height: 158px;
+}
+.grid-item .content .small {
+  display: inline-block;
+  font-size: 10px;
+}
+.grid-item .content header {
+  background-color: transparent;
+  color: #8c8c8c;
+  display: block;
+  font-size: 90%;
+  font-weight: light;
+  letter-spacing: 2px;
+  padding: 4px 8px;
+  text-align: center;
+  text-transform: uppercase;
+}
+.grid-item .content .body {
+  background-color: #fefefe;
+  flex-grow: 1;
+  padding: 8px 16px;
+  margin: 0 auto;
+  width: calc(100% - 2px);
+}
+.grid-item .content .body .date {
+  display: block;
+  color: #8c8c8c;
+  margin-bottom: 8px;
+}
+.grid-item .content .body .author,
+.grid-item .content .body .teaser {
+  hyphens: auto;
+  word-wrap: break-word;
+}
+.grid-item .content .body .author {
+  color: #4c4c4c;
+  font-size: 1.1em;
+  font-weight: bold;
+  line-height: 1.2;
+  margin-bottom: 6px;
+}
+.grid-item .content .body p {
+  display: inline-block;
+  font-size: 15px;
+  line-height: 1.3;
+}
+.grid-item .content .body a.text-link {
+  color: currentColor;
+  display: block;
+  font-size: 80%;
+  line-height: 1.2;
+}
+.grid-item .content footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 16px;
+  color: #8c8c8c;
+}
+.grid-item .content footer span:not(.post-id) {
+  color: #e6e6e6;
+}
+.grid-item--width2 {
+  width: 40%;
+}
+.grid-item--height2 {
+  height: 400px;
+}
+.grid-item--height-auto {
+  height: auto;
+}

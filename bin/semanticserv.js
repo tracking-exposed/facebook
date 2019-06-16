@@ -31,7 +31,7 @@ function infiniteLoop() {
 
     const timewindow = nconf.get('daysago') ?
         moment().subtract( _.parseInt(nconf.get('daysago')), 'days').format() :
-        moment().subtract(5, 'days').format();
+        moment().subtract(1, 'days').format();
 
     /* this will launch other scheduled tasks too */
     return Promise
@@ -42,27 +42,42 @@ function infiniteLoop() {
         })
         .then(function(entries) {
 
+            resetLast = true;
+
             if(!_.size(entries))
                 return [];
 
-            if(lastExecution)
-                debug("New iteration after %s, processing %d entries",
-                    moment.duration(moment() - lastExecution).humanize(), _.size(entries) );
-            else
-                debug("First execution at %s, processing %d entries", moment().format(), _.size(entries) );
+            let uniqued = _.uniqBy(entries, 'semanticId');
 
-            lastExecution = moment();
-            const limit = _.parseInt(nconf.get('limit'));
+            if(_.size(uniqued) < _.size(entries))
+                resetLast = false;
 
-            if(!_.isNaN(limit) && limit < _.size(entries)) {
-                debug("Process cap to %d requests, we had %d entries, cutting off %d",
-                    limit, _.size(entries), _.size(entries) - limit);
-                entries = _.slice(entries, 0, limit);
-                debugger;
+            if(lastExecution) {
+                debug("New iteration after %s, processing %d(%d) entries",
+                    moment.duration(moment() - lastExecution).humanize(),
+                    _.size(entries), _.size(uniqued) );
+            } else {
+                debug("First execution at %s, processing %d(%d) entries",
+                    moment().format(), _.size(entries), _.size(uniqued) );
             }
-            logSemanticServer(_.size(entries));
-            return entries;
+
+            const limit = _.parseInt(nconf.get('limit')) || 100;
+
+            if(!_.isNaN(limit) && limit < _.size(uniqued)) {
+                debug("Process cap to %d requests, we had %d entries, cutting off %d",
+                    limit, _.size(uniqued), _.size(uniqued) - limit);
+                uniqued = _.slice(uniqued, 0, limit);
+                resetLast = false;
+            }
+
+            if(resetLast)
+                lastExecution = moment();
+
+            logSemanticServer(_.size(uniqued));
+            return uniqued;
         })
+        .map(semantic.doubleCheck, { concurrency: 1 })
+        .then(_.compact)
         .map(process, { concurrency: 1 })
         .then(_.compact)
         .tap(function(entries) {
