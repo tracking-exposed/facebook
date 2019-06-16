@@ -36,6 +36,7 @@
   'unset': pugCompiler('unset'),
 
   'rss': pugCompiler('rss'),
+  'fbtrexRSS': pugCompiler('fbtrexRSS'),
 
   'impact': pugCompiler('statistics/index'),
   'parsers': pugCompiler('statistics/parsers'),

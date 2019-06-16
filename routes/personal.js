@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const moment = require('moment');
 const Promise = require('bluebird');
-const debug = require('debug')('routes:summary');
+const debug = require('debug')('routes:personal');
 const nconf = require('nconf');
 
 const mongo = require('../lib/mongo');
@@ -127,6 +127,9 @@ function semantics(req) {
             } };
             return mongo
                 .aggregate(nconf.get('schema').summary, [ ma, li, so, lo ])
+            // TODO remove the map below
+            // TODO match by semanticId 
+            // ensure the amount/skip pagin is respected
         })
         .map(function(e) {
             if(_.size(e.labelcopy)) {
@@ -172,7 +175,6 @@ function stats(req) {
     return adopters
         .validateToken(req.params.userToken)
         .then(function(supporter) {
-            debug("%j", supporter);
             return Promise.all([
                 mongo.count(nconf.get('schema').timelines, { userId: supporter.userId }),
                 byTimelineLookup(supporter.userId, amount, skip)
