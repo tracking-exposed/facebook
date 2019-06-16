@@ -8,3 +8,7 @@ package-lock.json
 parsers/components/*
 dump
 rss/*
+<<<<<<< HEAD
+=======
+data/*
+>>>>>>> 67566eda6449daf788d476dec864433f95eb4195

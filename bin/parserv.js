@@ -15,7 +15,7 @@ nconf.argv().env().file({ file: 'config/content.json' });
 echoes.addEcho("elasticsearch");
 echoes.setDefaultEcho("elasticsearch");
 
-const concur = _.isUndefined(nconf.get('concurrency') ) ? 1 : _.parseInt(nconf.get('concurrency') );
+const concur = _.isUndefined(nconf.get('concurrency') ) ? 5 : _.parseInt(nconf.get('concurrency') );
 const FREQUENCY = 2; // seconds
 
 const backInTime = _.parseInt(nconf.get('minutesago')) ? _.parseInt(nconf.get('minutesago')) : 10;
@@ -26,7 +26,6 @@ var lastCycleActive = false;
 console.log(`considering the lastActivities since ${backInTime} minutes ago, [minutesago] overrides (${lastExecution})`);
 
 function getLastActive() {
-
     return mongo
         .read(nconf.get('schema').supporters, { lastActivity: {
             $gt: new Date(lastExecution) 
@@ -39,6 +38,22 @@ function getLastActive() {
                 debug("%d active users by lastActivity", _.size(users));
         });
 }
+
+/* -- FUTURE 
+let mongoc = null;
+async function getLastActive() {
+    if(!mongoc) {
+        debug("Initializing mongoDB connection");
+        mongoc = await mongo.clientConnect();
+    }
+    const users = await mongo.read(mongoc, nconf.get('schema').supporters, { lastActivity: {
+            $gt: new Date(lastExecution) 
+    }});
+    if(_.size(users))
+        debug("%d active users by lastActivity", _.size(users));
+    return _.map(users, 'userId');
+}
+*/
 
 function infiniteLoop() {
     /* this will launch other scheduled tasks too */
@@ -58,7 +73,7 @@ function infiniteLoop() {
             };
             return parse
                 .parseHTML(htmlFilter, false);
-        }, { concurrency: 1})
+        }, { concurrency: concur })
         .tap(function(results) {
             lastExecution = moment().toISOString();
 

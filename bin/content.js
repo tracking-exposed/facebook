@@ -2,17 +2,14 @@ const express = require('express');
 const app = express();
 const server = require('http').Server(app);
 const _ = require('lodash');
-const moment = require('moment');
 const bodyParser = require('body-parser');
 const Promise = require('bluebird');
 const debug = require('debug')('fbtrex:content');
 const nconf = require('nconf');
-const pug = require('pug');
 const cors = require('cors');
 const path = require('path');
 
 /* this is the same struct of the previous version */
-const utils = require('../lib/utils');
 const mongo = require('../lib/mongo');
 const common = require('../lib/common');
 
@@ -122,6 +119,13 @@ app.get('/verify/:timelineId', function(req, res) {
     return common.dispatchPromise('getPage', req, res);
 });
 
+/* /impact and /aggregated are covered as static page, this 
+ * is the only one which needs a special treatment */
+app.get('/impact/parsers/:key?', function(req, res) {
+    req.params.page = 'parsers';
+    return common.dispatchPromise('getPage', req, res);
+});
+
 /* project sub section */
 app.get('/project/:projectPage', function(req, res) {
     req.params.page = 'project/' + req.params.projectPage;
@@ -148,3 +152,14 @@ Promise.resolve().then(function() {
        process.exit(1);
     });
 });
+
+/* -- FUTURE
+Promise.resolve().then(function() {
+    if(dbutils.checkMongoWorks()) {
+        debug("mongodb connection works");
+    } else {
+        console.log("mongodb is not running - check", cfgFile,"- quitting");
+        process.exit(1);
+    }
+});
+*/

@@ -1,12 +1,9 @@
 var _ = require('lodash');
-var moment = require('moment');
 var Promise = require('bluebird');
 var debug = require('debug')('routes:htmlunit');
 var nconf = require('nconf');
  
 var mongo = require('../lib/mongo');
-var utils = require('../lib/utils');
-
 
 function unitById(req) {
     // '/api/v2/debug/html/:htmlId'
@@ -19,6 +16,7 @@ function unitById(req) {
             if(!html || !html.id)
                 return { json: { error: `unable to retrive ${htmlId}` }};
 
+            /* and this is compatible via routes/exporter */
             return Promise.all([
                 html,
                 mongo.readOne(nconf.get('schema').metadata, { id: htmlId }),
