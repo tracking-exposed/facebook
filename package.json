@@ -29,7 +29,7 @@
     "harmony-reflect": "^1.6.1",
     "lodash": "^4.17.10",
     "moment": "^2.22.2",
-    "mongodb": "^3.2.3",
+    "mongodb": "^2.1.8",
     "nacl-signature": "^1.0.0",
     "nconf": "^0.8.4",
     "node-geoip": "^1.0.1",
