@@ -207,10 +207,39 @@ function stats(req) {
 };
 
 function daily(req) {
-     /* https://github.com/tracking-exposed/facebook/issues/117
-      * This API is based on `summary` but aggregated by hours
-      * take in account */
-    throw new Error("NIATM");
+
+    const DEFAULTDAYS = 3;
+    const hardcoded = 100;
+    debug("Personal daily statistics requested, it do not support paging, only return last 3 days");
+
+    const match = { $match: {userId: userId }};
+    const sort = { $sort: { startTime: -1 }};
+    const limit = { $limit: hardcoded };
+    const lookup = { $lookup: { from: 'impressions2', localField: 'id', foreignField: 'timelineId', as: 'impressions'}};
+    const unwind = { $unwind: { path: "$impressions", preserveNullAndEmptyArrays: true } };
+    const project = { $project: {
+        _id: 0,
+        "impressionOrder": "$impressions.impressionOrder",
+        "impressionTime": "$impressions.impressionTime",
+        "htmlId": "$impressions.htmlId",
+        geoip: 1,
+        startTime: 1,
+        "timelineId": "$id"
+    }};
+    const summaryl = { $lookup: { from: 'summary', localField: 'htmlId', foreignField: 'id', as: 'summary'  }};
+
+    return adopters
+        .validateToken(req.params.userToken)
+        .then(function(supporter) {
+            return mongo.aggregate(nconf.get('schema').timelines, [
+                match,
+                sort,
+                limit,
+                lookup,
+                group, 
+                unwind, project, summaryl ]);
+        });
+
 };
 
 module.exports = {
