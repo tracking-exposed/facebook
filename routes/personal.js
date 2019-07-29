@@ -204,11 +204,84 @@ function stats(req) {
 
 };
 
+function estimateDuration(impressions) {
+    const f = _.first(impressions);
+    const l = _.last(impressions);
+
+    if(!f || !l || l.id == f.id)
+        return 0;
+
+    return moment.duration(
+        moment(l.impressionTime) - moment(f.impressionTime)
+    ).asSeconds();
+};
+
 function daily(req) {
-     /* https://github.com/tracking-exposed/facebook/issues/117
-      * This API is based on `summary` but aggregated by hours
-      * take in account */
-    throw new Error("NIATM");
+
+    const DEFAULTDAYS = 3;
+    const hardcoded = 100;
+    // exists but not used ATM (req.params.dayrange)
+    debug("Personal daily statistics requested, it do not support paging, only return last 3 days");
+
+    return adopters
+        .validateToken(req.params.userToken)
+        .then(function(supporter) {
+            return mongo.aggregate(nconf.get('schema').timelines, [
+                { $match: { userId: supporter.userId }},
+                { $limit: 100 },
+                { $group: { _id: {
+                     year:  { $year: "$startTime" },
+                     month: { $month: "$startTime" },
+                     day:   { $dayOfMonth: "$startTime" },
+                     userId: "$userId"
+                   },
+                   day: { $first: "$startTime" },
+                   ids: { $addToSet: "$id" },
+                 }},
+                 { $project: { userId: "$_id.userId", count: "$_id.count", day: true, "timelineId": "$ids", _id: false }},
+                 { $sort: { days: -1 }},
+                 { $limit: 3 },
+                 { $unwind: "$timelineId" },
+                 { $lookup: { from: 'metadata', localField: 'timelineId', foreignField: 'timelineId', as: 'metadata'}},
+                 { $lookup: { from: 'impressions2', localField: 'timelineId', foreignField: 'timelineId', as: 'impressions'}}
+            ]);
+        })
+        .map(function(timeline) {
+            timeline.dayString = moment(timeline.day).format("YYYY-MM-DD");
+            timeline.durationSeconds = estimateDuration(timeline.impressions);
+            return timeline;
+        })
+        .then(function(x) {
+            return _.values(_.groupBy(x, 'dayString'));
+        })
+        .map(function(dayr) {
+            // refactor: at events the timeline is saved pseudonymized and this lead
+            //           to query summary this would make simpler the sums below.
+            const metadatas = _.flatten(_.map(dayr, 'metadata'));
+            const ntimelines = _.size(dayr);
+            const npost = _.size(metadatas);
+            const nature = _.countBy(metadatas, 'nature');
+            const totalSeconds = _.sum(_.map(dayr, 'durationSeconds'));
+            const duration = moment.duration({ seconds: totalSeconds }).humanize();
+            const sources = _.size(_.uniq(_.map(metadatas, function(m) {
+                return m.attributions[0].content;
+            })));
+
+            return {
+                day: dayr[0].dayString,
+                ntimelines,
+                npost,
+                nature,
+                totalSeconds,
+                duration,
+                sources,
+            };
+        })
+        .then(function(stats) {
+            debug("Computed daily stats for %d %j %j",
+                _.size(stats), _.map(stats, 'duration'), _.map(stats, 'npost'));
+            return { json: stats };
+        });
 };
 
 module.exports = {
