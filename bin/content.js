@@ -15,6 +15,7 @@ const path = require('path');
 const utils = require('../lib/utils');
 const mongo = require('../lib/mongo');
 const common = require('../lib/common');
+const security = require('../lib/security');
 
 var cfgFile = "config/content.json";
 nconf.argv().env().file({ file: cfgFile })
@@ -160,3 +161,5 @@ Promise.resolve().then(function() {
        process.exit(1);
     });
 });
+
+security.checkKeyIsSet();
