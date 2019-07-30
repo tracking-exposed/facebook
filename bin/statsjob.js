@@ -6,7 +6,7 @@ const debug = require('debug')('bin:statsjob');
 const nconf= require('nconf');
 
 const aggregated = require('../lib/aggregated');
-const mongo = require('../lib/mongo2');
+const mongo = require('../lib/mongo3');
 const utils = require('../lib/utils');
 
 /*

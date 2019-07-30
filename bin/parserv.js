@@ -23,9 +23,9 @@ const backInTime = _.parseInt(nconf.get('minutesago')) ? _.parseInt(nconf.get('m
 var lastExecution = moment().subtract(backInTime, 'minutes').toISOString();
 var lastCycleActive = false;
 
-console.log(`considering the lastActivities since ${backInTime} minutes ago, [minutesago] overrides (${lastExecution})`);
 
 function getLastActive() {
+    debug(`considering the lastActivities since ${backInTime} minutes ago, [minutesago] overrides (${lastExecution})`);
     return mongo
         .read(nconf.get('schema').supporters, { lastActivity: {
             $gt: new Date(lastExecution) 

@@ -3,15 +3,10 @@
     "bin/*.js",
     "lib/*.js",
     "routes/*.js",
-    "sections/*.pug",
-    "sections/*/*.pug",
-    "styles/*.styl",
-    "dist/**"
-  ],
-  "ignore": [
-    "sections/webscripts/*.js"
+    "node_modules/**",
+    "parsers/**"
   ],
   "verbose": true,
   "exitcrash": false,
-  "ext": "js css pug styl"
+  "ext": "js"
 }
