@@ -5,6 +5,7 @@
   "scripts": {
     "collector": "DEBUG=routes:*,lib:*,fbtrex:* nodemon bin/collector.js --config config/nodemon.json",
     "collector:prod": "FBTREX=production DEBUG=lib:*,fbtrex:*,routes:*,-lib:mongo:read node bin/collector",
+    "collector:watch": "FBTREX=production key=fuffa elastic=disabled DEBUG=lib:*,fbtrex:*,routes:* node bin/collector",
     "content": "DEBUG=fbtrex:*,routes:* node bin/content.js --config config/nodemon.json",
     "content:watch": "DEBUG=lib:*,fbtrex:*,routes:* nodemon bin/content.js --config config/nodemon.json",
     "content:prod": "FBTREX=production DEBUG=lib:*,fbtrex:*,routes:*,-lib:mongo:read node bin/content",
