@@ -229,9 +229,10 @@ function promisifyInputs(body, geoinfo, supporter) {
     });
 
     if(_.size(processed.impressions))
-        debug(" * impressionOrder 1st %d last %d",
+        debug(" * impressionOrder 1st %d last %d [last queue %d]",
             _.first(processed.impressions).impressionOrder,
-            _.last(processed.impressions).impressionOrder
+            _.last(processed.impressions).impressionOrder,
+            _.size(last)
         );
 
     return functionList;
@@ -239,9 +240,9 @@ function promisifyInputs(body, geoinfo, supporter) {
 
 var last = null;
 function getMirror(req) {
+
     if(!security.checkPassword(req))
         return security.authError;
-
 
     if(last) {
         let retval = Object(last);
@@ -298,6 +299,8 @@ function processEvents(req) {
             'info': "Invalid signature"
         }};
     }
+
+    appendLast(req);
 
     return mongo
         .read(nconf.get('schema').supporters, {
