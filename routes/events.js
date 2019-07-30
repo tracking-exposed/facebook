@@ -249,7 +249,7 @@ function getMirror(req) {
         last = null;
         debug("getMirror: authentication successfull, %d elements in volatile memory",
             _.size(retval) );
-        return { content: retval, elements: _.size(retval) };
+        return { json: { content: retval, elements: _.size(retval) }};
     } else
         debug("getMirror: auth OK, but nothing to be returned");
 
