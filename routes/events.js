@@ -12,6 +12,7 @@ var mongo = require('../lib/mongo');
 var utils = require('../lib/utils');
 var echoes = require('../lib/echoes');
 var adopters = require('../lib/adopters');
+var security = require('../lib/security');
 
 function processHeaders(received, required) {
     var ret = {};
@@ -228,12 +229,39 @@ function promisifyInputs(body, geoinfo, supporter) {
     });
 
     if(_.size(processed.impressions))
-        debug(" * impressionOrder 1st %d last %d",
+        debug(" * impressionOrder 1st %d last %d [last queue %d]",
             _.first(processed.impressions).impressionOrder,
-            _.last(processed.impressions).impressionOrder
+            _.last(processed.impressions).impressionOrder,
+            _.size(last)
         );
 
     return functionList;
+};
+
+var last = null;
+function getMirror(req) {
+
+    if(!security.checkPassword(req))
+        return security.authError;
+
+    if(last) {
+        let retval = Object(last);
+        last = null;
+        debug("getMirror: authentication successfull, %d elements in volatile memory",
+            _.size(retval) );
+        return { json: { content: retval, elements: _.size(retval) }};
+    } else
+        debug("getMirror: auth OK, but nothing to be returned");
+
+    return { json: { content: null } };
+}
+function appendLast(req) {
+    const MAX_STORED_CONTENT = 10;
+    if(!last) last = [];
+    if(_.size(last) > MAX_STORED_CONTENT) 
+        last = _.tail(last);
+
+    last.push(_.pick(req, ['headers', 'body']));
 };
 
 function processEvents(req) {
@@ -271,6 +299,8 @@ function processEvents(req) {
             'info': "Invalid signature"
         }};
     }
+
+    appendLast(req);
 
     return mongo
         .read(nconf.get('schema').supporters, {
@@ -325,5 +355,6 @@ function processEvents(req) {
 };
 
 module.exports = {
-    processEvents: processEvents
+    processEvents,
+    getMirror
 };

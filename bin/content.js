@@ -11,6 +11,7 @@ const cors = require('cors');
 /* this is the same struct of the previous version */
 const mongo = require('../lib/mongo');
 const common = require('../lib/common');
+const security = require('../lib/security');
 
 var cfgFile = "config/content.json";
 nconf.argv().env().file({ file: cfgFile })
@@ -76,3 +77,5 @@ Promise.resolve().then(function() {
     }
 });
 */
+
+security.checkKeyIsSet();

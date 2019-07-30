@@ -19,5 +19,6 @@
   "mongoDb": "facebook",
   "port": 8000,
   "interface": "127.0.0.1",
-  "elastic": "http://localhost:9200"
+  "elastic": "http://localhost:9200",
+  "key": "invalid_default"
 }

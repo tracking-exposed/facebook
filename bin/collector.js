@@ -10,17 +10,16 @@ const nconf = require('nconf');
 const cors = require('cors');
 
 // const dbutils = require('../lib/dbutils'); FUTURE
+const mongo = require('../lib/mongo');
+const common = require('../lib/common');
+const security = require('../lib/security');
 
-cfgFile = "config/collector.json";
-redOn = "\033[31m";
-redOff = "\033[0m";
+const cfgFile = "config/collector.json";
+const redOn = "\033[31m";
+const redOff = "\033[0m";
 
 nconf.argv().env().file({ file: cfgFile });
 console.log(redOn + "ઉ nconf loaded, using " + cfgFile + redOff);
-
-const mongo = require('../lib/mongo');
-const commont = require('../lib/common');
-
 
 /* configuration for elasticsearch */
 const echoes = require('../lib/echoes');
@@ -31,6 +30,7 @@ const collectorImplementations = {
     processEvents:    require('../routes/events').processEvents,
     getSelector:      require('../routes/selector').getSelector,
     userInfo:         require('../routes/selector').userInfo,
+    getMirror:        require('../routes/events').getMirror,
 };
 
 function dispatchPromise(name, req, res) {
@@ -105,6 +105,11 @@ app.get('/api/v1/selector', function(req, res) {
     return dispatchPromise('getSelector', req, res);
 });
 
+/* special input mirroring functionality */
+app.get('/api/v1/mirror/:key', function(req, res) {
+    return dispatchPromise('getMirror', req, res);
+});
+
 Promise.resolve().then(function() {
   return mongo
     .count(nconf.get('schema').supporters)
@@ -127,3 +132,5 @@ Promise.resolve().then(function() {
     }
 });
 */
+
+security.checkKeyIsSet();

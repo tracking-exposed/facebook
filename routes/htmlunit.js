@@ -42,11 +42,13 @@ function unitById(req) {
 };
 
 function unitByDate(req) {
+    // This API is not used or has never been used.
+    //
     // '/api/v2/debug/:key/date/:savingDay/:savingMinutes'
     // expected format is YYYY-MM-DD / HH:mm
     // this return a list of all the metadata recorded in a due period of 60 seconds
     const reft = new Date(req.params.savingTime);
-    if(nconf.get('password') != req.params.dey)
+    if(nconf.get('password') != req.params.key)
         return { json: "wrong key" };
 
     return mongo.readLimit(nconf.get('schema').htmls, {
