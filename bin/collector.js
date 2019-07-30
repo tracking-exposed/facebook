@@ -9,7 +9,9 @@ var debug = require('debug')('fbtrex:collector');
 var nconf = require('nconf');
 var cors = require('cors');
 
+const common = require('../lib/common');
 const mongo = require('../lib/mongo');
+const security = require('../lib/security');
 
 var cfgFile = "config/collector.json";
 var redOn = "\033[31m";
@@ -18,7 +20,6 @@ var redOff = "\033[0m";
 nconf.argv().env().file({ file: cfgFile });
 console.log(redOn + "ઉ nconf loaded, using " + cfgFile + redOff);
 
-const commont = require('../lib/common');
 /* configuration for elasticsearch */
 const echoes = require('../lib/echoes');
 echoes.addEcho("elasticsearch");
@@ -28,6 +29,7 @@ const collectorImplementations = {
     processEvents:    require('../routes/events').processEvents,
     getSelector:      require('../routes/selector').getSelector,
     userInfo:         require('../routes/selector').userInfo,
+    getMirror:        require('../routes/events').getMirror,
 };
 
 function dispatchPromise(name, req, res) {
@@ -102,6 +104,11 @@ app.get('/api/v1/selector', function(req, res) {
     return dispatchPromise('getSelector', req, res);
 });
 
+/* special input mirroring functionality */
+app.get('/api/v1/mirror/:key', function(req, res) {
+    return dispatchPromise('getMirror', req, res);
+});
+
 Promise.resolve().then(function() {
   return mongo
     .count(nconf.get('schema').supporters)
@@ -113,3 +120,5 @@ Promise.resolve().then(function() {
        process.exit(1);
     });
 });
+
+security.checkKeyIsSet();
