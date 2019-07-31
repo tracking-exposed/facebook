@@ -114,7 +114,6 @@ function metadata(req) {
 function semantics(req) {
     const { amount, skip } = params.optionParsing(req.params.paging);
     debug("semantics request: %d, skip %d", amount, skip);
-
     return adopters
         .validateToken(req.params.userToken)
         .then(function(supporter) {
@@ -220,16 +219,17 @@ function estimateDuration(impressions) {
 
 function daily(req) {
 
-    const DEFAULTDAYS = 3;
+    const DEFAULTDAYS = 4;
     const hardcoded = 100;
     // exists but not used ATM (req.params.dayrange)
-    debug("Personal daily statistics requested, it do not support paging, only return last 3 days");
+    debug("Personal daily statistics requested, it do not support paging, only return last %d days", DEFAULTDAYS);
 
     return adopters
         .validateToken(req.params.userToken)
         .then(function(supporter) {
             return mongo.aggregate(nconf.get('schema').timelines, [
                 { $match: { userId: supporter.userId }},
+                { $sort: { startTime: -1 }},
                 { $limit: 100 },
                 { $group: { _id: {
                      year:  { $year: "$startTime" },
