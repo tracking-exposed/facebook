@@ -16,8 +16,7 @@ echoes.addEcho("elasticsearch");
 echoes.setDefaultEcho("elasticsearch");
 
 const concur = _.isUndefined(nconf.get('concurrency') ) ? 5 : _.parseInt(nconf.get('concurrency') );
-const FREQUENCY = 2; // seconds
-
+const FREQUENCY = _.isUndefined(nconf.get('frequency') ) ? 2 : _.parseInt(nconf.get('frequency') );
 const backInTime = _.parseInt(nconf.get('minutesago')) ? _.parseInt(nconf.get('minutesago')) : 10;
 
 var lastExecution = moment().subtract(backInTime, 'minutes').toISOString();

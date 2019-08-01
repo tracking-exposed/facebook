@@ -1,0 +1,69 @@
+{
+    "mongoHost": "localhost",
+    "mongoPort": "27017",
+    "mongoDb": "facebook",
+
+    "stats": [
+    {
+        "name": "timelines",
+        "column": "timelines2",
+        "timevar": "startTime",
+        "variables": [
+            {
+                "name": "skipped",
+                "selector": { "nonfeed": true}
+            },
+            {
+                "name": "newsfeed",
+                "selector": { "nonfeed": { "$exists": false }}
+            },
+            {
+                "name": "total",
+                "selector": {}
+            }
+        ]
+    },
+    {
+        "name": "impressions",
+        "column": "impressions2",
+        "timevar": "impressionTime",
+        "variables": [
+            {
+                "name": "private",
+                "selector": { "visibility": "private" }
+            },
+            {
+                "name": "public",
+                "selector": { "htmlId": { "$exists": true} }
+            },
+            {
+                "name": "total",
+                "selector": { }
+            }
+        ]
+    },
+    {
+        "name": "processing",
+        "column": "htmls2",
+        "timevar": "savingTime",
+        "variables": [
+            {
+                "name": "successful",
+                "selector": { "processed": true }
+            },
+            {
+                "name": "failure",
+                "selector": { "processed": false }
+            },
+            {
+                "name": "unprocessed",
+                "selector": { "processed": { "$exists": false } }
+            },
+            {
+                "name": "total",
+                "selector": { }
+            }
+        ]
+    }
+    ]
+}
