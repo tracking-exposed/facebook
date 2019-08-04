@@ -34,7 +34,11 @@ async function computeHourCount(mongoc, statinfo, hoursref) {
     });
 
     /* todo other kind of calculus which are not count */
-    return await Promise.all(counting);
+    return await Promise
+        .all(counting)
+        .catch(function(error) {
+            debug("Error in computeHourCount (%s): %s", statinfo.name, error.message);
+        });
 };
 
 
@@ -63,14 +67,21 @@ async function start() {
         debug("Completed upsert in %s", entry.name);
     });
 
-    await Promise.all(statsp);
+    await Promise.all(statsp)
+        .catch(function(error) {
+            debug("Error in main function: %s", error.message);
+        });
+
     await mongoc.close();
 
     debug("done")
 };
 
-
-start();
+try {
+    start();
+} catch(error) {
+    debug("Unexpected error: %s", error.message);
+}
 
 
 /*

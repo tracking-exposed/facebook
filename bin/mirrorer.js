@@ -8,7 +8,7 @@ var nconf = require('nconf');
 nconf.argv().env();
 
 if(!nconf.get('key'))
-    return console.log("--password required");
+    return console.log("--key required");
 
 const source = nconf.get('source') || 'https://collector.facebook.tracking.exposed';
 const sourceUrl = `${source}/api/v1/mirror/${nconf.get('key')}/`;

@@ -20,32 +20,36 @@ function resolveVariables(varname) {
   if(_.endsWith(varname, '?'))
     return '';
 
-  if(_.startsWith(varname, ':'))
-    return nconf.get(varname.substr(1));
-    
+  if(_.startsWith(varname, ':')) {
+    let provided = nconf.get(varname.substr(1));
+    if(!provided) {
+      debug("missing of variable %s, returning `dummy`", varname.substr(1));
+      return 'dummy';
+    }
+    return provided;
+  }
   return varname;
 };
 
 function doTheTest(api) {
  
   const x = _.join(_.map(_.split(api.route, '/'), resolveVariables), '/');
-  console.log(x);
 
   it(`testing ${api.desc}`, function() {
-    const url = 'http://' + endpoint + x;
-    debug("%s", url);
+    const url = `http://${endpoint}${x}`;
     return various
       .loadJSONurl(url)
       .tap(function(got) {
         expect(got).is.an.instanceOf(Object);
+      })
+      .catch(function(error) {
+        debug("E %s %s: %s", api.desc, url, error.message);
       });
   });
 }
 
-describe(`testing API in \`endpoint\` ${endpoint}`, function() {
-
+describe(`Testing API in \`endpoint\` ${endpoint}`, function() {
   _.each(contentAPI, doTheTest);
-
 });
 
 
