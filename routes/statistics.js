@@ -107,25 +107,40 @@ function counter(req) {
     });
 }
 
-function aggregated(req) {
-
-    const twoWeeks = moment().subtract(14, 'days');
-    if(req.params.raw === 'raw') {
-        debug("requested raw aggregated content");
-        return mongo
-            .read(nconf.get('schema').aggregated, { hourOnly: { $gt: new Date(twoWeeks) }})
-            .then(function(all) {
-                return { json: all };
-            });
-    } else {
-        debug("requested the summarized aggregated stats");
-        return { json: 'not yet' };
-    }
+function parsers(req) {
+    // the content in 'aggregated' is saved by parserv in regards of parsed content
+    const days = 14;
+    debug("Requested aggregated parsers results (last %d days hardcoded)", days);
+    const twoWeeks = moment().subtract(days, 'days');
+    const expected = 24 * days;
+    return mongo
+        .read(nconf.get('schema').aggregated, { hourOnly: { $gt: new Date(twoWeeks) }})
+        .then(function(all) {
+            if(_.size(all) != expected)
+                debug("(?) Returning %d elements on %d expected", _.size(all), expected);
+            return { json: all };
+        });
 };
 
+function statistics(req) {
+    // the content in 'stats' is saved by count-o-clock and the selector here required is 
+    // specifiy in config/stats.json
+    const name = req.params.name;
+    const days = 14;
+    debug("Requested statistics [%s] (last %d days hardcoded)", name, days);
+    const twoWeeks = moment().subtract(days, 'days');
+    const expected = 24 * days;
+    return mongo
+        .read(nconf.get('schema').stats, { hour: { $gt: new Date(twoWeeks) }, name: name })
+        .then(function(all) {
+            if(_.size(all) != expected)
+                debug("(?) Returning %d elements on %d expected", _.size(all), expected);
+            return { json: all };
+        });
+}
 
 module.exports = {
     counter,
-    aggregated,
-    parsers: function(req) { debug("not implemented: %j", req.params); },
+    statistics,
+    parsers
 };

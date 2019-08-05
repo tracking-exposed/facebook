@@ -23,7 +23,7 @@ function resolveVariables(varname) {
   if(_.startsWith(varname, ':')) {
     let provided = nconf.get(varname.substr(1));
     if(!provided) {
-      debug("missing of variable %s, returning `dummy`", varname.substr(1));
+      debug("[!] Missing of variable %s, returning `dummy`", varname.substr(1));
       return 'dummy';
     }
     return provided;
@@ -33,9 +33,8 @@ function resolveVariables(varname) {
 
 function doTheTest(api) {
  
-  const x = _.join(_.map(_.split(api.route, '/'), resolveVariables), '/');
-
-  it(`testing ${api.desc}`, function() {
+  it(`API ${api.desc}: should return JSON`, function() {
+    const x = _.join(_.map(_.split(api.route, '/'), resolveVariables), '/');
     const url = `http://${endpoint}${x}`;
     return various
       .loadJSONurl(url)
@@ -44,12 +43,15 @@ function doTheTest(api) {
       })
       .catch(function(error) {
         debug("E %s %s: %s", api.desc, url, error.message);
+        expect(error.message).to.be.equal(null);
       });
   });
 }
 
-describe(`Testing API in \`endpoint\` ${endpoint}`, function() {
-  _.each(contentAPI, doTheTest);
+_.each(contentAPI, function(api) {
+    describe(`Testing API in ${endpoint} ${api.desc} ${api.url}`, function() {
+        return doTheTest(api);
+    });
 });
 
 

@@ -12,7 +12,8 @@
       "semantics": "semantics",
       "labels": "labels",
       "feeds": "feeds2",
-      "aggregated": "aggregated"
+      "aggregated": "aggregated",
+      "stats": "stats"
   },
   "mongoHost": "localhost",
   "mongoPort": "27017",
