@@ -14,14 +14,12 @@ const statsMap = nconf.get('stats');
 const name = nconf.get('name');
 
 
-async function computeHourCount(mongoc, statinfo, hoursref) {
+async function computeCount(mongoc, statinfo, filter) {
+    /* here each section of config/stats.json is processed,
+     * this function is called twice: once with 'hour' filter
+     * and another with 'day' */
 
-    const filter = _.set({}, statinfo.timevar, {
-        $gte: new Date(hoursref.reference),
-        $lt: new Date(hoursref.hourOnext)
-    });
-
-    debug("stats on [%s], named %s, has %d variables",
+    debug("HourCollection: [%s], named %s, has %d variables",
         statinfo.column,
         statinfo.name,
         _.size(statinfo.variables)
@@ -45,26 +43,46 @@ async function computeHourCount(mongoc, statinfo, hoursref) {
 async function start() {
     const hoursago = utils.parseIntNconf('hoursago', 0);
     const statshour = moment().subtract(hoursago, 'h').format();
-    const hoursref = aggregated.hourData(statshour);
     const tobedone = name ? _.filter(statsMap, { name }) : statsMap;
-
-    debug("Loaded %d possible statistics, specific request: %s, %d to be done",
-        _.size(statsMap), name ? name : "[unset]", _.size(tobedone));
 
     const mongoc = await mongo.clientConnect();
 
+    debug("Loaded %d possible statistics %s: %d to be done", 
+        _.size(statsMap), name ? `only ${name}` : "", _.size(tobedone));
+
     let statsp = await _.map(tobedone, async function(statinfo) {
-        let results = await computeHourCount(mongoc, statinfo, hoursref);
-        debug("Computed %s: %j", statinfo.name, results);
-        const entry = _.reduce(results, function(memo, e) {
+        const hoursref = aggregated.hourData(statshour);
+        const hourfilter = _.set({}, statinfo.timevar, {
+            $gte: new Date(hoursref.reference),
+            $lt: new Date(hoursref.hourOnext)
+        });
+        const hourC = await computeCount(mongoc, statinfo, hourfilter);
+        debug("Hour computed %s: %j", statinfo.name, hourC);
+        const entry = _.reduce(hourC, function(memo, e) {
             return _.merge(memo, e);
         }, {
             hourId: hoursref.hourId,
             hour: new Date(hoursref.hourOnly),
             name: statinfo.name
         });
-        const rv = await mongo.upsertOne(mongoc, 'stats', { hourId: hoursref.hourId, name: statinfo.name }, entry);
-        debug("Completed upsert in %s", entry.name);
+        const rv1 = await mongo.upsertOne(mongoc, 'stats', { hourId: hoursref.hourId, name: statinfo.name }, entry);
+
+        /* -- Day -- */
+        const dayref = aggregated.dayData(statshour);
+        const dayfilter = _.set({}, statinfo.timevar, {
+            $gte: new Date(dayref.reference),
+            $lt: new Date(dayref.dayOnext)
+        });
+        const dayC = await computeCount(mongoc, statinfo, dayfilter);
+        debug("Day computed %s: %j", statinfo.name, dayC);
+        const ready = _.reduce(dayC, function(memo, e) {
+            return _.merge(memo, e);
+        }, {
+            dayId: dayref.dayId,
+            day: new Date(dayref.dayOnly),
+            name: statinfo.name
+        });
+        const rv2 = await mongo.upsertOne(mongoc, 'stats', { dayId: dayref.dayId, name: statinfo.name }, ready);
     });
 
     await Promise.all(statsp)
@@ -73,8 +91,6 @@ async function start() {
         });
 
     await mongoc.close();
-
-    debug("done")
 };
 
 try {
@@ -83,53 +99,6 @@ try {
     debug("Unexpected error: %s", error.message);
 }
 
-
-/*
- * timelines feed 
-impressions private or not 
-htmls2: processed or not
-metadata: niente. si conteggia status
-"attributions" : 1,
-"commentable" : 1,
-"adinfo" : 0,
-"texts" : 0,
-"externalLinks" : 0,
-"commentsLinks" : 0,
-"linkontime" : 1,
-"alt" : 1,
-"reasons" : 0,
-"sharer" : 0,
-"sharedContent" : 0
-
-accesses2: distinct su ccode
-summary: distinct su user
-
-[
-	"accesses2",
-	"alarms",
-	"entities",
-	"feeds",
-	"finalized",
-	"haha",
-	"htmls2",
-	"impressions2",
-	"labels",
-	"metadata",
-	"opendata1",
-	"parsererrors",
-	"parserstats",
-	"performa",
-	"reality",
-	"semantics",
-	"summary",
-	"summaryCopy",
-	"supporters2",
-	"timelines2"
-]
-
---- NON salvare mai le cose a 0.
-
-*/
 
 /*
 const echoes = require('../lib/echoes');

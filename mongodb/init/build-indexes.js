@@ -28,6 +28,7 @@ ret = db.summary.createIndex({ "timeline": 1}); checkret('summary timeline', ret
 ret = db.feeds2.createIndex({ "lang": 1, "label": 1}, {unique: true }); checkret('feeds2 lang+label', ret);
 ret = db.feeds2.createIndex({ "createdAt": 1}, {expireAfterSeconds: 3600 / 2}); checkret('createdAt expiring after 30minutes', ret);
 
+ret = db.stats.createIndex({ "id": 1}, {unique: true });
 
 function checkret(info, retval) {
     retval.info = info;
