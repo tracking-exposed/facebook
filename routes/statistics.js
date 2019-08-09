@@ -157,12 +157,9 @@ function statistics(req) {
             return _.omit(e, ['_id'])
         })
         .then(function(content) {
-            return { json: {
-                content,
-                amount,
-                unit,
-                name
-            } };
+            return { json: content,
+                     headers: { amount, unit, name }
+            };
         });
 }
 
