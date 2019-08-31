@@ -128,7 +128,7 @@ function semantics(req) {
             return mongo
                 .aggregate(nconf.get('schema').summary, [ ma, li, so, lo ])
             // TODO remove the map below
-            // TODO match by semanticId 
+            // TODO match by semanticId
             // ensure the amount/skip pagin is respected
         })
         .map(function(e) {
@@ -217,18 +217,18 @@ function estimateDuration(impressions) {
 };
 
 function daily(req) {
-
-    const DEFAULTDAYS = 3;
-    const hardcoded = 100;
-    // exists but not used ATM (req.params.dayrange)
-    debug("Personal daily statistics requested, it do not support paging, only return last 3 days");
-
+    const LIMITPERDAY = 300; // 300 timelines per day are way too much
+    const { amount, skip } = params.optionParsing(req.params.paging, 3);
+    const dayamount = ( amount < 3 ) ? 3 : amount;
+    const maxtimelines = dayamount * LIMITPERDAY;
+    debug("Personal daily statistics day ago %d, day amount %d, maxtimelines",
+        skip, dayamount, maxtimelines);
     return adopters
         .validateToken(req.params.userToken)
         .then(function(supporter) {
             return mongo.aggregate(nconf.get('schema').timelines, [
                 { $match: { userId: supporter.userId }},
-                { $limit: 100 },
+                { $limit: maxtimelines },
                 { $group: { _id: {
                      year:  { $year: "$startTime" },
                      month: { $month: "$startTime" },
@@ -240,7 +240,8 @@ function daily(req) {
                  }},
                  { $project: { userId: "$_id.userId", count: "$_id.count", day: true, "timelineId": "$ids", _id: false }},
                  { $sort: { days: -1 }},
-                 { $limit: 3 },
+                 { $skip: skip },
+                 { $limit: dayamount },
                  { $unwind: "$timelineId" },
                  { $lookup: { from: 'metadata', localField: 'timelineId', foreignField: 'timelineId', as: 'metadata'}},
                  { $lookup: { from: 'impressions2', localField: 'timelineId', foreignField: 'timelineId', as: 'impressions'}}
