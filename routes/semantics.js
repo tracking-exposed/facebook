@@ -292,6 +292,25 @@ function keywords(req) {
         });
 };
 
+function unit(req) {
+    const semanticId = req.params.semanticId;
+    debug("semantic unit query: %s", semanticId);
+    return Promise.all([
+        mongo.read(nconf.get('schema').semantics, { semanticId: semanticId }),
+        mongo.read(nconf.get('schema').summary, { semanticId: semanticId })
+    ])
+    .then(function(e) {
+        debug("Found %d semantics and %d posts!",
+            _.size(e[0]), _.size(e[1]) );
+        return { 
+            json: {
+                labels: _.map(e[0], function(semantic) { return _.omit(semantic, ['_id']); }),
+                posts: _.map(e[1], function(post) { return _.omit(post, ['_id']); })
+            }
+        };
+    })
+}
+
 module.exports = {
     labels,
     semantics,
@@ -300,5 +319,6 @@ module.exports = {
     noogle,
     langinfo,
     languages,
-    keywords
+    keywords,
+    unit
 };
