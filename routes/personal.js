@@ -86,7 +86,7 @@ function metadata(req) {
 
 function enrich(req) {
 
-    var amount = 0, skip, when = null;
+    var amount = 0, skip, pipeline, when = null;
     if(!req.params.paging || _.size(_.split(req.params.paging, '-')) == 2) {
         let paging = params.optionParsing(req.params.paging);
         amount = paging.amount;
@@ -104,7 +104,7 @@ function enrich(req) {
     /* pipeline should be:
             match, limit, sort, lookup 
        the match and limits are added below in the promise chain */
-    let pipeline = [
+    let lookup = [
         { $sort: { impressionTime: -1 } },
         { $lookup: {
             from: 'labels',
@@ -126,23 +126,20 @@ function enrich(req) {
                         user: supporter.pseudo,
                         impressionTime: { $lt: endOf, $gt: startOf }
                     } }
-                ], pipeline);
+                ], lookup);
             } else {
                 pipeline = _.concat([
                     { $match: { user: supporter.pseudo } },
                     { $skip: skip },
                     { $limit: amount }
-                ], pipeline);
+                ], lookup);
             }
 
             return mongo
                 .aggregate(nconf.get('schema').summary, pipeline);
-            // TODO remove the map below
-            // TODO match by semanticId
-            // TODO align the information with enrich format?
-            // ensure the amount/skip pagin is respected
         })
         .map(function(e) {
+            debug("%d", _.size(e.labelcopy));
             if(_.size(e.labelcopy)) {
                 e.labels = _.get(e.labelcopy[0], 'l');
                 e.lang = _.get(e.labelcopy[0], 'lang');
