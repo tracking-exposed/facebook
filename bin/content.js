@@ -48,7 +48,7 @@ app.use(bodyParser.urlencoded({limit: '30kb', extended: true}));
 const getAPI = require('../lib/contentAPI');
 
 _.each(getAPI, function(o) {
-    debug("+API: %s %s", o.desc, o.route);
+    debug("+registering API: %s %s", o.desc, o.route);
     app.get(o.route, function(req, res) {
         return common.serveRequest(o.desc, o.func, req, res);
     });

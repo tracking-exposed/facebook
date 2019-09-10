@@ -64,33 +64,7 @@ function personalCSV(req) {
         });
 }
 
-function timelineCSV(req) {
-    const timelineId = req.params.timelineId;
-    const timelineP = utils.pseudonymizeTmln(timelineId);
-    debug("timeline CSV request (Id %s -> p %s)", timelineId, timelineP);
-
-    return mongo
-        .read(nconf.get('schema').summary, { timeline: timelineP }, { impressionTime: -1})
-        .then(produceCSVv1)
-        .tap(function(check) {
-            if(!_.size(check)) throw new Error("Invalid timelineId");
-        })
-        .then(function(structured) {
-            debug("timelineCSV produced %d bytes", _.size(structured));
-            const fname=`timeline-${timelineP}.csv`;
-            return {
-                headers: { "Content-Type": "csv/text",
-                           "content-disposition": `attachment; filename=${fname}` },
-                text: structured,
-            };
-        });
-}
-
 function metadata(req) {
-
-    throw new Error("NIATM");
-    // not implemented an endpoint, at the moment
-
     const { amount, skip } = params.optionParsing(req.params.paging);
     debug("metadata request: %d skip %d", amount, skip);
     return adopters
@@ -110,25 +84,62 @@ function metadata(req) {
         });
 };
 
-function semantics(req) {
-    const { amount, skip } = params.optionParsing(req.params.paging);
-    debug("semantics request: %d, skip %d", amount, skip);
+function enrich(req) {
+
+    var amount = 0, skip, when = null;
+    if(!req.params.paging || _.size(_.split(req.params.paging, '-')) == 2) {
+        let paging = params.optionParsing(req.params.paging);
+        amount = paging.amount;
+        skip = paging.skip;
+        debug("enrich with paging, looking for %d, skip %d", amount, skip);
+    }
+    else {
+        when = moment(req.params.paging);
+        debug("enrich by day: looking for %s", when);
+    }
+
+    if( (when != null && !when.isValid()) || (when == null && !amount) )
+        throw new Error("Invalid parameter: $amount-$skip OR $(year-$month-day)")
+
+    /* pipeline should be:
+            match, limit, sort, lookup 
+       the match and limits are added below in the promise chain */
+    let pipeline = [
+        { $sort: { impressionTime: -1 } },
+        { $lookup: {
+            from: 'labels',
+            localField: 'semanticId',
+            foreignField: 'semanticId',
+            as: 'labelcopy'
+        }}
+    ];
+
     return adopters
         .validateToken(req.params.userToken)
         .then(function(supporter) {
-            let ma = { $match: { user: supporter.pseudo } };
-            let li = { $limit: (amount * 2) };
-            let so = { $sort: { impressionTime: -1 } };
-            let lo = { $lookup: {
-                from: 'labels',
-                localField: 'semanticId',
-                foreignField: 'semanticId',
-                as: 'labelcopy'
-            } };
+
+            if(when) {
+                const startOf = new Date(when.startOf('day').toISOString());
+                const endOf = new Date(when.add(1, 'd').startOf('day').toISOString());
+                pipeline = _.concat([
+                    { $match: {
+                        user: supporter.pseudo,
+                        impressionTime: { $lt: endOf, $gt: startOf }
+                    } }
+                ], pipeline);
+            } else {
+                pipeline = _.concat([
+                    { $match: { user: supporter.pseudo } },
+                    { $skip: skip },
+                    { $limit: amount }
+                ], pipeline);
+            }
+
             return mongo
-                .aggregate(nconf.get('schema').summary, [ ma, li, so, lo ])
+                .aggregate(nconf.get('schema').summary, pipeline);
             // TODO remove the map below
             // TODO match by semanticId
+            // TODO align the information with enrich format?
             // ensure the amount/skip pagin is respected
         })
         .map(function(e) {
@@ -168,9 +179,12 @@ function byTimelineLookup(userId, amount, skipnum) {
 };
 
 function stats(req) {
+
     const DEFTIMLN = 20;
     const { amount, skip } = params.optionParsing(req.params.paging, DEFTIMLN);
-    debug("Personal statistics requested, amount: %d, skip %d", amount, skip);
+
+    debug("Personal statistics requested, it process timelines: amount %d skip %d",
+        amount, skip);
 
     return adopters
         .validateToken(req.params.userToken)
@@ -289,8 +303,7 @@ module.exports = {
     summary,
     metadata,
     personalCSV,
-    timelineCSV,
-    semantics,
+    enrich,
     daily,
     stats
 };
