@@ -47,8 +47,8 @@ async function start() {
 
     const mongoc = await mongo.clientConnect();
 
-    debug("Loaded %d possible statistics %s: %d to be done", 
-        _.size(statsMap), name ? `only ${name}` : "", _.size(tobedone));
+    debug("Loaded %d possible statistics%s: %d to be done",
+        _.size(statsMap), name ? `, demanded '${name}'` : "", _.size(tobedone));
 
     let statsp = await _.map(tobedone, async function(statinfo) {
         const hoursref = aggregated.hourData(statshour);

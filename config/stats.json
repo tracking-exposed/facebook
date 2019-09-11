@@ -64,6 +64,36 @@
                 "selector": { }
             }
         ]
-    }
-    ]
+    },
+    {
+        "name": "metadata",
+        "column": "metadata",
+        "timevar": "impressionTime",
+        "variables": [
+            {
+                "name":"publicationTime",
+                "selector": { "linkedtime.publicationTime": { "$exists": true } }
+            },
+            {
+                "name":"attributed",
+                "selector": { "attribution": { "$size": 1 }}
+            },
+            {
+                "name":"haslinks",
+                "selector": { "externalLinks.1": { "$exists": true }}
+            },
+            {
+                "name":"texts",
+                "selector": { "usertext": { "$size": 0 }}
+            },
+            {
+                "name":"commentable",
+                "selector": { "commentable": true }
+            },
+            {
+                "name":"total",
+                "selector": {}
+            }
+        ]
+    }]
 }

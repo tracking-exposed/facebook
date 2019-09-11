@@ -139,7 +139,6 @@ function enrich(req) {
                 .aggregate(nconf.get('schema').summary, pipeline);
         })
         .map(function(e) {
-            debug("%d", _.size(e.labelcopy));
             if(_.size(e.labelcopy)) {
                 e.labels = _.get(e.labelcopy[0], 'l');
                 e.lang = _.get(e.labelcopy[0], 'lang');
