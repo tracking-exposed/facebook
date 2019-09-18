@@ -102,7 +102,7 @@ function enrich(req) {
         throw new Error("Invalid parameter: $amount-$skip OR $(year-$month-day)")
 
     /* pipeline should be:
-            match, limit, sort, lookup 
+            match, limit, sort, lookup
        the match and limits are added below in the promise chain */
     let lookup = [
         { $sort: { impressionTime: -1 } },
@@ -226,19 +226,36 @@ function estimateDuration(impressions) {
     ).asSeconds();
 };
 
+function paginateDay(amount, skip) {
+  // default is: 3, 0
+  // minimum day is: today at 00:00 minus three day
+  // maximum day is: this midnight
+
+    const maxday = moment().startOf('day').add(1, 'd').subtract(skip, 'd');
+    const minday = moment().startOf('day').add(1, 'd').subtract(amount + 1, 'd').subtract(skip, 'd');
+
+    debug("%d-%d %j", amount, skip, {minday, maxday});
+    return { minday, maxday };
+}
+
 function daily(req) {
-    const LIMITPERDAY = 300; // 300 timelines per day are way too much
     const { amount, skip } = params.optionParsing(req.params.paging, 3);
     const dayamount = ( amount < 3 ) ? 3 : amount;
-    const maxtimelines = dayamount * LIMITPERDAY;
-    debug("Personal daily statistics day ago %d, day amount %d, maxtimelines",
-        skip, dayamount, maxtimelines);
+
+    const { minday, maxday } = paginateDay(amount, skip);
+
+    debug("Personal daily statistics day ago %d, day amount %d - range %s %s",
+        skip, dayamount,
+        minday.format("YYYY-MM-DD"), maxday.format("YYYY-MM-DD"));
+
     return adopters
         .validateToken(req.params.userToken)
         .then(function(supporter) {
             return mongo.aggregate(nconf.get('schema').timelines, [
-                { $match: { userId: supporter.userId }},
-                { $limit: maxtimelines },
+                { $match: {
+                    userId: supporter.userId,
+                    startTime: { $gt: new Date(minday.toISOString()), $lt: new Date(maxday.toISOString()) }
+                }},
                 { $group: { _id: {
                      year:  { $year: "$startTime" },
                      month: { $month: "$startTime" },
@@ -250,8 +267,6 @@ function daily(req) {
                  }},
                  { $project: { userId: "$_id.userId", count: "$_id.count", day: true, "timelineId": "$ids", _id: false }},
                  { $sort: { days: -1 }},
-                 { $skip: skip },
-                 { $limit: dayamount },
                  { $unwind: "$timelineId" },
                  { $lookup: { from: 'metadata', localField: 'timelineId', foreignField: 'timelineId', as: 'metadata'}},
                  { $lookup: { from: 'impressions2', localField: 'timelineId', foreignField: 'timelineId', as: 'impressions'}}
