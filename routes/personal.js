@@ -227,22 +227,21 @@ function estimateDuration(impressions) {
 };
 
 function daily(req) {
+    const MINIMUM_AMOUNT = 3;
     const { amount, skip } = params.optionParsing(req.params.paging, 3);
-    const dayamount = ( amount < 3 ) ? 3 : amount;
-
+    const dayamount = ( amount < MINIMUM_AMOUNT ) ? MINIMUM_AMOUNT : amount;
     const minday = moment()
         .startOf('day')
         .add(1, 'd')
-        .subtract(amount + 1, 'd')
+        .subtract(dayamount, 'd')
         .subtract(skip, 'd');
-
     const maxday = moment()
         .startOf('day')
         .add(1, 'd')
         .subtract(skip, 'd');
 
-    debug("Personal daily statistics day ago %d, day amount %d - range %s %s",
-        skip, dayamount,
+    debug("Personal daily statistics day ago %d, day amount %d (MINIMUM_AMOUNT %d) - range %s %s",
+        skip, dayamount, MINIMUM_AMOUNT,
         minday.format("YYYY-MM-DD"), maxday.format("YYYY-MM-DD"));
 
     return adopters
