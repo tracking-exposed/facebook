@@ -80,7 +80,7 @@
             },
             {
                 "name":"haslinks",
-                "selector": { "externalLinks.1": { "$exists": true }}
+                "selector": { "externalLinks.0": { "$exists": true }}
             },
             {
                 "name":"texts",
@@ -95,5 +95,8 @@
                 "selector": {}
             }
         ]
-    }]
+    },
+    {
+    }
+  ]
 }

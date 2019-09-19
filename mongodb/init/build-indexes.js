@@ -1,5 +1,9 @@
 ret = db.supporters2.createIndex({ "lastActivity": -1 }); checkret('supporters2 lastActivity', ret);
 
+ret = db.impressions2.createIndex({ "timelineId": -1 }); checkret('impressions2 timelineId', ret);
+
+ret = db.timelines2.createIndex({ "userId": 1 }); checkret('timelines2 userId', ret);
+
 ret = db.labels.createIndex({ "semanticId" : 1 }, { unique: true }); checkret('labels semanticId', ret);
 ret = db.labels.createIndex({ "when" : 1 }); checkret('labels when', ret);
 
@@ -9,6 +13,7 @@ ret = db.metadata.createIndex({ "semantic" : 1 }); checkret('metadata semantic',
 ret = db.metadata.createIndex({ "when" : 1 }); checkret('metadata when', ret);
 ret = db.metadata.createIndex({ "id" : 1 }, { unique : true }); checkret('metadata id', ret);
 ret = db.metadata.createIndex({ "impressionTime" : -1 }); checkret('metadata impressionTime', ret);
+ret = db.metadata.createIndex({ "timelineId" : -1 }); checkret('metadata timelineId', ret);
 ret = db.metadata.createIndex({ "linkedtime.postId" : 1 }); checkret('metadata linkedtime.postId', ret);
 
 ret = db.semantics.createIndex({ "label" : 1 }); checkret('semantics label', ret);
@@ -28,7 +33,7 @@ ret = db.summary.createIndex({ "timeline": 1}); checkret('summary timeline', ret
 ret = db.feeds2.createIndex({ "lang": 1, "label": 1}, {unique: true }); checkret('feeds2 lang+label', ret);
 ret = db.feeds2.createIndex({ "createdAt": 1}, {expireAfterSeconds: 3600 / 2}); checkret('createdAt expiring after 30minutes', ret);
 
-ret = db.stats.createIndex({ "id": 1}, {unique: true });
+ret = db.trexstats.createIndex({ "id": 1}, {unique: true });
 
 function checkret(info, retval) {
     retval.info = info;

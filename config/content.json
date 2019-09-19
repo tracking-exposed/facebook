@@ -1,5 +1,5 @@
 {
-  "schema": { 
+  "schema": {
       "impressions": "impressions2",
       "supporters": "supporters2",
       "timelines": "timelines2",
@@ -13,7 +13,7 @@
       "labels": "labels",
       "feeds": "feeds2",
       "aggregated": "aggregated",
-      "stats": "stats"
+      "stats": "trexstats"
   },
   "mongoHost": "localhost",
   "mongoPort": "27017",
