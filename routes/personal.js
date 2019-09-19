@@ -226,23 +226,20 @@ function estimateDuration(impressions) {
     ).asSeconds();
 };
 
-function paginateDay(amount, skip) {
-  // default is: 3, 0
-  // minimum day is: today at 00:00 minus three day
-  // maximum day is: this midnight
-
-    const maxday = moment().startOf('day').add(1, 'd').subtract(skip, 'd');
-    const minday = moment().startOf('day').add(1, 'd').subtract(amount + 1, 'd').subtract(skip, 'd');
-
-    debug("%d-%d %j", amount, skip, {minday, maxday});
-    return { minday, maxday };
-}
-
 function daily(req) {
     const { amount, skip } = params.optionParsing(req.params.paging, 3);
     const dayamount = ( amount < 3 ) ? 3 : amount;
 
-    const { minday, maxday } = paginateDay(amount, skip);
+    const minday = moment()
+        .startOf('day')
+        .add(1, 'd')
+        .subtract(amount + 1, 'd')
+        .subtract(skip, 'd');
+
+    const maxday = moment()
+        .startOf('day')
+        .add(1, 'd')
+        .subtract(skip, 'd');
 
     debug("Personal daily statistics day ago %d, day amount %d - range %s %s",
         skip, dayamount,
@@ -266,7 +263,7 @@ function daily(req) {
                    ids: { $addToSet: "$id" },
                  }},
                  { $project: { userId: "$_id.userId", count: "$_id.count", day: true, "timelineId": "$ids", _id: false }},
-                 { $sort: { days: -1 }},
+                 { $sort: { day: -1 }},
                  { $unwind: "$timelineId" },
                  { $lookup: { from: 'metadata', localField: 'timelineId', foreignField: 'timelineId', as: 'metadata'}},
                  { $lookup: { from: 'impressions2', localField: 'timelineId', foreignField: 'timelineId', as: 'impressions'}}
