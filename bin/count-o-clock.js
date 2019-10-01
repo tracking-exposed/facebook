@@ -8,8 +8,11 @@ const aggregated = require('../lib/aggregated');
 const mongo = require('../lib/mongo3');
 const utils = require('../lib/utils');
 
-nconf.argv().env().file({ file: 'config/trexstats.json' });
-
+nconf.argv().env();
+const defaultConf = nconf.get('config') || 'config/content.json';
+nconf.file({ file: defaultConf });
+const schema = nconf.get('schema');
+nconf.file({ file: 'config/trexstats.json' });
 const statsMap = nconf.get('stats');
 const name = nconf.get('name');
 
@@ -39,7 +42,6 @@ async function computeCount(mongoc, statinfo, filter) {
         });
 };
 
-
 async function start() {
     const hoursago = utils.parseIntNconf('hoursago', 0);
     const statshour = moment().subtract(hoursago, 'h').format();
@@ -65,7 +67,7 @@ async function start() {
             hour: new Date(hoursref.hourOnly),
             name: statinfo.name
         });
-        const rv1 = await mongo.upsertOne(mongoc, nconf.get('schema').stats, { hourId: hoursref.hourId, name: statinfo.name }, entry);
+        const rv1 = await mongo.upsertOne(mongoc, schema.stats, { hourId: hoursref.hourId, name: statinfo.name }, entry);
 
         /* -- Day -- */
         const dayref = aggregated.dayData(statshour);
@@ -82,7 +84,7 @@ async function start() {
             day: new Date(dayref.dayOnly),
             name: statinfo.name
         });
-        const rv2 = await mongo.upsertOne(mongoc, nconf.get('schema').stats, { dayId: dayref.dayId, name: statinfo.name }, ready);
+        const rv2 = await mongo.upsertOne(mongoc, schema.stats, { dayId: dayref.dayId, name: statinfo.name }, ready);
     });
 
     await Promise.all(statsp)
