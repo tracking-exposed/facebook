@@ -29,8 +29,8 @@ function summary(req) {
             return { json: data };
         })
         .catch(function(e) {
-            debug("data (error): %s", e);
-            return { 'text': `error: ${e}` };
+            debug("Summary (error): %s", e);
+            return { json: { error: true, 'message': `error: ${e}` }};
         });
 };
 
@@ -60,7 +60,11 @@ function personalCSV(req) {
         })
         .catch(function(e) {
             debug("csv (error): %s", e);
-            return { text: `error: ${e}` };
+            return {
+                headers: { "Content-Type": "csv/text",
+                           "content-disposition": `attachment; filename=error.csv` },
+                text: `error: ${e}`
+            };
         });
 }
 
@@ -79,8 +83,8 @@ function metadata(req) {
             return { json: data };
         })
         .catch(function(e) {
-            debug("data (error): %s", e);
-            return { 'text': `error: ${e}` };
+            debug("Metadata (error): %s", e);
+            return { json: { error: true, 'message': `error: ${e}` }};
         });
 };
 
@@ -147,6 +151,10 @@ function enrich(req) {
         })
         .then(function(prod) {
             return { json: prod };
+        })
+        .catch(function(e) {
+            debug("Enrich (error): %s", e);
+            return { json: { error: true, 'message': `error: ${e}` }};
         });
 };
 
@@ -210,6 +218,10 @@ function stats(req) {
                     timelines,
                 }
             };
+        })
+        .catch(function(e) {
+            debug("Stats (error): %s", e);
+            return { json: { error: true, 'message': `error: ${e}` }};
         });
 
 };
@@ -303,6 +315,10 @@ function daily(req) {
             debug("Computed daily stats for %d %j %j",
                 _.size(stats), _.map(stats, 'duration'), _.map(stats, 'npost'));
             return { json: stats };
+        })
+        .catch(function(e) {
+            debug("Daily (error): %s", e);
+            return { json: { error: true, 'message': `error: ${e}` }};
         });
 };
 
