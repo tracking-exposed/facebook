@@ -14,7 +14,7 @@ function loadImpact() {
      * and all the same, but _lw = last week
      */ 
     const t = [ "supporters", "timelines", "impressions",
-                "htmls", "accesses", "summaries", "aggregated" ];
+                "htmls", "accesses", "summary", "aggregated" ];
     d3.json(url, function(results) {
         const data = results.content;
         console.log(data);
