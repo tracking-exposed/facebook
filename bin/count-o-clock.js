@@ -13,7 +13,6 @@ const defaultConf = nconf.get('config') || 'config/content.json';
 nconf.file({ file: defaultConf });
 const schema = nconf.get('schema');
 nconf.file({ file: 'config/trexstats.json' });
-const statsMap = nconf.get('stats');
 const name = nconf.get('name');
 
 
@@ -42,7 +41,8 @@ async function computeCount(mongoc, statinfo, filter) {
         });
 };
 
-async function start() {
+async function trexstats() {
+    const statsMap = nconf.get('stats');
     const hoursago = utils.parseIntNconf('hoursago', 0);
     const statshour = moment().subtract(hoursago, 'h').format();
     const tobedone = name ? _.filter(statsMap, { name }) : statsMap;
@@ -85,6 +85,7 @@ async function start() {
             name: statinfo.name
         });
         const rv2 = await mongo.upsertOne(mongoc, schema.stats, { dayId: dayref.dayId, name: statinfo.name }, ready);
+
     });
 
     await Promise.all(statsp)
@@ -95,10 +96,113 @@ async function start() {
     await mongoc.close();
 };
 
+async function dailyTimelines() {
+    const hoursago = utils.parseIntNconf('hoursago', 0);
+    const statshour = moment().subtract(hoursago, 'h').format();
+    const mongoc = await mongo.clientConnect();
+    const dayref = aggregated.dayData(statshour);
+    const userPerDay = await mongo.distinct(
+        mongoc,
+        schema.timelines,
+        "userId",
+        {
+            startTime: {
+                $gte: new Date(dayref.reference),
+                $lt: new Date(dayref.dayOnext)
+            }
+        });
+
+    debug("%s", JSON.stringify(userPerDay));
+
+    const updates = _.map(userPerDay, async function(userId) {
+        const aggregated = await lookupTimelines({
+            userId: userId,
+            startTime: {
+                $gte: new Date(dayref.reference),
+                $lt: new Date(dayref.dayOnext)
+            }});
+
+        aggregated.type = 'daily';
+
+        return await mongo.upsertOne(
+            mongoc,
+            schema.tmlnstats, 
+            { dayId: dayref.dayId, name: statinfo.name },
+            aggregated);
+    });
+
+    debug("** FINE! %s", JSON.stringify(updates));
+    process.exit();
+}
+
+async function lookupTimelines(filter) {
+
+    debug("inizia aggregate con %j", filter);
+    const mr = await mongo.aggregate(schema.timelines, [
+        { $match: filter },
+        { $group: { _id: {
+                year:  { $year: "$startTime" },
+                month: { $month: "$startTime" },
+                day:   { $dayOfMonth: "$startTime" },
+                userId: "$userId"
+            },
+            day: { $first: "$startTime" },
+            ids: { $addToSet: "$id" },
+            }},
+            { $project: { userId: "$_id.userId", count: "$_id.count", day: true, "timelineId": "$ids", _id: false }},
+            { $sort: { day: -1 }},
+            { $unwind: "$timelineId" },
+            { $lookup: { from: 'metadata', localField: 'timelineId', foreignField: 'timelineId', as: 'metadata'}},
+            { $lookup: { from: 'impressions2', localField: 'timelineId', foreignField: 'timelineId', as: 'impressions'}}
+    ]);
+
+    const extended = _.map(mr, function(timeline) {
+        timeline.dayString = moment(timeline.day).format("YYYY-MM-DD");
+        timeline.durationSeconds = estimateDuration(timeline.impressions);
+        return timeline;
+    })
+
+    const grouped = _.values(_.groupBy(extended, 'dayString'));
+
+    const ready = _.map(grouped, function(dayr) {
+        // TODO 
+        // save in evests already the pseudoaninymized timeline name 
+        // TODO -- query summary this would make simpler the sums below.
+        const metadatas = _.flatten(_.map(dayr, 'metadata'));
+        const ntimelines = _.size(dayr);
+        const npost = _.size(metadatas);
+        const nature = _.countBy(metadatas, 'nature');
+        const totalSeconds = _.sum(_.map(dayr, 'durationSeconds'));
+        const duration = moment.duration({ seconds: totalSeconds }).humanize();
+        const sources = _.size(_.uniq(_.map(metadatas, function(m) {
+            return m.attributions[0].content;
+        })));
+
+        debug("Test of consistency %s", dayr[0].dayString);
+        return {
+            day: dayr[0].dayString,
+            dayTime: new Date(dayr[0].dayString),
+            ntimelines,
+            npost,
+            nature,
+            totalSeconds,
+            duration,
+            sources,
+        };
+    });
+
+    debug("ready: %j", ready);
+    return ready;
+}
+
 try {
-    start();
+    if(nconf.get('test'))
+        dailyTimelines();
+    else 
+        trexstats();
 } catch(error) {
     debug("Unexpected error: %s", error.message);
+    process.exit();
 }
 
 
