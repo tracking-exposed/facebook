@@ -251,7 +251,10 @@ function daily(req) {
                 dayTime: {
                     $lte: new Date(maxday.toISOString())
                 }
-            }, { dayTime: -1 }, amount, skip);
+            }, { dayTime: -1 }, dayamount, skip);
+        })
+        .map(function(e) {
+            return _.omit(e, ['_id', 'userId']);
         })
         .then(function(stats) {
             debug("Retrieved daily stats: amount %d info: %j %j",
