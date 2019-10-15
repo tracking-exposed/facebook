@@ -138,10 +138,9 @@ function enrich(req) {
                     { $match: { user: supporter.pseudo } },
                     { $skip: skip },
                     { $limit: amount },
+                    { $sort: { impressionTime: -1 } },
                 ], lookup);
             }
-
-            debug("%j", pipeline);
             return mongo
                 .aggregate(nconf.get('schema').summary, pipeline);
         })
@@ -242,7 +241,7 @@ function daily(req) {
         .add(1, 'd')
         .subtract(skip, 'd');
 
-    debug("Personal daily statistics - skip %d amount %d (MINIMUM_AMOUNT %d) - range %s %s",
+    debug("Personal daily statistics - skip %d amount %d (MINIMUM_AMOUNT %d)",
         skip, dayamount, MINIMUM_AMOUNT);
 
     return adopters
@@ -256,7 +255,7 @@ function daily(req) {
             }, { dayTime: -1 }, amount, skip);
         })
         .then(function(stats) {
-            debug("Retrieved daily stats for %d %j %j",
+            debug("Retrieved daily stats: amount %d info: %j %j",
                 _.size(stats), _.map(stats, 'duration'), _.map(stats, 'npost'));
             return { json: stats };
         })
