@@ -33,7 +33,10 @@ ret = db.summary.createIndex({ "timeline": 1}); checkret('summary timeline', ret
 ret = db.feeds2.createIndex({ "lang": 1, "label": 1}, {unique: true }); checkret('feeds2 lang+label', ret);
 ret = db.feeds2.createIndex({ "createdAt": 1}, {expireAfterSeconds: 3600 / 2}); checkret('createdAt expiring after 30minutes', ret);
 
-ret = db.trexstats.createIndex({ "id": 1}, {unique: true });
+ret = db.trexstats.createIndex({ "day": -1}); checkret('trexstats day index', ret);
+ret = db.trexstats.createIndex({ "hour": -1}); checkret('trexstats hourly index', ret);
+ret = db.tmlnstats.createIndex({ "dayTime": 1, "userId": 1 } ); checkret('tmlnstats dayTime+userId', ret);
+ret = db.tmlnstats.createIndex({ "id": 1}, {unique: true }); checkret('tmlnstats id', ret);
 
 function checkret(info, retval) {
     retval.info = info;

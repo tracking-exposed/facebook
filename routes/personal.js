@@ -89,6 +89,8 @@ function metadata(req) {
 };
 
 function enrich(req) {
+    /* reminder: this API allow two different method of paging, for example
+     * you can ask a specific day */
 
     var amount = 0, skip, pipeline, when = null;
     if(!req.params.paging || _.size(_.split(req.params.paging, '-')) == 2) {
@@ -135,10 +137,11 @@ function enrich(req) {
                 pipeline = _.concat([
                     { $match: { user: supporter.pseudo } },
                     { $skip: skip },
-                    { $limit: amount }
+                    { $limit: amount },
                 ], lookup);
             }
 
+            debug("%j", pipeline);
             return mongo
                 .aggregate(nconf.get('schema').summary, pipeline);
         })
@@ -150,7 +153,10 @@ function enrich(req) {
             return _.omit(e, ['_id', 'id', 'labelcopy' ]);
         })
         .then(function(prod) {
-            return { json: prod };
+            /* this _.orderBy might seems useless because map above preserve the order 
+             * of attribute, and { $sort: impressionTime -1 } is apply either ways. but
+             * still in this condition we got #143 */
+            return { json: _.orderBy(prod, { impressionTime: -1}) };
         })
         .catch(function(e) {
             debug("Enrich (error): %s", e);
@@ -226,18 +232,6 @@ function stats(req) {
 
 };
 
-function estimateDuration(impressions) {
-    const f = _.first(impressions);
-    const l = _.last(impressions);
-
-    if(!f || !l || l.id == f.id)
-        return 0;
-
-    return moment.duration(
-        moment(l.impressionTime) - moment(f.impressionTime)
-    ).asSeconds();
-};
-
 function daily(req) {
 
     const MINIMUM_AMOUNT = 3;
@@ -260,17 +254,14 @@ function daily(req) {
     return adopters
         .validateToken(req.params.userToken)
         .then(function(supporter) {
-            return mongo.readLimit(nconf.get('schema').timelines, [
-                { 
-                    userId: supporter.userId,
-                    startTime: {
-                        $gt: new Date(minday.toISOString()),
-                        $lt: new Date(maxday.toISOString())
-                    }
-                },
-                { dayTime: -1 },
-                amount,
-                skip
+            return mongo.readLimit(nconf.get('schema').tmlnstats, { 
+                userId: supporter.userId,
+                dayTime: {
+                    $gte: new Date(minday.toISOString()),
+                    $lte: new Date(maxday.toISOString())
+                }
+            },
+            { dayTime: -1 }, amount, skip);
         })
         .then(function(stats) {
             debug("Retrieved daily stats for %d %j %j",
