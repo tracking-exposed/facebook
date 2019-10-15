@@ -111,7 +111,6 @@ function enrich(req) {
             match, limit, sort, lookup
        the match and limits are added below in the promise chain */
     let lookup = [
-        { $sort: { impressionTime: -1 } },
         { $lookup: {
             from: 'labels',
             localField: 'semanticId',
@@ -131,14 +130,15 @@ function enrich(req) {
                     { $match: {
                         user: supporter.pseudo,
                         impressionTime: { $lt: endOf, $gt: startOf }
-                    } }
+                    } },
+                    { $sort: { impressionTime: -1 } },
                 ], lookup);
             } else {
                 pipeline = _.concat([
                     { $match: { user: supporter.pseudo } },
+                    { $sort: { impressionTime: -1 } },
                     { $skip: skip },
                     { $limit: amount },
-                    { $sort: { impressionTime: -1 } },
                 ], lookup);
             }
             return mongo
@@ -152,10 +152,9 @@ function enrich(req) {
             return _.omit(e, ['_id', 'id', 'labelcopy' ]);
         })
         .then(function(prod) {
-            /* this _.orderBy might seems useless because map above preserve the order 
-             * of attribute, and { $sort: impressionTime -1 } is apply either ways. but
-             * still in this condition we got #143 */
-            return { json: _.orderBy(prod, { impressionTime: -1}) };
+            debug("Returning %d enriched entries, the most recent from %s",
+                _.size(prod), prod[0].impressionTime);
+            return { json: prod };
         })
         .catch(function(e) {
             debug("Enrich (error): %s", e);
