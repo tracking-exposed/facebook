@@ -237,16 +237,15 @@ function daily(req) {
     const dayamount = ( amount < MINIMUM_AMOUNT ) ? MINIMUM_AMOUNT : amount;
     const maxday = moment()
         .startOf('day')
-        .add(1, 'd')
-        .subtract(skip, 'd');
+        .subtract(skip -1, 'd');
 
-    debug("Personal daily statistics - skip %d amount %d (MINIMUM_AMOUNT %d)",
-        skip, dayamount, MINIMUM_AMOUNT);
+    debug("Personal daily statistics - skip %d amount %d [MIN %d] lte %s",
+        skip, dayamount, MINIMUM_AMOUNT, maxday.toISOString());
 
     return adopters
         .validateToken(req.params.userToken)
         .then(function(supporter) {
-            return mongo.readLimit(nconf.get('schema').tmlnstats, { 
+            return mongo.readLimit(nconf.get('schema').tmlnstats, {
                 userId: supporter.userId,
                 dayTime: {
                     $lte: new Date(maxday.toISOString())
