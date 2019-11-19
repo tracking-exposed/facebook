@@ -24,10 +24,10 @@ if(!userId)
 
 return Promise
     .all([
-        mongo.countByMatch(nconf.get('schema').supporters, { userId: userId }),
-        mongo.countByMatch(nconf.get('schema').htmls, { userId: userId }),
-        mongo.countByMatch(nconf.get('schema').impressions, { userId: userId }),
-        mongo.countByMatch(nconf.get('schema').timelines, { userId: userId })
+        mongo.count(nconf.get('schema').supporters, { userId: userId }),
+        mongo.count(nconf.get('schema').htmls, { userId: userId }),
+        mongo.count(nconf.get('schema').impressions, { userId: userId }),
+        mongo.count(nconf.get('schema').timelines, { userId: userId })
     ])
     .tap(function(every) {
         debug("Respective amount %j, waiting before deleting, 5s...", every);
