@@ -1,5 +1,5 @@
 {
-  "schema": { 
+  "schema": {
       "impressions": "impressions2",
       "supporters": "supporters2",
       "timelines": "timelines2",
@@ -11,10 +11,14 @@
       "anomalies": "anomalies",
       "semantics": "semantics",
       "labels": "labels",
+      "tmlnstats": "tmlnstats",
       "feeds": "feeds2",
-      "aggregated": "aggregated"
+      "aggregated": "aggregated",
+      "stats": "trexstats"
   },
-  "mongodb": "mongodb://localhost/facebook",
+  "mongoHost": "localhost",
+  "mongoPort": "27017",
+  "mongoDb": "facebook",
   "port": 8000,
   "interface": "127.0.0.1",
   "elastic": "http://localhost:9200",

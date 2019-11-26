@@ -2,7 +2,6 @@ const _ = require('lodash');
 const moment = require('moment');
 const Promise = require('bluebird');
 const debug = require('debug')('routes:personal');
-const pug = require('pug');
 const nconf = require('nconf');
 
 const mongo = require('../lib/mongo');
@@ -30,8 +29,8 @@ function summary(req) {
             return { json: data };
         })
         .catch(function(e) {
-            debug("data (error): %s", e);
-            return { 'text': `error: ${e}` };
+            debug("Summary (error): %s", e);
+            return { json: { error: true, 'message': `error: ${e}` }};
         });
 };
 
@@ -61,37 +60,15 @@ function personalCSV(req) {
         })
         .catch(function(e) {
             debug("csv (error): %s", e);
-            return { text: `error: ${e}` };
-        });
-}
-
-function timelineCSV(req) {
-    const timelineId = req.params.timelineId;
-    const timelineP = utils.pseudonymizeTmln(timelineId);
-    debug("timeline CSV request (Id %s -> p %s)", timelineId, timelineP);
-
-    return mongo
-        .read(nconf.get('schema').summary, { timeline: timelineP }, { impressionTime: -1})
-        .then(produceCSVv1)
-        .tap(function(check) {
-            if(!_.size(check)) throw new Error("Invalid timelineId");
-        })
-        .then(function(structured) {
-            debug("timelineCSV produced %d bytes", _.size(structured));
-            const fname=`timeline-${timelineP}.csv`;
             return {
                 headers: { "Content-Type": "csv/text",
-                           "content-disposition": `attachment; filename=${fname}` },
-                text: structured,
+                           "content-disposition": `attachment; filename=error.csv` },
+                text: `error: ${e}`
             };
         });
 }
 
 function metadata(req) {
-
-    throw new Error("NIATM");
-    // not implemented an endpoint, at the moment
-
     const { amount, skip } = params.optionParsing(req.params.paging);
     debug("metadata request: %d skip %d", amount, skip);
     return adopters
@@ -106,31 +83,66 @@ function metadata(req) {
             return { json: data };
         })
         .catch(function(e) {
-            debug("data (error): %s", e);
-            return { 'text': `error: ${e}` };
+            debug("Metadata (error): %s", e);
+            return { json: { error: true, 'message': `error: ${e}` }};
         });
 };
 
-function semantics(req) {
-    const { amount, skip } = params.optionParsing(req.params.paging);
-    debug("semantics request: %d, skip %d", amount, skip);
+function enrich(req) {
+    /* reminder: this API allow two different method of paging, for example
+     * you can ask a specific day */
+
+    var amount = 0, skip, pipeline, when = null;
+    if(!req.params.paging || _.size(_.split(req.params.paging, '-')) == 2) {
+        let paging = params.optionParsing(req.params.paging);
+        amount = paging.amount;
+        skip = paging.skip;
+        debug("enrich with paging, looking for %d, skip %d", amount, skip);
+    }
+    else {
+        when = moment(req.params.paging);
+        debug("enrich by day: looking for %s", when);
+    }
+
+    if( (when != null && !when.isValid()) || (when == null && !amount) )
+        throw new Error("Invalid parameter: $amount-$skip OR $(year-$month-day)")
+
+    /* pipeline should be:
+            match, limit, sort, lookup
+       the match and limits are added below in the promise chain */
+    let lookup = [
+        { $lookup: {
+            from: 'labels',
+            localField: 'semanticId',
+            foreignField: 'semanticId',
+            as: 'labelcopy'
+        }}
+    ];
+
     return adopters
         .validateToken(req.params.userToken)
         .then(function(supporter) {
-            let ma = { $match: { user: supporter.pseudo } };
-            let li = { $limit: (amount * 2) };
-            let so = { $sort: { impressionTime: -1 } };
-            let lo = { $lookup: {
-                from: 'labels',
-                localField: 'semanticId',
-                foreignField: 'semanticId',
-                as: 'labelcopy'
-            } };
+
+            if(when) {
+                const startOf = new Date(when.startOf('day').toISOString());
+                const endOf = new Date(when.add(1, 'd').startOf('day').toISOString());
+                pipeline = _.concat([
+                    { $match: {
+                        user: supporter.pseudo,
+                        impressionTime: { $lt: endOf, $gt: startOf }
+                    } },
+                    { $sort: { impressionTime: -1 } },
+                ], lookup);
+            } else {
+                pipeline = _.concat([
+                    { $match: { user: supporter.pseudo } },
+                    { $sort: { impressionTime: -1 } },
+                    { $skip: skip },
+                    { $limit: amount },
+                ], lookup);
+            }
             return mongo
-                .aggregate(nconf.get('schema').summary, [ ma, li, so, lo ])
-            // TODO remove the map below
-            // TODO match by semanticId 
-            // ensure the amount/skip pagin is respected
+                .aggregate(nconf.get('schema').summary, pipeline);
         })
         .map(function(e) {
             if(_.size(e.labelcopy)) {
@@ -140,7 +152,13 @@ function semantics(req) {
             return _.omit(e, ['_id', 'id', 'labelcopy' ]);
         })
         .then(function(prod) {
+            debug("Returning %d enriched entries, the most recent from %s",
+                _.size(prod), prod[0].impressionTime);
             return { json: prod };
+        })
+        .catch(function(e) {
+            debug("Enrich (error): %s", e);
+            return { json: { error: true, 'message': `error: ${e}` }};
         });
 };
 
@@ -169,9 +187,12 @@ function byTimelineLookup(userId, amount, skipnum) {
 };
 
 function stats(req) {
+
     const DEFTIMLN = 20;
     const { amount, skip } = params.optionParsing(req.params.paging, DEFTIMLN);
-    debug("Personal statistics requested, amount: %d, skip %d", amount, skip);
+
+    debug("Personal statistics requested, it process timelines: amount %d skip %d",
+        amount, skip);
 
     return adopters
         .validateToken(req.params.userToken)
@@ -201,88 +222,41 @@ function stats(req) {
                     timelines,
                 }
             };
+        })
+        .catch(function(e) {
+            debug("Stats (error): %s", e);
+            return { json: { error: true, 'message': `error: ${e}` }};
         });
 
 };
 
-function estimateDuration(impressions) {
-    const f = _.first(impressions);
-    const l = _.last(impressions);
-
-    if(!f || !l || l.id == f.id)
-        return 0;
-
-    return moment.duration(
-        moment(l.impressionTime) - moment(f.impressionTime)
-    ).asSeconds();
-};
-
 function daily(req) {
 
-    const DEFAULTDAYS = 4;
-    const hardcoded = 100;
-    // exists but not used ATM (req.params.dayrange)
-    debug("Personal daily statistics requested, it do not support paging, only return last %d days", DEFAULTDAYS);
+    const MINIMUM_AMOUNT = 3;
+    const { amount, skip } = params.optionParsing(req.params.paging, 3);
+    const dayamount = ( amount < MINIMUM_AMOUNT ) ? MINIMUM_AMOUNT : amount;
+
+    debug("Personal daily statistics - skip %d amount %d [MIN %d]",
+        skip, dayamount, MINIMUM_AMOUNT);
 
     return adopters
         .validateToken(req.params.userToken)
         .then(function(supporter) {
-            return mongo.aggregate(nconf.get('schema').timelines, [
-                { $match: { userId: supporter.userId }},
-                { $sort: { startTime: -1 }},
-                { $limit: 100 },
-                { $group: { _id: {
-                     year:  { $year: "$startTime" },
-                     month: { $month: "$startTime" },
-                     day:   { $dayOfMonth: "$startTime" },
-                     userId: "$userId"
-                   },
-                   day: { $first: "$startTime" },
-                   ids: { $addToSet: "$id" },
-                 }},
-                 { $project: { userId: "$_id.userId", count: "$_id.count", day: true, "timelineId": "$ids", _id: false }},
-                 { $sort: { days: -1 }},
-                 { $limit: 3 },
-                 { $unwind: "$timelineId" },
-                 { $lookup: { from: 'metadata', localField: 'timelineId', foreignField: 'timelineId', as: 'metadata'}},
-                 { $lookup: { from: 'impressions2', localField: 'timelineId', foreignField: 'timelineId', as: 'impressions'}}
-            ]);
+            return mongo.readLimit(nconf.get('schema').tmlnstats, {
+                userId: supporter.userId,
+            }, { dayTime: -1 }, dayamount, skip);
         })
-        .map(function(timeline) {
-            timeline.dayString = moment(timeline.day).format("YYYY-MM-DD");
-            timeline.durationSeconds = estimateDuration(timeline.impressions);
-            return timeline;
-        })
-        .then(function(x) {
-            return _.values(_.groupBy(x, 'dayString'));
-        })
-        .map(function(dayr) {
-            // refactor: at events the timeline is saved pseudonymized and this lead
-            //           to query summary this would make simpler the sums below.
-            const metadatas = _.flatten(_.map(dayr, 'metadata'));
-            const ntimelines = _.size(dayr);
-            const npost = _.size(metadatas);
-            const nature = _.countBy(metadatas, 'nature');
-            const totalSeconds = _.sum(_.map(dayr, 'durationSeconds'));
-            const duration = moment.duration({ seconds: totalSeconds }).humanize();
-            const sources = _.size(_.uniq(_.map(metadatas, function(m) {
-                return m.attributions[0].content;
-            })));
-
-            return {
-                day: dayr[0].dayString,
-                ntimelines,
-                npost,
-                nature,
-                totalSeconds,
-                duration,
-                sources,
-            };
+        .map(function(e) {
+            return _.omit(e, ['_id', 'userId']);
         })
         .then(function(stats) {
-            debug("Computed daily stats for %d %j %j",
+            debug("Retrieved daily stats: amount %d info: %j %j",
                 _.size(stats), _.map(stats, 'duration'), _.map(stats, 'npost'));
             return { json: stats };
+        })
+        .catch(function(e) {
+            debug("Daily (error): %s", e);
+            return { json: { error: true, 'message': `error: ${e}` }};
         });
 };
 
@@ -290,8 +264,7 @@ module.exports = {
     summary,
     metadata,
     personalCSV,
-    timelineCSV,
-    semantics,
+    enrich,
     daily,
     stats
 };

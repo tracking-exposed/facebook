@@ -1,0 +1,100 @@
+{
+    "mongoHost": "localhost",
+    "mongoPort": "27017",
+    "mongoDb": "facebook",
+
+    "stats": [
+    {
+        "name": "timelines",
+        "column": "timelines2",
+        "timevar": "startTime",
+        "variables": [
+            {
+                "name": "skipped",
+                "selector": { "nonfeed": true}
+            },
+            {
+                "name": "newsfeed",
+                "selector": { "nonfeed": { "$exists": false }}
+            },
+            {
+                "name": "total",
+                "selector": {}
+            }
+        ]
+    },
+    {
+        "name": "impressions",
+        "column": "impressions2",
+        "timevar": "impressionTime",
+        "variables": [
+            {
+                "name": "private",
+                "selector": { "visibility": "private" }
+            },
+            {
+                "name": "public",
+                "selector": { "htmlId": { "$exists": true} }
+            },
+            {
+                "name": "total",
+                "selector": { }
+            }
+        ]
+    },
+    {
+        "name": "processing",
+        "column": "htmls2",
+        "timevar": "savingTime",
+        "variables": [
+            {
+                "name": "successful",
+                "selector": { "processed": true }
+            },
+            {
+                "name": "failure",
+                "selector": { "processed": false }
+            },
+            {
+                "name": "unprocessed",
+                "selector": { "processed": { "$exists": false } }
+            },
+            {
+                "name": "total",
+                "selector": { }
+            }
+        ]
+    },
+    {
+        "name": "metadata",
+        "column": "metadata",
+        "timevar": "impressionTime",
+        "variables": [
+            {
+                "name":"publicationTime",
+                "selector": { "linkedtime.publicationTime": { "$exists": true } }
+            },
+            {
+                "name":"attributed",
+                "selector": { "attribution": { "$size": 1 }}
+            },
+            {
+                "name":"haslinks",
+                "selector": { "externalLinks.0": { "$exists": true }}
+            },
+            {
+                "name":"texts",
+                "selector": { "usertext": { "$size": 0 }}
+            },
+            {
+                "name":"commentable",
+                "selector": { "commentable": true }
+            },
+            {
+                "name":"total",
+                "selector": {}
+            }
+        ]
+    }
+  ]
+}

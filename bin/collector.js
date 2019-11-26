@@ -1,21 +1,22 @@
-var express = require('express');
-var app = express();
-var server = require('http').Server(app);
-var _ = require('lodash');
-var moment = require('moment');
-var bodyParser = require('body-parser');
-var Promise = require('bluebird');
-var debug = require('debug')('fbtrex:collector');
-var nconf = require('nconf');
-var cors = require('cors');
+const express = require('express');
+const app = express();
+const server = require('http').Server(app);
+const _ = require('lodash');
+const moment = require('moment');
+const bodyParser = require('body-parser');
+const Promise = require('bluebird');
+const debug = require('debug')('fbtrex:collector');
+const nconf = require('nconf');
+const cors = require('cors');
 
-const common = require('../lib/common');
+// const dbutils = require('../lib/dbutils'); FUTURE
 const mongo = require('../lib/mongo');
+const common = require('../lib/common');
 const security = require('../lib/security');
 
-var cfgFile = "config/collector.json";
-var redOn = "\033[31m";
-var redOff = "\033[0m";
+const cfgFile = "config/collector.json";
+const redOn = "\033[31m";
+const redOff = "\033[0m";
 
 nconf.argv().env().file({ file: cfgFile });
 console.log(redOn + "ઉ nconf loaded, using " + cfgFile + redOff);
@@ -120,5 +121,16 @@ Promise.resolve().then(function() {
        process.exit(1);
     });
 });
+
+/* -- FUTURE
+Promise.resolve().then(function() {
+    if(dbutils.checkMongoWorks()) {
+        debug("mongodb connection works");
+    } else {
+        console.log("mongodb is not running - check", cfgFile,"- quitting");
+        process.exit(1);
+    }
+});
+*/
 
 security.checkKeyIsSet();

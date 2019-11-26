@@ -10,7 +10,9 @@
       "summary": "summary",
       "anomalies": "anomalies"
   },
-  "mongodb": "mongodb://localhost/facebook",
+  "mongoHost": "localhost",
+  "mongoPort": "27017",
+  "mongoDb": "facebook",
   "port": 8100,
   "interface": "127.0.0.1",
   "elastic": "http://localhost:9200",

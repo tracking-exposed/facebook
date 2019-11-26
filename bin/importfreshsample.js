@@ -1,13 +1,12 @@
 #!/usr/bin/env node
-var _ = require('lodash');
-var moment = require('moment');
-var Promise = require('bluebird');
-var debug = require('debug')('bin:importfreshsample');
-var request = Promise.promisifyAll(require('request'));
-var nconf = require('nconf');
+const _ = require('lodash');
+const moment = require('moment');
+const Promise = require('bluebird');
+const debug = require('debug')('bin:importfreshsample');
+const request = Promise.promisifyAll(require('request'));
+const nconf = require('nconf');
 
-var mongo = require('../lib/mongo');
-var glue = require('../lib/glue');
+const glue = require('../lib/glue');
 
 nconf.argv().env();
 const cfgFile = nconf.get('config') ? nconf.get('config') : "config/content.json";
@@ -21,7 +20,7 @@ const samplesize = nconf.get('samplesize') || 500;
 const server = nconf.get('server') || 'http://localhost:8000';
 const url = `${server}/api/v2/debug/exporter/${nconf.get('password')}/${samplesize}`;
 
-debug("Fetching random sample via %s", url);
+debug("API version %d: accessing to %s sample size %d", version, url, samplesize);
 return request
     .getAsync(url)
     .then(function(res) {

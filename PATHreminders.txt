@@ -1,0 +1,60 @@
+
+/personal/unset/(data|stats)
+/personal/error/(data|stats)
+
+/personal/:userToken/data
+/personal/:userToken/stats
+/personal/:userToken/specs
+/personal/:userToken/gdpr
+/personal/:userToken/summary
+
+
+/revision/:htmlId
+/verify/:timelineId
+
+/impact/parsers/:keyvar pageMap = {
+  'initiatives': pugCompiler('talks/landing'),
+  'NetherlandsElections': pugCompiler('NetherlandsElections'),
+  'talks-netzpolitischer054': pugCompiler('talks/netzpolitischer054'),
+  'talks-cyberresistance': pugCompiler('talks/cyberresistance'),
+  'talks-torinohacknight': pugCompiler('talks/torinohacknight'),
+  'talks-rightscon17': pugCompiler('talks/rightscon17'),
+  'talks-ijf17': pugCompiler('talks/ijf17'),
+
+  'privacy-statement': pugCompiler('privacyStatement'),
+  'beta': pugCompiler('beta'),
+  'realitycheck': pugCompiler('realitycheck'),
+  'backstory': pugCompiler('backstory'),
+  'revision': pugCompiler('revision/revision'),
+  'bydate': pugCompiler('revision/bydate'),
+  'verify': pugCompiler('verify'),
+  'fbtrexdebug': pugCompiler('fbtrexdebug'),
+  'about': pugCompiler('team'),
+  '404': pugCompiler('404'),
+  '/': pugCompiler('index'),
+  'new': pugCompiler('new'),
+  'unset': pugCompiler('unset'),
+
+  'rss': pugCompiler('rss'),
+  'fbtrexRSS': pugCompiler('fbtrexRSS'),
+
+  'impact': pugCompiler('statistics/index'),
+  'parsers': pugCompiler('statistics/parsers'),
+  'aggregated': pugCompiler('statistics/aggregated'),
+
+  'project': pugCompiler('project/index'),
+  'project/glossary': pugCompiler('project/glossary'),
+  'project/summaries': pugCompiler('project/summaries'),
+  'project/problem': pugCompiler('project/problem'),
+  'project/solution': pugCompiler('project/solution'),
+  'project/details': pugCompiler('project/details'),
+
+  'qualitativeLanding': pugCompiler('research/landing'),
+  'qualitativeDaylist': pugCompiler('research/daylist'),
+
+  'data': pugCompiler('personal/summary'),
+  'summary': pugCompiler('personal/summary'),
+  'specs': pugCompiler('personal/specs'),
+  'gdpr': pugCompiler('personal/gdpr'),
+  'stats': pugCompiler('personal/stats'),
+};

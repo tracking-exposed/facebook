@@ -8,7 +8,7 @@ var nconf = require('nconf');
 nconf.argv().env();
 
 if(!nconf.get('key'))
-    return console.log("--password required");
+    return console.log("--key required");
 
 const source = nconf.get('source') || 'https://collector.facebook.tracking.exposed';
 const sourceUrl = `${source}/api/v1/mirror/${nconf.get('key')}/`;
@@ -19,6 +19,7 @@ debug("Fetching latest samples via %s", sourceUrl);
 return request
     .getAsync({url: sourceUrl, rejectUnauthorized: false } )
     .then(function(res) {
+        debug("Download completed (%d)", _.size(res.body) );
         return res.body;
     })
     .then(JSON.parse)
@@ -29,7 +30,6 @@ return request
         return e.content;
     })
     .map(function(copiedReq) {
-        debugger;
         return request
             .postAsync(destUrl, { json: copiedReq.body, headers: copiedReq.headers })
             .then(function(result) {

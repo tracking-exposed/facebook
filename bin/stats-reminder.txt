@@ -1,0 +1,16 @@
+   return mongo
+        .read(nconf.get('schema').supporters, {})
+        .map(function(s) {
+            var d = moment.duration(
+                moment(s.lastActivity) - moment(s.keyTime)
+            ).asDays();
+            return {
+                // userId: s.userId,
+                endured: _.round(d, 0),
+                lastActivity: s.lastActivity,
+                keyTime: s.keyTime
+            }
+        })
+
+
+This was in getEngagement before getting removed from aggregated.js
