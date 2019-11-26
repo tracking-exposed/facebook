@@ -241,8 +241,10 @@ function promisifyInputs(body, geoinfo, supporter) {
 var last = null;
 function getMirror(req) {
 
-    if(!security.checkPassword(req))
+    if(!security.checkPassword(req)) {
+        debug("getMirror: authentication failure!");
         return security.authError;
+    }
 
     if(last) {
         let retval = Object(last);
