@@ -27,6 +27,8 @@ var lastExecution = null;
 console.log(`Checking periodically every ${FREQUENCY} seconds...`);
 infiniteLoop();
 
+const limit = _.parseInt(nconf.get('limit')) || 100;
+
 function infiniteLoop() {
 
     const timewindow = nconf.get('daysago') ?
@@ -38,7 +40,7 @@ function infiniteLoop() {
         .resolve()
         .delay(FREQUENCY * 1000)
         .then(function() {
-            return semantic.getSemantic({ semantic: true, when: { "$gte": new Date(timewindow) }});
+            return semantic.getSemantic({ semantic: true, when: { "$gte": new Date(timewindow) }}, limit);
         })
         .then(function(entries) {
 
@@ -60,8 +62,6 @@ function infiniteLoop() {
                 debug("First execution at %s, processing %d(%d) entries",
                     moment().format(), _.size(entries), _.size(uniqued) );
             }
-
-            const limit = _.parseInt(nconf.get('limit')) || 100;
 
             if(!_.isNaN(limit) && limit < _.size(uniqued)) {
                 debug("Process cap to %d requests, we had %d entries, cutting off %d",
