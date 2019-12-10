@@ -25,6 +25,10 @@ debug("Starting since %s there are %d users", startString, _.size(cu));
 const defaultConf = nconf.get('config') || 'config/content.json';
 nconf.file({ file: defaultConf });
 
+/* two global variables ftw */
+let firstLine = true;
+const MAXBULK = 100;
+
 try {
     main(reftime = new Date(moment(startString).toISOString()), cu);
 } catch(e) {
@@ -35,7 +39,6 @@ try {
 async function main(start, usersArray) {
     const mongoc = await mongo.clientConnect();
     debug("%s", JSON.stringify(usersArray));
-    const MAXBULK = 300;
     const avail = [];
 
     for (const u of usersArray) {
@@ -67,40 +70,55 @@ async function main(start, usersArray) {
         })
     );
 
-    let firstLine = true;
+    let debugc = 0;
     for (const user of avail) {
         for (const since of user.skips) {
-
-            const data = await mongo.readLimit(mongoc, nconf.get('schema').metadata, {
-                impressionTime: { $gt: reftime },
-                userId: user.supporter.userId
-            }, { impressionTime: 1 }, MAXBULK, since);
-
-            const cleanData = _.map(data, function(me) {
-                const ainfo = _.find(me.attributions, { type: 'authorName' });
-                return {
-                    "impressionTime": me.impressionTime,
-                    "postId": me.postId,
-                    "name": user.name,
-                    "fullTextSize": me.fullTextSize,
-                    "authorName": ainfo ? ainfo.content: "none", 
-                    "authorDisplay": ainfo ? ainfo.display: "none",
-                    "timelineId": me.timelineId,
-                    "id": me.id,
-                    "nature": me.nature,
-                    "errors": _.size(me.errors),
-                    "images" : _.size(me.images)
-                };
-            })
-
-            const text = csv.produceSimpleCSV(cleanData, firstLine);
-            debug("retrieved %d records for %s (since %d) bytes %d [firstLine %s]",
-                _.size(data), user.name, since, _.size(text), firstLine);
-            fs.appendFileSync(outputfcsv, text, 'utf8'); 
-            firstLine = false;
+            let { datasize, csvsize, fl } = await processChunk(mongoc, user, since);
+            if(!(debugc % 13))
+                debug("retrieved %d records for %s (since %d) bytes %d [firstLine %s]", datasize, user.name, since, csvsize, fl);
+            debugc++;
         }
     }
     debug("Completed CSV: %s", outputfcsv);
     await mongoc.close();
     process.exit(0);
+}
+
+async function processChunk(mongoc, user, since) {
+
+    const data = await mongo.readLimit(mongoc, nconf.get('schema').metadata, {
+        impressionTime: { $gt: reftime },
+        userId: user.supporter.userId
+    }, { impressionTime: 1 }, MAXBULK, since);
+
+    const cleanData = _.map(data, function(me) {
+        const ainfo = _.find(me.attributions, { type: 'authorName' });
+        return {
+            "impressionTime": me.impressionTime,
+            "postId": me.postId,
+            "name": user.name,
+            "fullTextSize": me.fullTextSize,
+            "authorName": ainfo ? ainfo.content: null, 
+            "authorDisplay": ainfo ? ainfo.display: null,
+            "timelineId": me.timelineId,
+            "id": me.id,
+            "attributions": _.size(me.attributions),
+            "nature": me.nature,
+            "impressionOrder": me.impressionOrder,
+            "imgunmatch" : me.images ? me.images.unmatched : null,
+            "imgprofiles" : me.images ? me.images.profiles : null,
+            "imgview" : me.images ? me.images.others : null,
+            "fblinktype": me.linkontime ? me.linkontime.fblinktype : null,
+        };
+    })
+
+    const text = csv.produceSimpleCSV(cleanData, firstLine);
+    fs.appendFileSync(outputfcsv, text, 'utf8'); 
+    let inforv = {
+        datasize: _.size(data),
+        csvsize: _.size(text),
+        fl: firstLine
+    }
+    firstLine = false;
+    return inforv;
 }
