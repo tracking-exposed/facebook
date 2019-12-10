@@ -6,9 +6,8 @@ const nconf = require('nconf');
 
 const mongo = require('../lib/mongo');
 const params = require('../lib/params');
-const utils = require('../lib/utils');
 const adopters = require('../lib/adopters');
-const produceCSVv1 = require('../lib/CSV');
+const csv = require('../lib/CSV');
 
 function summary(req) {
     const { amount, skip } = params.optionParsing(req.params.paging, 200);
@@ -48,7 +47,7 @@ function personalCSV(req) {
         .tap(function(check) {
             if(!_.size(check)) throw new Error("Invalid token");
         })
-        .then(produceCSVv1)
+        .then(csv.produceCSVv1)
         .then(function(structured) {
             debug("personalCSV produced %d bytes", _.size(structured));
             const fname=`summary-${skip}-${amount}.csv`;

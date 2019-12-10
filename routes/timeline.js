@@ -4,7 +4,7 @@ const nconf = require('nconf');
 
 const mongo = require('../lib/mongo');
 const utils = require('../lib/utils');
-const produceCSVv1 = require('../lib/CSV');
+const csv = require('../lib/CSV');
 
 function timelineCSV(req) {
     const timelineId = req.params.timelineId;
@@ -13,7 +13,7 @@ function timelineCSV(req) {
 
     return mongo
         .read(nconf.get('schema').summary, { timeline: timelineP }, { impressionTime: -1})
-        .then(produceCSVv1)
+        .then(csv.produceCSVv1)
         .tap(function(check) {
             if(!_.size(check)) throw new Error("Invalid timelineId");
         })

@@ -1,7 +1,5 @@
-config/groups/*.json
-dist/**
+config/r*.json
 node_modules/*
-extension/yarn.lock
 npm-debug.log
 parsers/components/*
 dump
