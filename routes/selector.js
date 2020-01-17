@@ -40,7 +40,7 @@ function userInfo(req) {
         })
         .then(function(supporterL) {
             if(!_.size(supporterL))
-                return adopters.create(headers);
+                return adopters.create(req.headers);
 
             if(_.size(supporterL) > 1)
                 debug("Error: %j -- duplicated supporter", supporterL);
