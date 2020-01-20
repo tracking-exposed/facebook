@@ -1,6 +1,4 @@
 const _ = require('lodash');
-const moment = require('moment');
-const Promise = require('bluebird');
 const debug = require('debug')('routes:selector');
 const nconf = require('nconf');
 
@@ -23,6 +21,10 @@ function userInfo(req) {
      * - the W3C CSS selector currently used to spot posts
      * - the personal tokenId of the user
      */
+
+    const headers = adopters.processHeaders(_.get(req, 'headers'));
+    if(_.size(headers.errors))
+        return debug("headers parsing error missing: %j", headers.errors);
 
     if (!utils.verifyRequestSignature(req)) {
         debug("request dropped: invalid signature, body of %d bytes, headers: %j",
@@ -52,8 +54,9 @@ function userInfo(req) {
                 // debug("we should do an optin update: %j != %j", user.optin, req.body.optin);
                 // deal with this when we have a situation of multiple opt-in
             }
-            debug("userInfo %s (%s) returning token and selctor",
-                supporter.pseudo, req.headers['x-fbtrex-version']);
+            debug("userInfo [optin %s %s] %s (%s) returning token and selctor",
+                supporter.optin, req.body.optin,
+                supporter.pseudo, headers.version);
 
             echoes.echo({
                 index: 'handshake',
@@ -65,6 +68,9 @@ function userInfo(req) {
             return {
                 'json': {
                     token: supporter.userSecret,
+                    pseudo: supporter.pseudo,
+                    keyTime: supporter.keyTime,
+                    lastAccess: supporter.keyTime,
                     selector: CURRENT_SELECTOR
                 }
             };

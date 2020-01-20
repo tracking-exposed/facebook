@@ -1,32 +1,13 @@
 var _ = require('lodash');
 var moment = require('moment');
-var Promise = require('bluebird');
 var debug = require('debug')('routes:events');
-var os = require('os');
 var nconf = require('nconf');
-
-var signer = require('nacl-signature');
-var bs58 = require('bs58');
 
 var mongo = require('../lib/mongo');
 var utils = require('../lib/utils');
 var echoes = require('../lib/echoes');
 var adopters = require('../lib/adopters');
 var security = require('../lib/security');
-
-function processHeaders(received, required) {
-    var ret = {};
-    var errs = _.map(required, function(destkey, headerName) {
-        var r = _.get(received, headerName);
-        if(_.isUndefined(r))
-            return headerName;
-
-        _.set(ret, destkey, r);
-        return null;
-    });
-    errs = _.compact(errs);
-    return _.size(errs) ? { errors: errs } : ret;
-};
 
 function parseEvents(memo, evnt) {
 
@@ -86,8 +67,7 @@ function parseEvents(memo, evnt) {
             };
             memo.htmls.push(snippet);
         } else if( _.size(impression.html) ) {
-            debug("Warning! private post leakage? %d",
-                _.size(impression.html));
+            debug("Warning! private post leakage? %d", _.size(impression.html));
             /* this is impossible, but if happen I want to see it */
         }
 
@@ -280,15 +260,7 @@ function processEvents(req) {
         }
     }
 
-    var headers = processHeaders(_.get(req, 'headers'), {
-        'content-length': 'length',
-        'x-fbtrex-build': 'build',
-        'x-fbtrex-version': 'version',
-        'x-fbtrex-userid': 'supporterId',
-        'x-fbtrex-publickey': 'publickey',
-        'x-fbtrex-signature': 'signature'
-    });
-
+    const headers = adopters.processHeaders(_.get(req, 'headers'));
     if(_.size(headers.errors))
         return debug("headers parsing error missing: %j", headers.errors);
 
@@ -311,8 +283,10 @@ function processEvents(req) {
         })
         .then(function(supporterL) {
 
-            if(!_.size(supporterL))
+            if(!_.size(supporterL)) {
+                debug("Warning: creation of a new supporter, this shouldn't happen here but in routes/selector!");
                 return adopters.create(headers);
+            }
 
             if(_.size(supporterL) > 1) {
                 // TODO: we can delegate the uniqueness check to MongoDB. 
