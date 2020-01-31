@@ -5,6 +5,28 @@
 
     "stats": [
     {
+        "name": "supporters",
+        "column": "supporters",
+        "timevar": "creationTime",
+        "variables": [
+            {
+                "name": "newcomers",
+                "selector": {}
+            }
+        ]
+    },
+    {
+        "name": "active",
+        "column": "supporters",
+        "timevar": "lastActivity",
+        "variables": [
+            {
+                "name": "active",
+                "selector": {}
+            }
+        ]
+    },
+    {
         "name": "timelines",
         "column": "timelines2",
         "timevar": "startTime",
@@ -35,6 +57,10 @@
             {
                 "name": "public",
                 "selector": { "htmlId": { "$exists": true} }
+            },
+            {
+                "name": "experimental",
+                "selector": {"visibility": "experimental" }
             },
             {
                 "name": "total",

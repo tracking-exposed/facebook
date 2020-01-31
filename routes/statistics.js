@@ -5,10 +5,6 @@ const debug = require('debug')('routes:statistics');
 const nconf = require('nconf');
 
 const mongo = require('../lib/mongo');
-const utils = require('../lib/utils');
-
-/* -- this cache is shared with yttrex, might be generalized or figured out 
- * if something native from mongo exists ? */
 
 const cache = {};
 const cacheTime = 120;
@@ -127,7 +123,9 @@ function statistics(req) {
     // specifiy in config/stats.json
     const expectedFormat = "/api/v2/statistics/:name/:unit/:amount";
 
-    const allowedNames = ['timelines', 'impressions', 'processing'];
+    
+    const allowedNames = ['supporters', 'active', 'timelines', 'metadata', 
+            'processing', 'impressions'];
     const name = req.params.name;
     if(allowedNames.indexOf(name) == -1)
         return { json: { error: true, expectedFormat, allowedNames, note: `the statistic name you look for was ${name}` }}
