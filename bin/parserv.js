@@ -19,12 +19,16 @@ const concur = _.isUndefined(nconf.get('concurrency') ) ? 5 : _.parseInt(nconf.g
 const FREQUENCY = _.isUndefined(nconf.get('frequency') ) ? 2 : _.parseInt(nconf.get('frequency') );
 const backInTime = _.parseInt(nconf.get('minutesago')) ? _.parseInt(nconf.get('minutesago')) : 10;
 
-var lastExecution = moment().subtract(backInTime, 'minutes').toISOString();
-var lastCycleActive = false;
-
+let lastExecution = moment().subtract(backInTime, 'minutes').toISOString();
+let lastCycleActive = false;
+let count = 1;
 
 function getLastActive() {
-    debug(`considering the lastActivities since ${backInTime} minutes ago, [minutesago] overrides (${lastExecution})`);
+    if((count % 100) == 0) {
+        debug(`Last execution: ${lastExecution}`);
+        count = 0;
+    }
+    count++;
     return mongo
         .read(nconf.get('schema').supporters, { lastActivity: {
             $gt: new Date(lastExecution) 

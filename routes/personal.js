@@ -28,8 +28,8 @@ function summary(req) {
             return { json: data };
         })
         .catch(function(e) {
-            debug("Summary (error): %s", e);
-            return { json: { error: true, 'message': `error: ${e}` }};
+            debug("Summary (error): %s", e.message);
+            return { json: { error: true, 'message': `error: ${e.message}` }};
         });
 };
 
@@ -58,11 +58,11 @@ function personalCSV(req) {
             };
         })
         .catch(function(e) {
-            debug("csv (error): %s", e);
+            debug("csv (error): %s", e.message);
             return {
                 headers: { "Content-Type": "csv/text",
                            "content-disposition": `attachment; filename=error.csv` },
-                text: `error: ${e}`
+                text: `error: ${e.message}`
             };
         });
 }
@@ -82,8 +82,8 @@ function metadata(req) {
             return { json: data };
         })
         .catch(function(e) {
-            debug("Metadata (error): %s", e);
-            return { json: { error: true, 'message': `error: ${e}` }};
+            debug("Metadata (error): %s", e.message);
+            return { json: { error: true, 'message': `error: ${e.message}` }};
         });
 };
 
@@ -100,7 +100,8 @@ function enrich(req) {
     }
     else {
         when = moment(req.params.paging);
-        debug("enrich by day: looking for %s", when);
+        amount = 100;
+        debug("enrich by day: looking for %s forced limit at 100!", when);
     }
 
     if( (when != null && !when.isValid()) || (when == null && !amount) )
@@ -156,8 +157,8 @@ function enrich(req) {
             return { json: prod };
         })
         .catch(function(e) {
-            debug("Enrich (error): %s", e);
-            return { json: { error: true, 'message': `error: ${e}` }};
+            debug("Enrich (error): %s", e.message);
+            return { json: { error: true, 'message': `error: ${e.message}` }};
         });
 };
 
@@ -223,8 +224,8 @@ function stats(req) {
             };
         })
         .catch(function(e) {
-            debug("Stats (error): %s", e);
-            return { json: { error: true, 'message': `error: ${e}` }};
+            debug("Stats (error): %s", e.message);
+            return { json: { error: true, 'message': `error: ${e.message}` }};
         });
 
 };
@@ -243,6 +244,8 @@ function daily(req) {
         .then(function(supporter) {
             return mongo.readLimit(nconf.get('schema').tmlnstats, {
                 userId: supporter.userId,
+                'nature.organic': { $exists: true },
+                'nature.sponsored': { $exists: true }
             }, { dayTime: -1 }, dayamount, skip);
         })
         .map(function(e) {
@@ -254,8 +257,8 @@ function daily(req) {
             return { json: stats };
         })
         .catch(function(e) {
-            debug("Daily (error): %s", e);
-            return { json: { error: true, 'message': `error: ${e}` }};
+            debug("Daily (error): %s", e.message);
+            return { json: { error: true, 'message': `error: ${e.message}` }};
         });
 };
 
