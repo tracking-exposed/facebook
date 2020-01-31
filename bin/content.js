@@ -13,17 +13,24 @@ const mongo = require('../lib/mongo');
 const common = require('../lib/common');
 const security = require('../lib/security');
 
+/* configuration for elasticsearch */
+const echoes = require('../lib/echoes');
+
 var cfgFile = "config/content.json";
 nconf.argv().env().file({ file: cfgFile })
 
 if(nconf.get('FBTREX') !== 'production') {
     debug("Because $FBTREX is not 'production', it is assumed be 'development'");
     nconf.stores.env.readOnly = false;
+    nconf.set('elastic', 'disabled');
     nconf.set('FBTREX', 'development');
     nconf.stores.env.readOnly = true;
 } else {
     debug("Production execution!");
 }
+
+echoes.addEcho("elasticsearch");
+echoes.setDefaultEcho("elasticsearch");
 
 debug("configuration file: %s | FBTREX mode [%s]", cfgFile, nconf.get('FBTREX'));
 
@@ -31,11 +38,6 @@ if(!nconf.get('interface') || !nconf.get('port') ||  !nconf.get('schema') ) {
     console.log("Missing configuration essential (interface, post, schema)");
     process.exit(1);
 }
-
-/* configuration for elasticsearch */
-const echoes = require('../lib/echoes');
-echoes.addEcho("elasticsearch");
-echoes.setDefaultEcho("elasticsearch");
 
 /* binding of express server */
 server.listen(nconf.get('port'), nconf.get('interface'));
