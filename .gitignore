@@ -1,7 +1,6 @@
 config/r*.json
 node_modules/*
 npm-debug.log
-parsers/components/*
 dump
 rss/*
 data/*

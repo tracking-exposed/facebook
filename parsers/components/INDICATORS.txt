@@ -1,0 +1,5 @@
+data-ad-preview.js:   helper.indicator(envelop, CAROUSEL, _.get(stats, CAROUSEL));
+linkontime.js:        helper.indicator(envelop, 'timeless');
+usertext.js:          helper.indicator(envelop, 'cleanLink', href);
+external.js:          helper.indicator(envelop, 'obscureLink', null);
+
