@@ -1,9 +1,16 @@
 ret = db.supporters2.createIndex({ "lastActivity": -1 }); checkret('supporters2 lastActivity', ret);
 
 ret = db.impressions2.createIndex({ "timelineId": -1 }); checkret('impressions2 timelineId', ret);
+/*
+ret = db.impressions2.createIndex({ "id": -1 }); checkret('impressions2 id', ret);
+ret = db.impressions2.createIndex({ "impressionTime": -1 }); checkret('impressions2 impressionTime', ret);
+*/
 
 ret = db.timelines2.createIndex({ "userId": 1 }); checkret('timelines2 userId', ret);
-
+/*
+ret = db.timelines2.createIndex({ "id": 1 }); checkret('timelines2 id', ret);
+ret = db.timelines2.createIndex({ "startTime": -1 }); checkret('timelines2 startTime', ret);
+*/ 
 ret = db.labels.createIndex({ "semanticId" : 1 }, { unique: true }); checkret('labels semanticId', ret);
 ret = db.labels.createIndex({ "when" : 1 }); checkret('labels when', ret);
 
