@@ -6,7 +6,7 @@
     "stats": [
     {
         "name": "supporters",
-        "column": "supporters",
+        "column": "supporters2",
         "timevar": "keyTime",
         "variables": [
             {
@@ -17,7 +17,7 @@
     },
     {
         "name": "active",
-        "column": "supporters",
+        "column": "supporters2",
         "timevar": "lastActivity",
         "variables": [
             {

@@ -95,7 +95,7 @@ function parseEvents(memo, evnt) {
          * timelineId we can retrieve the anomaly from the mongoDB */
         echoes.echo({
             index: "anomaly",
-            timelineId: supporter.userId,
+            timelineId: anomaly.timelineId,
             version: memo.sessionInfo.version,
         });
 
