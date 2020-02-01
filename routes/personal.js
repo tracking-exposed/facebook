@@ -176,14 +176,14 @@ function byTimelineLookup(userId, amount, skipnum) {
         "impressionOrder": "$impressions.impressionOrder",
         "impressionTime": "$impressions.impressionTime",
         "htmlId": "$impressions.htmlId",
+        "visibility": "$impressions.visibility",
         geoip: 1,
         startTime: 1,
         "timelineId": "$id"
     }};
-    const summaryl = { $lookup: { from: 'summary', localField: 'htmlId', foreignField: 'id', as: 'summary'  }};
 
     return mongo
-        .aggregate(nconf.get('schema').timelines, [ match, sort, skip, limit, lookup, unwind, project, summaryl ]);
+        .aggregate(nconf.get('schema').timelines, [ match, sort, skip, limit, lookup, unwind, project ]);
 };
 
 function stats(req) {
