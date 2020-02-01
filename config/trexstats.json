@@ -7,7 +7,7 @@
     {
         "name": "supporters",
         "column": "supporters",
-        "timevar": "creationTime",
+        "timevar": "keyTime",
         "variables": [
             {
                 "name": "newcomers",

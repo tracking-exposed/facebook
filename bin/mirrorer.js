@@ -1,9 +1,10 @@
 #!/usr/bin/env node
-var _ = require('lodash');
-var Promise = require('bluebird');
-var debug = require('debug')('bin:mirrorer');
-var request = Promise.promisifyAll(require('request'));
-var nconf = require('nconf');
+const _ = require('lodash');
+const Promise = require('bluebird');
+const debug = require('debug')('bin:mirrorer');
+const request = Promise.promisifyAll(require('request'));
+const moment = require('moment');
+const nconf = require('nconf');
 
 nconf.argv().env();
 
@@ -29,12 +30,36 @@ return request
         debug("Extracted %d elements", e.elements);
         return e.content;
     })
+    .tap(function(copiedReqs) {
+        const inf = _.map(copiedReqs, function(c) {
+            if(c.body && c.body[0] && c.body[0].startTime)
+                return moment.duration(
+                    moment() - moment(c.body[0].startTime)
+                ).humanize();
+            else
+                return "∅";
+        })
+        debug("%s", inf.join(' '));
+    })
     .map(function(copiedReq) {
         return request
             .postAsync(destUrl, { json: copiedReq.body, headers: copiedReq.headers })
             .then(function(result) {
-                if(result.body && result.body.status == 'OK')
-                    debug("OK %s: %s", copiedReq.headers['x-fbtrex-version'], result.body.info);
+                if(result.body && result.body.status == 'OK') { /* 
+                    > result.body.info (3) [{…}, {…}, {…}]
+                    > result.body.info[0]
+                    {kind: "htmls", amount: 3}
+                    > result.body.info[1]
+                    {kind: "impressions", amount: 3}
+                    > result.body.info[2]
+                    {_id: "5e3540ecf26bfd0eecdb4acf", publicKey: "FvviQLBXKXb4ozQzKRjFZ85TTQAjncYjBjWW6jpSfngW", keyTime: "2020-02-01T09:12:12.244Z", lastActivity: "2020-02-01T09:50:43.172Z", version: "2.0.0", …}
+                    > result.body.info[2].pseudo
+                    "okra-ravioli-tapioca" */
+                    debug("OK %s:\timpression %d\thtmls %d  \t%s",
+                        copiedReq.headers['x-fbtrex-version'], 
+                        result.body.info[1].amount, result.body.info[0].amount, 
+                        result.body.info[2] ? result.body.info[2].pseudo : '{pseudo:n/a}');
+                }
                 else
                     debug("?? %s - %s", copiedReq.headers['x-fbtrex-version'], result.body);
             })

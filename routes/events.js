@@ -285,21 +285,24 @@ function processEvents(req) {
 
             if(!_.size(supporterL)) {
                 debug("Warning: creation of a new supporter, this shouldn't happen here but in routes/selector!");
-                return adopters.create(headers);
+                let newsupp = adopters.create(headers);
+                supporterL.push(newsupp);
             }
 
             if(_.size(supporterL) > 1) {
                 // TODO: we can delegate the uniqueness check to MongoDB. 
                 // We can achieve this by creating a compound key
                 // db.supporters.createIndex( { "userId": 1, "publicKey": 1 } )
-                debug("Error: %j -- duplicated supporter", supporterL);
+                debug("(error|warning): %d duplicated supporter", supporterL[0].userId);
             }
 
-            var supporter = _.first(supporterL);
+            const supporter = _.first(supporterL);
 
-            if(supporter.version !== headers.version)
+            if(supporter.version !== headers.version) {
                 debug(" * Supporter %s version upgrade %s to %s",
                     supporter.pseudo, supporter.version, headers.version);
+                supporter.version = headers.version;
+            }
 
             debug(" * Supporter %s [%s] last activity %s (%s ago) %s",
                 supporter.pseudo, geoinfo,
@@ -307,7 +310,6 @@ function processEvents(req) {
                 moment.duration(moment.utc()-moment(supporter.lastActivity)).humanize(),
                 supporter.version);
 
-            supporter.version = headers.version;
             _.set(supporter, 'lastActivity', new Date());
             return supporter;
         })
@@ -322,6 +324,7 @@ function processEvents(req) {
             }};
         })
         .catch(function(error) {
+            console.error(error);
             debug("Event submission ignored: %s", error.message);
             return { 'json': {
                 'status': 'error',
