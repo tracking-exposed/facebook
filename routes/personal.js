@@ -119,16 +119,18 @@ function enrich(req) {
         }}
     ];
 
+    let pseudo = null;
     return adopters
         .validateToken(req.params.userToken)
         .then(function(supporter) {
 
+            pseudo = supporter.pseudo;
             if(when) {
                 const startOf = new Date(when.startOf('day').toISOString());
                 const endOf = new Date(when.add(1, 'd').startOf('day').toISOString());
                 pipeline = _.concat([
                     { $match: {
-                        user: supporter.pseudo,
+                        userId: supporter.userId,
                         impressionTime: { $lt: endOf, $gt: startOf }
                     } },
                     { $sort: { impressionTime: -1 } },
@@ -142,18 +144,21 @@ function enrich(req) {
                 ], lookup);
             }
             return mongo
-                .aggregate(nconf.get('schema').summary, pipeline);
+                .aggregate(nconf.get('schema').metadata, pipeline);
         })
         .map(function(e) {
             if(_.size(e.labelcopy)) {
                 e.labels = _.get(e.labelcopy[0], 'l');
                 e.lang = _.get(e.labelcopy[0], 'lang');
             }
-            return _.omit(e, ['_id', 'id', 'labelcopy' ]);
+            _.set(e, 'user', pseudo);
+            return _.omit(e, ['_id', 'id', 'labelcopy', 'regexp', 'opengraph',
+                'usertext', 'interactions', 'images.profiles', 'indicators',
+                'summary', 'userId' ]);
         })
         .then(function(prod) {
-            debug("Returning %d enriched entries, the most recent from %s",
-                _.size(prod), prod[0].impressionTime);
+            debug("Returning %d enriched entries, the most recent from %s from %s",
+                _.size(prod), prod[0].impressionTime, prod[0].user);
             return { json: prod };
         })
         .catch(function(e) {
