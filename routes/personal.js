@@ -37,9 +37,11 @@ function personalCSV(req) {
     const { amount, skip } = params.optionParsing(req.params.paging, 1000);
     debug("CSV request by [%s], amount %d skip %d", req.params.userToken, amount, skip);
 
+    let fname = "summary-"
     return adopters
         .validateToken(req.params.userToken)
         .then(function(supporter) {
+            fname=`${fname}-${supporter.pseudo}.csv`;
             return mongo
                 .readLimit(nconf.get('schema').summary, { user: supporter.pseudo },
                     { impressionTime: -1}, amount, skip);
@@ -50,7 +52,6 @@ function personalCSV(req) {
         .then(csv.produceCSVv1)
         .then(function(structured) {
             debug("personalCSV produced %d bytes", _.size(structured));
-            const fname=`summary-${skip}-${amount}.csv`;
             return {
                 headers: { "Content-Type": "csv/text",
                            "content-disposition": `attachment; filename=${fname}` },
@@ -154,7 +155,7 @@ function enrich(req) {
             _.set(e, 'user', pseudo);
             return _.omit(e, ['_id', 'id', 'labelcopy', 'regexp', 'opengraph',
                 'usertext', 'interactions', 'images.profiles', 'indicators',
-                'summary', 'userId' ]);
+                'summary', 'userId', 'notes' ]);
         })
         .then(function(prod) {
             debug("Returning %d enriched entries, the most recent from %s from %s",
@@ -244,9 +245,11 @@ function daily(req) {
     debug("Personal daily statistics - skip %d amount %d [MIN %d]",
         skip, dayamount, MINIMUM_AMOUNT);
 
+    let pseudo = null;
     return adopters
         .validateToken(req.params.userToken)
         .then(function(supporter) {
+            pseudo = supporter.pseudo;
             return mongo.readLimit(nconf.get('schema').tmlnstats, {
                 userId: supporter.userId,
                 'nature.organic': { $exists: true },
@@ -259,7 +262,7 @@ function daily(req) {
         .then(function(stats) {
             debug("Retrieved daily stats: amount %d info: %j %j",
                 _.size(stats), _.map(stats, 'duration'), _.map(stats, 'npost'));
-            return { json: stats };
+            return { json: { dayamount, skipped: skip, stats, pseudo }} ;
         })
         .catch(function(e) {
             debug("Daily (error): %s", e.message);
