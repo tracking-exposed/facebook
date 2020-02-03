@@ -106,7 +106,7 @@ function groupByDay(memo, timelinespu) {
         const ntimelines = _.size(dayr);
         const npost = _.size(metadatas);
         const nature = _.countBy(metadatas, 'nature');
-        const totalSeconds = _.sum(_.map(dayr, 'durationSeconds'));
+        const totalSeconds = _.round(_.sum(_.map(dayr, 'durationSeconds')), 0);
         const duration = moment.duration({ seconds: totalSeconds }).humanize();
         const sources = _.size(_.uniq(_.map(metadatas, function(m) {
             return m.attributions[0].content;
