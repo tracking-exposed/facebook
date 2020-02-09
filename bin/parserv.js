@@ -83,7 +83,7 @@ function infiniteLoop() {
             if(_.size(results)) {
                 debug("updated lastExection: %s, results: %s", lastExecution, JSON.stringify(results));
                 lastCycleActive = true;
-                logActivity(results);
+                // logActivity(results);
             } else {
                 lastCycleActive = false;
             }
