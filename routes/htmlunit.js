@@ -18,8 +18,8 @@ function unitById(req) {
             /* and this is compatible via routes/exporter */
             return Promise.all([
                 html,
-                mongo.readOne(nconf.get('schema').metadata, { id: htmlId }),
-                mongo.readOne(nconf.get('schema').summary, { id: htmlId }),
+                mongo.readOne(nconf.get('schema').metadata, { id: html.impressionId }),
+                mongo.readOne(nconf.get('schema').summary, { id: html.impressionId }),
                 mongo.readOne(nconf.get('schema').errors, { id: htmlId }),
                 mongo.readOne(nconf.get('schema').impressions, { htmlId: html.id }),
                 mongo.readOne(nconf.get('schema').timelines, { id: html.timelineId })

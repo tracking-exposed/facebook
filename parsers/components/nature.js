@@ -3,11 +3,11 @@ var debug = require('debug')('parsers:components:nature');
 
 function findOutNature(envelop) {
 
-    /* nature would be 'organic', 'sponsored', 'viral', null */
+    /* nature can be 'organic', 'sponsored', 'viral', null */
     let retval = null;
 
     if(envelop.indicators) {
-        debug("Based on these indicators, this is sponsored: %j", envelop.indicators);
+        debug("Based on these indicators [%j] this is sponsored", envelop.indicators);
         retval = 'sponsored';
     } else if(envelop.postId) {
         retval = 'organic';
@@ -16,9 +16,9 @@ function findOutNature(envelop) {
             step: 'integrity',
             error: 'lack of postId with organic nature'
         });
+        debug("integrity failure!");
     } // TODO 'viral', prima come 'notes' e poi definitivo
 
-    debug("%s", retval);
     return retval;
 };
 

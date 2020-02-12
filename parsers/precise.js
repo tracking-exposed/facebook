@@ -1,13 +1,7 @@
 #!/usr/bin/env node
-const _ = require('lodash');
-const moment = require('moment');
-const debug = require('debug')('parser:precise');
 const nconf = require('nconf');
-
-const walk = require('../lib/walk');
+const debug = require('debug')('parsers:precise');
 const parse = require('../lib/parse');
-const mongo = require('../lib/mongo');
-const glue = require('../lib/glue');
 
 nconf.argv().env().file({ file: 'config/content.json' });
 
@@ -17,21 +11,21 @@ if(!targetId) {
     return;
 }
 
-const repeat = nconf.get('repeat') || false;
-const htmlfilter = repeat ?
-    { id: targetId } :
-    { id: targetId, processed: { $exists: false } };
-
 nconf.stores.env.readOnly = false;
 nconf.set('fulldump', true);
 nconf.set('retrive', true);
 nconf.stores.env.readOnly = true;
 
-return parse
-    .parseHTML(htmlfilter, repeat)
-    .then(function(done) {
-        if(!done || !done.metadata)
-            debug("No effect on targetId")
-        else
-            debug("Done targetId! %d metadata, %d errors", done.metadata, done.errors);
-    });
+async function main(htmlfilter) {
+    const result = await parse.parseHTML(htmlfilter, repeat);
+    if(!result || !result.metadata)
+        debug("No effect on targetId")
+    else
+        debug("Done targetId! %d metadata, %d errors", result.metadata, result.errors);
+    return result;
+};
+
+const repeat = nconf.get('repeat') || false;
+return main(repeat ?
+    { id: targetId } :
+    { id: targetId, processed: { $exists: false } });

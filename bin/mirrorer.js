@@ -34,12 +34,12 @@ return request
         const inf = _.map(copiedReqs, function(c) {
             if(c.body && c.body[0] && c.body[0].startTime)
                 return moment.duration(
-                    moment() - moment(c.body[0].startTime)
+                    moment(c.body[0].startTime) - moment()
                 ).humanize();
             else
                 return "∅";
         })
-        debug("%s", inf.join(' '));
+        debug("Timelines saved: %s", inf.join(', '));
     })
     .map(function(copiedReq) {
         return request
@@ -55,10 +55,9 @@ return request
                     {_id: "5e3540ecf26bfd0eecdb4acf", publicKey: "FvviQLBXKXb4ozQzKRjFZ85TTQAjncYjBjWW6jpSfngW", keyTime: "2020-02-01T09:12:12.244Z", lastActivity: "2020-02-01T09:50:43.172Z", version: "2.0.0", …}
                     > result.body.info[2].pseudo
                     "okra-ravioli-tapioca" */
-                    debug("OK %s:\timpression %d\thtmls %d  \t%s",
-                        copiedReq.headers['x-fbtrex-version'], 
-                        result.body.info[1].amount, result.body.info[0].amount, 
-                        result.body.info[2] ? result.body.info[2].pseudo : '{pseudo:n/a}');
+                    debug("OK %s:\t%s\t%j", copiedReq.headers['x-fbtrex-version'], 
+                        _.last(result.body.info).pseudo ? _.last(result.body.info).pseudo : 'pseudo:N/A',
+                        result.body.info[0]);
                 }
                 else
                     debug("?? %s - %s", copiedReq.headers['x-fbtrex-version'], result.body);

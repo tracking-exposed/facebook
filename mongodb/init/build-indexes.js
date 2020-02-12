@@ -6,6 +6,7 @@ ret = db.impressions2.createIndex({ "id": -1 }); checkret('impressions2 id', ret
 ret = db.impressions2.createIndex({ "impressionTime": -1 }); checkret('impressions2 impressionTime', ret);
 */
 
+ret = db.htmls2.createIndex({ "savingTime": -1 }); checkret('htmls2 savingTime', ret);
 ret = db.timelines2.createIndex({ "userId": 1 }); checkret('timelines2 userId', ret);
 /*
 ret = db.timelines2.createIndex({ "id": 1 }); checkret('timelines2 id', ret);

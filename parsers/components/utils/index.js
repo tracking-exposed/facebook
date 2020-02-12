@@ -12,7 +12,7 @@ module.exports = {
     commentable: require('../commentable'),
     external: require('../external'),
     event: require('../event'),
-    regexp: require('../regexp'),
+    // regexp: require('../regexp'),
     opengraph: require('../opengraph'),
     video: require('../video'),
 };

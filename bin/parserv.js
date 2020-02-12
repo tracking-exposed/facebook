@@ -12,6 +12,9 @@ const parse = require('../lib/parse');
 const echoes = require('../lib/echoes');
 nconf.argv().env().file({ file: 'config/content.json' });
 
+nconf.stores.env.readOnly = false;
+nconf.set('elastic', 'disabled');
+nconf.stores.env.readOnly = true;
 echoes.addEcho("elasticsearch");
 echoes.setDefaultEcho("elasticsearch");
 

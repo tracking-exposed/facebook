@@ -1,16 +1,16 @@
 const _ = require('lodash');
-const moment = require('moment');
 const debug = require('debug')('parsers:components:summarize');
 const utils = require('../../../lib/utils');
 
 function picker(metadata, alternative) {
+    debugger;
     return  _.reduce(alternative, function(memo, l) {
         if(memo)
             return memo;
 
         let retv = _.get(metadata, l, null);
 
-        if(retv && (_.size(retv) > 1 || typeof retv == 'object'))
+        if(retv && (_.size(retv) > 1 || ( typeof retv == 'object')))
             return retv;
         else {
             // debug("Ignoring metadata [%s] over [%j] because is [%s]", l, alternative, retv);
@@ -47,7 +47,12 @@ function flattenInteractions(memo, interaction) {
 };
 
 function summarize(metadata) {
-    /* IGNORED SO FAR ['externalLinks', 'commentsLinks'] */
+    /* IGNORED SO FAR ['externalLinks', 'commentsLinks'] 
+    
+      This function should pick the metadata and summarize in a standard 'summary' format, used to produce 
+      API access and CSV. metadata depends too much on parsers results, while summary want to flatten 
+      as much as possible the object and few fields are obtained by potentially multiple parsers.
+    */
     const stdFields = ['impressionTime', 'impressionOrder', 'semanticId',
         'postCount', 'semanticCount', 'opengraph', 'id' ];
     let summary = _.pick(metadata, stdFields);
@@ -64,6 +69,15 @@ function summarize(metadata) {
     summary.permaLink = picker(metadata, ['linkontime.permaLink', 'feed_id.permaLink', 'event.permaLink']);
     summary.fblinktype = picker(metadata, ['linkontime.fblinktype', 'feed_id.fblinktype', 'event.fblinktype']);
     summary.nature = metadata.nature;
+
+    if(_.size(summary.permaLink) && !_.size(summary.fblinktype) ) {
+        const expected = [ "videos", "photo", "groups", "posts", "events" ];
+        const chunks = _.split(summary.permaLink, '/');
+        const guessed = _.first(_.compact(_.map(chunks, function(c) {
+            return _.indexOf(expected, c) != -1 ? c : null;
+        })));
+        summary.fblinktype = guessed;
+    }
 
     summary.images = metadata.images ? {
         count: typeof metadata.images == 'object' ?  _.size(metadata.images.imageUrls) : 0,

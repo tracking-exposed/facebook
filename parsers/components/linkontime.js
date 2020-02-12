@@ -1,11 +1,11 @@
 var _ = require('lodash');
 var debug = require('debug')('parsers:components:linkontime');
+const querystring = require('querystring');
+
 var helper = require('./utils/helper');
-var moment = require('moment');
 
 function linkontime(envelop) {
-    /* this just process the first element <abbr>. In the shared.js file, this
-     * element is the one stripped of by _.tail */
+    /* the goal here is pick the publicationTime and the postId */
 
     const a = envelop.jsdom.querySelectorAll('a > abbr');
     const abbr = envelop.jsdom.querySelectorAll('abbr');
@@ -22,8 +22,9 @@ function linkontime(envelop) {
     }
     if( _.size(a) > 0 && a[0].hasAttribute('target') ) {
         helper.notes(envelop, 'linkontime', { c: 2 });
+        // does it ever happen?
         debugger;
-        let ret = helper.extractDateLink(a[0]);
+        ret = helper.extractDateLink(a[0]);
     }
     /* else, we are in "X wants to participate in Y event" */
     else if (abbr[0] && abbr[0].hasAttribute('data-utime')) {
@@ -51,7 +52,6 @@ function linkontime(envelop) {
         /* old-style sponsored post, or paid parnership 'e67365bc93f6c8c9a44bdfce85bbb0d98b24bf5a' 
          * without publication time, but reachable via feed_id */
         helper.notes(envelop, 'linkontime', { c: 5 });
-        helper.indicator(envelop, 'timeless');
         ret = null;
     }
     else {

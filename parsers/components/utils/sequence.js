@@ -13,7 +13,7 @@ function mandatoryPostId(envelop) {
 };
 
 function sequence(envelop) {
-    debug("🡆🡆  http://localhost:8000/revision/%s", envelop.impression.id);
+    debug("🡆🡆  http://localhost:1313/debug/html/#%s", envelop.impression.id);
     const flist = [
         /* keep in mind: this sequence matter, read the requirements */
         'reasons',
@@ -31,7 +31,7 @@ function sequence(envelop) {
         'external',
         'opengraph',
         'event',
-        'regexp',
+        // 'regexp',
     ];
     envelop.errors = [];
     envelop = _.reduce(flist, function(memo, fname) {
