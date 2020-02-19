@@ -7,8 +7,8 @@ function authoredOpenGraph(envelop, mined, ref) {
     helper.notes(envelop, 'authoredOpenGraph', { mined });
     if(_.size(envelop.external) != 1) {
         // if is 0, manage an error, if is > 1, I don't know if use the last or the first 
-        debugger;
-        throw new Error("unsupported condition");
+        debug("We don't know yet what to use: %j", envelop.external);
+        return null;
     } 
   
     if(envelop.external[0].isValid != true)

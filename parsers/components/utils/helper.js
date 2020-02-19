@@ -277,8 +277,9 @@ function extractDate(abbr) {
         };
         let m = moment.utc(inito);
         if(!m.isValid())
-            throw new Error("wrong internal parsing!");
-        debug("Rare condition in extractDate: %s", m);
+            return null;
+        debug("Rare condition in extractDate: %j %s - %s",
+            inito, m, new Date(m.toISOString()) );
         return new Date(m.toISOString());
     } catch(error) {
         debug("Not possible dig an hour! %s", error);

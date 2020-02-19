@@ -3,6 +3,14 @@ const debug = require('debug')('parsers:components:feed_id');
 const helper = require('./utils/helper');
 const moment = require('moment');
 
+/* XXX bug
+
+parsers:components:feed_id longId2 42 fbfeed_sub_header__id_2170246229744964:5:0 +0ms
+  parsers:components:feed_id not the right format? (TypeError: Cannot read property 'split' of undefined
+
+   */
+
+
 function commonFormat(longId) {
     const semic = longId.split(';');
     const authorId = semic[1];
@@ -76,7 +84,7 @@ function feed_id(envelop) {
 
     let dynamic1 = envelop.jsdom.querySelectorAll('div[id*="feed_subtitle_"]');
     let dynamic2 = envelop.jsdom.querySelectorAll('[id^="fbfeed_"]');
-    
+
     if(!_.size(dynamic1) && !_.size(dynamic2))
         return null;
 
@@ -88,8 +96,8 @@ function feed_id(envelop) {
         helper.notes(envelop, 'feed_id numbers 2', _.map(dynamic2, function(e) {
             return helper.getOffset(envelop, e);
         }));
-        debug("Possible shared: but taking only the first among: %d", _.size(dynamic));
-        dynamic = _.first(dynamic);
+        debug("*** [conflict?]: taking only the first among: *%j (%j)", dynamic1, dynamic2);
+        dynamic1 = _.first(dynamic1);
     }
 
     dynamic1 = _.first(dynamic1);
