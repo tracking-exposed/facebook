@@ -252,11 +252,12 @@ function daily(req) {
             pseudo = supporter.pseudo;
             return mongo.readLimit(nconf.get('schema').tmlnstats, {
                 userId: supporter.userId,
-                'nature.organic': { $exists: true },
-                'nature.sponsored': { $exists: true }
+                'nature.organic': { $exists: true }
             }, { dayTime: -1 }, dayamount, skip);
         })
         .map(function(e) {
+            if(_.isUndefined(e.nature.sponsored))
+                e.nature.sponsored = 0;
             return _.omit(e, ['_id', 'userId']);
         })
         .then(function(stats) {
