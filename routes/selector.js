@@ -37,7 +37,7 @@ function userInfo(req) {
 
     return mongo
         .read(nconf.get('schema').supporters, {
-            publicKey: req.body.publicKey,
+            publicKey: headers.publickey,
             userId: _.parseInt(req.body.userId)
         })
         .then(function(supporterL) {
@@ -45,7 +45,7 @@ function userInfo(req) {
                 return adopters.create(headers);
 
             if(_.size(supporterL) > 1)
-                debug("Error: %j -- duplicated supporter", supporterL);
+                debug("(error|warning): %d duplicated supporter", supporterL[0].userId);
 
             return _.first(supporterL);
         })
