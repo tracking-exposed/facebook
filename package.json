@@ -1,6 +1,6 @@
 {
   "name": "fbTREX",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "facebook.tracking.exposed → collaborative tool to investigate personalization algorithms",
   "scripts": {
     "collector:prod": "FBTREX=production elastic=disabled DEBUG=fbtrex:*,routes:* node bin/collector",
@@ -45,7 +45,7 @@
   "devDependencies": {
     "chai": "^4.2.0",
     "jsdom": "^13.0.0",
-    "mocha": "^5.2.0",
+    "mocha": "^8.2.0",
     "nodemon": "^1.19.4"
   }
 }
