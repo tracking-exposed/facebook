@@ -43,9 +43,9 @@
     "tweetnacl-util": "^0.15.0"
   },
   "devDependencies": {
-    "nodemon": "^1.18.9",
-    "jsdom": "^13.0.0",
     "chai": "^4.2.0",
-    "mocha": "^5.2.0"
+    "jsdom": "^13.0.0",
+    "mocha": "^5.2.0",
+    "nodemon": "^1.19.4"
   }
 }
