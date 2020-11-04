@@ -1,6 +1,6 @@
 var _ = require('lodash');
 var debug = require('debug')('parsers:components:external');
-var helper = require('./utils/helper');
+var helper = require('./helper');
 
 
 function deserveToBeSaved(lstruct, aelem) {

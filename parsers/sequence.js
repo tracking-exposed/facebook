@@ -1,20 +1,5 @@
-const _ = require('lodash');
-const debug = require('debug')('parsers:utils:sequence');
-
-const pipeline = require('./index');
-const findOutNature = require('../nature');
-const semantic = require('../semantic');
-
-function mandatoryPostId(envelop) {
-    var p = _.get(envelop, 'feed_id.postId');
-    if(!p)
-        p = _.get(envelop, 'linkontime.postId');
-    return p;
-};
-
-function sequence(envelop) {
-    debug("🡆🡆  http://localhost:1313/debug/html/#%s", envelop.impression.id);
-    const flist = [
+module.exports = {
+    dissectorList: [
         /* keep in mind: this sequence matter, read the requirements */
         'reasons',
         'arbitrary',
@@ -31,7 +16,37 @@ function sequence(envelop) {
         'external',
         'opengraph',
         'event',
-        // 'regexp',
+    ],
+    images: require('./images'),
+    interactions: require('./interactions'),
+    attributions: require('./attributions'),
+    shared: require('./shared'),
+    linkontime: require('./linkontime'),
+    feed_id: require('./feed_id'),
+    'data-ad-preview': require('./data-ad-preview'),
+    usertext: require('./usertext'),
+    reasons: require('./reasons'),
+    arbitrary: require('./arbitrary'),
+    commentable: require('./commentable'),
+    external: require('./external'),
+    event: require('./event'),
+    // regexp: require('../regexp'),
+    opengraph: require('./opengraph'),
+    video: require('./video'),
+};
+
+/*
+const pipeline = require('./index');
+const findOutNature = require('../nature');
+const semantic = require('../semantic');
+function mandatoryPostId(envelop) {
+    var p = _.get(envelop, 'feed_id.postId');
+    if(!p)
+        p = _.get(envelop, 'linkontime.postId');
+    return p;
+};
+function sequence(envelop) {
+    debug("🡆🡆  http://localhost:1313/debug/html/#%s", envelop.impression.id);
     ];
     envelop.errors = [];
     envelop = _.reduce(flist, function(memo, fname) {
@@ -60,8 +75,7 @@ function sequence(envelop) {
     /* this returns only the metadata. possible extension of the metadata
      * structure it is possibile, or possible recomputation of specific
      * components too. Just at the moment the mongo functions calling this don't even
-     * support or care of the possibility */
+     * support or care of the possibility 
     return envelop;
 };
-
-module.exports = sequence;
+*/

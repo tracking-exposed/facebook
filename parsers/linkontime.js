@@ -2,7 +2,7 @@ var _ = require('lodash');
 var debug = require('debug')('parsers:components:linkontime');
 const querystring = require('querystring');
 
-var helper = require('./utils/helper');
+var helper = require('./helper');
 
 function linkontime(envelop) {
     /* the goal here is pick the publicationTime and the postId */

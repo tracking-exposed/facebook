@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const debug = require('debug')('parsers:components:interactions');
 const querystring = require('querystring');
-const helper = require('./utils/helper');
+const helper = require('./helper');
 
 const unitMap = {
     "K": 1000,

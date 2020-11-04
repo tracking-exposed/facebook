@@ -1,6 +1,6 @@
 var _ = require('lodash');
 var debug = require('debug')('parsers:components:regexp');
-var helper = require('./utils/helper');
+var helper = require('./helper');
 var moment = require('moment');
 
 function regexp(envelop) {

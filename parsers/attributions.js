@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const debug = require('debug')('parsers:components:attribution');
-const helper = require('./utils/helper');
+const helper = require('./helper');
 
 function pickRightHeader(envelop, min, max) {
 

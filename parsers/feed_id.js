@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const debug = require('debug')('parsers:components:feed_id');
-const helper = require('./utils/helper');
+const helper = require('./helper');
 const moment = require('moment');
 
 /* XXX bug

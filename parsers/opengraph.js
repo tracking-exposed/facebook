@@ -1,6 +1,6 @@
 var _ = require('lodash');
 var debug = require('debug')('parsers:components:opengraph');
-var helper = require('./utils/helper');
+var helper = require('./helper');
 
 function authoredOpenGraph(envelop, mined, ref) {
     // in this special case, use external and don't use the standard recursive function */

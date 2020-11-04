@@ -1,6 +1,6 @@
 var _ = require('lodash');
 var debug = require('debug')('parsers:components:usertext');
-var helper = require('./utils/helper');
+var helper = require('./helper');
 
 function usertext(envelop) {
 

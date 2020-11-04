@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const debug = require('debug')('parsers:components:reasons');
-const helper = require('./utils/helper');
+const helper = require('./helper');
 
 function reasons(envelop) {
     /* a reason is like 54c7c8f6c5440407cb7ee764620424ecdd6fea3f

@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const debug = require('debug')('parsers:components:summarize');
-const utils = require('../../../lib/utils');
+const utils = require('../lib/utils');
 
 function picker(metadata, alternative) {
     debugger;

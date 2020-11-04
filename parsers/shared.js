@@ -1,6 +1,6 @@
 var _ = require('lodash');
 var debug = require('debug')('parsers:components:shared');
-var helper = require('./utils/helper');
+var helper = require('./helper');
 
 function lazyH(envelop) {
     const h5 = envelop.jsdom.querySelectorAll('h5');
