@@ -1,10 +1,39 @@
 var _ = require('lodash');
 var debug = require('debug')('parsers:components:images');
 
-function images(envelop) {
+function imageChains(envelop) {
     /* alt, the altenative text used in pictures, might contain the individual name of an user
      * from their picture profile. This selector might take that too. That is not an information
      * we should collect */
+
+    const images = _.map(envelop.jsdom.querySelectorAll('image'), function(anode) {
+        const src = anode.getAttribute('src');
+        const retval = {};
+
+        retval.src = src;
+        retval.role = anode.getAttribute('role');
+        retval.parent = anode.parentNode.tagName;
+        retval.parentRole = anode.parentNode.getAttribute('role');
+        retval.parentLabel = anode.parentNode.getAttribute('aria-label');
+
+        const height = anode.getAttribute('height');
+        const width = anode.getAttribute('width');
+        if(height && width)
+            retval.dimension = [ _.parseInt(width), _.parseInt(height) ];
+
+        try {
+            const Uo = new URL(src);
+            retval.URL = Uo;
+            // to get SVG decodeURIComponent(Uo.pathname)
+        } catch(e) {}
+
+        return retval;
+    });
+
+    debugger;
+    return {
+       images 
+    };
 
     const ret = {
         alt: [],
@@ -69,4 +98,4 @@ function images(envelop) {
     return ret;
 };
 
-module.exports = images;
+module.exports = imageChains;

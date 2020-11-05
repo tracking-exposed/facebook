@@ -1,6 +1,4 @@
 #!/usr/bin/env node
-const Promise = require('bluebird');
-const { html } = require('d3');
 const _ = require('lodash');
 const moment = require('moment');
 const debug = require('debug')('fbtrex:parserv3');
@@ -61,12 +59,11 @@ function pipeline(e) {
             e.html.id);
         processedCounter++;
         pchain.cleanLog();
+        debugger;
         const rv = _.reduce(dissector.dissectorList, function(memo, extractorName) {
             try {
                 let mined = pchain.wrapDissector(
-                    _.get(dissector, extractorName),
-                    extractorName,
-                    e
+                    _.get(dissector, extractorName), extractorName, e
                 );
                 _.set(memo.findings, extractorName, mined);
             } catch(error) {
@@ -78,7 +75,7 @@ function pipeline(e) {
             source: e,
             findings: {}
         });
-        debug(pchain.logMessage());
+        debug("🡆🡆 http://localhost:1313/debug/html/#%s %s", e.html.id, pchain.logMessage());
         return rv;
     } catch(error) {
         debuge("#%d\t pipeline general failure error: %s", processedCounter, error.message);
@@ -195,7 +192,6 @@ async function recursiveCalling(actualRepeat) {
             process.exit(processedCounter);
         }
 
-        debugger;
         await executeParsingChain(htmlFilter);
     } catch(e) {
         console.log("Error in filterChecker", e.message, e.stack);
@@ -205,7 +201,6 @@ async function recursiveCalling(actualRepeat) {
         process.exit(0);
     }
     await sleep(computedFrequency * 1000)
-    debugger;
     await recursiveCalling(actualRepeat);
 }
 

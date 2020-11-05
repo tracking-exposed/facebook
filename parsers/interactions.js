@@ -1,7 +1,5 @@
 const _ = require('lodash');
-const debug = require('debug')('parsers:components:interactions');
-const querystring = require('querystring');
-const helper = require('./helper');
+const debug = require('debug')('parsers:interactions');
 
 const unitMap = {
     "K": 1000,
@@ -48,12 +46,17 @@ function unitParse(envelop, mult) {
 
 function interactions(envelop) {
 
-    const reactions = envelop.jsdom.querySelectorAll('[ajaxify^="/ufi/reaction/"]');
+    const reactions = _.map(envelop.jsdom.querySelectorAll('[role="toolbar"]'), function(n) {
+        return n.parentNode.textContent;
+    });
+
     if(!reactions) {
         debug("This post has not reaction of any kind?");
         return null;
     }
+    return reactions;
 
+    /*
     const rawmap = _.reduce(reactions, function(memo, elem) {
 
         const desc = elem.getAttribute('aria-label');
@@ -72,7 +75,7 @@ function interactions(envelop) {
         const ajaxurl = elem.getAttribute('ajaxify');
         const decoded = querystring.parse(decodeURIComponent(ajaxurl));
 
-        /* this parses '1K' to 1000 and return integer */
+        // this parses '1K' to 1000 and return integer 
         amount = unitParse(envelop, check[0]);
 
         if(!amount)
@@ -89,6 +92,7 @@ function interactions(envelop) {
     debug("Out of %d entries, found %d reactions", reactions.length, _.size(rawmap) );
 
     return rawmap;
+    */
 };
 
 module.exports = interactions;
