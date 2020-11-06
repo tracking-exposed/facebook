@@ -1,21 +1,17 @@
 const _ = require('lodash');
 const debug = require('debug')('parsers:hrefChains');
-const querystring = require('querystring');
+const helper = require('./helper');
 
 function hrefChains(envelop) {
     const hrefs = _.map(envelop.jsdom.querySelectorAll('a'), function(anode) {
-        const href = anode.getAttribute('href');
-        const retval = {};
-        retval.href = href;
-        retval.text = anode.textContent;
-        try {
-            const Uo = new URL(href);
-            retval.URL = Uo;
-        } catch(e) {}
+        let retval = {
+            href: anode.getAttribute('href'),
+            text: anode.textContent,
+        };
+        retval = helper.updateHrefUnit(retval, retval.href);
         return retval;
     });
 
-    debugger;
     return {
         hrefs
     };

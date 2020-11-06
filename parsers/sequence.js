@@ -5,9 +5,10 @@ module.exports = {
         'hrefChains',
         'imageChains',
         'interactions',
-        'linkontime',
+        'profiles',
+
+        'attributions',
         'feed_id',
-        'attributions', // requires 'shared' -- 'reasons' only as fallback
         'data-ad-preview',
         'usertext',
         'video',
@@ -21,7 +22,8 @@ module.exports = {
     imageChains: require('./imageChains'),
     interactions: require('./interactions'),
     attributions: require('./attributions'),
-    linkontime: require('./linkontime'),
+    profiles: require('./profiles'),
+
     feed_id: require('./feed_id'),
     'data-ad-preview': require('./data-ad-preview'),
     usertext: require('./usertext'),

@@ -1,39 +1,31 @@
-var _ = require('lodash');
-var debug = require('debug')('parsers:components:images');
+const _ = require('lodash');
+const debug = require('debug')('parsers:images');
+const helper = require('./helper');
+
+function mineImg(anode) {
+    let retval = {
+        src: anode.getAttribute('src'),
+        role: anode.getAttribute('role'),
+        parent: anode.parentNode.tagName,
+        parentRole: anode.parentNode.getAttribute('role'),
+        parentLabel: anode.parentNode.getAttribute('aria-label'),
+        height: anode.getAttribute('height'),
+        width: anode.getAttribute('width'),
+    };
+
+    if(retval.height && retval.width)
+        retval.dimension = [ _.parseInt(retval.width), _.parseInt(retval.height) ];
+
+    retval = helper.updateHrefUnit(retval, retval.src);
+    return retval;
+}
 
 function imageChains(envelop) {
     /* alt, the altenative text used in pictures, might contain the individual name of an user
      * from their picture profile. This selector might take that too. That is not an information
      * we should collect */
-
-    const images = _.map(envelop.jsdom.querySelectorAll('image'), function(anode) {
-        const src = anode.getAttribute('src');
-        const retval = {};
-
-        retval.src = src;
-        retval.role = anode.getAttribute('role');
-        retval.parent = anode.parentNode.tagName;
-        retval.parentRole = anode.parentNode.getAttribute('role');
-        retval.parentLabel = anode.parentNode.getAttribute('aria-label');
-
-        const height = anode.getAttribute('height');
-        const width = anode.getAttribute('width');
-        if(height && width)
-            retval.dimension = [ _.parseInt(width), _.parseInt(height) ];
-
-        try {
-            const Uo = new URL(src);
-            retval.URL = Uo;
-            // to get SVG decodeURIComponent(Uo.pathname)
-        } catch(e) {}
-
-        return retval;
-    });
-
-    debugger;
-    return {
-       images 
-    };
+    const images = _.map(envelop.jsdom.querySelectorAll('img'), mineImg);
+    return { images };
 
     const ret = {
         alt: [],

@@ -59,11 +59,10 @@ function pipeline(e) {
             e.html.id);
         processedCounter++;
         pchain.cleanLog();
-        debugger;
         const rv = _.reduce(dissector.dissectorList, function(memo, extractorName) {
             try {
                 let mined = pchain.wrapDissector(
-                    _.get(dissector, extractorName), extractorName, e
+                    _.get(dissector, extractorName), extractorName, e, memo.findings
                 );
                 _.set(memo.findings, extractorName, mined);
             } catch(error) {
@@ -137,6 +136,7 @@ async function executeParsingChain(htmlFilter) {
         failures: { $dissectorN, $dissectorX }
     } ] */
 
+    debugger;
     throw new Error("trump");
 
     const updates = [];
@@ -178,13 +178,13 @@ async function recursiveCalling(actualRepeat) {
         if(!actualRepeat)
             htmlFilter.processed = { $exists: false };
 
-        if(filter)
+        if(filter) {
+            debug("Focus filter on %d IDs", _.size(filter));
             htmlFilter.id = { '$in': filter };
+        }
         if(id) {
-            debug("Targeting a specific metadataId");
-            htmlFilter = {
-                metadataId: id
-            }
+            debug("Targeting a specific htmls2.id");
+            htmlFilter = { id }
         }
 
         if(stop && stop <= processedCounter) {

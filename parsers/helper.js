@@ -3,6 +3,24 @@ const debug = require('debug')('parsers:utils:helper');
 const querystring = require('querystring');
 const moment = require('moment');
 
+function updateHrefUnit(unit, href) {
+    if(_.startsWith(href, '/'))
+        unit.href = 'https://www.facebook.com' + href;
+    const bang = _.startsWith(href, '#');
+    try {
+        if(!bang) {
+            unit.URLo = new URL(href);
+            unit.parsed = querystring.parse(unit.URLo.search);
+            // to get SVG decodeURIComponent(Uo.pathname)
+        }
+    } catch(e) { debugger; }
+    return unit;
+}
+
+/*   O LD /* *   O LD /* *   O LD /* *   O LD     */
+/*   O LD /* *   O LD /* *   O LD /* *   O LD     */
+/*   O LD /* *   O LD /* *   O LD /* *   O LD     */
+
 function decodeAndExtractURL(url) {
     /* @input
      *      "https://external.ffco3-1.fna.fbcdn.net/safe_image.php?d=AQC25ca_QPS1ZSIM&w=540&h=282&url=https%3A%2F%2Fstatic.nexilia.it%2Fnextquotidiano%2F2018%2F12%2Fcodroipo-asilo-mondo-piccoli-bambolotti-6.jpg&cfs=1&upscale=1&fallback=news_d_placeholder_publisher&_nc_hash=AQAzofsfngO9dL0U",
@@ -322,7 +340,6 @@ function notes(envelop, kind, data) {
     // this collect info 
     if(_.isUndefined(_.get(envelop.notes)))
         envelop.notes = [];
-    debug("Saving analysis notes about: %s", kind);
     envelop.notes.push({ kind, data });
 };
 
@@ -336,6 +353,10 @@ function getOffset(envelop, node) {
 
 
 module.exports = {
+    /* new */
+    updateHrefUnit,
+
+    /* old */
     stripURLqs: stripURLqs,
     decodeAndExtractURL: decodeAndExtractURL,
     isFacebook: isFacebook,

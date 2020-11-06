@@ -1,10 +1,38 @@
-var _ = require('lodash');
-var debug = require('debug')('parsers:components:linkontime');
-const querystring = require('querystring');
+const _ = require('lodash');
+const debug = require('debug')('parsers:profiles');
+const helper = require('./helper');
 
-var helper = require('./helper');
 
-function linkontime(envelop) {
+function profileSeek(imagen) {
+    debugger;
+
+    let retval = {
+        src: anode.getAttribute('src'),
+        role: anode.getAttribute('role'),
+        parent: anode.parentNode.tagName,
+        parentRole: anode.parentNode.getAttribute('role'),
+        parentLabel: anode.parentNode.getAttribute('aria-label'),
+        height: anode.getAttribute('height'),
+        width: anode.getAttribute('width'),
+    };
+
+    if(retval.height && retval.width)
+        retval.dimension = [ _.parseInt(retval.width), _.parseInt(retval.height) ];
+
+    retval = helper.updateHrefUnit(retval, retval.src);
+    return retval;
+}
+
+
+function profiles(envelop, previous) {
+    const p = _.map(envelop.jsdom.querySelectorAll('image'), profileSeek);
+    return p;
+}
+
+module.exports = profiles;
+
+
+function old____linkontime(envelop) {
     /* the goal here is pick the publicationTime and the postId */
 
     const a = envelop.jsdom.querySelectorAll('a > abbr');
@@ -51,7 +79,6 @@ function linkontime(envelop) {
     else if(!_.size(abbr)) {
         /* old-style sponsored post, or paid parnership 'e67365bc93f6c8c9a44bdfce85bbb0d98b24bf5a' 
          * without publication time, but reachable via feed_id */
-        helper.notes(envelop, 'linkontime', { c: 5 });
         ret = null;
     }
     else {
@@ -59,8 +86,6 @@ function linkontime(envelop) {
         throw new Error(`unmanaged linkontime condition ${_.size(elements)} ${_.size(abbr)}`);
     }
 
-    debug("returning: %s", JSON.stringify(ret));
     return ret;
 };
 
-module.exports = linkontime;

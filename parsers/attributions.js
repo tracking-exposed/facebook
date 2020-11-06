@@ -1,7 +1,26 @@
 const _ = require('lodash');
 const debug = require('debug')('parsers:components:attribution');
-const helper = require('./helper');
 
+function attributions(envelop, previous) {
+
+    const sources = [ 
+        previous.textChains.h2,
+        previous.textChains.h3,
+        previous.textChains.h4,
+        previous.textChains.h5,
+        previous.textChains.h6 ];
+
+    let attribution = _.uniq(_.flatten(sources));
+    debug("From: %j", attribution);
+    return {
+        publisherName: _.first(attribution),
+        stats: _.map(sources, 'length'),
+    };
+};
+
+module.exports = attributions;
+
+/*
 function pickRightHeader(envelop, min, max) {
 
     const h5 = envelop.jsdom.querySelectorAll('h5');
@@ -38,12 +57,10 @@ function pickRightHeader(envelop, min, max) {
         return null;
     }
 
-    /*
     debug("selectedH6 isNull?%s %d (of %d), selectedH5 isNull?%s %d (of %d)",
         _.isNull(selectedH6), selectedH6, _.size(h6),
         _.isNull(selectedH5), selectedH5, _.size(h5)
     );
-     */
     return _.isNull(selectedH6) ? _.nth(h5, selectedH5) : _.nth(h6, selectedH6);
 };
 
@@ -60,7 +77,9 @@ function getOffset(envelop, selector, min) {
         return -1;
     }
 }
+*/
 
+/*
 function attributions(envelop) {
 
     if(envelop.shared || envelop.sharedContent) {
@@ -68,16 +87,16 @@ function attributions(envelop) {
         return null;
     }
 
-    /* looking at 'h5' or 'h6' it is not enough if we do not make sure to 
-     * remove the 'reasons': (h5) 54c7c8f6c5440407cb7ee764620424ecdd6fea3f,
-     * (h6) 1006f1bb81805c053b80379646d129add31efd60 is a shared but without
-     * additional messages -- this last case, is a 'repost' from the same author
-     * in a new group.                                                        * */
+    //  * looking at 'h5' or 'h6' it is not enough if we do not make sure to 
+    //  * remove the 'reasons': (h5) 54c7c8f6c5440407cb7ee764620424ecdd6fea3f,
+    //  * (h6) 1006f1bb81805c053b80379646d129add31efd60 is a shared but without
+    //  * additional messages -- this last case, is a 'repost' from the same author
+    //  * in a new group.                                                       
 
-    /* look for the first profile picture appearing */
+    // look for the first profile picture appearing 
     const firstImgProfile = getOffset(envelop, 'img[aria-label]', 0);
 
-    /* and this is the beginning of the content */
+    // and this is the beginning of the content 
     const firstContent = getOffset(envelop, '.userContent', firstImgProfile);
 
     let h = null;
@@ -89,17 +108,17 @@ function attributions(envelop) {
         debug("unfair fallback to look for h5! (.userContent %d)(img[aria-label] %d)",
             firstContent, firstImgProfile);
         h = _.first(envelop.jsdom.querySelectorAll('h5'));
-        /* because the reason is present, we are going to ignore the first `h5` element */
+        // because the reason is present, we are going to ignore the first `h5` element 
         if(envelop.reasons)
             h = _.first(_.tail(h));
     }
 
     let retval = [];
-    /* we pick the offset between the first picture (profile image) and the userContent */
+    // we pick the offset between the first picture (profile image) and the userContent 
 
     if(_.isUndefined(h)) {
         debug("Absurd fallback, but, hey, we are playing with facebook :P");
-        /* 1fe9b6c4a228f0c85ef7e5e18111e3bca8d54b72 */
+        // 1fe9b6c4a228f0c85ef7e5e18111e3bca8d54b72
         x = envelop.jsdom.querySelectorAll('a[data-hovercard^="/ajax/hovercard"]');
         if(_.size(x) != 1)
             debug("one of the many strange condition again");
@@ -110,7 +129,8 @@ function attributions(envelop) {
             content: x[0].textContent,
             fblink: helper.stripURLqs(x[0].getAttribute('href'))
         });
-    } /* else, is an 'h' */ else {
+    } /* else, is an 'h' */ 
+    /* else {
         retval.push({
             type: 'authorName',
             display: h.textContent,
@@ -133,10 +153,10 @@ function attributions(envelop) {
         });
         debug("an `action` detected: %s", _.last(retval).content);
     }
-    */
+    * / <!-- thiz
 
     return retval;
     // metti percentuale di dove gli offset si trovano, metti se ha fallito il pickRightHeader
 };
+*/
 
-module.exports = attributions;
