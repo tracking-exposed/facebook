@@ -3,23 +3,68 @@ const debug = require('debug')('parsers:utils:helper');
 const querystring = require('querystring');
 const moment = require('moment');
 
-function updateHrefUnit(unit, href) {
-    if(_.startsWith(href, '/'))
-        unit.href = 'https://www.facebook.com' + href;
-    const bang = _.startsWith(href, '#');
+const utils = require('../lib/utils');
+
+function updateHrefUnit(unit, sourceKey) {
+    let thref = _.get(unit, sourceKey);
+    if(_.startsWith(thref, '/'))
+        _.set(unit, sourceKey, 'https://www.facebook.com' + thref );
+    const bang = _.startsWith(thref, '#');
     try {
         if(!bang) {
-            unit.URLo = new URL(href);
+            unit.URLo = new URL(_.get(unit, sourceKey));
             unit.parsed = querystring.parse(unit.URLo.search);
-            // to get SVG decodeURIComponent(Uo.pathname)
+            unit.urlId = utils.hash({ parsedURL: unit.URLo.toString()})
         }
-    } catch(e) { debugger; }
+    } catch(e) {
+        debug("Unexpected error in URL parsing %s: %s", thref, e.message);
+        throw e;
+    }
     return unit;
 }
 
-/*   O LD /* *   O LD /* *   O LD /* *   O LD     */
-/*   O LD /* *   O LD /* *   O LD /* *   O LD     */
-/*   O LD /* *   O LD /* *   O LD /* *   O LD     */
+function recursiveSize(e, memo) {
+    const elementSize = _.size(e.outerHTML);
+    const tagName = e.tagName;
+    if(!tagName)
+        return memo;
+    const combo = elementSize + ''; // + '-' + tagName.substring(0, 5);
+    if(!memo)
+        return recursiveSize(e.parentNode, [ combo ]);
+    memo.push(combo);
+    return recursiveSize(e.parentNode, memo);
+}
+function sizeTreeResearch(e) {
+    let sizes = [];
+    sizes.push(recursiveSize(e));
+}
+
+function nextNode(node) {
+    let r = node.parentNode;
+    if(!r) throw new Error("Recursion fail");
+    return r;
+};
+function recursiveQuery(startingNode, tagName) {
+    let node = startingNode;
+    try {
+        while(node.tagName != _.toUpper(tagName) )
+            node = nextNode(node);
+    } catch(e) {
+        debug("E: %s", e.message);
+    }
+    if(node.tagName != tagName)
+        return null;
+    debug("find! %s", node.tagName);
+    return node;
+}
+
+module.exports = {
+    /* new */
+    updateHrefUnit,
+    sizeTreeResearch,
+    recursiveSize,
+    recursiveQuery,
+};
 
 function decodeAndExtractURL(url) {
     /* @input
@@ -350,26 +395,3 @@ function getOffset(envelop, node) {
         debug("Warning! getOffset returns %d but the matching pieces are more than 1!!", fo);
     return fo;
 }
-
-
-module.exports = {
-    /* new */
-    updateHrefUnit,
-
-    /* old */
-    stripURLqs: stripURLqs,
-    decodeAndExtractURL: decodeAndExtractURL,
-    isFacebook: isFacebook,
-    isFacebookLink: isFacebookLink,
-    facebookLink: facebookLink,
-    isFacebookCDN: isFacebookCDN,
-
-    extractDate: extractDate,
-    extractPermaLink: extractPermaLink,
-
-    stripFBclid: stripFBclid,
-    fbRelativeSplit: fbRelativeSplit,
-    indicator: indicator,
-    notes: notes,
-    getOffset: getOffset, 
-};

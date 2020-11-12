@@ -3,89 +3,35 @@ const debug = require('debug')('parsers:profiles');
 const helper = require('./helper');
 
 
-function profileSeek(imagen) {
-    debugger;
-
-    let retval = {
-        src: anode.getAttribute('src'),
-        role: anode.getAttribute('role'),
-        parent: anode.parentNode.tagName,
-        parentRole: anode.parentNode.getAttribute('role'),
-        parentLabel: anode.parentNode.getAttribute('aria-label'),
-        height: anode.getAttribute('height'),
-        width: anode.getAttribute('width'),
-    };
-
-    if(retval.height && retval.width)
-        retval.dimension = [ _.parseInt(retval.width), _.parseInt(retval.height) ];
-
-    retval = helper.updateHrefUnit(retval, retval.src);
-    return retval;
-}
-
-
 function profiles(envelop, previous) {
-    const p = _.map(envelop.jsdom.querySelectorAll('image'), profileSeek);
-    return p;
+    const imagenodes = envelop.jsdom.querySelectorAll('image');
+    const profiles = _.compact(_.map(imagenodes, function(ino) {
+
+        const retval = {
+            style: ino.getAttribute('style')
+        }
+
+        if(retval.style != "height: 40px; width: 40px;")
+            return null;
+        
+        retval.href = ino.getAttribute('xlink:href');
+
+        if(retval.height && retval.width)
+            retval.dimension = [ _.parseInt(retval.width), _.parseInt(retval.height) ];
+
+        retval.recursive = helper.sizeTreeResearch(ino);
+        const firstParentA = helper.recursiveQuery(ino, 'a');
+
+        if(firstParentA) {
+            retval.parentHref = firstParentA.getAttribute('href');
+            retval.aria = firstParentA.getAttribute('aria-label');
+            helper.updateHrefUnit(retval, 'parentHref');
+        }
+        helper.updateHrefUnit(retval, 'href');
+        return retval;
+    }));
+
+    return { profiles };
 }
 
 module.exports = profiles;
-
-
-function old____linkontime(envelop) {
-    /* the goal here is pick the publicationTime and the postId */
-
-    const a = envelop.jsdom.querySelectorAll('a > abbr');
-    const abbr = envelop.jsdom.querySelectorAll('abbr');
-    let ret = {};
-
-    if( _.size(a) > 0 && a[0].parentNode.hasAttribute('href')) {
-        // 0321484797f16676609e607d9f43d7084dc6a051
-        helper.notes(envelop, 'linkontime', { c: 1 });
-        return _.extend(
-            helper.extractPermaLink(a[0].parentNode), {
-                publicationTime: helper.extractDate(a[0])
-            }
-        );
-    }
-    if( _.size(a) > 0 && a[0].hasAttribute('target') ) {
-        helper.notes(envelop, 'linkontime', { c: 2 });
-        // does it ever happen?
-        debugger;
-        ret = helper.extractDateLink(a[0]);
-    }
-    /* else, we are in "X wants to participate in Y event" */
-    else if (abbr[0] && abbr[0].hasAttribute('data-utime')) {
-        // a7f651c0b23396dd91cc06d478eb25908b1b9b23
-        // 8f94a1b0bcddcfe26ca8a8a7780dfb2c714f3ef2 this shoukd anyway be fill up by 'events.js'
-        helper.notes(envelop, 'linkontime', { c: 3 });
-        ret = {
-            publicationTime: helper.extractDate(abbr[0]),
-            fblinktype: null
-        };
-    }
-    else if(abbr[0] && abbr[0].hasAttribute('title')) {
-        // 0810c24b5124a325d4d2be329fe65e092e0fd2bf <- supply by event
-        helper.notes(envelop, 'linkontime', { c: 4 });
-        const title = abbr[0].getAttribute('title');
-        const display = abbr[0].textContent;
-        ret = {
-            title,
-            display,
-            fblinktype: null,
-            error: true
-        };
-    }
-    else if(!_.size(abbr)) {
-        /* old-style sponsored post, or paid parnership 'e67365bc93f6c8c9a44bdfce85bbb0d98b24bf5a' 
-         * without publication time, but reachable via feed_id */
-        ret = null;
-    }
-    else {
-        debugger;
-        throw new Error(`unmanaged linkontime condition ${_.size(elements)} ${_.size(abbr)}`);
-    }
-
-    return ret;
-};
-

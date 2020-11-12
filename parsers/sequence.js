@@ -1,6 +1,7 @@
 module.exports = {
+    /* this sequence is executed in this order.
+     * after the newline there are modules that levegared on previously mined metadata */
     dissectorList: [
-        /* keep in mind: this sequence matter, read the requirements */
         'textChains',
         'hrefChains',
         'imageChains',
@@ -8,23 +9,25 @@ module.exports = {
         'profiles',
 
         'attributions',
-        'feed_id',
+        'meaningfulId',
+/*
         'data-ad-preview',
         'usertext',
         'video',
         'commentable',
         'external',
         'opengraph',
-        'event',
+        'event', */
     ],
     textChains: require('./textchains'),
     hrefChains: require('./hrefchains'),
     imageChains: require('./imageChains'),
     interactions: require('./interactions'),
-    attributions: require('./attributions'),
     profiles: require('./profiles'),
 
-    feed_id: require('./feed_id'),
+    attributions: require('./attributions'),
+    meaningfulId: require('./meaningfulId'),
+
     'data-ad-preview': require('./data-ad-preview'),
     usertext: require('./usertext'),
     commentable: require('./commentable'),

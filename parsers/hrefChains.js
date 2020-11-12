@@ -8,7 +8,7 @@ function hrefChains(envelop) {
             href: anode.getAttribute('href'),
             text: anode.textContent,
         };
-        retval = helper.updateHrefUnit(retval, retval.href);
+        retval = helper.updateHrefUnit(retval, 'href');
         return retval;
     });
 

@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+const { parse } = require('cookie');
 const _ = require('lodash');
 const moment = require('moment');
 const debug = require('debug')('fbtrex:parserv3');
@@ -45,25 +46,17 @@ const filter = nconf.get('filter') ? JSON.parse(fs.readFileSync(nconf.get('filte
 const singleUse = !!id;
 const repeat = !!nconf.get('repeat');
 
-let nodatacounter = 0;
-let processedCounter = 0;
+let nodatacounter = 0, processedCounter = 0;
 let lastExecution = moment().subtract(backInTime, 'minutes').toISOString();
 let computedFrequency = 10;
-const stats = { lastamount: null, currentamount: null, last: null, current: null };
+const stats = { currentamount: 0, last: null, current: null };
 
 function pipeline(e) {
     try {
-        debug("#%d\ton (%d minutes ago) %s",
-            processedCounter,
-            _.round(moment.duration( moment() - moment(e.html.savingTime)).asMinutes(), 0),
-            e.html.id);
         processedCounter++;
-        pchain.cleanLog();
         const rv = _.reduce(dissector.dissectorList, function(memo, extractorName) {
             try {
-                let mined = pchain.wrapDissector(
-                    _.get(dissector, extractorName), extractorName, e, memo.findings
-                );
+                let mined = pchain.wrapDissector(dissector[extractorName], extractorName, e, memo);
                 _.set(memo.findings, extractorName, mined);
             } catch(error) {
                 _.set(memo.failures, extractorName, error.message);
@@ -72,9 +65,12 @@ function pipeline(e) {
         }, {
             failures: {},
             source: e,
+            log: {},
             findings: {}
         });
-        debug("🡆🡆 http://localhost:1313/debug/html/#%s %s", e.html.id, pchain.logMessage());
+        debug("#%d\t(%d mins) http://localhost:1313/debug/html/#%s %s",
+            processedCounter, _.round(moment.duration( moment() - moment(e.html.savingTime)).asMinutes(), 0), e.html.id
+        );
         return rv;
     } catch(error) {
         debuge("#%d\t pipeline general failure error: %s", processedCounter, error.message);
@@ -83,23 +79,19 @@ function pipeline(e) {
 }
 
 async function executeParsingChain(htmlFilter) {
-    debug("Fetching html...");
 
     const envelops = await pchain.getLastHTMLs(htmlFilter, htmlAmount);
 
     if(!_.size(envelops.sources)) {
-
-        debug("no data");
         nodatacounter++;
         if( (nodatacounter % 10) == 1) {
-            debug("%d no data at the last query: %j %j",
-                nodatacounter, _.keys(htmlFilter), htmlFilter.savingTime);
+            debug("%d no data at the last query: %j %j\t< processed %d >",
+                nodatacounter, _.keys(htmlFilter), htmlFilter.savingTime, processedCounter);
         }
         lastExecution = moment().subtract(2, 'm').toISOString();
         computedFrequency = FREQUENCY;
         return;
     } else {
-        debug("yes data, no sleep");
         computedFrequency = 0.1;
     }
 
@@ -118,90 +110,77 @@ async function executeParsingChain(htmlFilter) {
             lastExecution);
     }
 
-    if(stats.currentamount || stats.lastamount)
+    if(stats.currentamount)
         debug("[+] %d htmls in new parsing sequences. (previous %d took: %s) and now process %d htmls",
-            processedCounter, stats.currentamount, stats.lastamount,
+            processedCounter, stats.currentamount,
             moment.duration(moment() - stats.current).humanize(),
             _.size(envelops.sources));
 
     stats.last = stats.current;
     stats.current = moment();
-    stats.lastamount = stats.currentamount;
     stats.currentamount = _.size(envelops.sources);
+    const logof = [];
 
     const results = _.map(envelops.sources, pipeline);
     /* results is a list of objects: [ {
         source: { timeline, impression, dom, html },
         findings: { $dissector1, $dissector2 },
-        failures: { $dissectorN, $dissectorX }
-    } ] */
+        failures: { $dissectorN, $dissectorX }           } ] */
 
-    debugger;
-    throw new Error("trump");
-
-    const updates = [];
-    for (const entry of _.compact(analysis)) {
-        let r = await automo.updateMetadata(entry[0], entry[1], repeat);
-        updates.push(r);
+    console.table(_.map(results, function(e) {
+        _.set(e.log, 'id', e.source.html.id);
+        return e.log;
+    }));
+    for (const entry of results) {
+        const metaentry = pchain.buildMetadata(entry);
+        let x = await pchain.updateMetadataAndMarkHTML(metaentry);
+        logof.push(x);
     }
-    debug("%d html.content, %d analysis, compacted %d, effects: %j",
-        _.size(htmls.content), _.size(analysis),
-        _.size(_.compact(analysis)), _.countBy(updates, 'what'));
 
-    /* reset no-data-counter if data has been sucessfully processed */
-    if(_.size(_.compact(analysis)))
-        nodatacounter = 0;
-
-    /* also the HTML cutted off the pipeline, the many skipped
-     * by _.compact all the null in the lists, should be marked as processed */
-    const remaining = _.reduce(_.compact(analysis), function(memo, blob) {
-        return _.reject(memo, { id: blob[0].id });
-    }, htmls.content);
-
-    debug("Usable HTMLs %d/%d - marking as processed the useless %d HTMLs\t\t(sleep %d)",
-        _.size(_.compact(analysis)), _.size(htmls.content), _.size(remaining), computedFrequency);
-
-    const rv = await automo.markHTMLsUnprocessable(remaining);
-    debug("%d completed, took %d secs = %d mins",
-        processedCounter, moment.duration(moment() - stats.current).asSeconds(),
-        _.round(moment.duration(moment() - stats.current).asMinutes(), 2));
-    return rv;
+    return {
+        findings: _.map(results, function(e) { return _.size(e.findings) }),
+        failures: _.map(results, function(e) { return _.size(e.failures) }),
+        logof
+    };
 }
 
-async function recursiveCalling(actualRepeat) {
+async function actualExecution(actualRepeat) {
     try {
-        let htmlFilter = {
-            savingTime: {
-                $gt: new Date(lastExecution),
-            },
-        };
-        if(!actualRepeat)
-            htmlFilter.processed = { $exists: false };
+        // pretty lamest, but I need an infinite loop on an async function -> IDFC!
+        for (times of _.times(0xffffff) ) {
+            let htmlFilter = {
+                savingTime: {
+                    $gt: new Date(lastExecution),
+                },
+            };
+            if(!actualRepeat)
+                htmlFilter.processed = { $exists: false };
 
-        if(filter) {
-            debug("Focus filter on %d IDs", _.size(filter));
-            htmlFilter.id = { '$in': filter };
-        }
-        if(id) {
-            debug("Targeting a specific htmls2.id");
-            htmlFilter = { id }
-        }
+            if(filter) {
+                debug("Focus filter on %d IDs", _.size(filter));
+                htmlFilter.id = { '$in': filter };
+            }
+            if(id) {
+                debug("Targeting a specific htmls2.id");
+                htmlFilter = { id }
+            }
 
-        if(stop && stop <= processedCounter) {
-            console.log("Reached configured limit of ", stop, "( processed:", processedCounter, ")");
-            process.exit(processedCounter);
-        }
+            if(stop && stop <= processedCounter) {
+                console.log("Reached configured limit of ", stop, "( processed:", processedCounter, ")");
+                process.exit(processedCounter);
+            }
 
-        await executeParsingChain(htmlFilter);
+            let stats = await executeParsingChain(htmlFilter);
+            if(singleUse) {
+                console.log("Single execution done!");
+                process.exit(1);
+            }
+            await sleep(computedFrequency * 1000)
+        }
     } catch(e) {
         console.log("Error in filterChecker", e.message, e.stack);
+        process.exit(1);
     }
-    if(singleUse) {
-        debug("Single execution done!")
-        process.exit(0);
-    }
-    await sleep(computedFrequency * 1000)
-    await recursiveCalling(actualRepeat);
 }
 
 /* application starts here */
@@ -235,9 +214,9 @@ try {
      * and optimized.
      * */
 
-    /* which is an async function */
-    recursiveCalling(actualRepeat);
-
+    /* call the async infinite loop function */
+    actualExecution(actualRepeat);
 } catch(e) {
     console.log("Error in wrapperLoop", e.message);
+    process.exit(1);
 }
