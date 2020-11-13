@@ -11,8 +11,6 @@ const nconf = require('nconf');
 const glue = require('../lib/glue');
 /* pchain is the utility modeuly for the parser chain */
 const pchain = require('../lib/parserchain');
-/* dissector are all the individual metadata miner */
-const dissector = require('../parsers/sequence');
 
 nconf.argv().env().file({ file: 'config/content.json' });
 
@@ -54,9 +52,9 @@ const stats = { currentamount: 0, last: null, current: null };
 function pipeline(e) {
     try {
         processedCounter++;
-        const rv = _.reduce(dissector.dissectorList, function(memo, extractorName) {
+        const rv = _.reduce(pchain.dissectorList, function(memo, extractorName) {
             try {
-                let mined = pchain.wrapDissector(dissector[extractorName], extractorName, e, memo);
+                let mined = pchain.wrapDissector(pchain[extractorName], extractorName, e, memo);
                 _.set(memo.findings, extractorName, mined);
             } catch(error) {
                 _.set(memo.failures, extractorName, error.message);
