@@ -86,11 +86,11 @@ async function executeParsingChain(htmlFilter) {
             debug("%d no data at the last query: %j %j (processed %d)",
                 nodatacounter, _.keys(htmlFilter), htmlFilter.savingTime, processedCounter);
         }
-        lastExecution = moment().subtract(BACKINTIMEDEFAULT, 'm').toISOString();
+        lastExecution = moment.utc().subtract(BACKINTIMEDEFAULT, 'm').toISOString();
         computedFrequency = FREQUENCY;
         return;
     } else {
-        lastExecution = moment( _.last(envelops.sources).html.savingTime );
+        lastExecution = moment.utc( _.last(envelops.sources).html.savingTime );
         computedFrequency = 0.1;
     }
 
@@ -100,7 +100,7 @@ async function executeParsingChain(htmlFilter) {
         overflowReport("first %s (on %d) <last +minutes %d> next filter set to %s",
             _.first(envelops.sources).html.savingTime, _.size(envelops.source),
             _.round(moment.duration(
-                moment( _.last(envelops.sources).html.savingTime ) - moment(_.first(envelops.sources).html.savingTime )
+                moment.utc( _.last(envelops.sources).html.savingTime ) - moment.utc(_.first(envelops.sources).html.savingTime )
             ).asMinutes(), 1),
             lastExecution);
 
