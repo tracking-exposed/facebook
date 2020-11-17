@@ -5,111 +5,111 @@ var nconf = require('nconf');
 
 var mongo = require('../lib/mongo');
 var utils = require('../lib/utils');
-var echoes = require('../lib/echoes');
 var adopters = require('../lib/adopters');
 var security = require('../lib/security');
 
+function buildTimeline(memo, evnt) {
+    newTmln = {};
+    newTmln.startTime = new Date(moment(evnt.startTime).toISOString());
+    newTmln.userId = memo.sessionInfo.numId;
+    newTmln.geoip = memo.sessionInfo.geoip;
+    newTmln.id = utils.hash({
+        'uuid': evnt.id,
+        'user': memo.sessionInfo.numId
+    });
+
+    if(evnt.location !== 'https://www.facebook.com/')
+        newTmln.nonfeed = true;
+
+    if(_.get(evnt, 'tagId'))
+        newTmln.tagId = evnt.tagId;
+
+    memo.timelines.push(newTmln);
+    return memo;
+}
+
+function buildImpression(memo, evnt) {
+    var impression = _.pick(evnt, ['visibility', 'html', 'from', 'kind']);
+
+    impression.timelineId = utils.hash({
+        'uuid': evnt.timelineId,
+        'user': memo.sessionInfo.numId,
+    });
+    impression.id = utils.hash({
+        'uuid': evnt.timelineId,
+        'user': memo.sessionInfo.numId,
+        'order': evnt.impressionOrder,
+    });
+    impression.userId = memo.sessionInfo.numId;
+
+    impression.impressionOrder = _.parseInt(evnt.impressionOrder);
+    impression.impressionTime = new Date(
+        moment(evnt.impressionTime).toISOString()
+    );
+
+    if(_.eq(impression.visibility, 'public')) {
+
+        if(!_.size(impression.html))
+            debug("Strange: public impression with zero size HTML?");
+
+        impression.htmlId = utils.hash({
+            'html': impression.html,
+            'user': memo.sessionInfo.numId,
+        });
+
+        var snippet = {
+            savingTime: new Date(moment().toISOString()),
+            id: impression.htmlId,
+            userId: memo.sessionInfo.numId,
+            impressionId: impression.id,
+            timelineId: impression.timelineId,
+            html: impression.html
+        };
+        memo.htmls.push(snippet);
+    } else if( _.size(impression.html) ) {
+        debug("Warning! private post leakage? %d", _.size(impression.html));
+        /* this is impossible, but if happen I want to see it */
+    }
+
+    memo.impressions.push(_.omit(impression, ['html']));
+    return memo;
+}
+
+function buildAnomaly(memo, evnt) {
+    var anomaly = {
+        impressionCounter: evnt.impressionCounter,
+        userId: memo.sessionInfo.numId,
+        geoip: memo.sessionInfo.geoip,
+        version: memo.sessionInfo.version,
+        previous: evnt.previous,
+        current: evnt.current,
+        when: new Date(), // a mongodb TTL is set on `when`, 
+                            // making this info object after a while
+    };
+    anomaly.timelineId = utils.hash({
+        'uuid': evnt.timelineId,
+        'user': memo.sessionInfo.numId
+    });
+
+    debug("anomaly from [%s], timelineId %s",
+        memo.sessionInfo.geoip, anomaly.timelineId);
+    memo.anomalies.push(anomaly);
+    return memo;
+}
+
 function parseEvents(memo, evnt) {
 
-    if(evnt.type === 'timeline') {
-        newTmln = {};
-        newTmln.startTime = new Date(moment(evnt.startTime).toISOString());
-        newTmln.userId = memo.sessionInfo.numId;
-        newTmln.geoip = memo.sessionInfo.geoip;
-        newTmln.id = utils.hash({
-            'uuid': evnt.id,
-            'user': memo.sessionInfo.numId
-        });
+    if(evnt.type === 'timeline')
+        return buildTimeline(memo, evnt);
 
-        if(evnt.location !== 'https://www.facebook.com/')
-            newTmln.nonfeed = true;
-
-        if(_.get(evnt, 'tagId'))
-            newTmln.tagId = evnt.tagId;
-
-        memo.timelines.push(newTmln);
-        return memo;
-    }
-
-    if(evnt.type === 'impression') {
-        var impression = _.pick(evnt, ['visibility', 'html' ] );
-
-        impression.timelineId = utils.hash({
-            'uuid': evnt.timelineId,
-            'user': memo.sessionInfo.numId
-        });
-        impression.id = utils.hash({
-            'uuid': evnt.timelineId,
-            'user': memo.sessionInfo.numId,
-            'order': evnt.impressionOrder
-        });
-        impression.userId = memo.sessionInfo.numId;
-
-        impression.impressionOrder = _.parseInt(evnt.impressionOrder);
-        impression.impressionTime = new Date(
-            moment(evnt.impressionTime).toISOString()
-        );
-
-        if(_.eq(impression.visibility, 'public')) {
-
-            if(!_.size(impression.html))
-                debug("Strange: public impression with zero size HTML?");
-
-            impression.htmlId = utils.hash({ 'html': impression.html });
-
-            var snippet = {
-                savingTime: new Date(moment().toISOString()),
-                id: impression.htmlId,
-                userId: memo.sessionInfo.numId,
-                impressionId: impression.id,
-                timelineId: impression.timelineId,
-                html: impression.html
-            };
-            memo.htmls.push(snippet);
-        } else if( _.size(impression.html) ) {
-            debug("Warning! private post leakage? %d", _.size(impression.html));
-            /* this is impossible, but if happen I want to see it */
-        }
-
-        memo.impressions.push(_.omit(impression, ['html']));
-        return memo;
-    }
-
-    if (evnt.type === 'anomaly') {
-        var anomaly = {
-            impressionCounter: evnt.impressionCounter,
-            userId: memo.sessionInfo.numId,
-            geoip: memo.sessionInfo.geoip,
-            version: memo.sessionInfo.version,
-            previous: evnt.previous,
-            current: evnt.current,
-            when: new Date(), // a mongodb TTL is set on `when`, 
-                              // making this info object after a while
-        };
-        anomaly.timelineId = utils.hash({
-            'uuid': evnt.timelineId,
-            'user': memo.sessionInfo.numId
-        });
-
-        /* if an anomaly is found, is logged directly in the ELK, from the
-         * timelineId we can retrieve the anomaly from the mongoDB */
-        echoes.echo({
-            index: "anomaly",
-            timelineId: anomaly.timelineId,
-            version: memo.sessionInfo.version,
-        });
-
-        debug("anomaly from [%s], timelineId %s",
-            memo.sessionInfo.geoip, anomaly.timelineId);
-        memo.anomalies.push(anomaly);
-        return memo;
-    }
+    if(evnt.type === 'impression')
+        return buildImpression(memo, evnt);
+    
+    if (evnt.type === 'anomaly')
+        return buildAnomaly(memo, evnt);
 
     debug("Error! unexpected event type: [%s]", evnt.type);
-    memo.errors.push(JSON.stringify({
-        'kind': "unexpected type",
-        'event': evnt
-    }));
+    memo.errors.push(JSON.stringify({ 'kind': "unexpected type" }));
     return memo;
 };
 
@@ -197,16 +197,6 @@ function promisifyInputs(body, geoinfo, supporter) {
                 ""
             );
     }
-
-    echoes.echo({
-        index: "fbtrex_users",
-        pseudo: supporter.userId,
-        geo: geoinfo,
-        lastActivity: supporter.lastActivity,
-        timelines: processed_timelines,
-        impressions: processed_impressions,
-        htmls: processed_html
-    });
 
     if(_.size(processed.impressions))
         debug(" * impressionOrder 1st %d last %d [last queue %d]",
