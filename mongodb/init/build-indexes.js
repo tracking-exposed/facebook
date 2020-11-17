@@ -1,17 +1,19 @@
 ret = db.supporters2.createIndex({ "lastActivity": -1 }); checkret('supporters2 lastActivity', ret);
 
 ret = db.impressions2.createIndex({ "timelineId": -1 }); checkret('impressions2 timelineId', ret);
-/*
 ret = db.impressions2.createIndex({ "id": -1 }); checkret('impressions2 id', ret);
 ret = db.impressions2.createIndex({ "impressionTime": -1 }); checkret('impressions2 impressionTime', ret);
-*/
 
-ret = db.htmls2.createIndex({ "savingTime": -1 }); checkret('htmls2 savingTime', ret);
 ret = db.timelines2.createIndex({ "userId": 1 }); checkret('timelines2 userId', ret);
-/*
 ret = db.timelines2.createIndex({ "id": 1 }); checkret('timelines2 id', ret);
 ret = db.timelines2.createIndex({ "startTime": -1 }); checkret('timelines2 startTime', ret);
-*/ 
+
+ret = db.htmls2.createIndex({ "savingTime": -1 }); checkret('htmls2 savingTime', ret);
+ret = db.htmls2.createIndex({ "id": -1 }); checkret('htmls2 id', ret);
+ret = db.htmls2.createIndex({ "impressionId": -1 }); checkret('htmls2 impressionId', ret);
+ret = db.htmls2.createIndex({ "timelineId": -1 }); checkret('htmls2 timelineId', ret);
+ret = db.htmls2.createIndex({ "processed": -1 }); checkret('htmls2 processed', ret);
+
 ret = db.labels.createIndex({ "semanticId" : 1 }, { unique: true }); checkret('labels semanticId', ret);
 ret = db.labels.createIndex({ "when" : 1 }); checkret('labels when', ret);
 
@@ -43,6 +45,7 @@ ret = db.feeds2.createIndex({ "createdAt": 1}, {expireAfterSeconds: 3600 / 2}); 
 
 ret = db.trexstats.createIndex({ "day": -1}); checkret('trexstats day index', ret);
 ret = db.trexstats.createIndex({ "hour": -1}); checkret('trexstats hourly index', ret);
+
 ret = db.tmlnstats.createIndex({ "dayTime": 1, "userId": 1 } ); checkret('tmlnstats dayTime+userId', ret);
 ret = db.tmlnstats.createIndex({ "id": 1}, {unique: true }); checkret('tmlnstats id', ret);
 

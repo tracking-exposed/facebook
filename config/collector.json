@@ -5,9 +5,8 @@
       "timelines": "timelines2",
       "accesses": "accesses2",
       "htmls": "htmls2",
-      "metadata": "metadata",
+      "metadata": "metadata2",
       "errors": "parsererrors",
-      "summary": "summary",
       "anomalies": "anomalies"
   },
   "mongoHost": "localhost",
@@ -15,6 +14,5 @@
   "mongoDb": "facebook",
   "port": 8100,
   "interface": "127.0.0.1",
-  "elastic": "http://localhost:9200",
   "key": "invalid_default"
 }
