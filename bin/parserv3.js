@@ -33,7 +33,7 @@ async function sleep(ms) {
 
 const FREQUENCY = 10;
 const AMOUNT_DEFAULT = 20;
-const BACKINTIMEDEFAULT = 3;
+const BACKINTIMEDEFAULT = 1;
 
 let htmlAmount = _.parseInt(nconf.get('amount')) ? _.parseInt(nconf.get('amount')) : AMOUNT_DEFAULT;
 
@@ -47,7 +47,7 @@ const repeat = !!nconf.get('repeat');
 let nodatacounter = 0, processedCounter = 0;
 let lastExecution = moment().subtract(backInTime, 'minutes').toISOString();
 let computedFrequency = 10;
-const stats = { currentamount: 0, last: null, current: null };
+const stats = { currentamount: 0, current: null };
 
 function pipeline(e) {
     try {
@@ -83,30 +83,26 @@ async function executeParsingChain(htmlFilter) {
     if(!_.size(envelops.sources)) {
         nodatacounter++;
         if( (nodatacounter % 10) == 1) {
-            debug("%d no data at the last query: %j %j\t< processed %d >",
+            debug("%d no data at the last query: %j %j (processed %d)",
                 nodatacounter, _.keys(htmlFilter), htmlFilter.savingTime, processedCounter);
         }
-        lastExecution = moment().subtract(2, 'm').toISOString();
+        lastExecution = moment().subtract(BACKINTIMEDEFAULT, 'm').toISOString();
         computedFrequency = FREQUENCY;
         return;
     } else {
+        lastExecution = moment( _.last(envelops.sources).html.savingTime );
         computedFrequency = 0.1;
     }
 
-    if(!envelops.overflow) {
-        lastExecution = moment().subtract(BACKINTIMEDEFAULT, 'm').toISOString();
-        /* 1 minute is the average stop, so it comeback to check 3 minutes before */
+    if(!envelops.overflow)
         overflowReport("<NOT>\t\t%d documents", _.size(envelops.sources));
-    }
-    else {
-        lastExecution = moment( _.last(envelops.sources).html.savingTime );
+    else
         overflowReport("first %s (on %d) <last +minutes %d> next filter set to %s",
             _.first(envelops.sources).html.savingTime, _.size(envelops.source),
             _.round(moment.duration(
                 moment( _.last(envelops.sources).html.savingTime ) - moment(_.first(envelops.sources).html.savingTime )
             ).asMinutes(), 1),
             lastExecution);
-    }
 
     if(stats.currentamount)
         debug("[+] %d htmls in new parsing sequences. (previous %d took: %s) and now process %d htmls",
@@ -114,7 +110,6 @@ async function executeParsingChain(htmlFilter) {
             moment.duration(moment() - stats.current).humanize(),
             _.size(envelops.sources));
 
-    stats.last = stats.current;
     stats.current = moment();
     stats.currentamount = _.size(envelops.sources);
     const logof = [];

@@ -4,9 +4,9 @@ const querystring = require('querystring');
 
 const utils = require('../lib/utils');
 
-function getOffset(envelop, node) {
-    const fo = envelop.impression.html.indexOf(node.outerHTML);
-    const check = _.split(envelop.impression.html.indexOf, node.outerHTML);
+function getOffset(htmltext, node) {
+    const fo = htmltext.indexOf(node.outerHTML);
+    const check = _.split(htmltext.indexOf, node.outerHTML);
     if(_.size(check) > 2)
         debug("Warning! getOffset returns %d but the matching pieces are more than 1!!", fo);
     return fo;

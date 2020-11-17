@@ -19,7 +19,8 @@ function attributeLinkType0(sectionlist, retval) {
         return true;
     } else if(chunk == 'events') {
         retval.fblinktype = 'events';
-        debugger;
+        retval.pageId = _.nth(sectionlist, nth +1);
+        return true;
     } else if(chunk == 'watch') {
         retval.fblinktype = 'watch';
         retval.pageId = _.nth(sectionlist, nth +1);
@@ -30,10 +31,17 @@ function attributeLinkType0(sectionlist, retval) {
         debugger;
     } else if(chunk == 'donate') {
         retval.fblinktype = 'donate';
-        debugger;
+        retval.pageId = _.nth(sectionlist, nth +1);
+        return true;
     } else if(chunk == 'media') {
-        retval.fblinktype = 'media';
-        debugger;
+        retval.fblinktype = 'media'; /*
+        href: "https://www.facebook.com/media/set/?set=a.2630484733888064&type=3&__xts__%5B0%5D=68.ARDcTIWjOO2JYRuCTLSgIyHB8U55kD5gMlaBJSNYRfMQ4Wx7Bkaf_QOtHYTJQ1Af5E184hfT7uOnLpFFtdBX1rUFOydUQ6DU8MKgv49wWOM_LAnQVdxpw3774yKIOnHqyWjt21hFk0X7vW2g1e_utXqgMCJG1F2p7vqN6hYbt_KVOQXz8GmpSBQIHskmw53L8DuNbCo1D8uKNpZLbZtRiAPOqwzikiqtTxoUGzO_ucamlroB6gA6hyDRg28AWEYTuGHLdzMZeFLcGHzFIGjkRdGpl_cUOF5f8gqdSqFFbHA9rjQNdrAkyLvr3nmqIKK9-FzpsZoXBaV_CUf3bq4SmEi5bVI&__tn__=-UCH-R"
+parsed:
+?set: "a.2630484733888064"
+type: "3"
+     debugger;
+   */
+        return false;
     } else if(chunk == 'hashtag') {
         retval.fblinktype = 'hashtag';
         retval.hashtag = _.nth(sectionlist, nth +1);
@@ -89,8 +97,25 @@ function findURLs(previous, objPath) {
         let urlunits = _.filter(urlcontainer, 'urlId');
         return urlunits;
     } catch(e) {
-        debug("Unexpected failure in attributing via %s", objPath);
+        debug("Unexpected failure while looking for %s", objPath);
     }
+}
+
+function linktype(urlo) {
+    const u = urlo.URLo; // comes from helper.updateHrefUnit
+    if(u.hostname === 'www.facebook.com') {
+        urlo.linktype = 'local';
+    } else if(u.hostname === 'l.facebook.com') {
+        urlo.todo = true;
+        urlo.linktype = 'external';
+    } else if(_.endsWith(u.hostname, 'fbcdn.net')) {
+        urlo.todo = true;
+        urlo.linktype = 'internal';
+    } else {
+        urlo.todo = true;
+        urlo.linktype = 'external';
+    }
+    return urlo;
 }
 
 function meaningfulId(envelop, previous) {
@@ -98,6 +123,7 @@ function meaningfulId(envelop, previous) {
 
     return _.compact(_.flatten(_.map(['hrefChains.hrefs', 'imageChains.images', 'profiles.profiles' ], function(p) {
         let urlobjs = findURLs(previous, p);
+        urlobjs = _.map(urlobjs, linktype);
         return _.map(urlobjs, parseId);
     })));
 

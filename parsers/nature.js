@@ -1,25 +1,24 @@
 var _ = require('lodash');
-var debug = require('debug')('parsers:components:nature');
+const helper = require('./helper');
+var debug = require('debug')('parsers:nature');
 
-function findOutNature(envelop) {
+function recurspan(node) {
+    const style = node.getAttribute('style');
+    const l = _.size(style);
+    const x = { sizeh: _.size(node.innerHTML), sizest: l, style, text: node.textContent };
+    x.children = _.map(node.children, recurspan);
+    return x;
+}
 
-    /* nature can be 'organic', 'sponsored', 'viral', null */
-    let retval = null;
-
-    if(envelop.indicators) {
-        debug("Based on these indicators [%j] this is sponsored", envelop.indicators);
-        retval = 'sponsored';
-    } else if(envelop.postId) {
-        retval = 'organic';
-    } else {
-        envelop.errors.push({
-            step: 'integrity',
-            error: 'lack of postId with organic nature'
-        });
-        debug("integrity failure!");
-    } // TODO 'viral', prima come 'notes' e poi definitivo
-
-    return retval;
+function nature(envelop, previous) {
+    const hrefs = _.get(previous, 'hrefChains.hrefs');
+    return {
+        hrefs: _.drop(hrefs, _.size(hrefs) - 10),
+        hamount: _.size(hrefs),
+        from: previous.attributions ? previous.attributions.publisherName : "NONE!",
+        recu: _.map(envelop.jsdom.querySelectorAll('[href="#"] > span'), recurspan),
+        info: envelop.jsdom.querySelectorAll('[aria-label="Sponsored"]').length,
+    }
 };
 
-module.exports = findOutNature;
+module.exports = nature;
