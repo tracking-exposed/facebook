@@ -170,6 +170,7 @@ async function actualExecution(actualRepeat) {
             }
             await sleep(computedFrequency * 1000)
         }
+        console.log("Please note what wasn't supposed to never happen, just happen: restart the software ASAP.");
     } catch(e) {
         console.log("Error in filterChecker", e.message, e.stack);
         process.exit(1);
