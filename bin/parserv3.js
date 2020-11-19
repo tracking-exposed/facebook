@@ -202,10 +202,6 @@ try {
      * 
      * This script pipeline might optionally start from the past, and 
      * re-analyze HTMLs based on --minutesago <number> option.
-     * 
-     * At the end update metadata only if meaningful update is present,
-     * you might notice the library calls in automo, they should be refactored
-     * and optimized.
      * */
 
     /* call the async infinite loop function */
