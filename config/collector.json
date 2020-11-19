@@ -5,7 +5,6 @@
       "timelines": "timelines2",
       "accesses": "accesses2",
       "htmls": "htmls2",
-      "metadata": "metadata2",
       "errors": "parsererrors",
       "anomalies": "anomalies"
   },
