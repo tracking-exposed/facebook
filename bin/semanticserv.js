@@ -1,141 +1,212 @@
-const Promise = require('bluebird');
+#!/usr/bin/env node
 const _ = require('lodash');
 const moment = require('moment');
-const debug = require('debug')('bin:semanticserv');
-const nconf= require('nconf');
-
-const echoes = require('../lib/echoes');
-const semantic = require('../lib/semantic');
+const debug = require('debug')('fbtrex:semanticserv');
+const overflowReport = require('debug')('fbtrex:semanticserv:OVERFLOW');
+const nconf = require('nconf');
+const semantichain = require('../lib/semantichain');
 
 nconf.argv().env().file({ file: 'config/content.json' });
 
-/* configuration for elasticsearch */
-echoes.addEcho("elasticsearch");
-echoes.setDefaultEcho("elasticsearch");
+const FREQUENCY = 10;
+const AMOUNT_DEFAULT = 20;
+const BACKINTIMEDEFAULT = 1;
 
-/* this software executes every $FREQUENCY seconds + the time it took */
-const FREQUENCY = 5;
-/* this is just for logging when has been the last exectuion, it might take hours */
-var lastExecution = null;
+let textsAmount = _.parseInt(nconf.get('amount')) ? _.parseInt(nconf.get('amount')) : AMOUNT_DEFAULT;
 
-/*
- * this tool look at the `metadata` for object with { semantic: true },
- * do the semantic analysis with dandelion.
- * If success, mark the semantic with a new date, if fail, mark it with "false".
- */
+const limit = _.parseInt(nconf.get('limit')) || 10;
+const stop = _.parseInt(nconf.get('stop')) ? _.parseInt(nconf.get('stop')) : 0;
+const backInTime = _.parseInt(nconf.get('minutesago')) ? _.parseInt(nconf.get('minutesago')) : BACKINTIMEDEFAULT;
+const id = nconf.get('id');
+const filter = nconf.get('filter') ? JSON.parse(fs.readFileSync(nconf.get('filter'))) : null;
+const singleUse = !!id;
+const repeat = !!nconf.get('repeat');
 
-console.log(`Checking periodically every ${FREQUENCY} seconds...`);
-infiniteLoop();
+let nodatacounter = 0, processedCounter = 0;
+let lastExecution = moment().subtract(backInTime, 'minutes').toISOString();
+let computedFrequency = 10;
+const stats = { currentamount: 0, current: null };
 
-const limit = _.parseInt(nconf.get('limit')) || 100;
-
-function infiniteLoop() {
-
-    const timewindow = nconf.get('daysago') ?
-        moment().subtract( _.parseInt(nconf.get('daysago')), 'days').format() :
-        moment().subtract(1, 'days').format();
-
-    /* this will launch other scheduled tasks too */
-    return Promise
-        .resolve()
-        .delay(FREQUENCY * 1000)
-        .then(function() {
-            return semantic.getSemantic({ semantic: true, when: { "$gte": new Date(timewindow) }}, limit);
-        })
-        .then(function(entries) {
-
-            resetLast = true;
-
-            if(!_.size(entries))
-                return [];
-
-            let uniqued = _.uniqBy(entries, 'semanticId');
-
-            if(_.size(uniqued) < _.size(entries))
-                resetLast = false;
-
-            if(lastExecution) {
-                debug("New iteration after %s, processing %d(%d) entries",
-                    moment.duration(moment() - lastExecution).humanize(),
-                    _.size(entries), _.size(uniqued) );
-            } else {
-                debug("First execution at %s, processing %d(%d) entries",
-                    moment().format(), _.size(entries), _.size(uniqued) );
-            }
-
-            if(!_.isNaN(limit) && limit < _.size(uniqued)) {
-                debug("Process cap to %d requests, we had %d entries, cutting off %d",
-                    limit, _.size(uniqued), _.size(uniqued) - limit);
-                uniqued = _.slice(uniqued, 0, limit);
-                resetLast = false;
-            }
-
-            if(resetLast)
-                lastExecution = moment();
-
-            logSemanticServer(_.size(uniqued));
-            return uniqued;
-        })
-        .map(semantic.doubleCheck, { concurrency: 1 })
-        .then(_.compact)
-        .map(process, { concurrency: 1 })
-        .then(_.compact)
-        .tap(function(entries) {
-            if(_.size(entries)) {
-                debug("Completed %d entries succesfull", _.size(entries));
-                lastExecution = moment();
-            }
-        })
-        .then(infiniteLoop);
-};
-
-function process(entry) {
-    const token = nconf.get('token');
-    return semantic
-        .dandelion(token, entry.fullText, entry.semanticId)
-        .then(semantic.composeObjects)
-        .catch(function(error) {
-            debug("Error in composeObject: %s", error);
-            return null;
-        })
-        .then(function(analyzed) {
-
-            if(analyzed && analyzed.headers && analyzed.headers['x-dl-units-left'] === 0) {
-                debug("Units finished!");
-                process.exit(1);
-            }
-
-            if(analyzed.skip)
-                return semantic.updateMetadata(_.extend(entry, { semantic: false }) )
-
-            if(!analyzed || !analyzed.semanticId || _.isUndefined(analyzed.lang))
-                return semantic.updateMetadata(_.extend(entry, { semantic: null }) );
-
-            return Promise.all([
-                elasticLog(entry, analyzed),
-                semantic.updateMetadata(_.extend(entry, { semantic: new Date() }) ),
-                semantic.saveSemantic(analyzed.semantics),
-                semantic.saveLabel(analyzed.label)
-            ]);
-        })
-        .catch(function(error) {
-            debug("Impossible to commit changes: %s", error);
-        });
-};
-
-function logSemanticServer(amount) {
-    echoes.echo({
-        index: 'semanticserv',
-        amount: amount
-    });
+async function sleep(ms) {
+    return new Promise(resolve => {
+        setTimeout(resolve, ms)
+    })
 }
 
-function elasticLog(entry, analyzed) {
-    echoes.echo({
-        index: 'semantics',
-        semanticId: entry.semanticId,
-        textsize: _.size(entry.fullText),
-        annotations: _.size(analyzed.semantics),
-        lang: analyzed.lang
-    });
-};
+async function pipeline(e) {
+    processedCounter++;
+    const envelope = {
+        failures: {},
+        source: e,
+        log: {},
+        findings: {}
+    };
+    const functionList = [
+        semantichain.dandelion,
+        semantichain.composeObjects,
+        semantichain.dandelionCheck,
+        semantichain.saveSemantic,
+        semantichain.saveLabel
+    ];
+    for (functionName of functionList)  {
+        try {
+            let mined = await semantichain.wrapFunction(functionName, e, memo);
+            _.set(envelope.findings, functionName, mined);
+        } catch(error) {
+            _.set(envelope.failures, functionName, error.message);
+        }
+    }
+    debug("#%d\t(%d mins) http://localhost:1313/debug/html/#%s %s",
+        processedCounter, _.round(moment.duration( moment() - moment(e.html.savingTime)).asMinutes(), 0), e.html.id
+    );
+    return rv;
+}
+
+async function executeSemanticSequence(metadFilter) {
+
+    const envelops = await semantichain.getSemantic(metadFilter, textsAmount);
+
+    debug("%j", envelops);
+
+    if(!_.size(envelops.sources)) {
+        nodatacounter++;
+        if( (nodatacounter % 10) == 1) {
+            debug("%d no data at the last query: %j %j (processed %d)",
+                nodatacounter, _.keys(metadFilter), metadFilter.impressionTime, processedCounter);
+        }
+        lastExecution = moment.utc().subtract(BACKINTIMEDEFAULT, 'm').toISOString();
+        computedFrequency = FREQUENCY;
+        return;
+    } else {
+        lastExecution = moment.utc( _.last(envelops.sources).impressionTime);
+        computedFrequency = 0.1;
+    }
+
+    if(!envelops.overflow)
+        overflowReport("<NOT>\t\t%d documents", _.size(envelops.sources));
+    else
+        overflowReport("first %s (on %d) <last +minutes %d> next filter set to %s",
+            _.first(envelops.sources).impressionTime, _.size(envelops.source),
+            _.round(moment.duration(
+                moment.utc( _.last(envelops.sources).impressionTime ) - moment.utc(_.first(envelops.sources).impressionTime)
+            ).asMinutes(), 1),
+            lastExecution);
+
+    if(stats.currentamount)
+        debug("[+] %d htmls in new parsing sequences. (previous %d took: %s) and now process %d htmls",
+            processedCounter, stats.currentamount,
+            moment.duration(moment() - stats.current).humanize(),
+            _.size(envelops.sources));
+
+    stats.current = moment();
+    stats.currentamount = _.size(envelops.sources);
+    const logof = [];
+
+    debugger;
+    const results = []
+    for (metaentry of envelops.sources) {
+        try {
+            let x = await pipeline(metaentry);
+            results.push(x);
+            /* results is a list of objects: [ {
+                source: { timeline, impression, dom, html },
+                findings: { $dissector1, $dissector2 },
+                failures: { $dissectorN, $dissectorX }           } ] */
+            debugger;
+        } catch(error) {
+            debug("Error in pipeline execution catch: %s", error.message);
+            throw error;
+        }
+
+    }
+    throw new Error("Not implemented");
+    console.table(_.map(results, function(e) {
+        _.set(e.log, 'id', e.source.html.id);
+        return e.log;
+    }));
+    for (const entry of results) {
+        const metaentry = pchain.buildMetadata(entry);
+        let x = await pchain.updateMetadataAndMarkHTML(metaentry);
+        logof.push(x);
+    }
+
+    return {
+        findings: _.map(results, function(e) { return _.size(e.findings) }),
+        failures: _.map(results, function(e) { return _.size(e.failures) }),
+        logof
+    };
+}
+
+async function actualExecution(actualRepeat) {
+    try {
+        // pretty lamest, but I need an infinite loop on an async function -> IDFC!
+        for (times of _.times(0xffffff) ) {
+            let metadFilter = {
+                impressionTime: {
+                    $gt: new Date(lastExecution),
+                },
+            };
+            if(!actualRepeat)
+                metadFilter.semantic = { $exists: false };
+
+            if(filter) {
+                debug("Focus filter on %d IDs", _.size(filter));
+                metadFilter.id = { '$in': filter };
+            }
+            if(id) {
+                debug("Targeting a specific htmls2.id");
+                metadFilter = { id }
+            }
+
+            if(stop && stop <= processedCounter) {
+                console.log("Reached configured limit of ", stop, "( processed:", processedCounter, ")");
+                process.exit(processedCounter);
+            }
+
+            await executeSemanticSequence(metadFilter);
+            if(singleUse) {
+                console.log("Single execution done!");
+                process.exit(1);
+            }
+            await sleep(computedFrequency * 1000)
+        }
+        console.log("Please note what wasn't supposed to never happen, just happen: restart the software ASAP.");
+    } catch(e) {
+        console.log("Error in filterChecker", e.message, e.stack);
+        process.exit(1);
+    }
+}
+
+/* application starts here */
+try {
+    if(filter && id)
+        throw new Error("Invalid combo, you can't use --filter and --id");
+
+    if( id && (textsAmount != AMOUNT_DEFAULT) )
+        debug("Ignoring --amount because of --id");
+
+    if(stop && textsAmount > stop ) {
+        textsAmount = stop;
+        debug("--stop %d imply --amount %d", stop, textsAmount);
+    }
+
+    let actualRepeat = (repeat || !!id || !!filter || (backInTime != BACKINTIMEDEFAULT) );
+    if(actualRepeat != repeat)
+        debug("--repeat it is implicit!");
+
+    /* this is the begin of the semantic analysis pipeline.
+     * gets htmls from the db, if --repeat 1 then previously-analyzed-metadataS would be
+     * re-analyzed. otherwise, the default, is to skip those and wait for new 
+     * htmls. To receive htmls you should have a producer consistend with the 
+     * browser extension format, and bin/server listening 
+     * 
+     * This script pipeline might optionally start from the past, and 
+     * re-analyze HTMLs based on --minutesago <number> option.
+     * */
+
+    /* call the async infinite loop function */
+    actualExecution(actualRepeat);
+} catch(e) {
+    console.log("Error in wrapperLoop", e.message);
+    process.exit(1);
+}
