@@ -18,14 +18,15 @@ ret = db.htmls2.createIndex({ "processed": -1 }); checkret('htmls2 processed', r
 ret = db.labels.createIndex({ "semanticId" : 1 }, { unique: true }); checkret('labels semanticId', ret);
 ret = db.labels.createIndex({ "when" : 1 }); checkret('labels when', ret);
 
-ret = db.metadata.createIndex({ "semanticId" : 1 }); checkret('metadata semanticId', ret);
-ret = db.metadata.createIndex({ "userId" : 1 }); checkret('metadata userId', ret);
-ret = db.metadata.createIndex({ "semantic" : 1 }); checkret('metadata semantic', ret);
-ret = db.metadata.createIndex({ "when" : 1 }); checkret('metadata when', ret);
-ret = db.metadata.createIndex({ "id" : 1 }, { unique : true }); checkret('metadata id', ret);
-ret = db.metadata.createIndex({ "impressionTime" : -1 }); checkret('metadata impressionTime', ret);
-ret = db.metadata.createIndex({ "timelineId" : -1 }); checkret('metadata timelineId', ret);
-ret = db.metadata.dropIndex({ "linkedtime.postId" : 1 }); checkret('metadata linkedtime.postId', ret);
+ret = db.metadata2.createIndex({ "semanticId" : 1 }); checkret('metadata semanticId', ret);
+ret = db.metadata2.createIndex({ "userId" : 1 }); checkret('metadata userId', ret);
+ret = db.metadata2.createIndex({ "semantic" : 1 }); checkret('metadata semantic', ret);
+ret = db.metadata2.createIndex({ "when" : 1 }); checkret('metadata when', ret);
+ret = db.metadata2.createIndex({ "id" : 1 }, { unique : true }); checkret('metadata id', ret);
+ret = db.metadata2.createIndex({ "impressionTime" : -1 }); checkret('metadata impressionTime', ret);
+ret = db.metadata2.createIndex({ "timelineId" : -1 }); checkret('metadata timelineId', ret);
+
+ret = db.metadata.remove({ "savingTime": { "$gte": ISODate("2020-11-15T00:00:00.000Z")}}); checkret('content deleted', ret);
 
 ret = db.semantics.createIndex({ "label" : 1 }); checkret('semantics label', ret);
 ret = db.semantics.createIndex({ "when" : 1 }); checkret('semantics when', ret);
