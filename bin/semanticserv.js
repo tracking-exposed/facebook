@@ -38,35 +38,36 @@ async function pipeline(e) {
     const envelope = {
         failures: {},
         source: e,
+        settings: {
+            token: nconf.get('token')
+        },
         log: {},
         findings: {}
     };
     const functionList = [
-        semantichain.dandelion,
-        semantichain.composeObjects,
-        semantichain.dandelionCheck,
-        semantichain.saveSemantic,
-        semantichain.saveLabel
+        "dandelion",
+        "composeObjects",
+        "dandelionCheck",
+        "saveSemantic",
+        "saveLabel"
     ];
     for (functionName of functionList)  {
         try {
-            let mined = await semantichain.wrapFunction(functionName, e, memo);
+            let mined = await semantichain.wrapFunction(semantichain[functionName], functionName, envelope);
             _.set(envelope.findings, functionName, mined);
         } catch(error) {
             _.set(envelope.failures, functionName, error.message);
         }
     }
     debug("#%d\t(%d mins) http://localhost:1313/debug/html/#%s %s",
-        processedCounter, _.round(moment.duration( moment() - moment(e.html.savingTime)).asMinutes(), 0), e.html.id
+        processedCounter, _.round(moment.duration( moment() - moment(e.savingTime)).asMinutes(), 0), e.id
     );
-    return rv;
+    return envelope;
 }
 
 async function executeSemanticSequence(metadFilter) {
 
     const envelops = await semantichain.getSemantic(metadFilter, textsAmount);
-
-    debug("%j", envelops);
 
     if(!_.size(envelops.sources)) {
         nodatacounter++;
@@ -143,7 +144,7 @@ async function actualExecution(actualRepeat) {
         for (times of _.times(0xffffff) ) {
             let metadFilter = {
                 impressionTime: {
-                    $gt: new Date(lastExecution),
+                    $gte: new Date(lastExecution),
                 },
             };
             if(!actualRepeat)
