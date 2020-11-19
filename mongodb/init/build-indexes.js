@@ -1,4 +1,5 @@
 ret = db.supporters2.createIndex({ "lastActivity": -1 }); checkret('supporters2 lastActivity', ret);
+ret = db.supporters2.createIndex({ "userId": 1 }); checkret('supporters2 userId', ret);
 
 ret = db.impressions2.createIndex({ "timelineId": -1 }); checkret('impressions2 timelineId', ret);
 ret = db.impressions2.createIndex({ "id": -1 }); checkret('impressions2 id', ret);
@@ -24,7 +25,7 @@ ret = db.metadata.createIndex({ "when" : 1 }); checkret('metadata when', ret);
 ret = db.metadata.createIndex({ "id" : 1 }, { unique : true }); checkret('metadata id', ret);
 ret = db.metadata.createIndex({ "impressionTime" : -1 }); checkret('metadata impressionTime', ret);
 ret = db.metadata.createIndex({ "timelineId" : -1 }); checkret('metadata timelineId', ret);
-ret = db.metadata.createIndex({ "linkedtime.postId" : 1 }); checkret('metadata linkedtime.postId', ret);
+ret = db.metadata.dropIndex({ "linkedtime.postId" : 1 }); checkret('metadata linkedtime.postId', ret);
 
 ret = db.semantics.createIndex({ "label" : 1 }); checkret('semantics label', ret);
 ret = db.semantics.createIndex({ "when" : 1 }); checkret('semantics when', ret);
