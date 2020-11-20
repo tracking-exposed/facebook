@@ -35,6 +35,7 @@
     "mongodb3": "npm:mongodb@3.2.3",
     "nacl-signature": "^1.0.0",
     "nconf": "^0.8.4",
+    "node-fetch": "^2.6.1",
     "node-geoip": "^1.0.1",
     "request": "^2.88.0",
     "reveal.js": "^3.7.0",

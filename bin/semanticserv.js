@@ -46,8 +46,7 @@ async function pipeline(e) {
     };
     const functionList = [
         "dandelion",
-        "composeObjects",
-        "dandelionCheck",
+        "reformat",
         "saveSemantic",
         "saveLabel"
     ];
@@ -59,6 +58,12 @@ async function pipeline(e) {
             _.set(envelope.failures, functionName, error.message);
         }
     }
+    if(_.size(envelope.failures))
+    debug("#%d\t(%d mins) http://localhost:1313/debug/html/#%s %s fail: %s",
+        processedCounter, _.round(moment.duration( moment() - moment(e.savingTime)).asMinutes(), 0), e.id,
+        JSON.stringify(_.map(envelope.failures))
+    );
+    else
     debug("#%d\t(%d mins) http://localhost:1313/debug/html/#%s %s",
         processedCounter, _.round(moment.duration( moment() - moment(e.savingTime)).asMinutes(), 0), e.id
     );
@@ -103,7 +108,6 @@ async function executeSemanticSequence(metadFilter) {
     stats.currentamount = _.size(envelops.sources);
     const logof = [];
 
-    debugger;
     const results = []
     for (metaentry of envelops.sources) {
         try {
@@ -113,21 +117,21 @@ async function executeSemanticSequence(metadFilter) {
                 source: { timeline, impression, dom, html },
                 findings: { $dissector1, $dissector2 },
                 failures: { $dissectorN, $dissectorX }           } ] */
-            debugger;
         } catch(error) {
             debug("Error in pipeline execution catch: %s", error.message);
             throw error;
         }
-
     }
-    throw new Error("Not implemented");
+
     console.table(_.map(results, function(e) {
-        _.set(e.log, 'id', e.source.html.id);
+        _.set(e.log, 'id', e.source.id);
         return e.log;
     }));
-    for (const entry of results) {
-        const metaentry = pchain.buildMetadata(entry);
-        let x = await pchain.updateMetadataAndMarkHTML(metaentry);
+
+    for (const envelope of results) {
+        let x = await semantichain.markMetadata(envelope, { semantic: 
+            _.size(envelope.failures) ? false : true
+        });
         logof.push(x);
     }
 
