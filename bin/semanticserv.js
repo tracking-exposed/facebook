@@ -85,7 +85,10 @@ async function executeSemanticSequence(metadFilter) {
         return;
     } else {
         lastExecution = moment.utc( _.last(envelops.sources).impressionTime);
-        computedFrequency = 0.1;
+        if(envelops.overflow)
+            computedFrequency = 0.1;
+        else
+            computedFrequency = FREQUENCY * 2;
     }
 
     if(!envelops.overflow)
