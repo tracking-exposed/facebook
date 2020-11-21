@@ -7,7 +7,7 @@ const nconf = require('nconf');
 
 const mongo = require('../../lib/mongo');
 const various = require('../../lib/various');
-const semantic = require('../../lib/semantic');
+const semantichain = require('../../lib/semantichain');
 
 const cfgFile = "config/content.json";
 nconf.argv().env().file({ file: cfgFile });
@@ -28,7 +28,7 @@ function languageFile(lc) {
             if(!_.size(l))
                 return null;
 
-            debug("Writing language '%s' (%d) entries", semantic.langMap[lc], _.size(l));
+            debug("Writing language '%s' (%d) entries", semantichain.langMap[lc], _.size(l));
             return various
                 .dumpJSONfile(`${dpath}/${lc}.json`, l)
                 .then(function() {
@@ -51,6 +51,6 @@ return mongo
         }, {});
     })
     .then(function(writtenLangs) {
-        debug("Written %d languages over the %d available", _.size(writtenLangs), _.size(semantic.langMap));
+        debug("Written %d languages over the %d available", _.size(writtenLangs), _.size(semantichain.langMap));
         return various.dumpJSONfile(`${dpath}/available.json`, writtenLangs);
     });
