@@ -199,6 +199,7 @@ function meaningfulId(envelop, previous) {
     const images = _.compact(_.map(_.filter(enriched, { linktype: 'cdn'}), detailFbImg));
     const links = _.map(_.filter(enriched, { linktype: 'external'}), detailFbURL);
     const retval = { local, images, links };
+    // TODO uniquify
     // debug("Conclusion with %j", _.map(retval, function(o, k) { return _.size(o); }));
     return retval;
 }
