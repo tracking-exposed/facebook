@@ -6,18 +6,18 @@ const nconf = require('nconf');
 
 const mongo = require('../lib/mongo');
 const params = require('../lib/params');
-const semantic = require('../lib/semantic');
+const semantichain = require('../lib/semantichain');
 const various = require('../lib/various');
 
 const LanguageError = {
     error: true,
     message: 'missing language',
-    supported: semantic.langMap,
+    supported: semantichain.langMap,
     reminder: 'the list of supported language comes from a mongodb.distinct call, should be updated'
 };
 
 function validLanguage(propl) {
-    return (_.size(propl) == 2 && !_.isUndefined(_.get(semantic.langMap, propl)));
+    return (_.size(propl) == 2 && !_.isUndefined(_.get(semantichain.langMap, propl)));
 }
 
 function labels(req) {
@@ -90,7 +90,7 @@ function enrich(req) {
             { $match: { lang: req.params.lang, when: { "$lt": new Date(backintime) }} },
             { $skip: skip },
             { $limit: amount },
-            { $lookup: { from: 'summary', localField: 'semanticId', foreignField: 'semanticId', as: 'summary' }}
+            { $lookup: { from: 'metadata2', localField: 'semanticId', foreignField: 'semanticId', as: 'summary' }}
         ])
         .map(redactEnriched)
         .then(function(enriched) {
@@ -119,7 +119,7 @@ function noogle(req) {
             { $group: { _id: "$semanticId" }},
             { $skip: skip },
             { $limit: amount },
-            { $lookup: { from: 'summary', localField: '_id', foreignField: 'semanticId', as: 'summary' }},
+            { $lookup: { from: 'metadata2', localField: '_id', foreignField: 'semanticId', as: 'summary' }},
             { $lookup: { from: 'labels', localField: '_id', foreignField: 'semanticId', as: 'labels' }}
         ])
         .map(function(dirty) {
@@ -175,7 +175,7 @@ function loudKeywordsPipeline(maxentries, backintime, amount, skip, lang) {
 }
 
 /* This is the cache block used by langinfo */
-const cache = _.reduce(semantic.langMap, function(memo, langName, l) {
+const cache = _.reduce(semantichain.langMap, function(memo, langName, l) {
     _.set(memo, l, {
         langName,
         content: null,
@@ -237,8 +237,8 @@ function langinfo(req) {
             { $sort: { when: -1 }},
             { $match: { lang: lang, when: { "$gt": new Date(backintime) } }},
             { $limit: MAXENTRIES },
-            { $lookup: { from: 'summary', localField: 'semanticId', foreignField: 'semanticId', as: 'summary' }},
-            { $group: { _id: "dummy", profiles: { $addToSet: "$summary.user"} }}
+            { $lookup: { from: 'metadata2', localField: 'semanticId', foreignField: 'semanticId', as: 'summary' }},
+            { $group: { _id: "dummy", profiles: { $addToSet: "$summary.pseudo"} }}
         ]).then(function(usermess) {
             // remind/TODO grouped by size and anonymized, this can be a nice stats
             // _.flatten(usermess[0].profiles)

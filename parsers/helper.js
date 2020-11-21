@@ -65,10 +65,26 @@ function recursiveQuery(startingNode, tagName) {
     return node;
 }
 
+function recursiveText(startNode) {
+    let node = startNode;
+    try {
+        while( _.size(node.textContent) === 0) {
+            node = nextNode(node);
+            if((node.children.length) > 1) {
+                // debug("%j", _.map(node.children,function(n){ return n.tagName, n.textContent }));
+            }
+        }
+    } catch(e) {
+        debug("%E: %s", e.message);
+    }
+    return _.first(node.textContent.split('·')).trim();
+}
+
 module.exports = {
     getOffset,
     updateHrefUnit,
     sizeTreeResearch,
     recursiveSize,
     recursiveQuery,
+    recursiveText,
 };

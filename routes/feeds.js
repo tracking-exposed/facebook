@@ -1,17 +1,12 @@
 const _ = require('lodash');
-const moment = require('moment');
-const Promise = require('bluebird');
 const debug = require('debug')('routes:rss');
 const nconf = require('nconf');
-const fs = Promise.promisifyAll(require('fs'));
-const path = require('path');
  
 const rss = require('../lib/rss');
-const semantic = require('../lib/semantic');
+const semantichain = require('../lib/semantichain');
 const mongo = require('../lib/mongo');
-const utils = require('../lib/utils');
 
-const DEFAULTMAXAMOUNT = 20;
+const DEFAULTMAXAMOUNT = 80;
 /*
  * logic:
  * compute a feedId using the hash function
@@ -28,12 +23,14 @@ function feedsAlgorithm0(req) {
     const label = decodeURIComponent(req.params.query);
     const amount = req.params.amount ? _.parseInt(req.params.amount) : DEFAULTMAXAMOUNT;
 
-    if(!(_.size(lang) == 2 && !_.isUndefined(_.get(semantic.langMap, lang))))
+    if(!(_.size(lang) == 2 && !_.isUndefined(_.get(semantichain.langMap, lang))))
         return { text: rss.produceError(null, null, "Language not found") };
 
     debug("feeds request (lang: %s, label: %s), max size %d",
         lang, label, amount);
 
+        /* at first looks for cached entries, second try to build and save it, 
+           cache is self expiring and inserted in lib/rss */
     return mongo
         .readOne(nconf.get('schema').feeds, { lang: lang, label: label })
         .then(function(f) {
