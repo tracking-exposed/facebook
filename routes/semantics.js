@@ -268,11 +268,11 @@ function languages(req) {
         .loadJSONfile('rss/keywords/available.json')
         .then(function(available) {
             debug("Loaded %d available on %d potential",
-                _.size(available), _.size(semantic.langMap));
+                _.size(available), _.size(semantichain.langMap));
             return {
                 json: {
                     available,
-                    potential: semantic.langMap
+                    potential: semantichain.langMap
                 }
             };
         });

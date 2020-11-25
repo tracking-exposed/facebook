@@ -125,9 +125,13 @@ async function executeParsingChain(htmlFilter) {
         return e.log;
     }));
     for (const entry of results) {
-        const metaentry = pchain.buildMetadata(entry);
-        let x = await pchain.updateMetadataAndMarkHTML(metaentry);
-        logof.push(x);
+        try {
+            const metaentry = pchain.buildMetadata(entry);
+            let x = await pchain.updateMetadataAndMarkHTML(metaentry);
+            logof.push(x);
+        } catch(error) {
+            debug("Lost content: %s - %s (currenty done %d)", _.size(logof), entry.source.html.id, error.message);
+        }
     }
 
     return {
