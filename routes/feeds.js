@@ -5,6 +5,8 @@ const nconf = require('nconf');
 const rss = require('../lib/rss');
 const semantichain = require('../lib/semantichain');
 const mongo = require('../lib/mongo');
+const mongo3 = require('../lib/mongo3');
+const utils = require('../lib/utils');
 
 const DEFAULTMAXAMOUNT = 80;
 /*
@@ -47,9 +49,28 @@ function feedsAlgorithm0(req) {
 };
 
 
+async function feedADS(req) {
 
+    const lang = req.params.lang;
+    const mongoc = await mongo3.clientConnect();
+    const when = moment().subtract(1, 'h').format("YYYY-MM-DD HH");
+    const id = utils.hash({ lang, 'ad': when });
+    const cache = await mongo3.readOne(mongoc, ncpnf.get('schema').feeds, { id });
+    const retval = {
+        headers: { "Content-Type": "application/rss+xml" }
+    };
+    if(cache) {
+        retval.text = cache.content;
+    } else {
+        const newcontent = await rss.composeADSfeed(id, lang, when);
+        retval.text = newcontent.content;
+    }
+    await mongoc.close();
+    debug("feedADS completed! %j", retval);
+    return retval;
+}
 
 module.exports = {
     feedsAlgorithm0,
-    // feedsADS,
+    feedADS,
 };

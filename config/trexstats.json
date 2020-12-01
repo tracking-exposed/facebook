@@ -93,28 +93,20 @@
     },
     {
         "name": "metadata",
-        "column": "metadata",
+        "column": "metadata2",
         "timevar": "impressionTime",
         "variables": [
             {
-                "name":"publicationTime",
-                "selector": { "linkedtime.publicationTime": { "$exists": true } }
+                "name":"complete",
+                "selector": { "complete": true }
             },
             {
                 "name":"attributed",
-                "selector": { "attribution": { "$size": 1 }}
+                "selector": { "publisherName": { "$size": { "$gt": 1 }}}
             },
             {
-                "name":"haslinks",
-                "selector": { "externalLinks.0": { "$exists": true }}
-            },
-            {
-                "name":"texts",
-                "selector": { "usertext": { "$size": 0 }}
-            },
-            {
-                "name":"commentable",
-                "selector": { "commentable": true }
+                "name":"hasNature",
+                "selector": { "nature.kind": { "$ne": null }}
             },
             {
                 "name":"total",

@@ -70,9 +70,9 @@ function recursiveText(startNode) {
     try {
         while( _.size(node.textContent) === 0) {
             node = nextNode(node);
-            if((node.children.length) > 1) {
-                // debug("%j", _.map(node.children,function(n){ return n.tagName, n.textContent }));
-            }
+            /* if((node.children.length) > 1) {
+                debug("%j", _.map(node.children,function(n){ return n.tagName, n.textContent }));
+            } */
         }
     } catch(e) {
         debug("%E: %s", e.message);
