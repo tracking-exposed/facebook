@@ -18,7 +18,7 @@
   },
   "mongoHost": "localhost",
   "mongoPort": "27017",
-  "mongoDb": "facebook",
+  "mongoDb": "paadc",
   "port": 8000,
   "interface": "127.0.0.1",
   "elastic": "http://localhost:9200",

@@ -41,7 +41,7 @@ function buildImpression(memo, evnt) {
         'order': evnt.impressionOrder,
     });
     impression.userId = memo.sessionInfo.numId;
-
+    impression.paadc = memo.headers.paadc;
     impression.impressionOrder = _.parseInt(evnt.impressionOrder);
     impression.impressionTime = new Date(
         moment(evnt.impressionTime).toISOString()

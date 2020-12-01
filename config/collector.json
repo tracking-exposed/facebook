@@ -10,8 +10,8 @@
   },
   "mongoHost": "localhost",
   "mongoPort": "27017",
-  "mongoDb": "facebook",
-  "port": 8100,
+  "mongoDb": "paadc",
+  "port": 8105,
   "interface": "127.0.0.1",
   "key": "invalid_default"
 }
