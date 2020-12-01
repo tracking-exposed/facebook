@@ -41,7 +41,7 @@ function buildImpression(memo, evnt) {
         'order': evnt.impressionOrder,
     });
     impression.userId = memo.sessionInfo.numId;
-    impression.paadc = memo.headers.paadc;
+    impression.paadc = memo.sessionInfo.paadc;
     impression.impressionOrder = _.parseInt(evnt.impressionOrder);
     impression.impressionTime = new Date(
         moment(evnt.impressionTime).toISOString()
@@ -125,7 +125,8 @@ function promisifyInputs(body, geoinfo, supporter) {
             'geoip': geoinfo,
             'numId': supporter.userId,
             'publicKey': supporter.publicKey,
-            'version': supporter.version
+            'version': supporter.version,
+            'paadc': supporter.paadc,
         }
     });
 
