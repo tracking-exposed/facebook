@@ -1,5 +1,4 @@
 const _ = require('lodash');
-const moment = require('moment');
 const debug = require('debug')('routes:public');
 const nconf = require('nconf');
 
@@ -13,11 +12,13 @@ async function ad(req) {
         "nature.kind": 'ad',
     }, { impressionTime: -1 }, 300, 0);
     const redacted = _.map(content, function(e) {
-        return _.omit(e, ['userId']);
+        const r = _.omit(e, ['userId', '_id' ]);
+        r.images = _.filter(e.images, { linktype: 'cdn'});
+        return r;
     })
     debug("Returning for advertising filtering, %d elements", _.size(redacted));
     await mongodriver.close();
-    return { json: content };
+    return { json: redacted };
 };
 
 module.exports = {
