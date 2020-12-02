@@ -12,6 +12,10 @@ async function ad(req) {
     const content = await mongo3.readLimit(mongodriver, nconf.get('schema').metadata, {
         "nature.kind": 'ad',
     }, { impressionTime: -1 }, 300, 0);
+    const redacted = _.map(content, function(e) {
+        return _.omit(e, ['userId']);
+    })
+    debug("Returning for advertising filtering, %d elements", _.size(redacted));
     await mongodriver.close();
     return { json: content };
 };
