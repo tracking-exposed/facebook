@@ -302,6 +302,7 @@ function processEvents(req) {
                 supporter.version);
 
             _.set(supporter, 'lastActivity', new Date());
+            _.set(supporter, 'paadc', headers.paadc);
             return supporter;
         })
         .then(function(supporter) {

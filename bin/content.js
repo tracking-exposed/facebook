@@ -19,7 +19,6 @@ nconf.argv().env().file({ file: cfgFile })
 if(nconf.get('FBTREX') !== 'production') {
     debug("Because $FBTREX is not 'production', it is assumed be 'development'");
     nconf.stores.env.readOnly = false;
-    nconf.set('elastic', 'disabled');
     nconf.set('FBTREX', 'development');
     nconf.stores.env.readOnly = true;
 } else {
