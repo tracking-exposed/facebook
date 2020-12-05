@@ -130,7 +130,7 @@ async function executeParsingChain(htmlFilter) {
             let x = await pchain.updateMetadataAndMarkHTML(metaentry);
             logof.push(x);
         } catch(error) {
-            debug("Lost content: %s - %s (currenty done %d)", _.size(logof), entry.source.html.id, error.message);
+            debug("Lost a submission (%s) ID %s (currenty done %d)", error.message, entry.source.html.id, _.size(logof));
         }
     }
 
