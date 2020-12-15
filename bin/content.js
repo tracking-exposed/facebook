@@ -13,24 +13,17 @@ const mongo = require('../lib/mongo');
 const common = require('../lib/common');
 const security = require('../lib/security');
 
-/* configuration for elasticsearch */
-const echoes = require('../lib/echoes');
-
 var cfgFile = "config/content.json";
 nconf.argv().env().file({ file: cfgFile })
 
 if(nconf.get('FBTREX') !== 'production') {
     debug("Because $FBTREX is not 'production', it is assumed be 'development'");
     nconf.stores.env.readOnly = false;
-    nconf.set('elastic', 'disabled');
     nconf.set('FBTREX', 'development');
     nconf.stores.env.readOnly = true;
 } else {
     debug("Production execution!");
 }
-
-echoes.addEcho("elasticsearch");
-echoes.setDefaultEcho("elasticsearch");
 
 debug("configuration file: %s | FBTREX mode [%s]", cfgFile, nconf.get('FBTREX'));
 

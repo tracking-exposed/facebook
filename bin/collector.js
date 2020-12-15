@@ -21,21 +21,14 @@ const redOff = "\033[0m";
 nconf.argv().env().file({ file: cfgFile });
 console.log(redOn + "ઉ nconf loaded, using " + cfgFile + redOff);
 
-/* configuration for elasticsearch */
-const echoes = require('../lib/echoes');
-
 if(nconf.get('FBTREX') !== 'production') {
     debug("Because $FBTREX is not 'production', it is assumed be 'development'");
     nconf.stores.env.readOnly = false;
-    nconf.set('elastic', 'disabled');
     nconf.set('FBTREX', 'development');
     nconf.stores.env.readOnly = true;
 } else {
     debug("Production execution!");
 }
-
-echoes.addEcho("elasticsearch");
-echoes.setDefaultEcho("elasticsearch");
 
 const collectorImplementations = {
     processEvents:    require('../routes/events').processEvents,
