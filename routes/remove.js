@@ -1,12 +1,10 @@
 const _ = require('lodash');
-const moment = require('moment');
 const debug = require('debug')('routes:remove')
 const nconf = require('nconf');
  
 const mongo = require('../lib/mongo');
 const params = require('../lib/params');
 const utils = require('../lib/utils');
-const echoes = require('../lib/echoes');
 const adopters = require('../lib/adopters');
 
 function removeByTimeline(timeline) {
@@ -21,13 +19,12 @@ function removeByTimeline(timeline) {
 };
 
 function remove(req) {
-
     const { amount, skip } = params.optionParsing(req.params.paging, 1);
     const userToken = params.getString(req, 'userToken');
 
     debug("personal remove function: amount of timelines %d skip %d", amount, skip);
     return adopters
-        .validateToken(req.params.userToken)
+        .validateToken(userToken)
         .then(function(supporter) {
             return mongo
                 .readLimit(nconf.get('schema').timelines, { userId: supporter.userId }, { startTime: -1}, amount, skip);

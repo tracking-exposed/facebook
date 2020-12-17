@@ -75,25 +75,16 @@ function buildImpression(memo, evnt) {
     return memo;
 }
 
-function buildAnomaly(memo, evnt) {
-    var anomaly = {
-        impressionCounter: evnt.impressionCounter,
-        userId: memo.sessionInfo.numId,
-        geoip: memo.sessionInfo.geoip,
-        version: memo.sessionInfo.version,
-        previous: evnt.previous,
-        current: evnt.current,
-        when: new Date(), // a mongodb TTL is set on `when`, 
-                            // making this info object after a while
+function buildEvent(memo, evnt) {
+    const evelif = {
+        id: evnt.id,
+        path: evnt.path,
+        html: evnt.element,
+        publicKey: evnt.sessionInfo.publicKey,
+        openingTime: new Date(evnt.openingTime),
+        savingTime: new Date(moment().toISOString()),
     };
-    anomaly.timelineId = utils.hash({
-        'uuid': evnt.timelineId,
-        'user': memo.sessionInfo.numId
-    });
-
-    debug("anomaly from [%s], timelineId %s",
-        memo.sessionInfo.geoip, anomaly.timelineId);
-    memo.anomalies.push(anomaly);
+    memo.evelif.push(evelif);
     return memo;
 }
 
@@ -105,11 +96,11 @@ function parseEvents(memo, evnt) {
     if(evnt.type === 'impression')
         return buildImpression(memo, evnt);
     
-    if (evnt.type === 'anomaly')
-        return buildAnomaly(memo, evnt);
+    if (evnt.type === 'evelif')
+        return buildEvent(memo, evnt);
 
     debug("Error! unexpected event type: [%s]", evnt.type);
-    memo.errors.push(JSON.stringify({ 'kind': "unexpected type" }));
+    memo.errors.push({ kind: "unexpected type", type: evnt.type });
     return memo;
 };
 
@@ -119,7 +110,7 @@ function promisifyInputs(body, geoinfo, supporter) {
         'timelines': [],
         'impressions': [],
         'htmls': [],
-        'anomalies': [],
+        'evelif': [],
         'errors': [],
         'sessionInfo': {
             'geoip': geoinfo,
@@ -161,12 +152,12 @@ function promisifyInputs(body, geoinfo, supporter) {
             })
         );
 
-    if(_.size(processed.anomalies))
+    if(_.size(processed.evelif))
         functionList.push(mongo
-            .writeMany(nconf.get('schema').anomalies, processed.anomalies)
+            .writeMany(nconf.get('schema').evelif, processed.evelif)
             .return({
-                'kind': 'anomalies',
-                'amount': _.size(processed.anomalies)
+                'kind': 'evelif',
+                'amount': _.size(processed.evelif)
             })
         );
 
@@ -194,7 +185,7 @@ function promisifyInputs(body, geoinfo, supporter) {
             processed_timelines, processed_impressions, processed_html,
             _.get(processed.timelines[0], 'tagId') ?
                 "tagId " + processed.timelines[0].tagId :
-                ""
+                "notag"
             );
     }
 

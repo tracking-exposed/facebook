@@ -32,7 +32,6 @@ if(nconf.get('FBTREX') !== 'production') {
 
 const collectorImplementations = {
     processEvents:    require('../routes/events').processEvents,
-    getSelector:      require('../routes/selector').getSelector,
     userInfo:         require('../routes/selector').userInfo,
     getMirror:        require('../routes/events').getMirror,
 };
@@ -62,8 +61,8 @@ function dispatchPromise(name, req, res) {
               });
 
           if(httpresult.json) {
-              debug("API %s success, returning JSON (%d bytes)",
-                  name,
+              debug("API %s (%d bytes) success, returning JSON (%d bytes)",
+                  name, _.size(JSON.stringify(req.body)),
                   _.size(JSON.stringify(httpresult.json)) );
               res.json(httpresult.json)
           } else if(httpresult.text) {
@@ -83,8 +82,7 @@ function dispatchPromise(name, req, res) {
           return true;
       })
       .catch(function(error) {
-          debug("Trigger an Exception %s: %s",
-              name, error);
+          debug("Trigger an Exception %s: %s", name, error);
           return common.returnHTTPError(req, res, name, "Exception");
       });
 };
@@ -104,10 +102,6 @@ app.post('/api/v:version/events', function(req, res) {
 app.post('/api/v1/userInfo', function(req, res) {
     return dispatchPromise('userInfo', req, res);
 });
-/* should be discontinued -- under check if is still used */
-app.get('/api/v1/selector', function(req, res) {
-    return dispatchPromise('getSelector', req, res);
-});
 
 /* special input mirroring functionality */
 app.get('/api/v1/mirror/:key', function(req, res) {
@@ -121,20 +115,9 @@ Promise.resolve().then(function() {
        debug("mongodb is running, found %d supporters", amount);
     })
     .catch(function(error) {
-       console.log("mongodb is not running - check",cfgFile,"- quitting");
+       console.log("mongodb is not accessible: check", cfgFile, error.message);
        process.exit(1);
     });
 });
-
-/* -- FUTURE
-Promise.resolve().then(function() {
-    if(dbutils.checkMongoWorks()) {
-        debug("mongodb connection works");
-    } else {
-        console.log("mongodb is not running - check", cfgFile,"- quitting");
-        process.exit(1);
-    }
-});
-*/
 
 security.checkKeyIsSet();
