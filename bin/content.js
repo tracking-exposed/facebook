@@ -56,21 +56,9 @@ Promise.resolve().then(function() {
        debug("mongodb is running, found %d supporters", amount);
     })
     .catch(function(error) {
-	console.error(error);
-       console.log("mongodb is not running - check",cfgFile,"- quitting");
-       process.exit(1);
+        console.log("mongodb is not accessible: check", cfgFile, error.message);
+        process.exit(1);
     });
 });
-
-/* -- FUTURE
-Promise.resolve().then(function() {
-    if(dbutils.checkMongoWorks()) {
-        debug("mongodb connection works");
-    } else {
-        console.log("mongodb is not running - check", cfgFile,"- quitting");
-        process.exit(1);
-    }
-});
-*/
 
 security.checkKeyIsSet();

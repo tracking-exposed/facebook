@@ -5,16 +5,8 @@ const nconf = require('nconf');
 const utils = require('../lib/utils');
 const mongo = require('../lib/mongo');
 const adopters = require('../lib/adopters');
-const echoes = require('../lib/echoes');
 
-/* this file contains getSelector and userInfo,
- *                        GET /api/v1/selector
- *                              - should be discontinued
- *                        POST /api/v1/userInfo
- *                              - should be stabilized
- */
-
-const CURRENT_SELECTOR = '.userContentWrapper';
+const CURRENT_SELECTOR = 'div[data-pagelet^="FeedUnit"]';
 
 function userInfo(req) {
     /* the POST function returns:
@@ -58,13 +50,6 @@ function userInfo(req) {
                 supporter.optin, req.body.optin,
                 supporter.pseudo, headers.version);
 
-            echoes.echo({
-                index: 'handshake',
-                pseudo: supporter.pseudo,
-                version: supporter.version
-            });
-            // trivia: the version update happen at the submission, not here
-
             return {
                 'json': {
                     token: supporter.userSecret,
@@ -80,12 +65,6 @@ function userInfo(req) {
                 req.headers['x-fbtrex-version'],
                 error.message, req.headers['x-fbtrex-userid']);
 
-            echoes.echo({
-                index: 'handshake',
-                pseudo: "undefined",
-                version: req.headers['x-fbtrex-userid']
-            });
-
             return {
                 'json': {
                     token: 'error',
@@ -95,27 +74,6 @@ function userInfo(req) {
         });
 };
 
-function getSelector(req) {
-    /* the GET function returns:
-     * - the W3C CSS selector currently used to spot posts
-     */
-    debug("LEGACY getSelector %s from %s",
-        req.headers['x-fbtrex-version'], req.headers['x-fbtrex-userid']);
-
-    echoes.echo({
-        index: 'handshake',
-        pseudo: "unsupported",
-        version: req.headers['x-fbtrex-version']
-    });
-
-    return {
-        'json': {
-            'selector': CURRENT_SELECTOR
-        }
-    };
-};
-
 module.exports = {
-    getSelector: getSelector,
     userInfo: userInfo
 };

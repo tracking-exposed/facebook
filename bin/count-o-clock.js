@@ -111,9 +111,3 @@ async function execute() {
 };
 
 execute();
-
-/*
-const echoes = require('../lib/echoes');
-echoes.addEcho("elasticsearch");
-echoes.setDefaultEcho("elasticsearch");
- */
