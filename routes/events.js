@@ -75,19 +75,6 @@ function buildImpression(memo, evnt) {
     return memo;
 }
 
-function buildEvent(memo, evnt) {
-    const evelif = {
-        id: evnt.id,
-        path: evnt.path,
-        html: evnt.element,
-        publicKey: evnt.sessionInfo.publicKey,
-        openingTime: new Date(evnt.openingTime),
-        savingTime: new Date(moment().toISOString()),
-    };
-    memo.evelif.push(evelif);
-    return memo;
-}
-
 function parseEvents(memo, evnt) {
 
     if(evnt.type === 'timeline')
@@ -96,9 +83,6 @@ function parseEvents(memo, evnt) {
     if(evnt.type === 'impression')
         return buildImpression(memo, evnt);
     
-    if (evnt.type === 'evelif')
-        return buildEvent(memo, evnt);
-
     debug("Error! unexpected event type: [%s]", evnt.type);
     memo.errors.push({ kind: "unexpected type", type: evnt.type });
     return memo;
@@ -110,7 +94,6 @@ function promisifyInputs(body, geoinfo, supporter) {
         'timelines': [],
         'impressions': [],
         'htmls': [],
-        'evelif': [],
         'errors': [],
         'sessionInfo': {
             'geoip': geoinfo,
@@ -149,15 +132,6 @@ function promisifyInputs(body, geoinfo, supporter) {
             .return({
                 'kind': 'timelines',
                 'amount': _.size(processed.timelines)
-            })
-        );
-
-    if(_.size(processed.evelif))
-        functionList.push(mongo
-            .writeMany(nconf.get('schema').evelif, processed.evelif)
-            .return({
-                'kind': 'evelif',
-                'amount': _.size(processed.evelif)
             })
         );
 
