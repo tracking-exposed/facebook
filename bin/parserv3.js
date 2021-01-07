@@ -122,6 +122,7 @@ async function executeParsingChain(htmlFilter) {
 
     console.table(_.map(results, function(e) {
         _.set(e.log, 'id', e.source.html.id);
+        _.set(e.log, 'publisherName', _.get(e, 'findings.attributions.publisherName', '—зrror—'));
         return e.log;
     }));
     for (const entry of results) {

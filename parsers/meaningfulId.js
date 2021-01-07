@@ -2,19 +2,17 @@ const _ = require('lodash');
 const moment = require('moment');
 const debug = require('debug')('parsers:meaningfulId');
 
-const helper = require('./helper');
 const utils = require('../lib/utils');
 
 function attributeLinkByPattern(sectionlist, retval) {
-    const nth = 0;
-    const first = _.nth(sectionlist, nth);
-    const second = _.nth(sectionlist, nth +1)
+    const first = _.nth(sectionlist, 0);
+    const second = _.nth(sectionlist, 1)
 
     if(first == 'groups') {
         retval.fblinktype = 'groups';
         retval.groupId = second;
-        retval.infotype = _.nth(sectionlist, nth +2);
-        retval.authorId = _.nth(sectionlist, nth +3);
+        retval.infotype = _.nth(sectionlist, 2);
+        retval.authorId = _.nth(sectionlist, 3);
         return true;
     } else if(first == 'stories') {
         retval.fblinktype = 'stories';
@@ -27,7 +25,7 @@ function attributeLinkByPattern(sectionlist, retval) {
     } else if(first == 'watch') {
         retval.fblinktype = 'watch';
         retval.pageId = second;
-        retval.detailId = _.nth(sectionlist, nth +2);
+        retval.detailId = _.nth(sectionlist, 2);
         return true;
     } else if(first == 'notes') {
         retval.fblinktype = 'notes';
@@ -37,13 +35,14 @@ function attributeLinkByPattern(sectionlist, retval) {
         retval.pageId = second;
         return true;
     } else if(first == 'media') {
+        debugger;
+        debug("media: %j", sectionlist)
         retval.fblinktype = 'media'; /*
         href: "https://www.facebook.com/media/set/?set=a.2630484733888064&type=3&__xts__%5B0%5D=68.ARDcTIWjOO2JYRuCTLSgIyHB8U55kD5gMlaBJSNYRfMQ4Wx7Bkaf_QOtHYTJQ1Af5E184hfT7uOnLpFFtdBX1rUFOydUQ6DU8MKgv49wWOM_LAnQVdxpw3774yKIOnHqyWjt21hFk0X7vW2g1e_utXqgMCJG1F2p7vqN6hYbt_KVOQXz8GmpSBQIHskmw53L8DuNbCo1D8uKNpZLbZtRiAPOqwzikiqtTxoUGzO_ucamlroB6gA6hyDRg28AWEYTuGHLdzMZeFLcGHzFIGjkRdGpl_cUOF5f8gqdSqFFbHA9rjQNdrAkyLvr3nmqIKK9-FzpsZoXBaV_CUf3bq4SmEi5bVI&__tn__=-UCH-R"
-parsed:
-?set: "a.2630484733888064"
-type: "3"
-     debugger;
-   */
+        parsed:
+        ?set: "a.2630484733888064"
+        type: "3"
+        */
         return false;
     } else if(first == 'hashtag') {
         retval.fblinktype = 'hashtag';
@@ -62,6 +61,12 @@ type: "3"
     } else if(second == 'posts') {
         retval.fblinktype = 'post';
         retval.profileName = first;
+        return true;
+    } else if(second == 'videos') {
+        retval.fblinktype = 'video';
+        retval.profileName = first;
+        retval.detailId = _.nth(sectionlist, 2);
+        return true;
     }
 
     return false;
@@ -71,13 +76,12 @@ function attributeLinkByFormat(sectionlist, retval, parsed) {
     const first = _.nth(sectionlist, 0);
     const second = _.nth(sectionlist, 1);
 
-    if(first == 'photos') {
+    if(second == 'photos') {
         /* /MillenniumHiltonNewYorkOneUNPlaza/photos/a.415328151930706/1441157289347782/ */
-        debug("%j", sectionlist)
         retval.fblinktype = 'photo';
         retval.groupId = first;
         retval.albumId = second.replace(/a\./, '');
-        retval.authorId = _.nth(sectionlist, nth +2);
+        retval.authorId = _.nth(sectionlist, 2);
     } else if(first == 'photo.php') {
         /* https://www.facebook.com/photo.php?fbid=10224586748685348&set=a.10202327757704485&type=3 */
         retval.fblinktype = 'photo';
@@ -140,7 +144,6 @@ function detailFbLink(urlo) {
         id: urlo.urlId,
         text: urlo.text,
     };
-    const URLDEB = 65;
 
     /* only facebook path now are selected */
     const chunks = _.compact(u.pathname.split('/'));
@@ -156,7 +159,7 @@ function detailFbLink(urlo) {
         return null;
     }
     if(!retval.fblinktype) {
-        debug("fail perhpaps? killing %s", retval.fblinktype, urlo.href.replace(/facebook\.com/,'').substr(0, URLDEB));
+        debug("fail w/ %s", urlo.href);
         return null;
     }
 

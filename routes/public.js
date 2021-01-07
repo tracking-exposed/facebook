@@ -4,6 +4,9 @@ const nconf = require('nconf');
 
 const mongo3 = require('../lib/mongo3');
 
+/*
+moment("2020-12-28").add({week: 1})
+*/
 async function ad(req) {
     // req has optional 'selector'
     debug("accessing to look for ad")
