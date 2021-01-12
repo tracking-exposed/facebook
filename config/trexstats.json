@@ -59,10 +59,6 @@
                 "selector": { "htmlId": { "$exists": true} }
             },
             {
-                "name": "experimental",
-                "selector": {"visibility": "experimental" }
-            },
-            {
                 "name": "total",
                 "selector": { }
             }
