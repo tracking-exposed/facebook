@@ -211,11 +211,12 @@ function getMirror(req) {
     if(last) {
         let retval = Object(last);
         last = null;
-        debug("getMirror: authentication successfull, %d elements in volatile memory",
+        debug("getMirror: authentication successfull, flushing %d elements from volatile memory",
             _.size(retval) );
         return { json: { content: retval, elements: _.size(retval) }};
-    } else
-        debug("getMirror: auth OK, but nothing to be returned");
+    } /*
+    else
+        debug("getMirror: auth OK, but nothing to be returned"); */
 
     return { json: { content: null } };
 }

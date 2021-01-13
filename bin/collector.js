@@ -33,7 +33,7 @@ if(nconf.get('FBTREX') !== 'production') {
 const collectorImplementations = {
     processEvents:    require('../routes/events').processEvents,
     userInfo:         require('../routes/selector').userInfo,
-    getMirror:        require('../routes/events').getMirror,
+    getMirror:        require('../routes/events').getMirror
 };
 
 function dispatchPromise(name, req, res) {
@@ -43,7 +43,7 @@ function dispatchPromise(name, req, res) {
     if(_.isNaN(apiV) || (apiV).constructor !== Number || apiV != 1)
         apiV = 1;
 
-    debug("%s API %s (%s)", moment().format("HH:mm:ss"), name, req.url);
+    // debug("%s API %s (%s)", moment().format("HH:mm:ss"), name, req.url);
 
     var func = _.get(collectorImplementations, name);
 
@@ -61,9 +61,9 @@ function dispatchPromise(name, req, res) {
               });
 
           if(httpresult.json) {
-              debug("API %s (%d bytes) success, returning JSON (%d bytes)",
+              /* debug("API %s (%d bytes) success, returning JSON (%d bytes)",
                   name, _.size(JSON.stringify(req.body)),
-                  _.size(JSON.stringify(httpresult.json)) );
+                  _.size(JSON.stringify(httpresult.json)) ); */
               res.json(httpresult.json)
           } else if(httpresult.text) {
               debug("API %s success, returning text (size %d)",
@@ -106,6 +106,11 @@ app.post('/api/v1/userInfo', function(req, res) {
 /* special input mirroring functionality */
 app.get('/api/v1/mirror/:key', function(req, res) {
     return dispatchPromise('getMirror', req, res);
+});
+
+/* uptime static content */
+app.get('/api/v1/collector-uptime', function(req, res) {
+    res.send("OK");
 });
 
 Promise.resolve().then(function() {
