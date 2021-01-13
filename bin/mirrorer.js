@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const _ = require('lodash');
 const Promise = require('bluebird');
-const debug = require('debug')('bin:mirrorer');
+const debug = require('debug')('fbtrex:mirrorer');
 const request = Promise.promisifyAll(require('request'));
 const moment = require('moment');
 const nconf = require('nconf');
@@ -20,14 +20,14 @@ debug("Fetching latest samples via %s", sourceUrl);
 return request
     .getAsync({url: sourceUrl, rejectUnauthorized: false } )
     .then(function(res) {
-        debug("Download completed (%d)", _.size(res.body) );
+        // debug("Download completed (%d)", _.size(res.body) );
         return res.body;
     })
     .then(JSON.parse)
     .then(function(e) {
         if(!e.content)
             process.exit(0);
-        debug("Extracted %d elements", e.elements);
+        // debug("Extracted %d elements", e.elements);
         return e.content;
     })
     .tap(function(copiedReqs) {
