@@ -58,7 +58,6 @@ async function ad(req) {
     debug("accessing to look for ad weekn %d (current %d, next %d)",
         weekn, currentAsW, currentNextW);
 
-
     const filter = buildFilter(weekn);
     const content = await getData(filter);
     const redacted = _.compact(_.map(content, function(e) {
@@ -113,14 +112,11 @@ async function ad(req) {
 };
 
 async function advstats(req) {
-
-    debug("Start for internal usage");
     // const weekn = _.parseInt(req.params.weekn);
     // const filter = buildFilter(weekn);
     const filter = { "nature.kind": 'ad' };
     const content = await getData(filter);
     const valid = _.compact(_.map(content, function(e) {
-
         if(e.paadc == null || e.paadc == "undefined") {
             return null; 
         }
@@ -128,14 +124,35 @@ async function advstats(req) {
     }));
     
     const stats = _.countBy(valid, 'publisherName');
-    return { json: {
-        counted: stats,
-        returned: _.size(content),
+    const aggro = _.reduce(stats, function(memo, amount, publisherName) {
+        if(amount == 1)
+            memo.once.push(publisherName);
+        else if(amount == 2)
+            memo.twice.push(publisherName);
+        else
+            memo[publisherName] = amount;
+
+        return memo;
+    }, {
+        once: [],
+        twice: [],
+        more: {},
+        retrieved: _.size(content),
         valid: _.size(valid)
-    } };
+    });
+}
+
+async function paadcStats(req) {
+
+    const today = moment.startOf('day').toISOString();
+    const filter = {
+        impressionTime: { "$gte": new Date(today) }
+    };
+    const content = await getData(filter);
 }
 
 module.exports = {
     ad,
     advstats,
+    paadcStats,
 };
