@@ -131,7 +131,6 @@ async function advstats(req) {
             memo.twice.push(publisherName);
         else
             memo[publisherName] = amount;
-
         return memo;
     }, {
         once: [],
@@ -140,15 +139,41 @@ async function advstats(req) {
         retrieved: _.size(content),
         valid: _.size(valid)
     });
+    return {json: aggro };
 }
 
 async function paadcStats(req) {
 
-    const today = moment.startOf('day').toISOString();
-    const filter = {
-        impressionTime: { "$gte": new Date(today) }
-    };
-    const content = await getData(filter);
+    const today = moment().startOf('day').toISOString();
+    const week = moment().startOf('week').toISOString();
+
+    const filter1 = { impressionTime: { "$gte": new Date(today) } };
+    const filter2 = { impressionTime: { "$gte": new Date(week) } };
+
+    const content1 = await getData(filter1);
+    const counted1 = _.countBy(content1, 'paadc');
+    const stats1 = _.countBy(content1, 'nature.kind');
+
+    const content2 = await getData(filter2);
+    const counted2 = _.countBy(content2, 'paadc');
+    const stats2 = _.countBy(content2, 'nature.kind');
+
+    return { json: 
+    [{
+        type: 'day',
+        since: today,
+        amount: _.size(content1),
+        partecipants: counted1,
+        partecipantNumber: _.size(counted1),
+        typology: stats1
+    }, {
+        type: 'week',
+        since: week,
+        amount: _.size(content2),
+        partecipants: counted2,
+        partecipantNumber: _.size(counted2),
+        typology: stats2
+    }] };
 }
 
 module.exports = {
