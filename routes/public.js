@@ -130,7 +130,7 @@ async function advstats(req) {
         else if(amount == 2)
             memo.twice.push(publisherName);
         else
-            memo[publisherName] = amount;
+            memo.more[publisherName] = amount;
         return memo;
     }, {
         once: [],
