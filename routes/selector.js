@@ -3,12 +3,13 @@ const debug = require('debug')('routes:selector');
 const nconf = require('nconf');
 
 const utils = require('../lib/utils');
-const mongo = require('../lib/mongo');
+const mongo3 = require('../lib/mongo3');
 const adopters = require('../lib/adopters');
+const { head } = require('lodash');
 
 const CURRENT_SELECTOR = 'div[data-pagelet^="FeedUnit"]';
 
-function userInfo(req) {
+async function userInfo(req) {
     /* the POST function returns:
      * - the W3C CSS selector currently used to spot posts
      * - the personal tokenId of the user
@@ -27,51 +28,35 @@ function userInfo(req) {
         }};
     }
 
-    return mongo
-        .read(nconf.get('schema').supporters, {
-            publicKey: headers.publickey,
-            userId: _.parseInt(req.body.userId)
-        })
-        .then(function(supporterL) {
-            if(!_.size(supporterL))
-                return adopters.create(headers);
+    const mongoc = await mongo3.clientConnect();
+    let supporter = await mongo3.readOne(mongoc, nconf.get('schema').supporters, {
+        publicKey: headers.publickey,
+        userId: headers.supporterId,
+    });
 
-            if(_.size(supporterL) > 1)
-                debug("(error|warning): %d duplicated supporter", supporterL[0].userId);
+    if(!supporter) {
+        supporter = await adopters.create(_.extend(headers, { userId: headers.supporterId}));
+    }
 
-            return _.first(supporterL);
-        })
-        .then(function(supporter) {
-            if(supporter.optin !== req.body.optin) {
-                // debug("we should do an optin update: %j != %j", user.optin, req.body.optin);
-                // deal with this when we have a situation of multiple opt-in
-            }
-            debug("userInfo [optin %s %s] %s (%s) returning token and selctor",
-                supporter.optin, req.body.optin,
-                supporter.pseudo, headers.version);
+    debug("userInfo %s (%s) returning token and selctor",
+        supporter.pseudo, headers.version);
 
-            return {
-                'json': {
-                    token: supporter.userSecret,
-                    pseudo: supporter.pseudo,
-                    keyTime: supporter.keyTime,
-                    lastAccess: supporter.keyTime,
-                    selector: CURRENT_SELECTOR
-                }
-            };
-        })
-        .catch(function(error) {
-            debug("userInfo (%s): error [%s] returning (dummy)token [%s]",
-                req.headers['x-fbtrex-version'],
-                error.message, req.headers['x-fbtrex-userid']);
-
-            return {
-                'json': {
-                    token: 'error',
-                    selector: CURRENT_SELECTOR
-                }
-            };
-        });
+    await mongo3.writeOne(mongoc, nconf.get('schema').access, {
+        paadc: headers.paadc,
+        supporterId: supporter.userId,
+        accessTime: new Date(),
+        version: headers.version,
+    });
+    await mongoc.close();
+    return {
+        'json': {
+            token: supporter.userSecret,
+            pseudo: supporter.pseudo,
+            keyTime: supporter.keyTime,
+            lastAccess: supporter.keyTime,
+            selector: CURRENT_SELECTOR
+        }
+    };
 };
 
 module.exports = {
