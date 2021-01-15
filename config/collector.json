@@ -6,7 +6,7 @@
       "accesses": "accesses2",
       "htmls": "htmls2",
       "errors": "parsererrors",
-      "evelif": "evelif"
+      "access": "access"
   },
   "mongoHost": "localhost",
   "mongoPort": "27017",
