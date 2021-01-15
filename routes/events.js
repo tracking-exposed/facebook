@@ -221,7 +221,7 @@ function getMirror(req) {
     return { json: { content: null } };
 }
 function appendLast(req) {
-    const MAX_STORED_CONTENT = 10;
+    const MAX_STORED_CONTENT = 14;
     if(!last) last = [];
     if(_.size(last) > MAX_STORED_CONTENT) 
         last = _.tail(last);
