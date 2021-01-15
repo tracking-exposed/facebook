@@ -1,6 +1,6 @@
 ret = db.supporters2.createIndex({ "lastActivity": -1 }); checkret('supporters2 lastActivity', ret);
 ret = db.supporters2.createIndex({ "userId": 1 }); checkret('supporters2 userId', ret);
-ret = db.supporters2.createIndex({ "publicKey": 1 }); checkret('supporters2 userId', ret);
+ret = db.supporters2.createIndex({ "publicKey": 1 }); checkret('supporters2 publicKey', ret);
 
 ret = db.impressions2.createIndex({ "timelineId": -1 }); checkret('impressions2 timelineId', ret);
 ret = db.impressions2.createIndex({ "id": -1 }, { unique: true}); checkret('impressions2 id', ret);
@@ -11,7 +11,7 @@ ret = db.timelines2.createIndex({ "id": 1 }, { unique: true}); checkret('timelin
 ret = db.timelines2.createIndex({ "startTime": -1 }); checkret('timelines2 startTime', ret);
 
 ret = db.htmls2.createIndex({ "savingTime": -1 }); checkret('htmls2 savingTime', ret);
-ret = db.htmls2.dropIndex({ "id": -1}); checkret("htmls2 drop!", ret);
+ret = db.htmls2.dropIndex("id_-1"); checkret("htmls2 drop!", ret);
 ret = db.htmls2.createIndex({ "id": -1 }, { unique: true}); checkret('htmls2 id', ret);
 ret = db.htmls2.createIndex({ "impressionId": -1 }); checkret('htmls2 impressionId', ret);
 ret = db.htmls2.createIndex({ "timelineId": -1 }); checkret('htmls2 timelineId', ret);
