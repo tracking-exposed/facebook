@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const _ = require('lodash');
 const Promise = require('bluebird');
-const debug = require('debug')('fbtrex:mirrorer');
+const debug = require('debug')('paadc:mirrorer');
 const request = Promise.promisifyAll(require('request'));
 const moment = require('moment');
 const nconf = require('nconf');
@@ -64,5 +64,5 @@ return request
             })
     }, { concurrency: 1})
     .catch(function(error) {
-        debug("――― [E] %s", error.message);
+        debug("――― [E] %s %s", error.message, new Date());
     });
