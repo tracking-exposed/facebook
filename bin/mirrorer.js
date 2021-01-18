@@ -64,5 +64,5 @@ return request
             })
     }, { concurrency: 1})
     .catch(function(error) {
-        debug("――― [E] %s", error.message);
+        debug("――― [E] %s %s", error.message, new Date());
     });
