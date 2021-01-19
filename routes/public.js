@@ -15,26 +15,18 @@ function buildFilter(weekn) {
     };
 }
 
+const LIMIT = 50000;
 async function getData(filter) {
     const mongodriver = await mongo3.clientConnect({concurrency: 1});
-    /* publisher, text, link-to-image, paadcID,
+    /* publisher, text, link-to-image,
         savingTime, timelineId, impressionOrder, semanticID) */
     const content = await mongo3.readLimit(mongodriver, nconf.get('schema').metadata,
-        filter, { impressionTime: -1 }, 5000, 0
+        filter, { impressionTime: -1 }, LIMIT, 0
     );
     debug("Returning from DB advertising %d elements (filtered as %j",
         _.size(content), filter);
     await mongodriver.close();
     return content;
-}
-
-function testHack(userId) {
-    let retval = "";
-    const convstr = (userId % 0xffff);
-    _.times(_.size(convstr.toString()), function(i) {
-        retval += convstr.toString().charCodeAt(i);
-    });
-    return retval.substr(0, 9);
 }
 
 async function ad(req) {
@@ -61,11 +53,6 @@ async function ad(req) {
     const filter = buildFilter(weekn);
     const content = await getData(filter);
     const redacted = _.compact(_.map(content, function(e) {
-
-        if(e.paadc == null || e.paadc == "undefined") {
-            // return null; when the TEST-PATCH is gone
-            e.paadc = testHack(e.userId);
-        }
 
         const r = _.omit(e,
             ['savingTime', 'meaningfulId', 'hrefs',
@@ -116,14 +103,8 @@ async function advstats(req) {
     // const filter = buildFilter(weekn);
     const filter = { "nature.kind": 'ad' };
     const content = await getData(filter);
-    const valid = _.compact(_.map(content, function(e) {
-        if(e.paadc == null || e.paadc == "undefined") {
-            return null;
-        }
-        return e;
-    }));
 
-    const stats = _.countBy(valid, 'publisherName');
+    const stats = _.countBy(content, 'publisherName');
     const aggro = _.reduce(stats, function(memo, amount, publisherName) {
         if(amount == 1)
             memo.once.push(publisherName);
