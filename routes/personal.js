@@ -153,9 +153,11 @@ function enrich(req) {
                 e.lang = _.get(e.labelcopy[0], 'lang');
             }
             _.set(e, 'user', pseudo);
-            return _.omit(e, ['_id', 'id', 'labelcopy', 'regexp', 'opengraph',
+            e.images = _.filter(e.images, {linktype: 'cdn'});
+            e = _.omit(e, ['_id', 'pseudo', 'paadc', 'labelcopy', 'regexp', 'opengraph',
                 'usertext', 'interactions', 'images.profiles', 'indicators',
-                'summary', 'userId', 'notes' ]);
+                'summary', 'userId', 'notes', 'when' ]);
+            return e;
         })
         .then(function(prod) {
             debug("Returning %d enriched entries, the most recent from %s from %s",
