@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const _ = require('lodash');
 const Promise = require('bluebird');
-const debug = require('debug')('bin:mirrorer');
+const debug = require('debug')('fbtrex:mirrorer');
 const request = Promise.promisifyAll(require('request'));
 const moment = require('moment');
 const nconf = require('nconf');
