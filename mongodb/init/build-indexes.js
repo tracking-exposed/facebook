@@ -48,9 +48,6 @@ ret = db.feeds2.createIndex({ "createdAt": 1}, {expireAfterSeconds: 3600 / 2}); 
 ret = db.trexstats.createIndex({ "day": -1}); checkret('trexstats day index', ret);
 ret = db.trexstats.createIndex({ "hour": -1}); checkret('trexstats hourly index', ret);
 
-ret = db.tmlnstats.createIndex({ "dayTime": 1, "userId": 1 } ); checkret('tmlnstats dayTime+userId', ret);
-ret = db.tmlnstats.createIndex({ "id": 1}, {unique: true }); checkret('tmlnstats id', ret);
-
 function checkret(info, retval) {
     retval.info = info;
     printjson(retval);

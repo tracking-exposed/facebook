@@ -118,7 +118,6 @@ async function advstats(req) {
         twice: [],
         more: {},
         retrieved: _.size(content),
-        valid: _.size(valid)
     });
     return {json: aggro };
 }
