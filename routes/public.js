@@ -20,7 +20,7 @@ async function getData(filter) {
     /* publisher, text, link-to-image, paadcID, 
         savingTime, timelineId, impressionOrder, semanticID) */
     const content = await mongo3.readLimit(mongodriver, nconf.get('schema').metadata,
-        filter, { impressionTime: -1 }, 5000, 0
+        filter, { impressionTime: -1 }, 50000, 0
     );
     debug("Returning from DB advertising %d elements (filtered as %j",
         _.size(content), filter);
