@@ -142,7 +142,7 @@ async function advstats(req) {
     return {json: aggro };
 }
 
-async function timedStats(req) {
+async function timedstats(req) {
 
     const today = moment().startOf('day').toISOString();
     const week = moment().startOf('week').toISOString();
@@ -173,5 +173,5 @@ async function timedStats(req) {
 module.exports = {
     ad,
     advstats,
-    timedStats,
+    timedstats,
 };
