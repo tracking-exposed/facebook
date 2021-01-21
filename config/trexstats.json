@@ -59,10 +59,6 @@
                 "selector": { "htmlId": { "$exists": true} }
             },
             {
-                "name": "experimental",
-                "selector": {"visibility": "experimental" }
-            },
-            {
                 "name": "total",
                 "selector": { }
             }
@@ -87,7 +83,7 @@
             },
             {
                 "name": "total",
-                "selector": { }
+                "selector": {}
             }
         ]
     },
@@ -101,12 +97,20 @@
                 "selector": { "complete": true }
             },
             {
-                "name":"attributed",
-                "selector": { "publisherName": { "$size": { "$gt": 1 }}}
-            },
-            {
                 "name":"hasNature",
                 "selector": { "nature.kind": { "$ne": null }}
+            },
+            {
+                "name":"hasLinks",
+                "selector": { "meaningfulId.links[0].id": { "$exists": true }}
+            },
+            {
+                "name":"hasPictures",
+                "selector": { "meaningfulId.images[0].id": { "$exists": true }}
+            },
+            {
+                "name":"hasTexts",
+                "selector": { "texts[0]": { "$exists": true }}
             },
             {
                 "name":"total",
