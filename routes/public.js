@@ -15,12 +15,13 @@ function buildFilter(weekn) {
     };
 }
 
+const LIMIT = 50000;
 async function getData(filter) {
     const mongodriver = await mongo3.clientConnect({concurrency: 1});
     /* publisher, text, link-to-image, paadcID, 
         savingTime, timelineId, impressionOrder, semanticID) */
     const content = await mongo3.readLimit(mongodriver, nconf.get('schema').metadata,
-        filter, { impressionTime: -1 }, 50000, 0
+        filter, { impressionTime: -1 }, LIMIT, 0
     );
     debug("Returning from DB advertising %d elements (filtered as %j",
         _.size(content), filter);
@@ -180,4 +181,5 @@ module.exports = {
     ad,
     advstats,
     paadcStats,
+    LIMIT,
 };
