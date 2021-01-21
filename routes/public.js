@@ -154,4 +154,5 @@ module.exports = {
     ad,
     advstats,
     timedstats,
+    LIMIT,
 };
