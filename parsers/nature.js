@@ -9,6 +9,12 @@ function nature(envelop, previous) {
         from: envelop.impression.from,
         visibility: envelop.impression.visibility,
     }
+
+    if(previous.viralcheck.success) {
+      retval.kind = 'viral';
+      retval.visibility = previous.viralcheck.match;
+    }
+
     return retval;
 };
 

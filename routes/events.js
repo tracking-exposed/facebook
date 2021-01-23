@@ -180,17 +180,12 @@ function promisifyInputs(body, geoinfo, supporter) {
         processed_timelines = _.size(processed.timelines)
         processed_impressions =  _.size(processed.impressions)
         processed_html = _.size(processed.htmls)
-        
-        debug(" * %d timelines %d impressions %d html %s",
-            processed_timelines, processed_impressions, processed_html,
-            _.get(processed.timelines[0], 'tagId') ?
-                "tagId " + processed.timelines[0].tagId :
-                "notag"
-            );
+        debug(" * %s: %d timelines %d impressions %d htmls",
+            supporter.pseudo, processed_timelines, processed_impressions, processed_html);
     }
 
     if(_.size(processed.impressions))
-        debug(" * impressionOrder 1st %d last %d [last queue %d]",
+        debug(" * impressionOrder %d to %d [mirror queue %d elems]",
             _.first(processed.impressions).impressionOrder,
             _.last(processed.impressions).impressionOrder,
             _.size(last)

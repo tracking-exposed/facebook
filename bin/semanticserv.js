@@ -60,12 +60,12 @@ async function pipeline(e) {
     }
     if(_.size(envelope.failures))
     debug("#%d\t(%d mins) http://localhost:1313/debug/html/#%s fail: %s",
-        processedCounter, _.round(moment.duration( moment() - moment(e.savingTime)).asMinutes(), 0), e.id,
+        processedCounter, _.round(moment.duration( moment() - moment(e.impressionTime)).asMinutes(), 0), e.id,
         JSON.stringify(_.map(envelope.failures))
     );
     else
     debug("#%d\t(%d mins) http://localhost:1313/debug/html/#%s %s",
-        processedCounter, _.round(moment.duration( moment() - moment(e.savingTime)).asMinutes(), 0), e.id
+        processedCounter, _.round(moment.duration( moment() - moment(e.impressionTime)).asMinutes(), 0), e.id
     );
     return envelope;
 }

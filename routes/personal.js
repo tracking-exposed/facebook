@@ -124,7 +124,6 @@ function enrich(req) {
     return adopters
         .validateToken(req.params.userToken)
         .then(function(supporter) {
-
             pseudo = supporter.pseudo;
             if(when) {
                 const startOf = new Date(when.startOf('day').toISOString());

@@ -6,17 +6,17 @@ const request = Promise.promisifyAll(require('request'));
 const moment = require('moment');
 const nconf = require('nconf');
 
-nconf.argv().env();
+nconf.argv().env().file({file: 'config/collector.json'});
 
 if(!nconf.get('key'))
     return console.log("--key required");
 
 const source = nconf.get('source') || 'https://collector.facebook.tracking.exposed';
 const sourceUrl = `${source}/api/v1/mirror/${nconf.get('key')}/`;
-const dest = nconf.get('dest') || 'http://localhost:8100';
+const dest = nconf.get('dest') || 'http://localhost:' + nconf.get('port');
 const destUrl = `${dest}/api/v1/events`;
 
-debug("Fetching latest samples via %s", sourceUrl);
+debug("Fetching samples via %s to %s", sourceUrl, dest);
 return request
     .getAsync({url: sourceUrl, rejectUnauthorized: false } )
     .then(function(res) {
