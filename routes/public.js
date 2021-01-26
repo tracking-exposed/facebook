@@ -16,15 +16,15 @@ function buildFilter(weekn) {
 }
 
 const LIMIT = 50000;
-async function getData(filter) {
+async function getData(filter, amount, skip) {
     const mongodriver = await mongo3.clientConnect({concurrency: 1});
     /* publisher, text, link-to-image, paadcID, 
         savingTime, timelineId, impressionOrder, semanticID) */
     const content = await mongo3.readLimit(mongodriver, nconf.get('schema').metadata,
-        filter, { impressionTime: -1 }, LIMIT, 0
+        filter, { impressionTime: 1 }, amount || LIMIT, skip || 0
     );
-    debug("Returning from DB advertising %d elements (filtered as %j",
-        _.size(content), filter);
+    debug("Returning from DB advertising %d elements (filtered as %j) amount %d skip %d",
+        _.size(content), filter, amount || LIMIT, skip || 0);
     await mongodriver.close();
     return content;
 }
@@ -95,7 +95,7 @@ async function ad(req) {
         } catch(error) {}
 
         try {
-            const ext = _filter(e.hrefs, {linktype: 'external'});
+            const ext = _.filter(e.hrefs, {linktype: 'external'});
             if(_.size(ext))
                 r.links = [];
             _.each(ext, function(exblock) {
@@ -177,9 +177,30 @@ async function paadcStats(req) {
     }] };
 }
 
+async function zero(req) {
+    const offset = _.parseInt(req.params.offset);
+    if(!offset || _.isNaN(offset))
+        return { text: 'You should specify a numberic offset!'};
+
+    const beginning = moment("2020-12-28");
+    const filter = {
+        "nature.kind": 'ad',
+        impressionTime: { "$gte": new Date(beginning.toISOString()) }
+    };
+    const results = await getData(filter, 300, offset);
+
+    debug("Retrieved %d from zero, with offset %d, a first %s last %s - from %s",
+        offset, _.first(results).impressionTime, _.last(results).impressionTime );
+    const clean = _.map(results, function(e) {
+        return _.omit(e, ['pseudo','userId','when']);
+    })
+    return { json: clean };
+}
+
 module.exports = {
     ad,
     advstats,
     paadcStats,
     LIMIT,
+    zero,
 };
