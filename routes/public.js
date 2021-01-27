@@ -16,7 +16,10 @@ function buildFilter(weekn) {
 }
 
 const LIMIT = 50000;
-async function getData(filter, amount, skip) {
+const STARTDATE = "2020-12-28";
+const AMOUNT = 300;
+
+async function getData(filter, amount, skip, special) {
     const mongodriver = await mongo3.clientConnect({concurrency: 1});
     /* publisher, text, link-to-image, paadcID, 
         savingTime, timelineId, impressionOrder, semanticID) */
@@ -25,6 +28,18 @@ async function getData(filter, amount, skip) {
     );
     debug("Returning from DB advertising %d elements (filtered as %j) amount %d skip %d",
         _.size(content), filter, amount || LIMIT, skip || 0);
+
+    /* if 'special' is set, this function change return type */
+    if(special) {
+        const total = await mongo3.count(mongodriver, nconf.get('schema').metadata,
+            { "nature.kind": "ad", impressionTime: { "$gte": new Date(STARTDATE)}}
+        );
+        // because I don't want to open a new mongodbconnect in the route, was it better 
+        // to use this when is available here in getData, even if this scream fuck MONAD
+        // with just one argument and one meaning. dah.
+        await mongodriver.close();
+        return { total, results: content }; // even variables change name to be sure you read this
+    }
     await mongodriver.close();
     return content;
 }
@@ -179,22 +194,30 @@ async function paadcStats(req) {
 
 async function zero(req) {
     const offset = _.parseInt(req.params.offset);
-    if(!offset || _.isNaN(offset))
-        return { text: 'You should specify a numberic offset!'};
+    if(_.isNaN(offset))
+        return { text: 'You should specify a numeric offset! /api/v2/zero/$offset'};
 
-    const beginning = moment("2020-12-28");
+  ;
     const filter = {
         "nature.kind": 'ad',
-        impressionTime: { "$gte": new Date(beginning.toISOString()) }
+        impressionTime: { "$gte": new Date(STARTDATE) }
     };
-    const results = await getData(filter, 300, offset);
-
-    debug("Retrieved %d from zero, with offset %d, a first %s last %s - from %s",
-        offset, _.first(results).impressionTime, _.last(results).impressionTime );
-    const clean = _.map(results, function(e) {
+    const dbdata = await getData(filter, AMOUNT, offset, true); // last param is 'special'
+    debug("Retrieved %d from zero API (total avail %d), offset %d — first %s last %s",
+        _.size(dbdata.results), dbdata.total, offset,
+        _.first(dbdata.results).impressionTime, _.last(dbdata.results).impressionTime );
+    const clean = _.map(dbdata.results, function(e) {
         return _.omit(e, ['pseudo','userId','when']);
     })
-    return { json: clean };
+
+    return { json: {
+        totalAvailable: dbdata.total,
+        returned: _.size(clean),
+        offset,
+        requestedAmount: AMOUNT,
+        start: STARTDATE,
+        content: clean 
+    }};
 }
 
 module.exports = {
