@@ -98,7 +98,7 @@
             },
             {
                 "name":"attributed",
-                "selector": { "publisherName": { "$size": { "$gt": 1 }}}
+                "selector": { "publisherName" : { "$ne": null }}
             },
             {
                 "name":"hasNature",
