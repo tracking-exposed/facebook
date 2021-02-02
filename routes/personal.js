@@ -153,9 +153,11 @@ function enrich(req) {
                 e.lang = _.get(e.labelcopy[0], 'lang');
             }
             _.set(e, 'user', pseudo);
-            return _.omit(e, ['_id', 'id', 'labelcopy', 'regexp', 'opengraph',
+            e.images = _.filter(e.images, {linktype: 'cdn'});
+            e = _.omit(e, ['_id', 'pseudo', 'paadc', 'labelcopy', 'regexp', 'opengraph',
                 'usertext', 'interactions', 'images.profiles', 'indicators',
-                'summary', 'userId', 'notes' ]);
+                'summary', 'userId', 'notes', 'when' ]);
+            return e;
         })
         .then(function(prod) {
             debug("Returning %d enriched entries, the most recent from %s from %s",
@@ -245,20 +247,45 @@ function daily(req) {
     debug("Personal daily statistics - skip %d amount %d [MIN %d]",
         skip, dayamount, MINIMUM_AMOUNT);
 
+    const startTime = moment().startOf('day').subtract(dayamount, 'day').subtract(skip, 'day');
+    const endTime = moment().endOf('day').subtract(skip, 'day');
     let pseudo = null;
+
     return adopters
         .validateToken(req.params.userToken)
         .then(function(supporter) {
             pseudo = supporter.pseudo;
-            return mongo.readLimit(nconf.get('schema').tmlnstats, {
-                userId: supporter.userId,
-                'nature.organic': { $exists: true }
-            }, { dayTime: -1 }, dayamount, skip);
+            return mongo.aggregate(nconf.get('schema').metadata, [
+            { $match: { userId: supporter.userId,
+                        impressionTime: { "$gte": new Date(startTime.toISOString()),
+                                          "$lte": new Date(endTime.toISOString())}
+                      },
+            },
+            { $sort: { impressionTime: 1}},
+            { $group: {
+                _id: { $dateToString: { format: "%Y-%m-%d", date: "$impressionTime" } },
+                timelines: { $push: "$timelineId" },
+                sum  : { $sum: 1},
+                publisherNames: { $push: "$publisherName" },
+                nature: { $push: "$nature.kind"},
+                first: { $first: "$impressionTime" },
+                checkf: { $first: "$impressionOrder" },
+                last: { $last: "$impressionTime" },
+                checkl: { $last: "$impressionOrder" }
+            }}
+          ]);
         })
         .map(function(e) {
-            if(_.isUndefined(e.nature.sponsored))
-                e.nature.sponsored = 0;
-            return _.omit(e, ['_id', 'userId']);
+          let d = moment.duration(moment(e.last) - moment(e.first));
+          e.totalSeconds = d.asSeconds();
+          e.duration = d.humanize();
+          e.npost = e.publisherNames.length;
+          e.ntimelines = _.uniq(e.timelines).length;
+          e.sources = _.uniq(e.publisherNames).length;
+          e.day = e._id;
+          e.dayTime = moment(e.first).startOf('day').toISOString();
+          _.unset(e, '_id');
+          return e;
         })
         .then(function(stats) {
             debug("Retrieved daily stats: amount %d info: %j %j",

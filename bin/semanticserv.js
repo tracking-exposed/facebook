@@ -59,7 +59,7 @@ async function pipeline(e) {
         }
     }
     if(_.size(envelope.failures))
-    debug("#%d\t(%d mins) http://localhost:1313/debug/html/#%s %s fail: %s",
+    debug("#%d\t(%d mins) http://localhost:1313/debug/html/#%s fail: %s",
         processedCounter, _.round(moment.duration( moment() - moment(e.savingTime)).asMinutes(), 0), e.id,
         JSON.stringify(_.map(envelope.failures))
     );
@@ -132,7 +132,7 @@ async function executeSemanticSequence(metadFilter) {
     }));
 
     for (const envelope of results) {
-        let x = await semantichain.markMetadata(envelope, { semantic: 
+        let x = await semantichain.markMetadata(envelope, { semantic:
             _.size(envelope.failures) ? false : true
         });
         logof.push(x);
@@ -204,11 +204,11 @@ try {
 
     /* this is the begin of the semantic analysis pipeline.
      * gets htmls from the db, if --repeat 1 then previously-analyzed-metadataS would be
-     * re-analyzed. otherwise, the default, is to skip those and wait for new 
-     * htmls. To receive htmls you should have a producer consistend with the 
-     * browser extension format, and bin/server listening 
-     * 
-     * This script pipeline might optionally start from the past, and 
+     * re-analyzed. otherwise, the default, is to skip those and wait for new
+     * htmls. To receive htmls you should have a producer consistend with the
+     * browser extension format, and bin/server listening
+     *
+     * This script pipeline might optionally start from the past, and
      * re-analyze HTMLs based on --minutesago <number> option.
      * */
 
