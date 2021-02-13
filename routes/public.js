@@ -26,20 +26,25 @@ async function getData(filter, amount, skip, special) {
     const content = await mongo3.readLimit(mongodriver, nconf.get('schema').metadata,
         filter, { impressionTime: 1 }, amount || LIMIT, skip || 0
     );
-    debug("Returning from DB advertising %d elements (filtered as %j) amount %d skip %d",
-        _.size(content), filter, amount || LIMIT, skip || 0);
 
     /* if 'special' is set, this function change return type */
     if(special) {
         const total = await mongo3.count(mongodriver, nconf.get('schema').metadata,
             { "nature.kind": "ad", impressionTime: { "$gte": new Date(STARTDATE)}}
         );
+        const full = await mongo3.count(mongodriver, nconf.get('schema').metadata,
+            { impressionTime: { "$gte": new Date(STARTDATE)}}
+        );
         // because I don't want to open a new mongodbconnect in the route, was it better 
         // to use this when is available here in getData, even if this scream fuck MONAD
         // with just one argument and one meaning. dah.
         await mongodriver.close();
-        return { total, results: content }; // even variables change name to be sure you read this
+    	debug("getData (special): DB return %d elements (filter %j) amount %d skip %d (total: %d)",
+        	_.size(content), filter, amount || LIMIT, skip || 0, total);
+        return { full, total, results: content }; // even variables change name to be sure you read this
     }
+    debug("getData: DB return %d elements (filter %j) amount %d skip %d",
+        _.size(content), filter, amount || LIMIT, skip || 0);
     await mongodriver.close();
     return content;
 }
@@ -71,7 +76,7 @@ async function ad(req) {
     }
 
     const currentNextW = currentAsW + 1;
-    debug("accessing to look for ad weekn %d (current %d, next %d)",
+    debug("AD weekly access. Requested %d, Current %d, Next %d",
         weekn, currentAsW, currentNextW);
 
     const filter = buildFilter(weekn);
@@ -196,20 +201,17 @@ async function zero(req) {
     const offset = _.parseInt(req.params.offset);
     if(_.isNaN(offset))
         return { text: 'You should specify a numeric offset! /api/v2/zero/$offset'};
-
-  ;
     const filter = {
         "nature.kind": 'ad',
         impressionTime: { "$gte": new Date(STARTDATE) }
     };
     const dbdata = await getData(filter, AMOUNT, offset, true); // last param is 'special'
-    debug("Retrieved %d from zero API (total avail %d), offset %d — first %s last %s",
+    debug("Zero: retrieved %d ad (total avail %d), offset %d — first %s last %s",
         _.size(dbdata.results), dbdata.total, offset,
         _.first(dbdata.results).impressionTime, _.last(dbdata.results).impressionTime );
     const clean = _.map(dbdata.results, function(e) {
         return _.omit(e, ['pseudo','userId','when']);
     })
-
     return { json: {
         totalAvailable: dbdata.total,
         returned: _.size(clean),
@@ -220,10 +222,92 @@ async function zero(req) {
     }};
 }
 
+const fbapi = [];
+function initializeFbAPINames() {
+    const fs = require('fs');
+    const fbnames = JSON.parse(fs.readFileSync('./routes/political_advertisers.json'));
+    _.each(fbnames, function(page) {
+        const cleanpage = {
+            page_name: page.page_name,
+            page_id: page.page_id == 'NA' ? page.facebook_page_id : page.page_id,
+            url_segment: page.merge_name,
+            category: page.category,
+            macro: page.category2,
+        };
+        fbapi.push(cleanpage);
+    });
+    debug("Loaded %d political advertisers", _.size(fbapi));
+}
+
+async function uno(req) {
+
+    if(!fbapi.length) initializeFbAPINames();
+
+    const UNOAMOUNT = 500;
+    const offset = _.parseInt(req.params.offset);
+    if(_.isNaN(offset))
+        return { text: 'You should specify a numeric offset! /api/v2/zero/$offset'};
+
+    const filter = {
+        impressionTime: { "$gte": new Date(STARTDATE) }
+    };
+
+    const dbdata = await getData(filter, UNOAMOUNT, offset, true); // last param is 'special'
+    if(dbdata.results.length) {
+        debug("Uno — retrived %d ad|post (total avail %d), offset %d — first %s last %s",
+            _.size(dbdata.results), dbdata.total, offset,
+            _.first(dbdata.results).impressionTime, _.last(dbdata.results).impressionTime );
+    } else {
+        debug("Uno — no results with offset %d", offset);
+    }
+
+    const clean = _.compact(_.map(dbdata.results, function(e) {
+
+        // 'Gesponsord' and/or 'Betaald door' in the texts metadata
+        const dutchWords = ['Gesponsord', 'Betaald door'];
+        const textmatch = _.first(e.texts) ?
+            _.startsWith(_.first(e.texts), dutchWords[0]) :
+            false;
+        if(textmatch) {
+            e.nature.kind = 'ad';
+            e.nature.type = 'text match';
+            e.nature.match = _.first(e.texts);
+        }
+
+        const match = _.find(fbapi, { 'page_name': e.publisherName });
+        if(match) {
+            e.nature.kind = 'ad';
+            e.nature.type = 'fbapi';
+            _.assign(e.nature, match);
+        }
+
+        if(e.nature.kind == 'post')
+            return null;
+
+        return _.omit(e, ['pseudo','userId','when']);
+    }));
+    if(!clean.length)
+        debug("From %d posts, now %d are adv", _.size(dbdata.results), _.size(clean));
+
+    debug(_.countBy(clean, 'nature.type'));
+    return { json: {
+        originalTotalAdvs: dbdata.total,
+        fullPostAvail: dbdata.full,
+        consideredPosts: _.size(dbdata.results),
+        returned: _.size(clean),
+        offset,
+        requestedAmount: UNOAMOUNT,
+        start: STARTDATE,
+        content: clean,
+        last: _.last(clean) ? _.last(clean).impressionTime : null,
+    }};
+}
+
 module.exports = {
     ad,
     advstats,
     paadcStats,
     LIMIT,
     zero,
+    uno,
 };
