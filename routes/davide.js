@@ -33,9 +33,20 @@ async function bySource(req) {
     await mongodriver.close();
 
     // const startISO = moment("2020-12-28").add(weekn, 'week');
-    const clean = _.map(content, function(m) {
-        _.unset(m, 'userId');
-        return m;
+    const clean = _.map(content, function(e) {
+
+        const dutchWords = ['Gesponsord', 'Betaald door'];
+        const textmatch = _.first(e.texts) ?
+            _.startsWith(_.first(e.texts), dutchWords[0]) :
+            false;
+        if(textmatch) {
+            e.nature.kind = 'ad';
+            e.nature.type = 'text match';
+            e.nature.match = _.first(e.texts);
+        }
+
+        _.unset(e, 'userId');
+        return e;
     });
     return { json: content };
 }
