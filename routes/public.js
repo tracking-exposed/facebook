@@ -290,7 +290,7 @@ async function uno(req) {
     if(!clean.length)
         debug("From %d posts, now %d are adv", _.size(dbdata.results), _.size(clean));
 
-    debug(_.countBy(clean, 'nature.type'));
+    debug(_.countBy(clean, 'nature.type'), _.countBy(clean, 'nature.category'));
     return { json: {
         originalTotalAdvs: dbdata.total,
         fullPostAvail: dbdata.full,
