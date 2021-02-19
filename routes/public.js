@@ -276,12 +276,13 @@ async function uno(req) {
 
         const match = _.find(fbapi, { 'page_name': e.publisherName });
         if(match) {
-            e.nature.kind = 'ad';
-            e.nature.type = 'fbapi';
+            e.nature.category = 'political';
             _.assign(e.nature, match);
+        } else {
+            e.nature.category = 'other';
         }
 
-        if(e.nature.kind == 'post')
+        if(!match && e.nature.kind == 'post')
             return null;
 
         return _.omit(e, ['pseudo','userId','when']);
