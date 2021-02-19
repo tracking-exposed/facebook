@@ -276,10 +276,10 @@ async function uno(req) {
 
         const match = _.find(fbapi, { 'page_name': e.publisherName });
         if(match) {
-            e.nature.category = 'political';
+            e.nature.ispolitical = true;
             _.assign(e.nature, match);
         } else {
-            e.nature.category = 'other';
+            e.nature.ispolitical = false;
         }
 
         if(!match && e.nature.kind == 'post')
@@ -290,7 +290,7 @@ async function uno(req) {
     if(!clean.length)
         debug("From %d posts, now %d are adv", _.size(dbdata.results), _.size(clean));
 
-    debug(_.countBy(clean, 'nature.type'), _.countBy(clean, 'nature.category'));
+    debug(_.countBy(clean, 'nature.type'), _.countBy(clean, 'nature.ispolitical'));
     return { json: {
         originalTotalAdvs: dbdata.total,
         fullPostAvail: dbdata.full,
