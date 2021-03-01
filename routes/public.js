@@ -265,7 +265,7 @@ async function uno(req) {
     const clean = _.compact(_.map(dbdata.results, function(e) {
 
         // 'Gesponsord' and/or 'Betaald door' in the texts metadata, this isn't the right way but...
-        const sponsoredDah = ['Gesponsord ', 'Sponsored ' ];
+        const sponsoredDah = ['Gesponsord', 'Sponsored' ];
         const textmatch =
           _.first(e.texts) ?
             (_.startsWith(_.first(e.texts), sponsoredDah[0]) || _.startsWith(_.first(e.texts), sponsoredDah[1]) )
