@@ -97,6 +97,10 @@
                 "selector": { "complete": true }
             },
             {
+                "name":"attributed",
+                "selector": { "publisherName": { "$ne": null }}
+            },
+            {
                 "name":"hasNature",
                 "selector": { "nature.kind": { "$ne": null }}
             },
