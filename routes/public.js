@@ -229,10 +229,11 @@ function initializeFbAPINames() {
     _.each(fbnames, function(page) {
         const cleanpage = {
             page_name: page.page_name,
-            page_id: page.page_id == 'NA' ? page.facebook_page_id : page.page_id,
+            page_id: page.page_id,
             url_segment: page.merge_name,
             category: page.category,
             macro: page.category2,
+	    party: page.party,
         };
         fbapi.push(cleanpage);
     });
