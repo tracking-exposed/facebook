@@ -21,7 +21,7 @@ const AMOUNT = 300;
 
 async function getData(filter, amount, skip, special) {
     const mongodriver = await mongo3.clientConnect({concurrency: 1});
-    /* publisher, text, link-to-image, paadcID, 
+    /* publisher, text, link-to-image, paadcID,
         savingTime, timelineId, impressionOrder, semanticID) */
     const content = await mongo3.readLimit(mongodriver, nconf.get('schema').metadata,
         filter, { impressionTime: 1 }, amount || LIMIT, skip || 0
@@ -35,7 +35,7 @@ async function getData(filter, amount, skip, special) {
         const full = await mongo3.count(mongodriver, nconf.get('schema').metadata,
             { impressionTime: { "$gte": new Date(STARTDATE)}}
         );
-        // because I don't want to open a new mongodbconnect in the route, was it better 
+        // because I don't want to open a new mongodbconnect in the route, was it better
         // to use this when is available here in getData, even if this scream fuck MONAD
         // with just one argument and one meaning. dah.
         await mongodriver.close();
@@ -89,7 +89,7 @@ async function ad(req) {
         }
 
         const r = _.omit(e,
-            ['savingTime', 'meaningfulId', 'hrefs', 
+            ['savingTime', 'meaningfulId', 'hrefs',
             'images', 'pseudo', 'userId', 'when', 'nature', '_id' ]);
 
         r.images = _.filter(e.images, function(img) {
@@ -139,11 +139,11 @@ async function advstats(req) {
     const content = await getData(filter);
     const valid = _.compact(_.map(content, function(e) {
         if(e.paadc == null || e.paadc == "undefined") {
-            return null; 
+            return null;
         }
         return e;
     }));
-    
+
     const stats = _.countBy(valid, 'publisherName');
     const aggro = _.reduce(stats, function(memo, amount, publisherName) {
         if(amount == 1)
@@ -179,7 +179,7 @@ async function paadcStats(req) {
     const counted2 = _.countBy(content2, 'paadc');
     const stats2 = _.countBy(content2, 'nature.kind');
 
-    return { json: 
+    return { json:
     [{
         type: 'day',
         since: today,
@@ -218,7 +218,7 @@ async function zero(req) {
         offset,
         requestedAmount: AMOUNT,
         start: STARTDATE,
-        content: clean 
+        content: clean
     }};
 }
 
@@ -265,11 +265,14 @@ async function uno(req) {
     const clean = _.compact(_.map(dbdata.results, function(e) {
 
         // 'Gesponsord' and/or 'Betaald door' in the texts metadata, this isn't the right way but...
-        const sponsoredDah = ['Gesponsord ', 'Sponsored ' ];
-        const textmatch =
-          _.first(e.texts) ?
-            (_.startsWith(_.first(e.texts), sponsoredDah[0]) || _.startsWith(_.first(e.texts), sponsoredDah[1]) )
-            : false;
+        const sponsoredDah = [ 'Sponsored · ', 'Gesponsord · ' ];
+        const textmatch = _.reduce(e.texts, function(memo, potentialString) {
+            return memo |
+             ( _.startsWith(potentialString, sponsoredDah[0]) ||
+               _.startsWith(potentialString, sponsoredDah[1]) );
+            return memo;
+        }, false);
+
         if(textmatch) {
             e.nature.kind = 'ad';
             e.nature.type = 'text match';
