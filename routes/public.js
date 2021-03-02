@@ -266,17 +266,19 @@ async function uno(req) {
 
         // 'Gesponsord' and/or 'Betaald door' in the texts metadata, this isn't the right way but...
         const sponsoredDah = [ 'Sponsored · ', 'Gesponsord · ' ];
+        let matchInfo = null;
         const textmatch = _.reduce(e.texts, function(memo, potentialString) {
-            return memo |
-             ( _.startsWith(potentialString, sponsoredDah[0]) ||
+            const lastcheck = ( _.startsWith(potentialString, sponsoredDah[0]) ||
                _.startsWith(potentialString, sponsoredDah[1]) );
-            return memo;
+            if(lastcheck)
+              matchInfo = potentialString;
+            return memo | lastcheck;
         }, false);
 
         if(textmatch) {
             e.nature.kind = 'ad';
             e.nature.type = 'text match';
-            e.nature.match = _.first(e.texts);
+            e.nature.match = matchInfo;
         }
 
         const match = _.find(fbapi, { 'page_name': e.publisherName });
