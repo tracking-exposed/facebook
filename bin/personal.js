@@ -21,8 +21,9 @@ async function personalEnrich() {
     const amount = 7000;
     const supporter = await adopters.validateToken(nconf.get('token'));
 
+    debug("Match supporter %s (%d)", supporter.pseudo, _.size(supporter));
     pipeline = _.concat([
-        { $match: { user: supporter.pseudo } },
+        { $match: { pseudo: supporter.pseudo } },
         { $sort: { impressionTime: -1 } },
         { $skip: 0 },
         { $limit: amount },
@@ -34,20 +35,22 @@ async function personalEnrich() {
         if(_.size(e.labelcopy)) {
             e.labels = _.get(e.labelcopy[0], 'l');
             e.lang = _.get(e.labelcopy[0], 'lang');
+            debug("Si: %j %j", e.labels, e.lang);
         }
-        _.set(e, 'user', pseudo);
-        e.images = _.filter(e.images, {linktype: 'cdn'});
+        _.set(e, 'user', supporter.pseudo);
+        // e.images = _.filter(e.images, {linktype: 'cdn'});
         e = _.omit(e, ['_id', 'pseudo', 'paadc', 'labelcopy', 'regexp', 'opengraph',
             'usertext', 'interactions', 'images.profiles', 'indicators',
             'summary', 'userId', 'notes', 'when' ]);
         return e;
     });
 
-    debug("Returning %d enriched entries in 'personal.json' file", _.size(prod));
+    const fname = supporter.pseudo + "-" + _.size(prod);
+    debug("Returning %d enriched entries in '%s' file", _.size(prod), fname);
     if(!_.size(prod)) {
         console.log(" (bad condition spot: closing)"); process.exit(1);
     }
-    fs.writeFileSync("personal.json", JSON.stringify(prod, undefined, 2), "utf-8");
+    fs.writeFileSync(fname, JSON.stringify(prod, undefined, 2), "utf-8");
 }
 
 try {
