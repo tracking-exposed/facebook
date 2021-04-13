@@ -35,11 +35,11 @@ async function personalEnrich() {
         if(_.size(e.labelcopy)) {
             e.labels = _.get(e.labelcopy[0], 'l');
             e.lang = _.get(e.labelcopy[0], 'lang');
-            debug("Si: %j %j", e.labels, e.lang);
         }
         _.set(e, 'user', supporter.pseudo);
         // e.images = _.filter(e.images, {linktype: 'cdn'});
-        e = _.omit(e, ['_id', 'pseudo', 'paadc', 'labelcopy', 'regexp', 'opengraph',
+        e = _.omit(e, ['_id', 'pseudo', 'paadc', 'labelcopy', 'regexp',
+            'opengraph',
             'usertext', 'interactions', 'images.profiles', 'indicators',
             'summary', 'userId', 'notes', 'when' ]);
         return e;

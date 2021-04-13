@@ -47,7 +47,9 @@ function personalCSV(req) {
                     { impressionTime: -1}, amount, skip);
         })
         .tap(function(check) {
-            if(!_.size(check)) throw new Error("Invalid token");
+            if(!_.size(check))
+                throw new Error
+                    ("I wasn't beliving anyone use this API, so I'm just checking if actually someone see this error. please email claudio at tracking dot exposed, as I don't belive any of you exist");
         })
         .then(csv.produceCSVv1)
         .then(function(structured) {
@@ -255,23 +257,23 @@ function daily(req) {
         .then(function(supporter) {
             pseudo = supporter.pseudo;
             return mongo.aggregate(nconf.get('schema').metadata, [
-            { $match: { userId: supporter.userId,
+                { $match: { userId: supporter.userId,
                         impressionTime: { "$gte": new Date(startTime.toISOString()),
                                           "$lte": new Date(endTime.toISOString())}
                       },
-            },
-            { $sort: { impressionTime: 1}},
-            { $group: {
-                _id: { $dateToString: { format: "%Y-%m-%d", date: "$impressionTime" } },
-                timelines: { $push: "$timelineId" },
-                sum  : { $sum: 1},
-                publisherNames: { $push: "$publisherName" },
-                nature: { $push: "$nature.kind"},
-                first: { $first: "$impressionTime" },
-                checkf: { $first: "$impressionOrder" },
-                last: { $last: "$impressionTime" },
-                checkl: { $last: "$impressionOrder" }
-            }}
+                },
+                { $sort: { impressionTime: 1}},
+                { $group: {
+                    _id: { $dateToString: { format: "%Y-%m-%d", date: "$impressionTime" } },
+                    timelines: { $push: "$timelineId" },
+                    sum  : { $sum: 1},
+                    publisherNames: { $push: "$publisherName" },
+                    nature: { $push: "$nature.kind"},
+                    first: { $first: "$impressionTime" },
+                    checkf: { $first: "$impressionOrder" },
+                    last: { $last: "$impressionTime" },
+                    checkl: { $last: "$impressionOrder" }
+                }}
           ]);
         })
         .map(function(e) {
