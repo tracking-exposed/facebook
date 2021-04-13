@@ -14,7 +14,7 @@ async function timelineCSV(req) {
     debug("timeline CSV request (Id %s -> p %s) found %d metadatas", timelineId, timelineP, _.size(m));
 
     const content = _.map(m, function(metadata) {
-        const omitf = ['_id', 'when', 'savingTime', 'paadc',
+        const omitf = ['_id', 'when', 'userId', 'savingTime', 'paadc',
             'images', 'hrefs', 'meaningfulId', 'nature', 'texts'];
         metadata = _.extend(metadata, metadata.nature);
         metadata.picts = _.size(metadata.images);
