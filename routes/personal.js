@@ -9,65 +9,43 @@ const params = require('../lib/params');
 const adopters = require('../lib/adopters');
 const csv = require('../lib/CSV');
 
-function summary(req) {
+const trans = require('../lib/transformations');
+
+async function summary(req) {
     const { amount, skip } = params.optionParsing(req.params.paging, 200);
     debug("summary request, amount %d skip %d", amount, skip);
 
-    return adopters
-        .validateToken(req.params.userToken)
-        .then(function(supporter) {
-            return mongo
-                .readLimit(nconf.get('schema').summary, { user: supporter.pseudo },
+    const supporter = await adopters.validateToken(req.params.userToken);
+    const data = await mongo.readLimit(nconf.get('schema').metadata, { userId: supporter.userId },
                     { impressionTime: -1}, amount, skip);
-        })
-        .map(function(e) {
-            return _.omit(e, ['_id' ]);
-        })
-        .then(function(data) {
-            debug("retrived %d objects, with amount %d skip %d", _.size(data), amount, skip);
-            return { json: data };
-        })
-        .catch(function(e) {
-            debug("Summary (error): %s", e.message);
-            return { json: { error: true, 'message': `error: ${e.message}` }};
-        });
+
+    const content = _.map(data, trans.metadataToSimple);
+    if(!_.size(content))
+        throw new Error("Invalid token? no data found");
+
+    debug("Returning %d objects", _.size(content));
+    return { json: content };
 };
 
-function personalCSV(req) {
-    const { amount, skip } = params.optionParsing(req.params.paging, 1000);
-    debug("CSV request by [%s], amount %d skip %d", req.params.userToken, amount, skip);
+async function personalCSV(req) {
 
-    let fname = "summary-"
-    return adopters
-        .validateToken(req.params.userToken)
-        .then(function(supporter) {
-            fname=`${fname}-${supporter.pseudo}.csv`;
-            return mongo
-                .readLimit(nconf.get('schema').summary, { user: supporter.pseudo },
+    const { amount, skip } = params.optionParsing(req.params.paging, 200);
+    const supporter = await adopters.validateToken(req.params.userToken);
+    const data = await mongo.readLimit(nconf.get('schema').metadata, { userId: supporter.userId },
                     { impressionTime: -1}, amount, skip);
-        })
-        .tap(function(check) {
-            if(!_.size(check))
-                throw new Error
-                    ("I wasn't beliving anyone use this API, so I'm just checking if actually someone see this error. please email claudio at tracking dot exposed, as I don't belive any of you exist");
-        })
-        .then(csv.produceCSVv1)
-        .then(function(structured) {
-            debug("personalCSV produced %d bytes", _.size(structured));
-            return {
-                headers: { "Content-Type": "csv/text",
-                           "content-disposition": `attachment; filename=${fname}` },
-                text: structured,
-            };
-        })
-        .catch(function(e) {
-            debug("csv (error): %s", e.message);
-            return {
-                headers: { "Content-Type": "csv/text",
-                           "content-disposition": `attachment; filename=error.csv` },
-                text: `error: ${e.message}`
-            };
-        });
+
+    const content = _.map(data, trans.metadataToSimple);
+    if(!_.size(content))
+        throw new Error("Invalid token? no data found");
+
+    const structured = csv.internalCSV(content, _.keys(content[0]));
+    debug("personalCSV wrap (summary API) and produced %d bytes CSV", _.size(structured));
+    const fname=`fbtrex-summary--${supporter.pseudo}-${moment().format("YYYY-MM-DD")}.csv`;
+    return {
+        headers: { "Content-Type": "csv/text",
+                   "Content-Disposition": `attachment; filename=${fname}` },
+        text: structured,
+    };
 }
 
 function metadata(req) {

@@ -5,6 +5,7 @@ const nconf = require('nconf');
 const mongo = require('../lib/mongo');
 const utils = require('../lib/utils');
 const csv = require('../lib/CSV');
+const trans = require('../lib/transformations');
 
 async function timelineCSV(req) {
     const timelineId = req.params.timelineId;
@@ -13,17 +14,7 @@ async function timelineCSV(req) {
     const m = await mongo.read(nconf.get('schema').metadata, { timelineId: timelineId }, { impressionTime: -1});
     debug("timeline CSV request (Id %s -> p %s) found %d metadatas", timelineId, timelineP, _.size(m));
 
-    const content = _.map(m, function(metadata) {
-        const omitf = ['_id', 'when', 'userId', 'savingTime', 'paadc',
-            'images', 'hrefs', 'meaningfulId', 'nature', 'texts'];
-        metadata = _.extend(metadata, metadata.nature);
-        metadata.picts = _.size(metadata.images);
-        metadata.links = _.size(metadata.htmls);
-        metadata.infos = _.size(metadata.meaningfulId);
-        metadata.textContent = metadata.texts.join("<+>");
-        metadata.textSize = _.size(metadata.texts.join(""));
-        return _.omit(metadata, omitf);
-    })
+    const content = _.map(m, trans.metadataToSimple);
     if(!_.size(content))
         throw new Error("Invalid timelineId?");
 
