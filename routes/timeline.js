@@ -73,7 +73,7 @@ async function impressionStats(req) {
     ]}  */
     const grouped = _.groupBy(enhancedimpr, 'timelineId');
     /* this aggregate in an object for every timelineId */
-    const final = _.reduce(grouped, function(memo, impressions, timelineId) {
+    const final = _.reduce(grouped, function(memo, impressions) {
         const x = {};
         const ordered = _.orderBy(impressions, 'impressionOrder');
         x.sessionId = utils.hash({
@@ -85,8 +85,9 @@ async function impressionStats(req) {
         _.each(ordered, function(impression) {
             /* here copy visibility|kind into a list ordered by impression order */
             const nature = _.get(_.first(_.get(impression, 'metadata', [])), 'nature');
+            const adorpost = nature ? nature.kind : impression.kind;
             const info = (impression.visibility === 'private') ? 'private' :
-                nature ? nature.kind : impression.kind;
+                adorpost === 'post' ? 'organic' : adorpost;
             /* debug("copying %s Order %d array position %d",
                 info, impression.impressionOrder, _.size(x.info) ); */
             x.info.push(info);
@@ -109,16 +110,16 @@ async function impressionStats(req) {
                 9	"2020-12-20T18:28:11.149Z"
                 10	"2020-12-20T18:28:11.198Z"
             info
-                0	"post"
+                0	"organic"
                 1	"ad"
-                2	"post"
-                3	"post"
-                4	"post"
+                2	"organic"
+                3	"organic"
+                4	"organic"
                 5	"private"
                 6	"ad"
-                7	"post"
-                8	"post"
-                9	"post"
+                7	"organic"
+                8	"organic"
+                9	"organic"
                 10	"private"                */
         memo.push(x);
         return memo;
