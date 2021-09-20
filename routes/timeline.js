@@ -123,7 +123,7 @@ async function impressionStats(req) {
         memo.push(x);
         return memo;
     }, []);
-    debug("Producing %d %d collected session", dayString, _.size(final));
+    debug("Producing %s %d collected session", dayString, _.size(final));
     return { json: final };
 }
 
